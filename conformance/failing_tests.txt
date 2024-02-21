@@ -1,0 +1,14 @@
+Required.Proto2.ProtobufInput.PrematureEofInPackedFieldValue.SINT32
+Required.Proto2.ProtobufInput.PrematureEofInPackedFieldValue.SINT64
+Required.Proto3.ProtobufInput.PrematureEofInPackedFieldValue.SINT32
+Required.Proto3.ProtobufInput.PrematureEofInPackedFieldValue.SINT64
+Required.Proto3.ProtobufInput.ValidDataRepeated.BOOL.UnpackedInput.ProtobufOutput
+Required.Proto3.ProtobufInput.ValidDataRepeated.DOUBLE.UnpackedInput.ProtobufOutput
+Required.Proto3.ProtobufInput.ValidDataRepeated.ENUM.UnpackedInput.ProtobufOutput
+Required.Proto3.ProtobufInput.ValidDataRepeated.FLOAT.UnpackedInput.ProtobufOutput
+Required.Proto3.ProtobufInput.ValidDataRepeated.INT32.UnpackedInput.ProtobufOutput
+Required.Proto3.ProtobufInput.ValidDataRepeated.INT64.UnpackedInput.ProtobufOutput
+Required.Proto3.ProtobufInput.ValidDataRepeated.UINT32.UnpackedInput.ProtobufOutput
+Required.Proto3.ProtobufInput.ValidDataRepeated.UINT64.UnpackedInput.ProtobufOutput
+Required.Proto3.TimestampProtoInputTooLarge.JsonOutput
+Required.Proto3.TimestampProtoInputTooSmall.JsonOutput

@@ -1,0 +1,3 @@
+Required.Proto3.ProtobufInput.ValidDataRepeated.INT32.PackedInput.ProtobufOutput
+Required.Proto3.ProtobufInput.ValidDataScalar.SINT32[0].ProtobufOutput
+Required.Proto3.ProtobufInput.ValidDataScalar.SINT64[0].ProtobufOutput

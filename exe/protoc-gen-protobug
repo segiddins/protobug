@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+require 'protobug'
+require 'protobug/compiler'
+
+$:.unshift(File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "protobug", "compiler")))
+require 'protobug/compiler/google/protobuf/compiler/plugin.proto.pb.rb'
+
+compiler_registry = Protobug::Registry.new do |registry|
+  Google::Protobuf::Compiler.register_plugin_protos(registry)
+end
+
+request = Google::Protobuf::Compiler::CodeGeneratorRequest.decode($stdin, registry: compiler_registry)
+response = Protobug::Compiler.compile!(request)
+
+$stdout.print response.class.encode(response)
