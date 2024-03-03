@@ -48,17 +48,20 @@ module Protobug
     end
 
     def optional(number, name, **kwargs)
-      raise ArgumentError, "expected cardinality: :optional, got #{kwargs[:cardinality].inspect}" if kwargs[:cardinality] && kwargs[:cardinality] != :optional
+      raise ArgumentError, 
+            "expected cardinality: :optional, got #{kwargs[:cardinality].inspect}" if kwargs[:cardinality] && kwargs[:cardinality] != :optional
       field(number, name, cardinality: :optional, **kwargs)
     end
 
     def repeated(number, name, **kwargs)
-      raise ArgumentError, "expected cardinality: :repeated, got #{kwargs[:cardinality].inspect}" if kwargs[:cardinality] && kwargs[:cardinality] != :repeated
+      raise ArgumentError, 
+            "expected cardinality: :repeated, got #{kwargs[:cardinality].inspect}" if kwargs[:cardinality] && kwargs[:cardinality] != :repeated
       field(number, name, cardinality: :repeated, **kwargs)
     end
 
     def required(number, name, **kwargs)
-      raise ArgumentError, "expected cardinality: :required, got #{kwargs[:cardinality].inspect}" if kwargs[:cardinality] && kwargs[:cardinality] != :required
+      raise ArgumentError, 
+            "expected cardinality: :required, got #{kwargs[:cardinality].inspect}" if kwargs[:cardinality] && kwargs[:cardinality] != :required
       field(number, name, cardinality: :required, **kwargs)
     end
 
@@ -101,7 +104,9 @@ module Protobug
       message = new
 
       json.each do |key, value|
-        field = fields_by_name.values.find { |f| f.json_name == key } || raise("unknown field #{key.inspect} in #{full_name}")
+        field = fields_by_name.values.find do |f|
+          f.json_name == key
+        end || raise("unknown field #{key.inspect} in #{full_name}")
         if field.oneof && message.send(field.oneof)
           raise "multiple oneof fields set in #{full_name}: #{message.send(field.oneof)} and #{field.name}"
         end
@@ -153,7 +158,9 @@ module Protobug
           klass = registry.fetch(field.message_type)
           if field.cardinality == :repeated
             raise "expected array, got #{value.inspect}" unless value.is_a? Array
-            message.send(field.setter, value.map { |v| klass.decode_json_hash(v, registry: registry) || raise("null not allowed in repeated message")})
+            message.send(field.setter, value.map do |v|
+                                         klass.decode_json_hash(v, registry: registry) || raise("null not allowed in repeated message")
+                                       end)
           else
             message.send(field.setter, klass.decode_json_hash(value, registry: registry))
           end
@@ -161,7 +168,9 @@ module Protobug
           klass = registry.fetch(field.enum_type)
           if field.cardinality == :repeated
             raise "expected array, got #{value.inspect}" unless value.is_a? Array
-            message.send(field.setter, value.map { |v| klass.decode_json_hash(v, registry: registry) || raise("null not allowed in repeated enum") })
+            message.send(field.setter, value.map do |v|
+                                         klass.decode_json_hash(v, registry: registry) || raise("null not allowed in repeated enum")
+                                       end)
           else
             message.send(field.setter, klass.decode_json_hash(value, registry: registry))
           end
@@ -229,19 +238,22 @@ module Protobug
               value = decode_varint(len)
               raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
               value = [value].pack("l").unpack1("l")
-              raise RangeError, "expected 32-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length <= 32
+              raise RangeError, 
+                    "expected 32-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length <= 32
               object.send((field.adder || field.setter), value)
             end
           else
             raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
             value = [value].pack("l").unpack1("l")
-            raise RangeError, "expected 32-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length <= 32
+            raise RangeError, 
+                  "expected 32-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length <= 32
             object.send((field.adder || field.setter), value)
           end
         when :int64
           raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
           value = [value].pack("q").unpack1("q")
-          raise RangeError, "expected 64-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length <= 64
+          raise RangeError, 
+                "expected 64-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length <= 64
           object.send((field.adder || field.setter), value)
         when :uint32, :uint64
           raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
@@ -376,16 +388,20 @@ module Protobug
         case field.type
         when :int32
           raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
-          raise RangeError, "expected 32-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length < 32
+          raise RangeError, 
+                "expected 32-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length < 32
         when :uint32
           raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
-          raise RangeError, "expected 32-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length <= 32
+          raise RangeError, 
+                "expected 32-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length <= 32
         when :int64
           raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
-          raise RangeError, "expected 64-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length < 64
+          raise RangeError, 
+                "expected 64-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length < 64
         when :uint64
           raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
-          raise RangeError, "expected 64-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length <= 64
+          raise RangeError, 
+                "expected 64-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length <= 64
         end
         instance_variable_set(:"@#{name}", value)
       end
@@ -431,7 +447,7 @@ module Protobug
 
     module InstanceMethods
       def ==(other)
-        full_name == other.full_name &&
+        self.class.full_name == other.class.full_name &&
         self.class.fields_by_name.all? do |name, _|
           send(name) == other.send(name)
         end
