@@ -196,7 +196,7 @@ module Protobug
           st.body << OpAssign(
             CallNode(Ident("self"), Op("."), Ident("full_name"), VoidStmt()),
             Op("="),
-            Lit("#{msg.name}")
+            Lit("#{file.package}.#{msg.name}")
           )
           st.body << Statements([VoidStmt()])
 
@@ -267,7 +267,7 @@ module Protobug
           st.body << OpAssign(
             CallNode(Ident("self"), Op("."), Ident("full_name"), VoidStmt()),
             Op("="),
-            Lit("")
+            Lit("#{file.package}.#{enum.name}")
           )
 
           st.body << Statements([VoidStmt()])
@@ -320,7 +320,7 @@ module Protobug
           end
         end
       end
-      Comment(comment, false)
+      Statements(comment.lines(chomp: true).map { Comment(_1, false) })
     end
 
     def Lit(x)
@@ -341,8 +341,8 @@ module Protobug
       else
         # exhaustive search
 
-        path = path_descend([], file,
-                            descriptor) || raise("Failed to find source loc for #{descriptor.inspect} (#{path})")
+        path = path_descend([], file, descriptor) ||
+               raise("Failed to find path for #{descriptor.inspect} in #{file.name}")
       end
 
       file.source_code_info.location.find do |loc|
