@@ -48,19 +48,19 @@ module Protobug
     end
 
     def optional(number, name, **kwargs)
-      raise ArgumentError, 
+      raise ArgumentError,
             "expected cardinality: :optional, got #{kwargs[:cardinality].inspect}" if kwargs[:cardinality] && kwargs[:cardinality] != :optional
       field(number, name, cardinality: :optional, **kwargs)
     end
 
     def repeated(number, name, **kwargs)
-      raise ArgumentError, 
+      raise ArgumentError,
             "expected cardinality: :repeated, got #{kwargs[:cardinality].inspect}" if kwargs[:cardinality] && kwargs[:cardinality] != :repeated
       field(number, name, cardinality: :repeated, **kwargs)
     end
 
     def required(number, name, **kwargs)
-      raise ArgumentError, 
+      raise ArgumentError,
             "expected cardinality: :required, got #{kwargs[:cardinality].inspect}" if kwargs[:cardinality] && kwargs[:cardinality] != :required
       field(number, name, cardinality: :required, **kwargs)
     end
@@ -238,21 +238,21 @@ module Protobug
               value = decode_varint(len)
               raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
               value = [value].pack("l").unpack1("l")
-              raise RangeError, 
+              raise RangeError,
                     "expected 32-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length <= 32
               object.send((field.adder || field.setter), value)
             end
           else
             raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
             value = [value].pack("l").unpack1("l")
-            raise RangeError, 
+            raise RangeError,
                   "expected 32-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length <= 32
             object.send((field.adder || field.setter), value)
           end
         when :int64
           raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
           value = [value].pack("q").unpack1("q")
-          raise RangeError, 
+          raise RangeError,
                 "expected 64-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length <= 64
           object.send((field.adder || field.setter), value)
         when :uint32, :uint64
@@ -388,19 +388,19 @@ module Protobug
         case field.type
         when :int32
           raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
-          raise RangeError, 
+          raise RangeError,
                 "expected 32-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length < 32
         when :uint32
           raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
-          raise RangeError, 
+          raise RangeError,
                 "expected 32-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length <= 32
         when :int64
           raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
-          raise RangeError, 
+          raise RangeError,
                 "expected 64-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length < 64
         when :uint64
           raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
-          raise RangeError, 
+          raise RangeError,
                 "expected 64-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length <= 64
         end
         instance_variable_set(:"@#{name}", value)
@@ -463,9 +463,7 @@ module Protobug
 
       def pretty_print(pp)
         fields_with_values = self.class.fields_by_name.select do |name, field|
-          value = send(name)
-          UNSET != value && (field.cardinality != :repeated || !value.empty?) && (field.cardinality != :optional || !value.nil?)
-          true
+          send(:"#{name}?")
         end
         pp.group 2, "#{self.class}.new(", ")" do
           pp.breakable

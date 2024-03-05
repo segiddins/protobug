@@ -202,8 +202,6 @@ module Protobug
 
           st.body << declarations(file, msg)
 
-
-
           msg.field.each do |field|
             loc = source_loc(file, field)
             if loc&.leading_detached_comments?
@@ -213,6 +211,7 @@ module Protobug
               st.body << Statements([VoidStmt()])
             end
             st.body << Comment_(loc.leading_comments) if loc&.leading_comments?
+            # TODO: resolve message type, skip if map entry
             st.body << CallNode(
               nil, nil,
               Ident(
@@ -225,27 +224,43 @@ module Protobug
                   "required"
                 end
               ),
-              ArgParen(Args([
-                              Lit(field.number),
-                              Lit(field.name),
-                              BareAssocHash([
-                                              Assoc(Label("type:"),
-                                                    SymbolLiteral(Ident(field.type.name.downcase.delete_prefix("type_"))))
-                                            ]).tap do |bah|
-                                              if field.type_name?
-                                                bah.assocs << Assoc(Label("message_type:"), # TODO: enum type
-                                                                    Lit(field.type_name.delete_prefix(".")))
-                                              end
-                                              if field.json_name? && field.json_name != field.name
-                                                bah.assocs << Assoc(Label("json_name:"),
-                                                                    Lit(field.json_name))
-                                              end
-                                              if field.oneof_index?
-                                                bah.assocs << Assoc(Label("oneof:"),
-                                                                    SymbolLiteral(Ident(msg.oneof_decl[field.oneof_index].name)))
-                                              end
-                                            end
-                            ]))
+              ArgParen(
+                Args(
+                  [
+                    Lit(field.number),
+                    Lit(field.name),
+                    BareAssocHash(
+                      [
+                        Assoc(Label("type:"),
+                              SymbolLiteral(Ident(field.type.name.downcase.delete_prefix("type_"))))
+                      ]
+                    ).tap do |bah|
+                      if field.type_name?
+                        bah.assocs << Assoc(Label("message_type:"), # TODO: enum type
+                                            Lit(field.type_name.delete_prefix(".")))
+                      end
+                      if field.options&.packed
+                        bah.assocs << Assoc(Label("packed:"), # TODO: enum type
+                                            Lit(field.options.packed))
+                      end
+                      if field.json_name? && field.json_name != field.name
+                        bah.assocs << Assoc(Label("json_name:"),
+                                            Lit(field.json_name))
+                      end
+                      if field.oneof_index?
+                        oneof = msg.oneof_decl[field.oneof_index]
+                        synthetic = field.proto3_optional && msg.field.count do
+                          _1.oneof_index? && _1.oneof_index == field.oneof_index
+                        end == 1
+                        unless synthetic
+                          bah.assocs << Assoc(Label("oneof:"),
+                                              SymbolLiteral(Ident(oneof.name)))
+                        end
+                      end
+                    end
+                  ]
+                )
+              )
             )
           end
         end
@@ -296,6 +311,28 @@ module Protobug
         end
       end
 
+      if file == parent
+        statements.body << DefNode(
+          Ident("self"), Op("."), Ident("register_#{File.basename file.name.delete_suffix(".proto")}_protos"),
+          Params(
+            [Ident("registry")],
+            [], nil, [], [], nil, nil
+          ),
+          BodyStmt(
+            Statements(
+              [ # TODO: register dependencies
+
+                CallNode( # TODO: repeat for each nested declaration
+                  Ident("registry"), Op("."),
+                  Ident("register"), ArgParen(Args([]))
+                )
+              ]
+            ),
+            nil, nil, nil, nil
+          )
+        )
+      end
+
       statements
     end
 
@@ -307,7 +344,7 @@ module Protobug
       ClassDeclaration(ConstRef(Const(name)), scls, BodyStmt(Statements([]).tap(&blk), nil, nil, nil, nil))
     end
 
-    def Comment_(comment) # TODO: split into lines, each line is its own comment node
+    def Comment_(comment)
       comment = comment.rstrip
       unless comment.start_with?("#")
         has_space = comment.start_with?(" ")
@@ -323,12 +360,14 @@ module Protobug
       Statements(comment.lines(chomp: true).map { Comment(_1, false) })
     end
 
-    def Lit(x)
-      case x
+    def Lit(val)
+      case val
       when String
-        StringLiteral([TStringContent(x)], '"')
+        StringLiteral([TStringContent(val)], '"')
       when Integer
-        Int(x.to_s)
+        Int(val.to_s)
+      when TrueClass, FalseClass
+        Kw(val.inspect)
       else
         raise
       end
@@ -352,7 +391,7 @@ module Protobug
 
     def path_descend(path, object, target)
       return unless object
-      return path if object == target
+      return path if object.equal? target
 
       object.class.fields_by_number.each do |num, field|
         next unless field.type == :message
