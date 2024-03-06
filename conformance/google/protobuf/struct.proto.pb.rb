@@ -76,6 +76,8 @@ module Google
 
       self.full_name = "google.protobuf.Value"
 
+      # The kind of value.
+
       # Represents a null value.
       optional(1, "null_value", type: :enum, enum_type: "google.protobuf.NullValue", json_name: "nullValue", oneof: :kind)
       # Represents a double value.
@@ -88,18 +90,6 @@ module Google
       optional(5, "struct_value", type: :message, message_type: "google.protobuf.Struct", json_name: "structValue", oneof: :kind)
       # Represents a repeated `Value`.
       optional(6, "list_value", type: :message, message_type: "google.protobuf.ListValue", json_name: "listValue", oneof: :kind)
-    end
-
-    # `ListValue` is a wrapper around a repeated field of values.
-    #
-    # The JSON representation for `ListValue` is JSON array.
-    class ListValue
-      extend Protobug::Message
-
-      self.full_name = "google.protobuf.ListValue"
-
-      # Repeated field of dynamically typed values.
-      repeated(1, "values", type: :message, message_type: "google.protobuf.Value")
     end
 
     # `NullValue` is a singleton enumeration to represent the null value for the
@@ -115,11 +105,23 @@ module Google
       NULL_VALUE = new("NULL_VALUE", 0).freeze
     end
 
+    # `ListValue` is a wrapper around a repeated field of values.
+    #
+    # The JSON representation for `ListValue` is JSON array.
+    class ListValue
+      extend Protobug::Message
+
+      self.full_name = "google.protobuf.ListValue"
+
+      # Repeated field of dynamically typed values.
+      repeated(1, "values", type: :message, message_type: "google.protobuf.Value")
+    end
+
     def self.register_struct_protos(registry)
       registry.register(Google::Protobuf::Struct)
       registry.register(Google::Protobuf::Value)
-      registry.register(Google::Protobuf::ListValue)
       registry.register(Google::Protobuf::NullValue)
+      registry.register(Google::Protobuf::ListValue)
     end
   end
 end

@@ -36,6 +36,13 @@ require "sigstore/rekor/v1/sigstore_rekor.proto.pb.rb"
 module Sigstore
   module Bundle
     module V1
+      # Notes on versioning.
+      # The primary message ('Bundle') MUST be versioned, by populating the
+      # 'media_type' field. Semver-ish (only major/minor versions) scheme MUST
+      # be used. The current version as specified by this file is:
+      # application/vnd.dev.sigstore.bundle+json;version=0.3
+      # The semantic version is thus '0.3'.
+
       # Various timestamped counter signatures over the artifacts signature.
       # Currently only RFC3161 signatures are provided. More formats may be added
       # in the future.
@@ -65,6 +72,40 @@ module Sigstore
         extend Protobug::Message
 
         self.full_name = "dev.sigstore.bundle.v1.VerificationMaterial"
+
+        # The key material for verification purposes.
+        #
+        # This allows key material to be conveyed in one of three forms:
+        #
+        # 1. An unspecified public key identifier, for retrieving a key
+        #    from an out-of-band mechanism (such as a keyring);
+        #
+        # 2. A sequence of one or more X.509 certificates, of which the first member
+        #    MUST be a leaf certificate conveying the signing key. Subsequent members
+        #    SHOULD be in issuing order, meaning that `n + 1` should be an issuer for `n`.
+        #
+        #    Signers MUST NOT include root CA certificates in bundles, and SHOULD NOT
+        #    include intermediate CA certificates that appear in an independent root of trust
+        #    (such as the Public Good Instance's trusted root).
+        #
+        #    Verifiers MUST validate the chain carefully to ensure that it chains up
+        #    to a CA certificate that they independently trust. Verifiers SHOULD
+        #    handle old or non-complying bundles that have superfluous intermediate and/or
+        #    root CA certificates by either ignoring them or explicitly considering them
+        #    untrusted for the purposes of chain building.
+        #
+        # 3. A single X.509 certificate, which MUST be a leaf certificate conveying
+        #    the signing key.
+        #
+        # When used with the Public Good Instance (PGI) of Sigstore for "keyless" signing
+        # via Fulcio, form (1) MUST NOT be used, regardless of bundle version. Form (1)
+        # MAY be used with the PGI for self-managed keys.
+        #
+        # When used in a `0.1` or `0.2` bundle with the PGI and "keyless" signing,
+        # form (2) MUST be used.
+        #
+        # When used in a `0.3` bundle with the PGI and "keyless" signing,
+        # form (3) MUST be used.
 
         optional(1, "public_key", type: :message, message_type: "dev.sigstore.common.v1.PublicKeyIdentifier", json_name: "publicKey", oneof: :content)
         optional(2, "x509_certificate_chain", type: :message, message_type: "dev.sigstore.common.v1.X509CertificateChain", json_name: "x509CertificateChain", oneof: :content)
@@ -102,6 +143,7 @@ module Sigstore
         # MUST be exactly the same in the verification material and in the
         # DSSE envelope.
         optional(2, "verification_material", type: :message, message_type: "dev.sigstore.bundle.v1.VerificationMaterial", json_name: "verificationMaterial")
+
         optional(3, "message_signature", type: :message, message_type: "dev.sigstore.common.v1.MessageSignature", json_name: "messageSignature", oneof: :content)
         # A DSSE envelope can contain arbitrary payloads.
         # Verifiers must verify that the payload type is a
@@ -109,6 +151,8 @@ module Sigstore
         # protocol which is defined here:
         # <https://github.com/secure-systems-lab/dsse/blob/master/protocol.md>
         optional(4, "dsse_envelope", type: :message, message_type: "io.intoto.Envelope", json_name: "dsseEnvelope", oneof: :content)
+
+        # Reserved for future additions of artifact types.
         reserved_range(5...51)
       end
 

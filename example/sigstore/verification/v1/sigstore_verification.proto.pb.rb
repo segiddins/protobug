@@ -96,6 +96,7 @@ module Sigstore
           optional(1, "threshold", type: :int32)
           # Disable ct transparency log verification
           optional(3, "disable", type: :bool)
+
           reserved_range(2...3)
         end
 
@@ -135,6 +136,10 @@ module Sigstore
           # Disable observer timestamp verification.
           optional(2, "disable", type: :bool)
         end
+
+        # At least one identity MUST be provided. Providing zero identities
+        # is an error. If at least one provided identity is found as a
+        # signer, the verification is considered successful.
 
         optional(1, "certificate_identities", type: :message, message_type: "dev.sigstore.verification.v1.CertificateIdentities", json_name: "certificateIdentities", oneof: :signers)
         # To simplify verification implementation, the logic for

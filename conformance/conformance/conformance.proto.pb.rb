@@ -19,6 +19,59 @@
 require "protobug"
 
 module Conformance
+  # This defines the conformance testing protocol.  This protocol exists between
+  # the conformance test suite itself and the code being tested.  For each test,
+  # the suite will send a ConformanceRequest message and expect a
+  # ConformanceResponse message.
+  #
+  # You can either run the tests in two different ways:
+  #
+  #   1. in-process (using the interface in conformance_test.h).
+  #
+  #   2. as a sub-process communicating over a pipe.  Information about how to
+  #      do this is in conformance_test_runner.cc.
+  #
+  # Pros/cons of the two approaches:
+  #
+  #   - running as a sub-process is much simpler for languages other than C/C++.
+  #
+  #   - running as a sub-process may be more tricky in unusual environments like
+  #     iOS apps, where fork/stdin/stdout are not available.
+
+  class WireFormat
+    extend Protobug::Enum
+
+    self.full_name = "conformance.WireFormat"
+
+    UNSPECIFIED = new("UNSPECIFIED", 0).freeze
+    PROTOBUF = new("PROTOBUF", 1).freeze
+    JSON = new("JSON", 2).freeze
+    JSPB = new("JSPB", 3).freeze # Only used inside Google. Opensource testees just skip it.
+    TEXT_FORMAT = new("TEXT_FORMAT", 4).freeze
+  end
+
+  class TestCategory
+    extend Protobug::Enum
+
+    self.full_name = "conformance.TestCategory"
+
+    UNSPECIFIED_TEST = new("UNSPECIFIED_TEST", 0).freeze
+    BINARY_TEST = new("BINARY_TEST", 1).freeze # Test binary wire format.
+    JSON_TEST = new("JSON_TEST", 2).freeze # Test json wire format.
+    # Similar to JSON_TEST. However, during parsing json, testee should ignore
+    # unknown fields. This feature is optional. Each implementation can decide
+    # whether to support it.  See
+    # https://developers.google.com/protocol-buffers/docs/proto3#json_options
+    # for more detail.
+    JSON_IGNORE_UNKNOWN_PARSING_TEST = new("JSON_IGNORE_UNKNOWN_PARSING_TEST", 3).freeze
+    # Test jspb wire format. Only used inside Google. Opensource testees just
+    # skip it.
+    JSPB_TEST = new("JSPB_TEST", 4).freeze
+    # Test text format. For cpp, java and python, testees can already deal with
+    # this type. Testees of other languages can simply skip it.
+    TEXT_FORMAT_TEST = new("TEXT_FORMAT_TEST", 5).freeze
+  end
+
   # The conformance runner will request a list of failures as the first request.
   # This will be known by message_type == "conformance.FailureSet", a conformance
   # test should return a serialized FailureSet in protobuf_payload.
@@ -39,6 +92,10 @@ module Conformance
     extend Protobug::Message
 
     self.full_name = "conformance.ConformanceRequest"
+
+    # The payload (whether protobuf of JSON) is always for a
+    # protobuf_test_messages.proto3.TestAllTypes proto (as defined in
+    # src/google/protobuf/proto3_test_messages.proto).
 
     optional(1, "protobuf_payload", type: :bytes, json_name: "protobufPayload", oneof: :payload)
     optional(2, "json_payload", type: :string, json_name: "jsonPayload", oneof: :payload)
@@ -114,46 +171,12 @@ module Conformance
     optional(1, "use_jspb_array_any_format", type: :bool, json_name: "useJspbArrayAnyFormat")
   end
 
-  class WireFormat
-    extend Protobug::Enum
-
-    self.full_name = "conformance.WireFormat"
-
-    UNSPECIFIED = new("UNSPECIFIED", 0).freeze
-    PROTOBUF = new("PROTOBUF", 1).freeze
-    JSON = new("JSON", 2).freeze
-    JSPB = new("JSPB", 3).freeze
-    TEXT_FORMAT = new("TEXT_FORMAT", 4).freeze
-  end
-
-  class TestCategory
-    extend Protobug::Enum
-
-    self.full_name = "conformance.TestCategory"
-
-    UNSPECIFIED_TEST = new("UNSPECIFIED_TEST", 0).freeze
-    BINARY_TEST = new("BINARY_TEST", 1).freeze
-    JSON_TEST = new("JSON_TEST", 2).freeze
-    # Similar to JSON_TEST. However, during parsing json, testee should ignore
-    # unknown fields. This feature is optional. Each implementation can decide
-    # whether to support it.  See
-    # https://developers.google.com/protocol-buffers/docs/proto3#json_options
-    # for more detail.
-    JSON_IGNORE_UNKNOWN_PARSING_TEST = new("JSON_IGNORE_UNKNOWN_PARSING_TEST", 3).freeze
-    # Test jspb wire format. Only used inside Google. Opensource testees just
-    # skip it.
-    JSPB_TEST = new("JSPB_TEST", 4).freeze
-    # Test text format. For cpp, java and python, testees can already deal with
-    # this type. Testees of other languages can simply skip it.
-    TEXT_FORMAT_TEST = new("TEXT_FORMAT_TEST", 5).freeze
-  end
-
   def self.register_conformance_protos(registry)
+    registry.register(Conformance::WireFormat)
+    registry.register(Conformance::TestCategory)
     registry.register(Conformance::FailureSet)
     registry.register(Conformance::ConformanceRequest)
     registry.register(Conformance::ConformanceResponse)
     registry.register(Conformance::JspbEncodingConfig)
-    registry.register(Conformance::WireFormat)
-    registry.register(Conformance::TestCategory)
   end
 end

@@ -32,6 +32,20 @@ require "google/protobuf/descriptor.proto.pb.rb"
 
 module Google
   module Api
+    # A designation of a specific field behavior (required, output only, etc.)
+    # in protobuf messages.
+    #
+    # Examples:
+    #
+    #   string name = 1 [(google.api.field_behavior) = REQUIRED];
+    #   State state = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
+    #   google.protobuf.Duration ttl = 1
+    #     [(google.api.field_behavior) = INPUT_ONLY];
+    #   google.protobuf.Timestamp expire_time = 1
+    #     [(google.api.field_behavior) = OUTPUT_ONLY,
+    #      (google.api.field_behavior) = IMMUTABLE];
+    # extension: google.protobuf.FieldOptions field_behavior 1052
+
     # An indicator of the behavior of a given field (for example, that a field
     # is required in requests, or given as output but ignored as input).
     # This **does not** change the behavior in protocol buffers itself; it only
@@ -91,24 +105,10 @@ module Google
       IDENTIFIER = new("IDENTIFIER", 8).freeze
     end
 
-    # A designation of a specific field behavior (required, output only, etc.)
-    # in protobuf messages.
-    #
-    # Examples:
-    #
-    #   string name = 1 [(google.api.field_behavior) = REQUIRED];
-    #   State state = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
-    #   google.protobuf.Duration ttl = 1
-    #     [(google.api.field_behavior) = INPUT_ONLY];
-    #   google.protobuf.Timestamp expire_time = 1
-    #     [(google.api.field_behavior) = OUTPUT_ONLY,
-    #      (google.api.field_behavior) = IMMUTABLE];
-    # extension: #<Google::Protobuf::DescriptorProto:0x0000000120403c08> .google.protobuf.FieldOptions field_behavior 1052
-
     def self.register_field_behavior_protos(registry)
       Google::Protobuf.register_descriptor_protos(registry)
-      registry.register(Google::Api::FieldBehavior)
       # extension: google.protobuf.FieldOptions TYPE_ENUM 1052
+      registry.register(Google::Api::FieldBehavior)
     end
   end
 end

@@ -98,6 +98,39 @@ module Google
 
         self.full_name = "google.protobuf.compiler.CodeGeneratorResponse"
 
+        # Error message.  If non-empty, code generation failed.  The plugin process
+        # should exit with status code zero even if it reports an error in this way.
+        #
+        # This should be used to indicate errors in .proto files which prevent the
+        # code generator from generating correct code.  Errors which indicate a
+        # problem in protoc itself -- such as the input CodeGeneratorRequest being
+        # unparseable -- should be reported by writing a message to stderr and
+        # exiting with a non-zero status code.
+        optional(1, "error", type: :string)
+        # A bitmask of supported features that the code generator supports.
+        # This is a bitwise "or" of values from the Feature enum.
+        optional(2, "supported_features", type: :uint64, json_name: "supportedFeatures")
+        # Sync with code_generator.h.
+        class Feature
+          extend Protobug::Enum
+
+          self.full_name = "google.protobuf.compiler.CodeGeneratorResponse.Feature"
+
+          FEATURE_NONE = new("FEATURE_NONE", 0).freeze
+          FEATURE_PROTO3_OPTIONAL = new("FEATURE_PROTO3_OPTIONAL", 1).freeze
+          FEATURE_SUPPORTS_EDITIONS = new("FEATURE_SUPPORTS_EDITIONS", 2).freeze
+        end
+
+        # The minimum edition this plugin supports.  This will be treated as an
+        # Edition enum, but we want to allow unknown values.  It should be specified
+        # according the edition enum value, *not* the edition number.  Only takes
+        # effect for plugins that have FEATURE_SUPPORTS_EDITIONS set.
+        optional(3, "minimum_edition", type: :int32, json_name: "minimumEdition")
+        # The maximum edition this plugin supports.  This will be treated as an
+        # Edition enum, but we want to allow unknown values.  It should be specified
+        # according the edition enum value, *not* the edition number.  Only takes
+        # effect for plugins that have FEATURE_SUPPORTS_EDITIONS set.
+        optional(4, "maximum_edition", type: :int32, json_name: "maximumEdition")
         # Represents a single generated file.
         class File
           extend Protobug::Message
@@ -162,39 +195,6 @@ module Google
           optional(16, "generated_code_info", type: :message, message_type: "google.protobuf.GeneratedCodeInfo", json_name: "generatedCodeInfo")
         end
 
-        # Sync with code_generator.h.
-        class Feature
-          extend Protobug::Enum
-
-          self.full_name = "google.protobuf.compiler.CodeGeneratorResponse.Feature"
-
-          FEATURE_NONE = new("FEATURE_NONE", 0).freeze
-          FEATURE_PROTO3_OPTIONAL = new("FEATURE_PROTO3_OPTIONAL", 1).freeze
-          FEATURE_SUPPORTS_EDITIONS = new("FEATURE_SUPPORTS_EDITIONS", 2).freeze
-        end
-
-        # Error message.  If non-empty, code generation failed.  The plugin process
-        # should exit with status code zero even if it reports an error in this way.
-        #
-        # This should be used to indicate errors in .proto files which prevent the
-        # code generator from generating correct code.  Errors which indicate a
-        # problem in protoc itself -- such as the input CodeGeneratorRequest being
-        # unparseable -- should be reported by writing a message to stderr and
-        # exiting with a non-zero status code.
-        optional(1, "error", type: :string)
-        # A bitmask of supported features that the code generator supports.
-        # This is a bitwise "or" of values from the Feature enum.
-        optional(2, "supported_features", type: :uint64, json_name: "supportedFeatures")
-        # The minimum edition this plugin supports.  This will be treated as an
-        # Edition enum, but we want to allow unknown values.  It should be specified
-        # according the edition enum value, *not* the edition number.  Only takes
-        # effect for plugins that have FEATURE_SUPPORTS_EDITIONS set.
-        optional(3, "minimum_edition", type: :int32, json_name: "minimumEdition")
-        # The maximum edition this plugin supports.  This will be treated as an
-        # Edition enum, but we want to allow unknown values.  It should be specified
-        # according the edition enum value, *not* the edition number.  Only takes
-        # effect for plugins that have FEATURE_SUPPORTS_EDITIONS set.
-        optional(4, "maximum_edition", type: :int32, json_name: "maximumEdition")
         repeated(15, "file", type: :message, message_type: "google.protobuf.compiler.CodeGeneratorResponse.File")
       end
 
@@ -203,8 +203,8 @@ module Google
         registry.register(Google::Protobuf::Compiler::Version)
         registry.register(Google::Protobuf::Compiler::CodeGeneratorRequest)
         registry.register(Google::Protobuf::Compiler::CodeGeneratorResponse)
-        registry.register(Google::Protobuf::Compiler::CodeGeneratorResponse::File)
         registry.register(Google::Protobuf::Compiler::CodeGeneratorResponse::Feature)
+        registry.register(Google::Protobuf::Compiler::CodeGeneratorResponse::File)
       end
     end
   end

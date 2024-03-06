@@ -65,7 +65,7 @@ module Protobuf_test_messages
         FOO = new("FOO", 0).freeze
         BAR = new("BAR", 1).freeze
         BAZ = new("BAZ", 2).freeze
-        NEG = new("NEG", -1).freeze
+        NEG = new("NEG", -1).freeze # Intentionally negative.
       end
 
       class AliasedEnum
@@ -177,6 +177,7 @@ module Protobuf_test_messages
       map(72, "map_string_foreign_message", type: :map, key_type: :string, value_type: :message, packed: true, json_name: "mapStringForeignMessage")
       map(73, "map_string_nested_enum", type: :map, key_type: :string, value_type: :enum, packed: true, json_name: "mapStringNestedEnum")
       map(74, "map_string_foreign_enum", type: :map, key_type: :string, value_type: :enum, packed: true, json_name: "mapStringForeignEnum")
+
       optional(111, "oneof_uint32", type: :uint32, json_name: "oneofUint32", oneof: :oneof_field)
       optional(112, "oneof_nested_message", type: :message, message_type: "protobuf_test_messages.proto3.TestAllTypesProto3.NestedMessage", json_name: "oneofNestedMessage", oneof: :oneof_field)
       optional(113, "oneof_string", type: :string, json_name: "oneofString", oneof: :oneof_field)
@@ -240,6 +241,8 @@ module Protobuf_test_messages
       optional(416, "field__Name16", type: :int32, json_name: "fieldName16")
       optional(417, "field_name17__", type: :int32, json_name: "fieldName17")
       optional(418, "Field_name18__", type: :int32, json_name: "FieldName18")
+
+      # Reserved for testing unknown fields
       reserved_range(501...511)
     end
 
@@ -249,6 +252,16 @@ module Protobuf_test_messages
       self.full_name = "protobuf_test_messages.proto3.ForeignMessage"
 
       optional(1, "c", type: :int32)
+    end
+
+    class ForeignEnum
+      extend Protobug::Enum
+
+      self.full_name = "protobuf_test_messages.proto3.ForeignEnum"
+
+      FOREIGN_FOO = new("FOREIGN_FOO", 0).freeze
+      FOREIGN_BAR = new("FOREIGN_BAR", 1).freeze
+      FOREIGN_BAZ = new("FOREIGN_BAZ", 2).freeze
     end
 
     class NullHypothesisProto3
@@ -273,16 +286,6 @@ module Protobuf_test_messages
       end
     end
 
-    class ForeignEnum
-      extend Protobug::Enum
-
-      self.full_name = "protobuf_test_messages.proto3.ForeignEnum"
-
-      FOREIGN_FOO = new("FOREIGN_FOO", 0).freeze
-      FOREIGN_BAR = new("FOREIGN_BAR", 1).freeze
-      FOREIGN_BAZ = new("FOREIGN_BAZ", 2).freeze
-    end
-
     def self.register_test_messages_proto3_protos(registry)
       Google::Protobuf.register_any_protos(registry)
       Google::Protobuf.register_duration_protos(registry)
@@ -295,10 +298,10 @@ module Protobuf_test_messages
       registry.register(Protobuf_test_messages::Proto3::TestAllTypesProto3::NestedEnum)
       registry.register(Protobuf_test_messages::Proto3::TestAllTypesProto3::AliasedEnum)
       registry.register(Protobuf_test_messages::Proto3::ForeignMessage)
+      registry.register(Protobuf_test_messages::Proto3::ForeignEnum)
       registry.register(Protobuf_test_messages::Proto3::NullHypothesisProto3)
       registry.register(Protobuf_test_messages::Proto3::EnumOnlyProto3)
       registry.register(Protobuf_test_messages::Proto3::EnumOnlyProto3::Bool)
-      registry.register(Protobuf_test_messages::Proto3::ForeignEnum)
     end
   end
 end

@@ -34,6 +34,91 @@ require "google/protobuf/timestamp.proto.pb.rb"
 module Sigstore
   module Common
     module V1
+      # This package defines commonly used message types within the Sigstore
+      # community.
+
+      # Only a subset of the secure hash standard algorithms are supported.
+      # See <https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf> for more
+      # details.
+      # UNSPECIFIED SHOULD not be used, primary reason for inclusion is to force
+      # any proto JSON serialization to emit the used hash algorithm, as default
+      # option is to *omit* the default value of an enum (which is the first
+      # value, represented by '0'.
+      class HashAlgorithm
+        extend Protobug::Enum
+
+        self.full_name = "dev.sigstore.common.v1.HashAlgorithm"
+
+        HASH_ALGORITHM_UNSPECIFIED = new("HASH_ALGORITHM_UNSPECIFIED", 0).freeze
+        SHA2_256 = new("SHA2_256", 1).freeze
+        SHA2_384 = new("SHA2_384", 2).freeze
+        SHA2_512 = new("SHA2_512", 3).freeze
+        SHA3_256 = new("SHA3_256", 4).freeze
+        SHA3_384 = new("SHA3_384", 5).freeze
+      end
+
+      # Details of a specific public key, capturing the the key encoding method,
+      # and signature algorithm.
+      #
+      # PublicKeyDetails captures the public key/hash algorithm combinations
+      # recommended in the Sigstore ecosystem.
+      #
+      # This is modelled as a linear set as we want to provide a small number of
+      # opinionated options instead of allowing every possible permutation.
+      #
+      # Any changes to this enum MUST be reflected in the algorithm registry.
+      # See: docs/algorithm-registry.md
+      #
+      # To avoid the possibility of contradicting formats such as PKCS1 with
+      # ED25519 the valid permutations are listed as a linear set instead of a
+      # cartesian set (i.e one combined variable instead of two, one for encoding
+      # and one for the signature algorithm).
+      class PublicKeyDetails
+        extend Protobug::Enum
+
+        self.full_name = "dev.sigstore.common.v1.PublicKeyDetails"
+
+        PUBLIC_KEY_DETAILS_UNSPECIFIED = new("PUBLIC_KEY_DETAILS_UNSPECIFIED", 0).freeze
+        # RSA
+        PKCS1_RSA_PKCS1V5 = new("PKCS1_RSA_PKCS1V5", 1).freeze # See RFC8017
+        PKCS1_RSA_PSS = new("PKCS1_RSA_PSS", 2).freeze # See RFC8017
+        PKIX_RSA_PKCS1V5 = new("PKIX_RSA_PKCS1V5", 3).freeze
+        PKIX_RSA_PSS = new("PKIX_RSA_PSS", 4).freeze
+        # RSA public key in PKIX format, PKCS#1v1.5 signature
+        PKIX_RSA_PKCS1V15_2048_SHA256 = new("PKIX_RSA_PKCS1V15_2048_SHA256", 9).freeze
+        PKIX_RSA_PKCS1V15_3072_SHA256 = new("PKIX_RSA_PKCS1V15_3072_SHA256", 10).freeze
+        PKIX_RSA_PKCS1V15_4096_SHA256 = new("PKIX_RSA_PKCS1V15_4096_SHA256", 11).freeze
+        # RSA public key in PKIX format, RSASSA-PSS signature
+        PKIX_RSA_PSS_2048_SHA256 = new("PKIX_RSA_PSS_2048_SHA256", 16).freeze # See RFC4055
+        PKIX_RSA_PSS_3072_SHA256 = new("PKIX_RSA_PSS_3072_SHA256", 17).freeze
+        PKIX_RSA_PSS_4096_SHA256 = new("PKIX_RSA_PSS_4096_SHA256", 18).freeze
+        # ECDSA
+        PKIX_ECDSA_P256_HMAC_SHA_256 = new("PKIX_ECDSA_P256_HMAC_SHA_256", 6).freeze # See RFC6979
+        PKIX_ECDSA_P256_SHA_256 = new("PKIX_ECDSA_P256_SHA_256", 5).freeze # See NIST FIPS 186-4
+        PKIX_ECDSA_P384_SHA_384 = new("PKIX_ECDSA_P384_SHA_384", 12).freeze
+        PKIX_ECDSA_P521_SHA_512 = new("PKIX_ECDSA_P521_SHA_512", 13).freeze
+        # Ed 25519
+        PKIX_ED25519 = new("PKIX_ED25519", 7).freeze # See RFC8032
+        PKIX_ED25519_PH = new("PKIX_ED25519_PH", 8).freeze
+        # LMS and LM-OTS
+        #
+        # These keys and signatures may be used by private Sigstore
+        # deployments, but are not currently supported by the public
+        # good instance.
+        #
+        # USER WARNING: LMS and LM-OTS are both stateful signature schemes.
+        # Using them correctly requires discretion and careful consideration
+        # to ensure that individual secret keys are not used more than once.
+        # In addition, LM-OTS is a single-use scheme, meaning that it
+        # MUST NOT be used for more than one signature per LM-OTS key.
+        # If you cannot maintain these invariants, you MUST NOT use these
+        # schemes.
+        LMS_SHA256 = new("LMS_SHA256", 14).freeze
+        LMOTS_SHA256 = new("LMOTS_SHA256", 15).freeze
+
+        reserved_range(19..49)
+      end
+
       # HashOutput captures a digest of a 'message' (generic octet sequence)
       # and the corresponding hash algorithm used.
       class HashOutput
@@ -162,12 +247,27 @@ module Sigstore
         optional(1, "raw_bytes", type: :bytes, json_name: "rawBytes")
       end
 
+      class SubjectAlternativeNameType
+        extend Protobug::Enum
+
+        self.full_name = "dev.sigstore.common.v1.SubjectAlternativeNameType"
+
+        SUBJECT_ALTERNATIVE_NAME_TYPE_UNSPECIFIED = new("SUBJECT_ALTERNATIVE_NAME_TYPE_UNSPECIFIED", 0).freeze
+        EMAIL = new("EMAIL", 1).freeze
+        URI = new("URI", 2).freeze
+        # OID 1.3.6.1.4.1.57264.1.7
+        # See https://github.com/sigstore/fulcio/blob/main/docs/oid-info.md#1361415726417--othername-san
+        # for more details.
+        OTHER_NAME = new("OTHER_NAME", 3).freeze
+      end
+
       class SubjectAlternativeName
         extend Protobug::Message
 
         self.full_name = "dev.sigstore.common.v1.SubjectAlternativeName"
 
         optional(1, "type", type: :enum, enum_type: "dev.sigstore.common.v1.SubjectAlternativeNameType")
+
         # A regular expression describing the expected value for
         # the SAN.
         optional(2, "regexp", type: :string, oneof: :identity)
@@ -206,104 +306,11 @@ module Sigstore
         optional(2, "end", type: :message, message_type: "google.protobuf.Timestamp")
       end
 
-      # Only a subset of the secure hash standard algorithms are supported.
-      # See <https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf> for more
-      # details.
-      # UNSPECIFIED SHOULD not be used, primary reason for inclusion is to force
-      # any proto JSON serialization to emit the used hash algorithm, as default
-      # option is to *omit* the default value of an enum (which is the first
-      # value, represented by '0'.
-      class HashAlgorithm
-        extend Protobug::Enum
-
-        self.full_name = "dev.sigstore.common.v1.HashAlgorithm"
-
-        HASH_ALGORITHM_UNSPECIFIED = new("HASH_ALGORITHM_UNSPECIFIED", 0).freeze
-        SHA2_256 = new("SHA2_256", 1).freeze
-        SHA2_384 = new("SHA2_384", 2).freeze
-        SHA2_512 = new("SHA2_512", 3).freeze
-        SHA3_256 = new("SHA3_256", 4).freeze
-        SHA3_384 = new("SHA3_384", 5).freeze
-      end
-
-      # Details of a specific public key, capturing the the key encoding method,
-      # and signature algorithm.
-      #
-      # PublicKeyDetails captures the public key/hash algorithm combinations
-      # recommended in the Sigstore ecosystem.
-      #
-      # This is modelled as a linear set as we want to provide a small number of
-      # opinionated options instead of allowing every possible permutation.
-      #
-      # Any changes to this enum MUST be reflected in the algorithm registry.
-      # See: docs/algorithm-registry.md
-      #
-      # To avoid the possibility of contradicting formats such as PKCS1 with
-      # ED25519 the valid permutations are listed as a linear set instead of a
-      # cartesian set (i.e one combined variable instead of two, one for encoding
-      # and one for the signature algorithm).
-      class PublicKeyDetails
-        extend Protobug::Enum
-
-        self.full_name = "dev.sigstore.common.v1.PublicKeyDetails"
-
-        PUBLIC_KEY_DETAILS_UNSPECIFIED = new("PUBLIC_KEY_DETAILS_UNSPECIFIED", 0).freeze
-        # RSA
-        PKCS1_RSA_PKCS1V5 = new("PKCS1_RSA_PKCS1V5", 1).freeze
-        PKCS1_RSA_PSS = new("PKCS1_RSA_PSS", 2).freeze
-        PKIX_RSA_PKCS1V5 = new("PKIX_RSA_PKCS1V5", 3).freeze
-        PKIX_RSA_PSS = new("PKIX_RSA_PSS", 4).freeze
-        # RSA public key in PKIX format, PKCS#1v1.5 signature
-        PKIX_RSA_PKCS1V15_2048_SHA256 = new("PKIX_RSA_PKCS1V15_2048_SHA256", 9).freeze
-        PKIX_RSA_PKCS1V15_3072_SHA256 = new("PKIX_RSA_PKCS1V15_3072_SHA256", 10).freeze
-        PKIX_RSA_PKCS1V15_4096_SHA256 = new("PKIX_RSA_PKCS1V15_4096_SHA256", 11).freeze
-        # RSA public key in PKIX format, RSASSA-PSS signature
-        PKIX_RSA_PSS_2048_SHA256 = new("PKIX_RSA_PSS_2048_SHA256", 16).freeze
-        PKIX_RSA_PSS_3072_SHA256 = new("PKIX_RSA_PSS_3072_SHA256", 17).freeze
-        PKIX_RSA_PSS_4096_SHA256 = new("PKIX_RSA_PSS_4096_SHA256", 18).freeze
-        # ECDSA
-        PKIX_ECDSA_P256_HMAC_SHA_256 = new("PKIX_ECDSA_P256_HMAC_SHA_256", 6).freeze
-        PKIX_ECDSA_P256_SHA_256 = new("PKIX_ECDSA_P256_SHA_256", 5).freeze
-        PKIX_ECDSA_P384_SHA_384 = new("PKIX_ECDSA_P384_SHA_384", 12).freeze
-        PKIX_ECDSA_P521_SHA_512 = new("PKIX_ECDSA_P521_SHA_512", 13).freeze
-        # Ed 25519
-        PKIX_ED25519 = new("PKIX_ED25519", 7).freeze
-        PKIX_ED25519_PH = new("PKIX_ED25519_PH", 8).freeze
-        # LMS and LM-OTS
-        #
-        # These keys and signatures may be used by private Sigstore
-        # deployments, but are not currently supported by the public
-        # good instance.
-        #
-        # USER WARNING: LMS and LM-OTS are both stateful signature schemes.
-        # Using them correctly requires discretion and careful consideration
-        # to ensure that individual secret keys are not used more than once.
-        # In addition, LM-OTS is a single-use scheme, meaning that it
-        # MUST NOT be used for more than one signature per LM-OTS key.
-        # If you cannot maintain these invariants, you MUST NOT use these
-        # schemes.
-        LMS_SHA256 = new("LMS_SHA256", 14).freeze
-        LMOTS_SHA256 = new("LMOTS_SHA256", 15).freeze
-        reserved_range(19...50)
-      end
-
-      class SubjectAlternativeNameType
-        extend Protobug::Enum
-
-        self.full_name = "dev.sigstore.common.v1.SubjectAlternativeNameType"
-
-        SUBJECT_ALTERNATIVE_NAME_TYPE_UNSPECIFIED = new("SUBJECT_ALTERNATIVE_NAME_TYPE_UNSPECIFIED", 0).freeze
-        EMAIL = new("EMAIL", 1).freeze
-        URI = new("URI", 2).freeze
-        # OID 1.3.6.1.4.1.57264.1.7
-        # See https://github.com/sigstore/fulcio/blob/main/docs/oid-info.md#1361415726417--othername-san
-        # for more details.
-        OTHER_NAME = new("OTHER_NAME", 3).freeze
-      end
-
       def self.register_sigstore_common_protos(registry)
         Google::Api.register_field_behavior_protos(registry)
         Google::Protobuf.register_timestamp_protos(registry)
+        registry.register(Sigstore::Common::V1::HashAlgorithm)
+        registry.register(Sigstore::Common::V1::PublicKeyDetails)
         registry.register(Sigstore::Common::V1::HashOutput)
         registry.register(Sigstore::Common::V1::MessageSignature)
         registry.register(Sigstore::Common::V1::LogId)
@@ -314,12 +321,10 @@ module Sigstore
         registry.register(Sigstore::Common::V1::ObjectIdentifierValuePair)
         registry.register(Sigstore::Common::V1::DistinguishedName)
         registry.register(Sigstore::Common::V1::X509Certificate)
+        registry.register(Sigstore::Common::V1::SubjectAlternativeNameType)
         registry.register(Sigstore::Common::V1::SubjectAlternativeName)
         registry.register(Sigstore::Common::V1::X509CertificateChain)
         registry.register(Sigstore::Common::V1::TimeRange)
-        registry.register(Sigstore::Common::V1::HashAlgorithm)
-        registry.register(Sigstore::Common::V1::PublicKeyDetails)
-        registry.register(Sigstore::Common::V1::SubjectAlternativeNameType)
       end
     end
   end

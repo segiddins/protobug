@@ -66,14 +66,46 @@ module Google
       repeated(1, "file", type: :message, message_type: "google.protobuf.FileDescriptorProto")
     end
 
+    # The full set of known editions.
+    class Edition
+      extend Protobug::Enum
+
+      self.full_name = "google.protobuf.Edition"
+
+      # A placeholder for an unknown edition value.
+      EDITION_UNKNOWN = new("EDITION_UNKNOWN", 0).freeze
+      # Legacy syntax "editions".  These pre-date editions, but behave much like
+      # distinct editions.  These can't be used to specify the edition of proto
+      # files, but feature definitions must supply proto2/proto3 defaults for
+      # backwards compatibility.
+      EDITION_PROTO2 = new("EDITION_PROTO2", 998).freeze
+      EDITION_PROTO3 = new("EDITION_PROTO3", 999).freeze
+      # Editions that have been released.  The specific values are arbitrary and
+      # should not be depended on, but they will always be time-ordered for easy
+      # comparison.
+      EDITION_2023 = new("EDITION_2023", 1000).freeze
+      EDITION_2024 = new("EDITION_2024", 1001).freeze
+      # Placeholder editions for testing feature resolution.  These should not be
+      # used or relyed on outside of tests.
+      EDITION_1_TEST_ONLY = new("EDITION_1_TEST_ONLY", 1).freeze
+      EDITION_2_TEST_ONLY = new("EDITION_2_TEST_ONLY", 2).freeze
+      EDITION_99997_TEST_ONLY = new("EDITION_99997_TEST_ONLY", 99997).freeze
+      EDITION_99998_TEST_ONLY = new("EDITION_99998_TEST_ONLY", 99998).freeze
+      EDITION_99999_TEST_ONLY = new("EDITION_99999_TEST_ONLY", 99999).freeze
+      # Placeholder for specifying unbounded edition support.  This should only
+      # ever be used by plugins that can expect to never require any changes to
+      # support a new edition.
+      EDITION_MAX = new("EDITION_MAX", 2147483647).freeze
+    end
+
     # Describes a complete .proto file.
     class FileDescriptorProto
       extend Protobug::Message
 
       self.full_name = "google.protobuf.FileDescriptorProto"
 
-      optional(1, "name", type: :string)
-      optional(2, "package", type: :string)
+      optional(1, "name", type: :string) # file name, relative to root of source tree
+      optional(2, "package", type: :string) # e.g. "foo", "foo.bar", etc.
       # Names of files imported by this file.
       repeated(3, "dependency", type: :string)
       # Indexes of the public imported files in the dependency list above.
@@ -107,16 +139,24 @@ module Google
 
       self.full_name = "google.protobuf.DescriptorProto"
 
+      optional(1, "name", type: :string)
+      repeated(2, "field", type: :message, message_type: "google.protobuf.FieldDescriptorProto")
+      repeated(6, "extension", type: :message, message_type: "google.protobuf.FieldDescriptorProto")
+      repeated(3, "nested_type", type: :message, message_type: "google.protobuf.DescriptorProto", json_name: "nestedType")
+      repeated(4, "enum_type", type: :message, message_type: "google.protobuf.EnumDescriptorProto", json_name: "enumType")
       class ExtensionRange
         extend Protobug::Message
 
         self.full_name = "google.protobuf.DescriptorProto.ExtensionRange"
 
-        optional(1, "start", type: :int32)
-        optional(2, "end", type: :int32)
+        optional(1, "start", type: :int32) # Inclusive.
+        optional(2, "end", type: :int32) # Exclusive.
         optional(3, "options", type: :message, message_type: "google.protobuf.ExtensionRangeOptions")
       end
 
+      repeated(5, "extension_range", type: :message, message_type: "google.protobuf.DescriptorProto.ExtensionRange", json_name: "extensionRange")
+      repeated(8, "oneof_decl", type: :message, message_type: "google.protobuf.OneofDescriptorProto", json_name: "oneofDecl")
+      optional(7, "options", type: :message, message_type: "google.protobuf.MessageOptions")
       # Range of reserved tag numbers. Reserved tag numbers may not be used by
       # fields or extension ranges in the same message. Reserved ranges may
       # not overlap.
@@ -125,18 +165,10 @@ module Google
 
         self.full_name = "google.protobuf.DescriptorProto.ReservedRange"
 
-        optional(1, "start", type: :int32)
-        optional(2, "end", type: :int32)
+        optional(1, "start", type: :int32) # Inclusive.
+        optional(2, "end", type: :int32) # Exclusive.
       end
 
-      optional(1, "name", type: :string)
-      repeated(2, "field", type: :message, message_type: "google.protobuf.FieldDescriptorProto")
-      repeated(6, "extension", type: :message, message_type: "google.protobuf.FieldDescriptorProto")
-      repeated(3, "nested_type", type: :message, message_type: "google.protobuf.DescriptorProto", json_name: "nestedType")
-      repeated(4, "enum_type", type: :message, message_type: "google.protobuf.EnumDescriptorProto", json_name: "enumType")
-      repeated(5, "extension_range", type: :message, message_type: "google.protobuf.DescriptorProto.ExtensionRange", json_name: "extensionRange")
-      repeated(8, "oneof_decl", type: :message, message_type: "google.protobuf.OneofDescriptorProto", json_name: "oneofDecl")
-      optional(7, "options", type: :message, message_type: "google.protobuf.MessageOptions")
       repeated(9, "reserved_range", type: :message, message_type: "google.protobuf.DescriptorProto.ReservedRange", json_name: "reservedRange")
       # Reserved field names, which may not be used by fields in the same message.
       # A given name may only be reserved once.
@@ -148,6 +180,8 @@ module Google
 
       self.full_name = "google.protobuf.ExtensionRangeOptions"
 
+      # The parser stores options it doesn't recognize here. See above.
+      repeated(999, "uninterpreted_option", type: :message, message_type: "google.protobuf.UninterpretedOption", json_name: "uninterpretedOption")
       class Declaration
         extend Protobug::Message
 
@@ -169,9 +203,16 @@ module Google
         # If true, indicates that the extension must be defined as repeated.
         # Otherwise the extension must be defined as optional.
         optional(6, "repeated", type: :bool)
+
         reserved_range(4...5)
       end
 
+      # For external users: DO NOT USE. We are in the process of open sourcing
+      # extension declaration and executing internal cleanups before it can be
+      # used externally.
+      repeated(2, "declaration", type: :message, message_type: "google.protobuf.ExtensionRangeOptions.Declaration")
+      # Any features defined in the specific edition.
+      optional(50, "features", type: :message, message_type: "google.protobuf.FeatureSet")
       # The verification state of the extension range.
       class VerificationState
         extend Protobug::Enum
@@ -183,14 +224,6 @@ module Google
         UNVERIFIED = new("UNVERIFIED", 1).freeze
       end
 
-      # The parser stores options it doesn't recognize here. See above.
-      repeated(999, "uninterpreted_option", type: :message, message_type: "google.protobuf.UninterpretedOption", json_name: "uninterpretedOption")
-      # For external users: DO NOT USE. We are in the process of open sourcing
-      # extension declaration and executing internal cleanups before it can be
-      # used externally.
-      repeated(2, "declaration", type: :message, message_type: "google.protobuf.ExtensionRangeOptions.Declaration")
-      # Any features defined in the specific edition.
-      optional(50, "features", type: :message, message_type: "google.protobuf.FeatureSet")
       # The verification state of the range.
       # TODO: flip the default to DECLARATION once all empty ranges
       # are marked as UNVERIFIED.
@@ -229,15 +262,15 @@ module Google
         # treat group fields as unknown fields.  In Editions, the group wire format
         # can be enabled via the `message_encoding` feature.
         TYPE_GROUP = new("TYPE_GROUP", 10).freeze
-        TYPE_MESSAGE = new("TYPE_MESSAGE", 11).freeze
+        TYPE_MESSAGE = new("TYPE_MESSAGE", 11).freeze # Length-delimited aggregate.
         # New in version 2.
         TYPE_BYTES = new("TYPE_BYTES", 12).freeze
         TYPE_UINT32 = new("TYPE_UINT32", 13).freeze
         TYPE_ENUM = new("TYPE_ENUM", 14).freeze
         TYPE_SFIXED32 = new("TYPE_SFIXED32", 15).freeze
         TYPE_SFIXED64 = new("TYPE_SFIXED64", 16).freeze
-        TYPE_SINT32 = new("TYPE_SINT32", 17).freeze
-        TYPE_SINT64 = new("TYPE_SINT64", 18).freeze
+        TYPE_SINT32 = new("TYPE_SINT32", 17).freeze # Uses ZigZag encoding.
+        TYPE_SINT64 = new("TYPE_SINT64", 18).freeze # Uses ZigZag encoding.
       end
 
       class Label
@@ -323,6 +356,9 @@ module Google
 
       self.full_name = "google.protobuf.EnumDescriptorProto"
 
+      optional(1, "name", type: :string)
+      repeated(2, "value", type: :message, message_type: "google.protobuf.EnumValueDescriptorProto")
+      optional(3, "options", type: :message, message_type: "google.protobuf.EnumOptions")
       # Range of reserved numeric values. Reserved values may not be used by
       # entries in the same enum. Reserved ranges may not overlap.
       #
@@ -334,13 +370,10 @@ module Google
 
         self.full_name = "google.protobuf.EnumDescriptorProto.EnumReservedRange"
 
-        optional(1, "start", type: :int32)
-        optional(2, "end", type: :int32)
+        optional(1, "start", type: :int32) # Inclusive.
+        optional(2, "end", type: :int32) # Inclusive.
       end
 
-      optional(1, "name", type: :string)
-      repeated(2, "value", type: :message, message_type: "google.protobuf.EnumValueDescriptorProto")
-      optional(3, "options", type: :message, message_type: "google.protobuf.EnumOptions")
       # Range of reserved numeric values. Reserved numeric values may not be used
       # by enum values in the same enum declaration. Reserved ranges may not
       # overlap.
@@ -390,22 +423,42 @@ module Google
       optional(6, "server_streaming", type: :bool, json_name: "serverStreaming")
     end
 
+    # ===================================================================
+    # Options
+
+    # Each of the definitions above may have "options" attached.  These are
+    # just annotations which may cause code to be generated slightly differently
+    # or may contain hints for code that manipulates protocol messages.
+    #
+    # Clients may define custom options as extensions of the *Options messages.
+    # These extensions may not yet be known at parsing time, so the parser cannot
+    # store the values in them.  Instead it stores them in a field in the *Options
+    # message called uninterpreted_option. This field must have the same name
+    # across all *Options messages. We then use this field to populate the
+    # extensions when we build a descriptor, at which point all protos have been
+    # parsed and so all extensions are known.
+    #
+    # Extension numbers for custom options may be chosen as follows:
+    # * For options which will only be used within a single application or
+    #   organization, or for experimental options, use field numbers 50000
+    #   through 99999.  It is up to you to ensure that you do not use the
+    #   same number for multiple options.
+    # * For options which will be published and used publicly by multiple
+    #   independent entities, e-mail protobuf-global-extension-registry@google.com
+    #   to reserve extension numbers. Simply provide your project name (e.g.
+    #   Objective-C plugin) and your project website (if available) -- there's no
+    #   need to explain how you intend to use them. Usually you only need one
+    #   extension number. You can declare multiple options with only one extension
+    #   number by putting them in a sub-message. See the Custom Options section of
+    #   the docs for examples:
+    #   https://developers.google.com/protocol-buffers/docs/proto#options
+    #   If this turns out to be popular, a web service will be set up
+    #   to automatically assign option numbers.
+
     class FileOptions
       extend Protobug::Message
 
       self.full_name = "google.protobuf.FileOptions"
-
-      # Generated classes can be optimized for speed or code size.
-      class OptimizeMode
-        extend Protobug::Enum
-
-        self.full_name = "google.protobuf.FileOptions.OptimizeMode"
-
-        SPEED = new("SPEED", 1).freeze
-        # etc.
-        CODE_SIZE = new("CODE_SIZE", 2).freeze
-        LITE_RUNTIME = new("LITE_RUNTIME", 3).freeze
-      end
 
       # Sets the Java package where classes generated from this .proto will be
       # placed.  By default, the proto package is used, but this is often
@@ -438,6 +491,18 @@ module Google
       # false has no effect: it cannot be used to opt proto3 files out of UTF-8
       # checks.
       optional(27, "java_string_check_utf8", type: :bool, json_name: "javaStringCheckUtf8")
+      # Generated classes can be optimized for speed or code size.
+      class OptimizeMode
+        extend Protobug::Enum
+
+        self.full_name = "google.protobuf.FileOptions.OptimizeMode"
+
+        SPEED = new("SPEED", 1).freeze # Generate complete code for parsing, serialization,
+        # etc.
+        CODE_SIZE = new("CODE_SIZE", 2).freeze # Use ReflectionOps to implement these methods.
+        LITE_RUNTIME = new("LITE_RUNTIME", 3).freeze # Generate code using MessageLite and the lite runtime.
+      end
+
       optional(9, "optimize_for", type: :enum, enum_type: "google.protobuf.FileOptions.OptimizeMode", json_name: "optimizeFor")
       # Sets the Go package where structs generated from this .proto will be
       # placed. If omitted, the Go package will be derived from the following:
@@ -496,6 +561,7 @@ module Google
       # The parser stores options it doesn't recognize here.
       # See the documentation for the "Options" section above.
       repeated(999, "uninterpreted_option", type: :message, message_type: "google.protobuf.UninterpretedOption", json_name: "uninterpretedOption")
+
       reserved_range(42...43)
       reserved_range(38...39)
     end
@@ -570,6 +636,7 @@ module Google
       optional(12, "features", type: :message, message_type: "google.protobuf.FeatureSet")
       # The parser stores options it doesn't recognize here. See above.
       repeated(999, "uninterpreted_option", type: :message, message_type: "google.protobuf.UninterpretedOption", json_name: "uninterpretedOption")
+
       reserved_range(4...5)
       reserved_range(5...6)
       reserved_range(6...7)
@@ -582,15 +649,13 @@ module Google
 
       self.full_name = "google.protobuf.FieldOptions"
 
-      class EditionDefault
-        extend Protobug::Message
-
-        self.full_name = "google.protobuf.FieldOptions.EditionDefault"
-
-        optional(3, "edition", type: :enum, enum_type: "google.protobuf.Edition")
-        optional(2, "value", type: :string)
-      end
-
+      # The ctype option instructs the C++ code generator to use a different
+      # representation of the field than it normally would.  See the specific
+      # options below.  This option is only implemented to support use of
+      # [ctype=CORD] and [ctype=STRING] (the default) on non-repeated fields of
+      # type "bytes" in the open source release -- sorry, we'll try to include
+      # other types in a future version!
+      optional(1, "ctype", type: :enum, enum_type: "google.protobuf.FieldOptions.CType")
       class CType
         extend Protobug::Enum
 
@@ -608,60 +673,6 @@ module Google
         STRING_PIECE = new("STRING_PIECE", 2).freeze
       end
 
-      class JSType
-        extend Protobug::Enum
-
-        self.full_name = "google.protobuf.FieldOptions.JSType"
-
-        # Use the default type.
-        JS_NORMAL = new("JS_NORMAL", 0).freeze
-        # Use JavaScript strings.
-        JS_STRING = new("JS_STRING", 1).freeze
-        # Use JavaScript numbers.
-        JS_NUMBER = new("JS_NUMBER", 2).freeze
-      end
-
-      # If set to RETENTION_SOURCE, the option will be omitted from the binary.
-      # Note: as of January 2023, support for this is in progress and does not yet
-      # have an effect (b/264593489).
-      class OptionRetention
-        extend Protobug::Enum
-
-        self.full_name = "google.protobuf.FieldOptions.OptionRetention"
-
-        RETENTION_UNKNOWN = new("RETENTION_UNKNOWN", 0).freeze
-        RETENTION_RUNTIME = new("RETENTION_RUNTIME", 1).freeze
-        RETENTION_SOURCE = new("RETENTION_SOURCE", 2).freeze
-      end
-
-      # This indicates the types of entities that the field may apply to when used
-      # as an option. If it is unset, then the field may be freely used as an
-      # option on any kind of entity. Note: as of January 2023, support for this is
-      # in progress and does not yet have an effect (b/264593489).
-      class OptionTargetType
-        extend Protobug::Enum
-
-        self.full_name = "google.protobuf.FieldOptions.OptionTargetType"
-
-        TARGET_TYPE_UNKNOWN = new("TARGET_TYPE_UNKNOWN", 0).freeze
-        TARGET_TYPE_FILE = new("TARGET_TYPE_FILE", 1).freeze
-        TARGET_TYPE_EXTENSION_RANGE = new("TARGET_TYPE_EXTENSION_RANGE", 2).freeze
-        TARGET_TYPE_MESSAGE = new("TARGET_TYPE_MESSAGE", 3).freeze
-        TARGET_TYPE_FIELD = new("TARGET_TYPE_FIELD", 4).freeze
-        TARGET_TYPE_ONEOF = new("TARGET_TYPE_ONEOF", 5).freeze
-        TARGET_TYPE_ENUM = new("TARGET_TYPE_ENUM", 6).freeze
-        TARGET_TYPE_ENUM_ENTRY = new("TARGET_TYPE_ENUM_ENTRY", 7).freeze
-        TARGET_TYPE_SERVICE = new("TARGET_TYPE_SERVICE", 8).freeze
-        TARGET_TYPE_METHOD = new("TARGET_TYPE_METHOD", 9).freeze
-      end
-
-      # The ctype option instructs the C++ code generator to use a different
-      # representation of the field than it normally would.  See the specific
-      # options below.  This option is only implemented to support use of
-      # [ctype=CORD] and [ctype=STRING] (the default) on non-repeated fields of
-      # type "bytes" in the open source release -- sorry, we'll try to include
-      # other types in a future version!
-      optional(1, "ctype", type: :enum, enum_type: "google.protobuf.FieldOptions.CType")
       # The packed option can be enabled for repeated primitive fields to enable
       # a more efficient representation on the wire. Rather than repeatedly
       # writing the tag and type for each element, the entire array is encoded as
@@ -682,6 +693,19 @@ module Google
       # This option is an enum to permit additional types to be added, e.g.
       # goog.math.Integer.
       optional(6, "jstype", type: :enum, enum_type: "google.protobuf.FieldOptions.JSType")
+      class JSType
+        extend Protobug::Enum
+
+        self.full_name = "google.protobuf.FieldOptions.JSType"
+
+        # Use the default type.
+        JS_NORMAL = new("JS_NORMAL", 0).freeze
+        # Use JavaScript strings.
+        JS_STRING = new("JS_STRING", 1).freeze
+        # Use JavaScript numbers.
+        JS_NUMBER = new("JS_NUMBER", 2).freeze
+      end
+
       # Should this field be parsed lazily?  Lazy applies only to message-type
       # fields.  It means that when the outer message is initially parsed, the
       # inner message's contents will not be parsed but instead stored in encoded
@@ -719,13 +743,57 @@ module Google
       # Indicate that the field value should not be printed out when using debug
       # formats, e.g. when the field contains sensitive credentials.
       optional(16, "debug_redact", type: :bool, json_name: "debugRedact")
+      # If set to RETENTION_SOURCE, the option will be omitted from the binary.
+      # Note: as of January 2023, support for this is in progress and does not yet
+      # have an effect (b/264593489).
+      class OptionRetention
+        extend Protobug::Enum
+
+        self.full_name = "google.protobuf.FieldOptions.OptionRetention"
+
+        RETENTION_UNKNOWN = new("RETENTION_UNKNOWN", 0).freeze
+        RETENTION_RUNTIME = new("RETENTION_RUNTIME", 1).freeze
+        RETENTION_SOURCE = new("RETENTION_SOURCE", 2).freeze
+      end
+
       optional(17, "retention", type: :enum, enum_type: "google.protobuf.FieldOptions.OptionRetention")
+      # This indicates the types of entities that the field may apply to when used
+      # as an option. If it is unset, then the field may be freely used as an
+      # option on any kind of entity. Note: as of January 2023, support for this is
+      # in progress and does not yet have an effect (b/264593489).
+      class OptionTargetType
+        extend Protobug::Enum
+
+        self.full_name = "google.protobuf.FieldOptions.OptionTargetType"
+
+        TARGET_TYPE_UNKNOWN = new("TARGET_TYPE_UNKNOWN", 0).freeze
+        TARGET_TYPE_FILE = new("TARGET_TYPE_FILE", 1).freeze
+        TARGET_TYPE_EXTENSION_RANGE = new("TARGET_TYPE_EXTENSION_RANGE", 2).freeze
+        TARGET_TYPE_MESSAGE = new("TARGET_TYPE_MESSAGE", 3).freeze
+        TARGET_TYPE_FIELD = new("TARGET_TYPE_FIELD", 4).freeze
+        TARGET_TYPE_ONEOF = new("TARGET_TYPE_ONEOF", 5).freeze
+        TARGET_TYPE_ENUM = new("TARGET_TYPE_ENUM", 6).freeze
+        TARGET_TYPE_ENUM_ENTRY = new("TARGET_TYPE_ENUM_ENTRY", 7).freeze
+        TARGET_TYPE_SERVICE = new("TARGET_TYPE_SERVICE", 8).freeze
+        TARGET_TYPE_METHOD = new("TARGET_TYPE_METHOD", 9).freeze
+      end
+
       repeated(19, "targets", type: :enum, enum_type: "google.protobuf.FieldOptions.OptionTargetType")
+      class EditionDefault
+        extend Protobug::Message
+
+        self.full_name = "google.protobuf.FieldOptions.EditionDefault"
+
+        optional(3, "edition", type: :enum, enum_type: "google.protobuf.Edition")
+        optional(2, "value", type: :string) # Textproto value.
+      end
+
       repeated(20, "edition_defaults", type: :message, message_type: "google.protobuf.FieldOptions.EditionDefault", json_name: "editionDefaults")
       # Any features defined in the specific edition.
       optional(21, "features", type: :message, message_type: "google.protobuf.FeatureSet")
       # The parser stores options it doesn't recognize here. See above.
       repeated(999, "uninterpreted_option", type: :message, message_type: "google.protobuf.UninterpretedOption", json_name: "uninterpretedOption")
+
       reserved_range(4...5)
       reserved_range(18...19)
     end
@@ -765,6 +833,7 @@ module Google
       optional(7, "features", type: :message, message_type: "google.protobuf.FeatureSet")
       # The parser stores options it doesn't recognize here. See above.
       repeated(999, "uninterpreted_option", type: :message, message_type: "google.protobuf.UninterpretedOption", json_name: "uninterpretedOption")
+
       reserved_range(5...6)
     end
 
@@ -795,6 +864,11 @@ module Google
 
       # Any features defined in the specific edition.
       optional(34, "features", type: :message, message_type: "google.protobuf.FeatureSet")
+      # Note:  Field numbers 1 through 32 are reserved for Google's internal RPC
+      #   framework.  We apologize for hoarding these numbers to ourselves, but
+      #   we were already using them long before we decided to release Protocol
+      #   Buffers.
+
       # Is this service deprecated?
       # Depending on the target platform, this can emit Deprecated annotations
       # for the service, or it will be completely ignored; in the very least,
@@ -809,6 +883,16 @@ module Google
 
       self.full_name = "google.protobuf.MethodOptions"
 
+      # Note:  Field numbers 1 through 32 are reserved for Google's internal RPC
+      #   framework.  We apologize for hoarding these numbers to ourselves, but
+      #   we were already using them long before we decided to release Protocol
+      #   Buffers.
+
+      # Is this method deprecated?
+      # Depending on the target platform, this can emit Deprecated annotations
+      # for the method, or it will be completely ignored; in the very least,
+      # this is a formalization for deprecating methods.
+      optional(33, "deprecated", type: :bool)
       # Is this method side-effect-free (or safe in HTTP parlance), or idempotent,
       # or neither? HTTP based RPC implementation may choose GET verb for safe
       # methods, and PUT verb for idempotent methods instead of the default POST.
@@ -818,15 +902,10 @@ module Google
         self.full_name = "google.protobuf.MethodOptions.IdempotencyLevel"
 
         IDEMPOTENCY_UNKNOWN = new("IDEMPOTENCY_UNKNOWN", 0).freeze
-        NO_SIDE_EFFECTS = new("NO_SIDE_EFFECTS", 1).freeze
-        IDEMPOTENT = new("IDEMPOTENT", 2).freeze
+        NO_SIDE_EFFECTS = new("NO_SIDE_EFFECTS", 1).freeze # implies idempotent
+        IDEMPOTENT = new("IDEMPOTENT", 2).freeze # idempotent, but may have side effects
       end
 
-      # Is this method deprecated?
-      # Depending on the target platform, this can emit Deprecated annotations
-      # for the method, or it will be completely ignored; in the very least,
-      # this is a formalization for deprecating methods.
-      optional(33, "deprecated", type: :bool)
       optional(34, "idempotency_level", type: :enum, enum_type: "google.protobuf.MethodOptions.IdempotencyLevel", json_name: "idempotencyLevel")
       # Any features defined in the specific edition.
       optional(35, "features", type: :message, message_type: "google.protobuf.FeatureSet")
@@ -870,6 +949,9 @@ module Google
       optional(8, "aggregate_value", type: :string, json_name: "aggregateValue")
     end
 
+    # ===================================================================
+    # Features
+
     # TODO Enums in C++ gencode (and potentially other languages) are
     # not well scoped.  This means that each of the feature enums below can clash
     # with each other.  The short names we've chosen maximize call-site
@@ -892,6 +974,7 @@ module Google
         LEGACY_REQUIRED = new("LEGACY_REQUIRED", 3).freeze
       end
 
+      optional(1, "field_presence", type: :enum, enum_type: "google.protobuf.FeatureSet.FieldPresence", json_name: "fieldPresence")
       class EnumType
         extend Protobug::Enum
 
@@ -902,6 +985,7 @@ module Google
         CLOSED = new("CLOSED", 2).freeze
       end
 
+      optional(2, "enum_type", type: :enum, enum_type: "google.protobuf.FeatureSet.EnumType", json_name: "enumType")
       class RepeatedFieldEncoding
         extend Protobug::Enum
 
@@ -912,6 +996,7 @@ module Google
         EXPANDED = new("EXPANDED", 2).freeze
       end
 
+      optional(3, "repeated_field_encoding", type: :enum, enum_type: "google.protobuf.FeatureSet.RepeatedFieldEncoding", json_name: "repeatedFieldEncoding")
       class Utf8Validation
         extend Protobug::Enum
 
@@ -922,6 +1007,7 @@ module Google
         NONE = new("NONE", 3).freeze
       end
 
+      optional(4, "utf8_validation", type: :enum, enum_type: "google.protobuf.FeatureSet.Utf8Validation", json_name: "utf8Validation")
       class MessageEncoding
         extend Protobug::Enum
 
@@ -932,6 +1018,7 @@ module Google
         DELIMITED = new("DELIMITED", 2).freeze
       end
 
+      optional(5, "message_encoding", type: :enum, enum_type: "google.protobuf.FeatureSet.MessageEncoding", json_name: "messageEncoding")
       class JsonFormat
         extend Protobug::Enum
 
@@ -942,12 +1029,8 @@ module Google
         LEGACY_BEST_EFFORT = new("LEGACY_BEST_EFFORT", 2).freeze
       end
 
-      optional(1, "field_presence", type: :enum, enum_type: "google.protobuf.FeatureSet.FieldPresence", json_name: "fieldPresence")
-      optional(2, "enum_type", type: :enum, enum_type: "google.protobuf.FeatureSet.EnumType", json_name: "enumType")
-      optional(3, "repeated_field_encoding", type: :enum, enum_type: "google.protobuf.FeatureSet.RepeatedFieldEncoding", json_name: "repeatedFieldEncoding")
-      optional(4, "utf8_validation", type: :enum, enum_type: "google.protobuf.FeatureSet.Utf8Validation", json_name: "utf8Validation")
-      optional(5, "message_encoding", type: :enum, enum_type: "google.protobuf.FeatureSet.MessageEncoding", json_name: "messageEncoding")
       optional(6, "json_format", type: :enum, enum_type: "google.protobuf.FeatureSet.JsonFormat", json_name: "jsonFormat")
+
       reserved_range(999...1000)
     end
 
@@ -982,6 +1065,9 @@ module Google
       optional(5, "maximum_edition", type: :enum, enum_type: "google.protobuf.Edition", json_name: "maximumEdition")
     end
 
+    # ===================================================================
+    # Optional source code info
+
     # Encapsulates information about the original source file from which a
     # FileDescriptorProto was generated.
     class SourceCodeInfo
@@ -989,6 +1075,50 @@ module Google
 
       self.full_name = "google.protobuf.SourceCodeInfo"
 
+      # A Location identifies a piece of source code in a .proto file which
+      # corresponds to a particular definition.  This information is intended
+      # to be useful to IDEs, code indexers, documentation generators, and similar
+      # tools.
+      #
+      # For example, say we have a file like:
+      #   message Foo {
+      #     optional string foo = 1;
+      #   }
+      # Let's look at just the field definition:
+      #   optional string foo = 1;
+      #   ^       ^^     ^^  ^  ^^^
+      #   a       bc     de  f  ghi
+      # We have the following locations:
+      #   span   path               represents
+      #   [a,i)  [ 4, 0, 2, 0 ]     The whole field definition.
+      #   [a,b)  [ 4, 0, 2, 0, 4 ]  The label (optional).
+      #   [c,d)  [ 4, 0, 2, 0, 5 ]  The type (string).
+      #   [e,f)  [ 4, 0, 2, 0, 1 ]  The name (foo).
+      #   [g,h)  [ 4, 0, 2, 0, 3 ]  The number (1).
+      #
+      # Notes:
+      # - A location may refer to a repeated field itself (i.e. not to any
+      #   particular index within it).  This is used whenever a set of elements are
+      #   logically enclosed in a single code segment.  For example, an entire
+      #   extend block (possibly containing multiple extension definitions) will
+      #   have an outer location whose path refers to the "extensions" repeated
+      #   field without an index.
+      # - Multiple locations may have the same path.  This happens when a single
+      #   logical declaration is spread out across multiple places.  The most
+      #   obvious example is the "extend" block again -- there may be multiple
+      #   extend blocks in the same scope, each of which will have the same path.
+      # - A location's span is not always a subset of its parent's span.  For
+      #   example, the "extendee" of an extension declaration appears at the
+      #   beginning of the "extend" block and is shared by all extensions within
+      #   the block.
+      # - Just because a location's span is a subset of some other location's span
+      #   does not mean that it is a descendant.  For example, a "group" defines
+      #   both a type and a field in a single declaration.  Thus, the locations
+      #   corresponding to the type and field and their components will overlap.
+      # - Code which tries to interpret locations should probably be designed to
+      #   ignore those that it doesn't understand, as more types of locations could
+      #   be recorded in the future.
+      repeated(1, "location", type: :message, message_type: "google.protobuf.SourceCodeInfo.Location")
       class Location
         extend Protobug::Message
 
@@ -1075,51 +1205,6 @@ module Google
         optional(4, "trailing_comments", type: :string, json_name: "trailingComments")
         repeated(6, "leading_detached_comments", type: :string, json_name: "leadingDetachedComments")
       end
-
-      # A Location identifies a piece of source code in a .proto file which
-      # corresponds to a particular definition.  This information is intended
-      # to be useful to IDEs, code indexers, documentation generators, and similar
-      # tools.
-      #
-      # For example, say we have a file like:
-      #   message Foo {
-      #     optional string foo = 1;
-      #   }
-      # Let's look at just the field definition:
-      #   optional string foo = 1;
-      #   ^       ^^     ^^  ^  ^^^
-      #   a       bc     de  f  ghi
-      # We have the following locations:
-      #   span   path               represents
-      #   [a,i)  [ 4, 0, 2, 0 ]     The whole field definition.
-      #   [a,b)  [ 4, 0, 2, 0, 4 ]  The label (optional).
-      #   [c,d)  [ 4, 0, 2, 0, 5 ]  The type (string).
-      #   [e,f)  [ 4, 0, 2, 0, 1 ]  The name (foo).
-      #   [g,h)  [ 4, 0, 2, 0, 3 ]  The number (1).
-      #
-      # Notes:
-      # - A location may refer to a repeated field itself (i.e. not to any
-      #   particular index within it).  This is used whenever a set of elements are
-      #   logically enclosed in a single code segment.  For example, an entire
-      #   extend block (possibly containing multiple extension definitions) will
-      #   have an outer location whose path refers to the "extensions" repeated
-      #   field without an index.
-      # - Multiple locations may have the same path.  This happens when a single
-      #   logical declaration is spread out across multiple places.  The most
-      #   obvious example is the "extend" block again -- there may be multiple
-      #   extend blocks in the same scope, each of which will have the same path.
-      # - A location's span is not always a subset of its parent's span.  For
-      #   example, the "extendee" of an extension declaration appears at the
-      #   beginning of the "extend" block and is shared by all extensions within
-      #   the block.
-      # - Just because a location's span is a subset of some other location's span
-      #   does not mean that it is a descendant.  For example, a "group" defines
-      #   both a type and a field in a single declaration.  Thus, the locations
-      #   corresponding to the type and field and their components will overlap.
-      # - Code which tries to interpret locations should probably be designed to
-      #   ignore those that it doesn't understand, as more types of locations could
-      #   be recorded in the future.
-      repeated(1, "location", type: :message, message_type: "google.protobuf.SourceCodeInfo.Location")
     end
 
     # Describes the relationship between generated code and its original source
@@ -1130,11 +1215,26 @@ module Google
 
       self.full_name = "google.protobuf.GeneratedCodeInfo"
 
+      # An Annotation connects some span of text in generated code to an element
+      # of its generating .proto file.
+      repeated(1, "annotation", type: :message, message_type: "google.protobuf.GeneratedCodeInfo.Annotation")
       class Annotation
         extend Protobug::Message
 
         self.full_name = "google.protobuf.GeneratedCodeInfo.Annotation"
 
+        # Identifies the element in the original source .proto file. This field
+        # is formatted the same as SourceCodeInfo.Location.path.
+        repeated(1, "path", type: :int32, packed: true)
+        # Identifies the filesystem path to the original source .proto.
+        optional(2, "source_file", type: :string, json_name: "sourceFile")
+        # Identifies the starting offset in bytes in the generated code
+        # that relates to the identified object.
+        optional(3, "begin", type: :int32)
+        # Identifies the ending offset in bytes in the generated code that
+        # relates to the identified object. The end offset should be one past
+        # the last relevant byte (so the length of the text = end - begin).
+        optional(4, "end", type: :int32)
         # Represents the identified object's effect on the element in the original
         # .proto file.
         class Semantic
@@ -1150,60 +1250,13 @@ module Google
           ALIAS = new("ALIAS", 2).freeze
         end
 
-        # Identifies the element in the original source .proto file. This field
-        # is formatted the same as SourceCodeInfo.Location.path.
-        repeated(1, "path", type: :int32, packed: true)
-        # Identifies the filesystem path to the original source .proto.
-        optional(2, "source_file", type: :string, json_name: "sourceFile")
-        # Identifies the starting offset in bytes in the generated code
-        # that relates to the identified object.
-        optional(3, "begin", type: :int32)
-        # Identifies the ending offset in bytes in the generated code that
-        # relates to the identified object. The end offset should be one past
-        # the last relevant byte (so the length of the text = end - begin).
-        optional(4, "end", type: :int32)
         optional(5, "semantic", type: :enum, enum_type: "google.protobuf.GeneratedCodeInfo.Annotation.Semantic")
       end
-
-      # An Annotation connects some span of text in generated code to an element
-      # of its generating .proto file.
-      repeated(1, "annotation", type: :message, message_type: "google.protobuf.GeneratedCodeInfo.Annotation")
-    end
-
-    # The full set of known editions.
-    class Edition
-      extend Protobug::Enum
-
-      self.full_name = "google.protobuf.Edition"
-
-      # A placeholder for an unknown edition value.
-      EDITION_UNKNOWN = new("EDITION_UNKNOWN", 0).freeze
-      # Legacy syntax "editions".  These pre-date editions, but behave much like
-      # distinct editions.  These can't be used to specify the edition of proto
-      # files, but feature definitions must supply proto2/proto3 defaults for
-      # backwards compatibility.
-      EDITION_PROTO2 = new("EDITION_PROTO2", 998).freeze
-      EDITION_PROTO3 = new("EDITION_PROTO3", 999).freeze
-      # Editions that have been released.  The specific values are arbitrary and
-      # should not be depended on, but they will always be time-ordered for easy
-      # comparison.
-      EDITION_2023 = new("EDITION_2023", 1000).freeze
-      EDITION_2024 = new("EDITION_2024", 1001).freeze
-      # Placeholder editions for testing feature resolution.  These should not be
-      # used or relyed on outside of tests.
-      EDITION_1_TEST_ONLY = new("EDITION_1_TEST_ONLY", 1).freeze
-      EDITION_2_TEST_ONLY = new("EDITION_2_TEST_ONLY", 2).freeze
-      EDITION_99997_TEST_ONLY = new("EDITION_99997_TEST_ONLY", 99997).freeze
-      EDITION_99998_TEST_ONLY = new("EDITION_99998_TEST_ONLY", 99998).freeze
-      EDITION_99999_TEST_ONLY = new("EDITION_99999_TEST_ONLY", 99999).freeze
-      # Placeholder for specifying unbounded edition support.  This should only
-      # ever be used by plugins that can expect to never require any changes to
-      # support a new edition.
-      EDITION_MAX = new("EDITION_MAX", 2147483647).freeze
     end
 
     def self.register_descriptor_protos(registry)
       registry.register(Google::Protobuf::FileDescriptorSet)
+      registry.register(Google::Protobuf::Edition)
       registry.register(Google::Protobuf::FileDescriptorProto)
       registry.register(Google::Protobuf::DescriptorProto)
       registry.register(Google::Protobuf::DescriptorProto::ExtensionRange)
@@ -1224,11 +1277,11 @@ module Google
       registry.register(Google::Protobuf::FileOptions::OptimizeMode)
       registry.register(Google::Protobuf::MessageOptions)
       registry.register(Google::Protobuf::FieldOptions)
-      registry.register(Google::Protobuf::FieldOptions::EditionDefault)
       registry.register(Google::Protobuf::FieldOptions::CType)
       registry.register(Google::Protobuf::FieldOptions::JSType)
       registry.register(Google::Protobuf::FieldOptions::OptionRetention)
       registry.register(Google::Protobuf::FieldOptions::OptionTargetType)
+      registry.register(Google::Protobuf::FieldOptions::EditionDefault)
       registry.register(Google::Protobuf::OneofOptions)
       registry.register(Google::Protobuf::EnumOptions)
       registry.register(Google::Protobuf::EnumValueOptions)
@@ -1251,7 +1304,6 @@ module Google
       registry.register(Google::Protobuf::GeneratedCodeInfo)
       registry.register(Google::Protobuf::GeneratedCodeInfo::Annotation)
       registry.register(Google::Protobuf::GeneratedCodeInfo::Annotation::Semantic)
-      registry.register(Google::Protobuf::Edition)
     end
   end
 end

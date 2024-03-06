@@ -45,6 +45,24 @@ module Dev
 
           self.full_name = "dev.sigstore.events.v1.CloudEvent"
 
+          # -- CloudEvent Context Attributes
+
+          # Required Attributes
+          optional(1, "id", type: :string)
+          optional(2, "source", type: :string) # URI-reference
+          optional(3, "spec_version", type: :string, json_name: "specVersion")
+          optional(4, "type", type: :string)
+          # Optional & Extension Attributes
+          map(5, "attributes", type: :map, key_type: :string, value_type: :message, packed: true)
+          # -- CloudEvent Data (Bytes, Text, or Proto)
+
+          optional(6, "binary_data", type: :bytes, json_name: "binaryData", oneof: :data)
+          optional(7, "text_data", type: :string, json_name: "textData", oneof: :data)
+          optional(8, "proto_data", type: :message, message_type: "google.protobuf.Any", json_name: "protoData", oneof: :data)
+          # *
+          #  The CloudEvent specification defines
+          #  seven attribute value types...
+
           class CloudEventAttributeValue
             extend Protobug::Message
 
@@ -58,18 +76,10 @@ module Dev
             optional(6, "ce_uri_ref", type: :string, json_name: "ceUriRef", oneof: :attr)
             optional(7, "ce_timestamp", type: :message, message_type: "google.protobuf.Timestamp", json_name: "ceTimestamp", oneof: :attr)
           end
-
-          # Required Attributes
-          optional(1, "id", type: :string)
-          optional(2, "source", type: :string)
-          optional(3, "spec_version", type: :string, json_name: "specVersion")
-          optional(4, "type", type: :string)
-          # Optional & Extension Attributes
-          map(5, "attributes", type: :map, key_type: :string, value_type: :message, packed: true)
-          optional(6, "binary_data", type: :bytes, json_name: "binaryData", oneof: :data)
-          optional(7, "text_data", type: :string, json_name: "textData", oneof: :data)
-          optional(8, "proto_data", type: :message, message_type: "google.protobuf.Any", json_name: "protoData", oneof: :data)
         end
+
+        # *
+        #  CloudEvent Protobuf Batch Format
 
         class CloudEventBatch
           extend Protobug::Message
