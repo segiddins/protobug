@@ -282,7 +282,7 @@ module Protobug
         group.identifier(descriptor.name).op("=").identifier("new").call do |c|
           c.literal(descriptor.name)
           c.literal(descriptor.number)
-        end.dot("freeze")
+        end.dot("freeze") # rubocop:disable Style/MultilineBlockChain
       when FieldDescriptorProto
         if descriptor.extendee?
           containing_type = files.fetch_type(descriptor.extendee.start_with?(".") ? descriptor.extendee[1..] : "#{descriptor.parent.full_name}.#{descriptor.extendee}")

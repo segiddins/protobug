@@ -37,8 +37,11 @@ end
 
 git_repo :googleapis, "tmp/googleapis", "https://github.com/googleapis/googleapis", commit: "master"
 git_repo :sigstore, "tmp/sigstore", "https://github.com/sigstore/protobuf-specs", commit: "master"
+git_repo :"sigstore-conformance", "tmp/sigstore-conformance", "https://github.com/sigstore/sigstore-conformance",
+         commit: "main"
 
-multitask example: %w[tmp/googleapis/.git/rake-version tmp/sigstore/.git/rake-version compiler] do
+multitask example: %w[tmp/googleapis/.git/rake-version tmp/sigstore/.git/rake-version
+                      tmp/sigstore-conformance/.git/rake-version compiler] do
   rm_rf FileList["example/*"] - ["example/example.rb"]
   example = "tmp/sigstore"
   sh(

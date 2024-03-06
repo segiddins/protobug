@@ -12,7 +12,7 @@ class TestExample < Minitest::Test
     registry = Protobug::Registry.new do |registry|
       Sigstore::TrustRoot::V1.register_sigstore_trustroot_protos(registry)
     end
-    hash = JSON.load File.read("/Users/segiddins/Development/github.com/sigstore/sigstore-conformance/test/assets/trusted_root.public_good.json")
+    hash = JSON.load File.read("tmp/sigstore-conformance/test/assets/trusted_root.public_good.json")
     trusted_root = Sigstore::TrustRoot::V1::TrustedRoot.decode_json_hash(hash, registry: registry)
     assert_equal(hash, JSON.load(trusted_root.to_json))
   end
