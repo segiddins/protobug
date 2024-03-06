@@ -21,13 +21,14 @@
 # Test schema for proto2 messages.  This test schema is used by:
 #
 # - conformance tests
-#
+
+
 # LINT: ALLOW_GROUPS
 
 require "protobug"
 
-module Protobuf_test_messages   
-  module Proto2   
+module Protobuf_test_messages
+  module Proto2
     # This proto includes every type of field in both singular and repeated
     # forms.
     #
@@ -35,66 +36,65 @@ module Protobuf_test_messages
     # submessages of this message.  So for example, a fuzz test of TestAllTypes
     # could trigger bugs that occur in any message type in this file.  We verify
     # this stays true in a unit test.
-    class TestAllTypesProto2   
+    class TestAllTypesProto2
       extend Protobug::Message
-      
+
       self.full_name = "protobuf_test_messages.proto2.TestAllTypesProto2"
-      
-      class NestedMessage   
+
+      class NestedMessage
         extend Protobug::Message
-        
+
         self.full_name = "protobuf_test_messages.proto2.TestAllTypesProto2.NestedMessage"
-        
+
         optional(1, "a", type: :int32)
         optional(2, "corecursive", type: :message, message_type: "protobuf_test_messages.proto2.TestAllTypesProto2")
       end
-      
+
       # groups
-      class Data   
+      class Data
         extend Protobug::Message
-        
+
         self.full_name = "protobuf_test_messages.proto2.TestAllTypesProto2.Data"
-        
+
         optional(202, "group_int32", type: :int32, json_name: "groupInt32")
         optional(203, "group_uint32", type: :uint32, json_name: "groupUint32")
       end
-      
+
       # message_set test case.
-      class MessageSetCorrect   
+      class MessageSetCorrect
         extend Protobug::Message
-        
+
         self.full_name = "protobuf_test_messages.proto2.TestAllTypesProto2.MessageSetCorrect"
-      
+
       end
-      
-      class MessageSetCorrectExtension1   
+
+      class MessageSetCorrectExtension1
         extend Protobug::Message
-        
+
         self.full_name = "protobuf_test_messages.proto2.TestAllTypesProto2.MessageSetCorrectExtension1"
-        
-        # extension: message message 1547769
+
         optional(25, "str", type: :string)
       end
-      
-      class MessageSetCorrectExtension2   
+
+      class MessageSetCorrectExtension2
         extend Protobug::Message
-        
+
         self.full_name = "protobuf_test_messages.proto2.TestAllTypesProto2.MessageSetCorrectExtension2"
-        
-        # extension: message message 4135312
+
         optional(9, "i", type: :int32)
       end
-      
-      class NestedEnum   
+
+      class NestedEnum
         extend Protobug::Enum
-        
+
         self.full_name = "protobuf_test_messages.proto2.TestAllTypesProto2.NestedEnum"
-        
+
         FOO = new("FOO", 0).freeze
         BAR = new("BAR", 1).freeze
         BAZ = new("BAZ", 2).freeze
         NEG = new("NEG", -1).freeze
       end
+
       # Singular
       optional(1, "optional_int32", type: :int32, json_name: "optionalInt32")
       optional(2, "optional_int64", type: :int64, json_name: "optionalInt64")
@@ -141,20 +141,20 @@ module Protobuf_test_messages
       repeated(54, "repeated_string_piece", type: :string, json_name: "repeatedStringPiece")
       repeated(55, "repeated_cord", type: :string, json_name: "repeatedCord")
       # Packed
-      repeated(75, "packed_int32", type: :int32, json_name: "packedInt32", packed: true)
-      repeated(76, "packed_int64", type: :int64, json_name: "packedInt64", packed: true)
-      repeated(77, "packed_uint32", type: :uint32, json_name: "packedUint32", packed: true)
-      repeated(78, "packed_uint64", type: :uint64, json_name: "packedUint64", packed: true)
-      repeated(79, "packed_sint32", type: :sint32, json_name: "packedSint32", packed: true)
-      repeated(80, "packed_sint64", type: :sint64, json_name: "packedSint64", packed: true)
-      repeated(81, "packed_fixed32", type: :fixed32, json_name: "packedFixed32", packed: true)
-      repeated(82, "packed_fixed64", type: :fixed64, json_name: "packedFixed64", packed: true)
-      repeated(83, "packed_sfixed32", type: :sfixed32, json_name: "packedSfixed32", packed: true)
-      repeated(84, "packed_sfixed64", type: :sfixed64, json_name: "packedSfixed64", packed: true)
-      repeated(85, "packed_float", type: :float, json_name: "packedFloat", packed: true)
-      repeated(86, "packed_double", type: :double, json_name: "packedDouble", packed: true)
-      repeated(87, "packed_bool", type: :bool, json_name: "packedBool", packed: true)
-      repeated(88, "packed_nested_enum", type: :enum, enum_type: "protobuf_test_messages.proto2.TestAllTypesProto2.NestedEnum", json_name: "packedNestedEnum", packed: true)
+      repeated(75, "packed_int32", type: :int32, packed: true, json_name: "packedInt32")
+      repeated(76, "packed_int64", type: :int64, packed: true, json_name: "packedInt64")
+      repeated(77, "packed_uint32", type: :uint32, packed: true, json_name: "packedUint32")
+      repeated(78, "packed_uint64", type: :uint64, packed: true, json_name: "packedUint64")
+      repeated(79, "packed_sint32", type: :sint32, packed: true, json_name: "packedSint32")
+      repeated(80, "packed_sint64", type: :sint64, packed: true, json_name: "packedSint64")
+      repeated(81, "packed_fixed32", type: :fixed32, packed: true, json_name: "packedFixed32")
+      repeated(82, "packed_fixed64", type: :fixed64, packed: true, json_name: "packedFixed64")
+      repeated(83, "packed_sfixed32", type: :sfixed32, packed: true, json_name: "packedSfixed32")
+      repeated(84, "packed_sfixed64", type: :sfixed64, packed: true, json_name: "packedSfixed64")
+      repeated(85, "packed_float", type: :float, packed: true, json_name: "packedFloat")
+      repeated(86, "packed_double", type: :double, packed: true, json_name: "packedDouble")
+      repeated(87, "packed_bool", type: :bool, packed: true, json_name: "packedBool")
+      repeated(88, "packed_nested_enum", type: :enum, enum_type: "protobuf_test_messages.proto2.TestAllTypesProto2.NestedEnum", packed: true, json_name: "packedNestedEnum")
       # Unpacked
       repeated(89, "unpacked_int32", type: :int32, json_name: "unpackedInt32")
       repeated(90, "unpacked_int64", type: :int64, json_name: "unpackedInt64")
@@ -171,25 +171,25 @@ module Protobuf_test_messages
       repeated(101, "unpacked_bool", type: :bool, json_name: "unpackedBool")
       repeated(102, "unpacked_nested_enum", type: :enum, enum_type: "protobuf_test_messages.proto2.TestAllTypesProto2.NestedEnum", json_name: "unpackedNestedEnum")
       # Map
-      # map<int32, int32>: map_int32_int32
-      # map<int64, int64>: map_int64_int64
-      # map<uint32, uint32>: map_uint32_uint32
-      # map<uint64, uint64>: map_uint64_uint64
-      # map<sint32, sint32>: map_sint32_sint32
-      # map<sint64, sint64>: map_sint64_sint64
-      # map<fixed32, fixed32>: map_fixed32_fixed32
-      # map<fixed64, fixed64>: map_fixed64_fixed64
-      # map<sfixed32, sfixed32>: map_sfixed32_sfixed32
-      # map<sfixed64, sfixed64>: map_sfixed64_sfixed64
-      # map<int32, float>: map_int32_float
-      # map<int32, double>: map_int32_double
-      # map<bool, bool>: map_bool_bool
-      # map<string, string>: map_string_string
-      # map<string, bytes>: map_string_bytes
-      # map<string, message>: map_string_nested_message
-      # map<string, message>: map_string_foreign_message
-      # map<string, enum>: map_string_nested_enum
-      # map<string, enum>: map_string_foreign_enum
+      map(56, "map_int32_int32", type: :map, key_type: :int32, value_type: :int32, json_name: "mapInt32Int32")
+      map(57, "map_int64_int64", type: :map, key_type: :int64, value_type: :int64, json_name: "mapInt64Int64")
+      map(58, "map_uint32_uint32", type: :map, key_type: :uint32, value_type: :uint32, json_name: "mapUint32Uint32")
+      map(59, "map_uint64_uint64", type: :map, key_type: :uint64, value_type: :uint64, json_name: "mapUint64Uint64")
+      map(60, "map_sint32_sint32", type: :map, key_type: :sint32, value_type: :sint32, json_name: "mapSint32Sint32")
+      map(61, "map_sint64_sint64", type: :map, key_type: :sint64, value_type: :sint64, json_name: "mapSint64Sint64")
+      map(62, "map_fixed32_fixed32", type: :map, key_type: :fixed32, value_type: :fixed32, json_name: "mapFixed32Fixed32")
+      map(63, "map_fixed64_fixed64", type: :map, key_type: :fixed64, value_type: :fixed64, json_name: "mapFixed64Fixed64")
+      map(64, "map_sfixed32_sfixed32", type: :map, key_type: :sfixed32, value_type: :sfixed32, json_name: "mapSfixed32Sfixed32")
+      map(65, "map_sfixed64_sfixed64", type: :map, key_type: :sfixed64, value_type: :sfixed64, json_name: "mapSfixed64Sfixed64")
+      map(66, "map_int32_float", type: :map, key_type: :int32, value_type: :float, json_name: "mapInt32Float")
+      map(67, "map_int32_double", type: :map, key_type: :int32, value_type: :double, json_name: "mapInt32Double")
+      map(68, "map_bool_bool", type: :map, key_type: :bool, value_type: :bool, json_name: "mapBoolBool")
+      map(69, "map_string_string", type: :map, key_type: :string, value_type: :string, json_name: "mapStringString")
+      map(70, "map_string_bytes", type: :map, key_type: :string, value_type: :bytes, json_name: "mapStringBytes")
+      map(71, "map_string_nested_message", type: :map, key_type: :string, value_type: :message, json_name: "mapStringNestedMessage")
+      map(72, "map_string_foreign_message", type: :map, key_type: :string, value_type: :message, json_name: "mapStringForeignMessage")
+      map(73, "map_string_nested_enum", type: :map, key_type: :string, value_type: :enum, json_name: "mapStringNestedEnum")
+      map(74, "map_string_foreign_enum", type: :map, key_type: :string, value_type: :enum, json_name: "mapStringForeignEnum")
       optional(111, "oneof_uint32", type: :uint32, json_name: "oneofUint32", oneof: :oneof_field)
       optional(112, "oneof_nested_message", type: :message, message_type: "protobuf_test_messages.proto2.TestAllTypesProto2.NestedMessage", json_name: "oneofNestedMessage", oneof: :oneof_field)
       optional(113, "oneof_string", type: :string, json_name: "oneofString", oneof: :oneof_field)
@@ -199,7 +199,7 @@ module Protobuf_test_messages
       optional(117, "oneof_float", type: :float, json_name: "oneofFloat", oneof: :oneof_field)
       optional(118, "oneof_double", type: :double, json_name: "oneofDouble", oneof: :oneof_field)
       optional(119, "oneof_enum", type: :enum, enum_type: "protobuf_test_messages.proto2.TestAllTypesProto2.NestedEnum", json_name: "oneofEnum", oneof: :oneof_field)
-      optional(201, "data", type: :group)
+      optional(201, "data", type: :group, group_type: "protobuf_test_messages.proto2.TestAllTypesProto2.Data")
       # default values
       optional(241, "default_int32", type: :int32, json_name: "defaultInt32")
       optional(242, "default_int64", type: :int64, json_name: "defaultInt64")
@@ -236,138 +236,138 @@ module Protobuf_test_messages
       optional(416, "field__Name16", type: :int32, json_name: "fieldName16")
       optional(417, "field_name17__", type: :int32, json_name: "fieldName17")
       optional(418, "Field_name18__", type: :int32, json_name: "FieldName18")
-      reserved_range(1000 ... 10000)
+      reserved_range(1000...10000)
     end
-    
-    class ForeignMessageProto2   
+
+    class ForeignMessageProto2
       extend Protobug::Message
-      
+
       self.full_name = "protobuf_test_messages.proto2.ForeignMessageProto2"
-      
+
       optional(1, "c", type: :int32)
     end
-    
-    class UnknownToTestAllTypes   
+
+    class UnknownToTestAllTypes
       extend Protobug::Message
-      
+
       self.full_name = "protobuf_test_messages.proto2.UnknownToTestAllTypes"
-      
-      class OptionalGroup   
+
+      class OptionalGroup
         extend Protobug::Message
-        
+
         self.full_name = "protobuf_test_messages.proto2.UnknownToTestAllTypes.OptionalGroup"
-        
+
         optional(1, "a", type: :int32)
       end
+
       optional(1001, "optional_int32", type: :int32, json_name: "optionalInt32")
       optional(1002, "optional_string", type: :string, json_name: "optionalString")
       optional(1003, "nested_message", type: :message, message_type: "protobuf_test_messages.proto2.ForeignMessageProto2", json_name: "nestedMessage")
-      optional(1004, "optionalgroup", type: :group)
+      optional(1004, "optionalgroup", type: :group, group_type: "protobuf_test_messages.proto2.UnknownToTestAllTypes.OptionalGroup")
       optional(1006, "optional_bool", type: :bool, json_name: "optionalBool")
       repeated(1011, "repeated_int32", type: :int32, json_name: "repeatedInt32")
     end
-    
-    class NullHypothesisProto2   
+
+    class NullHypothesisProto2
       extend Protobug::Message
-      
+
       self.full_name = "protobuf_test_messages.proto2.NullHypothesisProto2"
-    
+
     end
-    
-    class EnumOnlyProto2   
+
+    class EnumOnlyProto2
       extend Protobug::Message
-      
+
       self.full_name = "protobuf_test_messages.proto2.EnumOnlyProto2"
-      
-      class Bool   
+
+      class Bool
         extend Protobug::Enum
-        
+
         self.full_name = "protobuf_test_messages.proto2.EnumOnlyProto2.Bool"
-        
+
         kFalse = new("kFalse", 0).freeze
         kTrue = new("kTrue", 1).freeze
       end
     end
-    
-    class OneStringProto2   
+
+    class OneStringProto2
       extend Protobug::Message
-      
+
       self.full_name = "protobuf_test_messages.proto2.OneStringProto2"
-      
+
       optional(1, "data", type: :string)
     end
-    
-    class ProtoWithKeywords   
+
+    class ProtoWithKeywords
       extend Protobug::Message
-      
+
       self.full_name = "protobuf_test_messages.proto2.ProtoWithKeywords"
-      
+
       optional(1, "inline", type: :int32)
       optional(2, "concept", type: :string)
       repeated(3, "requires", type: :string)
     end
-    
-    class TestAllRequiredTypesProto2   
+
+    class TestAllRequiredTypesProto2
       extend Protobug::Message
-      
+
       self.full_name = "protobuf_test_messages.proto2.TestAllRequiredTypesProto2"
-      
-      class NestedMessage   
+
+      class NestedMessage
         extend Protobug::Message
-        
+
         self.full_name = "protobuf_test_messages.proto2.TestAllRequiredTypesProto2.NestedMessage"
-        
+
         required(1, "a", type: :int32)
         required(2, "corecursive", type: :message, message_type: "protobuf_test_messages.proto2.TestAllRequiredTypesProto2")
         optional(3, "optional_corecursive", type: :message, message_type: "protobuf_test_messages.proto2.TestAllRequiredTypesProto2", json_name: "optionalCorecursive")
       end
-      
+
       # groups
-      class Data   
+      class Data
         extend Protobug::Message
-        
+
         self.full_name = "protobuf_test_messages.proto2.TestAllRequiredTypesProto2.Data"
-        
+
         required(202, "group_int32", type: :int32, json_name: "groupInt32")
         required(203, "group_uint32", type: :uint32, json_name: "groupUint32")
       end
-      
+
       # message_set test case.
-      class MessageSetCorrect   
+      class MessageSetCorrect
         extend Protobug::Message
-        
+
         self.full_name = "protobuf_test_messages.proto2.TestAllRequiredTypesProto2.MessageSetCorrect"
-      
+
       end
-      
-      class MessageSetCorrectExtension1   
+
+      class MessageSetCorrectExtension1
         extend Protobug::Message
-        
+
         self.full_name = "protobuf_test_messages.proto2.TestAllRequiredTypesProto2.MessageSetCorrectExtension1"
-        
-        # extension: message message 1547769
+
         required(25, "str", type: :string)
       end
-      
-      class MessageSetCorrectExtension2   
+
+      class MessageSetCorrectExtension2
         extend Protobug::Message
-        
+
         self.full_name = "protobuf_test_messages.proto2.TestAllRequiredTypesProto2.MessageSetCorrectExtension2"
-        
-        # extension: message message 4135312
+
         required(9, "i", type: :int32)
       end
-      
-      class NestedEnum   
+
+      class NestedEnum
         extend Protobug::Enum
-        
+
         self.full_name = "protobuf_test_messages.proto2.TestAllRequiredTypesProto2.NestedEnum"
-        
+
         FOO = new("FOO", 0).freeze
         BAR = new("BAR", 1).freeze
         BAZ = new("BAZ", 2).freeze
         NEG = new("NEG", -1).freeze
       end
+
       # Singular
       required(1, "required_int32", type: :int32, json_name: "requiredInt32")
       required(2, "required_int64", type: :int64, json_name: "requiredInt64")
@@ -392,7 +392,7 @@ module Protobuf_test_messages
       required(25, "required_cord", type: :string, json_name: "requiredCord")
       required(27, "recursive_message", type: :message, message_type: "protobuf_test_messages.proto2.TestAllRequiredTypesProto2", json_name: "recursiveMessage")
       optional(28, "optional_recursive_message", type: :message, message_type: "protobuf_test_messages.proto2.TestAllRequiredTypesProto2", json_name: "optionalRecursiveMessage")
-      required(201, "data", type: :group)
+      required(201, "data", type: :group, group_type: "protobuf_test_messages.proto2.TestAllRequiredTypesProto2.Data")
       # default values
       required(241, "default_int32", type: :int32, json_name: "defaultInt32")
       required(242, "default_int64", type: :int64, json_name: "defaultInt64")
@@ -409,30 +409,28 @@ module Protobuf_test_messages
       required(253, "default_bool", type: :bool, json_name: "defaultBool")
       required(254, "default_string", type: :string, json_name: "defaultString")
       required(255, "default_bytes", type: :bytes, json_name: "defaultBytes")
-      reserved_range(1000 ... 10000)
+      reserved_range(1000...10000)
     end
-    
-    class ForeignEnumProto2   
+
+    class ForeignEnumProto2
       extend Protobug::Enum
-      
+
       self.full_name = "protobuf_test_messages.proto2.ForeignEnumProto2"
-      
+
       FOREIGN_FOO = new("FOREIGN_FOO", 0).freeze
       FOREIGN_BAR = new("FOREIGN_BAR", 1).freeze
       FOREIGN_BAZ = new("FOREIGN_BAZ", 2).freeze
     end
-    
-    # extension: int32 int32 120
-    
-    def self.register_test_messages_proto2_protos(registry)   
+
+    # extension: #<Google::Protobuf::DescriptorProto:0x000000011dd344d8> .protobuf_test_messages.proto2.TestAllTypesProto2 extension_int32 120
+
+    def self.register_test_messages_proto2_protos(registry)
       registry.register(Protobuf_test_messages::Proto2::TestAllTypesProto2)
       registry.register(Protobuf_test_messages::Proto2::TestAllTypesProto2::NestedMessage)
       registry.register(Protobuf_test_messages::Proto2::TestAllTypesProto2::Data)
       registry.register(Protobuf_test_messages::Proto2::TestAllTypesProto2::MessageSetCorrect)
       registry.register(Protobuf_test_messages::Proto2::TestAllTypesProto2::MessageSetCorrectExtension1)
-      # extension: protobuf_test_messages.proto2.TestAllTypesProto2.MessageSetCorrectExtension1.message_set_extension message 1547769
       registry.register(Protobuf_test_messages::Proto2::TestAllTypesProto2::MessageSetCorrectExtension2)
-      # extension: protobuf_test_messages.proto2.TestAllTypesProto2.MessageSetCorrectExtension2.message_set_extension message 4135312
       registry.register(Protobuf_test_messages::Proto2::TestAllTypesProto2::NestedEnum)
       registry.register(Protobuf_test_messages::Proto2::ForeignMessageProto2)
       registry.register(Protobuf_test_messages::Proto2::UnknownToTestAllTypes)
@@ -447,12 +445,10 @@ module Protobuf_test_messages
       registry.register(Protobuf_test_messages::Proto2::TestAllRequiredTypesProto2::Data)
       registry.register(Protobuf_test_messages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrect)
       registry.register(Protobuf_test_messages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrectExtension1)
-      # extension: protobuf_test_messages.proto2.TestAllRequiredTypesProto2.MessageSetCorrectExtension1.message_set_extension message 1547769
       registry.register(Protobuf_test_messages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrectExtension2)
-      # extension: protobuf_test_messages.proto2.TestAllRequiredTypesProto2.MessageSetCorrectExtension2.message_set_extension message 4135312
       registry.register(Protobuf_test_messages::Proto2::TestAllRequiredTypesProto2::NestedEnum)
       registry.register(Protobuf_test_messages::Proto2::ForeignEnumProto2)
-      # extension: protobuf_test_messages.proto2.extension_int32 int32 120
+      # extension: protobuf_test_messages.proto2.TestAllTypesProto2 TYPE_INT32 120
     end
   end
 end

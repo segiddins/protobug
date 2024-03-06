@@ -31,28 +31,28 @@ require "protobug"
 require "google/api/field_behavior.proto.pb.rb"
 require "google/protobuf/timestamp.proto.pb.rb"
 
-module Sigstore   
-  module Common   
-    module V1   
+module Sigstore
+  module Common
+    module V1
       # HashOutput captures a digest of a 'message' (generic octet sequence)
       # and the corresponding hash algorithm used.
-      class HashOutput   
+      class HashOutput
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.common.v1.HashOutput"
-        
+
         optional(1, "algorithm", type: :enum, enum_type: "dev.sigstore.common.v1.HashAlgorithm")
         # This is the raw octets of the message digest as computed by
         # the hash algorithm.
         optional(2, "digest", type: :bytes)
       end
-      
+
       # MessageSignature stores the computed signature over a message.
-      class MessageSignature   
+      class MessageSignature
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.common.v1.MessageSignature"
-        
+
         # Message digest can be used to identify the artifact.
         # Clients MUST NOT attempt to use this digest to verify the associated
         # signature; it is intended solely for identification.
@@ -67,36 +67,36 @@ module Sigstore
         # key, which MUST be communicated out-of-band.
         optional(2, "signature", type: :bytes)
       end
-      
+
       # LogId captures the identity of a transparency log.
-      class LogId   
+      class LogId
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.common.v1.LogId"
-        
+
         # The unique id of the log, represented as the SHA-256 hash
         # of the log's public key, calculated over the DER encoding
         # of the key represented as SubjectPublicKeyInfo.
         # See https://www.rfc-editor.org/rfc/rfc6962#section-3.2
         optional(1, "key_id", type: :bytes, json_name: "keyId")
       end
-      
+
       # This message holds a RFC 3161 timestamp.
-      class RFC3161SignedTimestamp   
+      class RFC3161SignedTimestamp
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.common.v1.RFC3161SignedTimestamp"
-        
+
         # Signed timestamp is the DER encoded TimeStampResponse.
         # See https://www.rfc-editor.org/rfc/rfc3161.html#section-2.4.2
         optional(1, "signed_timestamp", type: :bytes, json_name: "signedTimestamp")
       end
-      
-      class PublicKey   
+
+      class PublicKey
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.common.v1.PublicKey"
-        
+
         # DER-encoded public key, encoding method is specified by the
         # key_details attribute.
         optional(1, "raw_bytes", type: :bytes, json_name: "rawBytes")
@@ -105,14 +105,14 @@ module Sigstore
         # Optional validity period for this key, *inclusive* of the endpoints.
         optional(3, "valid_for", type: :message, message_type: "dev.sigstore.common.v1.TimeRange", json_name: "validFor")
       end
-      
+
       # PublicKeyIdentifier can be used to identify an (out of band) delivered
       # key, to verify a signature.
-      class PublicKeyIdentifier   
+      class PublicKeyIdentifier
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.common.v1.PublicKeyIdentifier"
-        
+
         # Optional unauthenticated hint on which key to use.
         # The format of the hint must be agreed upon out of band by the
         # signer and the verifiers, and so is not subject to this
@@ -124,49 +124,49 @@ module Sigstore
         # See: <https://www.rfc-editor.org/rfc/rfc6962#section-3.2>
         optional(1, "hint", type: :string)
       end
-      
+
       # An ASN.1 OBJECT IDENTIFIER
-      class ObjectIdentifier   
+      class ObjectIdentifier
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.common.v1.ObjectIdentifier"
-        
+
         repeated(1, "id", type: :int32, packed: true)
       end
-      
+
       # An OID and the corresponding (byte) value.
-      class ObjectIdentifierValuePair   
+      class ObjectIdentifierValuePair
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.common.v1.ObjectIdentifierValuePair"
-        
+
         optional(1, "oid", type: :message, message_type: "dev.sigstore.common.v1.ObjectIdentifier")
         optional(2, "value", type: :bytes)
       end
-      
-      class DistinguishedName   
+
+      class DistinguishedName
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.common.v1.DistinguishedName"
-        
+
         optional(1, "organization", type: :string)
         optional(2, "common_name", type: :string, json_name: "commonName")
       end
-      
-      class X509Certificate   
+
+      class X509Certificate
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.common.v1.X509Certificate"
-        
+
         # DER-encoded X.509 certificate.
         optional(1, "raw_bytes", type: :bytes, json_name: "rawBytes")
       end
-      
-      class SubjectAlternativeName   
+
+      class SubjectAlternativeName
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.common.v1.SubjectAlternativeName"
-        
+
         optional(1, "type", type: :enum, enum_type: "dev.sigstore.common.v1.SubjectAlternativeNameType")
         # A regular expression describing the expected value for
         # the SAN.
@@ -174,17 +174,17 @@ module Sigstore
         # The exact value to match against.
         optional(3, "value", type: :string, oneof: :identity)
       end
-      
+
       # A collection of X.509 certificates.
       #
       # This "chain" can be used in multiple contexts, such as providing a root CA
       # certificate within a TUF root of trust or multiple untrusted certificates for
       # the purpose of chain building.
-      class X509CertificateChain   
+      class X509CertificateChain
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.common.v1.X509CertificateChain"
-        
+
         # One or more DER-encoded certificates.
         #
         # In some contexts (such as `VerificationMaterial.x509_certificate_chain`), this sequence
@@ -192,20 +192,20 @@ module Sigstore
         # guaranteed order.
         repeated(1, "certificates", type: :message, message_type: "dev.sigstore.common.v1.X509Certificate")
       end
-      
+
       # The time range is closed and includes both the start and end times,
       # (i.e., [start, end]).
       # End is optional to be able to capture a period that has started but
       # has no known end.
-      class TimeRange   
+      class TimeRange
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.common.v1.TimeRange"
-        
+
         optional(1, "start", type: :message, message_type: "google.protobuf.Timestamp")
         optional(2, "end", type: :message, message_type: "google.protobuf.Timestamp")
       end
-      
+
       # Only a subset of the secure hash standard algorithms are supported.
       # See <https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf> for more
       # details.
@@ -213,11 +213,11 @@ module Sigstore
       # any proto JSON serialization to emit the used hash algorithm, as default
       # option is to *omit* the default value of an enum (which is the first
       # value, represented by '0'.
-      class HashAlgorithm   
+      class HashAlgorithm
         extend Protobug::Enum
-        
+
         self.full_name = "dev.sigstore.common.v1.HashAlgorithm"
-        
+
         HASH_ALGORITHM_UNSPECIFIED = new("HASH_ALGORITHM_UNSPECIFIED", 0).freeze
         SHA2_256 = new("SHA2_256", 1).freeze
         SHA2_384 = new("SHA2_384", 2).freeze
@@ -225,7 +225,7 @@ module Sigstore
         SHA3_256 = new("SHA3_256", 4).freeze
         SHA3_384 = new("SHA3_384", 5).freeze
       end
-      
+
       # Details of a specific public key, capturing the the key encoding method,
       # and signature algorithm.
       #
@@ -242,11 +242,11 @@ module Sigstore
       # ED25519 the valid permutations are listed as a linear set instead of a
       # cartesian set (i.e one combined variable instead of two, one for encoding
       # and one for the signature algorithm).
-      class PublicKeyDetails   
+      class PublicKeyDetails
         extend Protobug::Enum
-        
+
         self.full_name = "dev.sigstore.common.v1.PublicKeyDetails"
-        
+
         PUBLIC_KEY_DETAILS_UNSPECIFIED = new("PUBLIC_KEY_DETAILS_UNSPECIFIED", 0).freeze
         # RSA
         PKCS1_RSA_PKCS1V5 = new("PKCS1_RSA_PKCS1V5", 1).freeze
@@ -284,14 +284,14 @@ module Sigstore
         # schemes.
         LMS_SHA256 = new("LMS_SHA256", 14).freeze
         LMOTS_SHA256 = new("LMOTS_SHA256", 15).freeze
-        reserved_range(19 ... 50)
+        reserved_range(19...50)
       end
-      
-      class SubjectAlternativeNameType   
+
+      class SubjectAlternativeNameType
         extend Protobug::Enum
-        
+
         self.full_name = "dev.sigstore.common.v1.SubjectAlternativeNameType"
-        
+
         SUBJECT_ALTERNATIVE_NAME_TYPE_UNSPECIFIED = new("SUBJECT_ALTERNATIVE_NAME_TYPE_UNSPECIFIED", 0).freeze
         EMAIL = new("EMAIL", 1).freeze
         URI = new("URI", 2).freeze
@@ -300,8 +300,8 @@ module Sigstore
         # for more details.
         OTHER_NAME = new("OTHER_NAME", 3).freeze
       end
-      
-      def self.register_sigstore_common_protos(registry)   
+
+      def self.register_sigstore_common_protos(registry)
         Google::Api.register_field_behavior_protos(registry)
         Google::Protobuf.register_timestamp_protos(registry)
         registry.register(Sigstore::Common::V1::HashOutput)

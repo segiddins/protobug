@@ -45,8 +45,8 @@
 
 require "protobug"
 
-module Google   
-  module Protobuf   
+module Google
+  module Protobuf
     # `Any` contains an arbitrary serialized protocol buffer message along with a
     # URL that describes the type of the serialized message.
     #
@@ -132,12 +132,12 @@ module Google
     #       "@type": "type.googleapis.com/google.protobuf.Duration",
     #       "value": "1.212s"
     #     }
-    #
-    class Any   
+
+    class Any
       extend Protobug::Message
-      
+
       self.full_name = "google.protobuf.Any"
-      
+
       # A URL/resource name that uniquely identifies the type of the serialized
       # protocol buffer message. This string must contain at least
       # one "/" character. The last segment of the URL's path must represent
@@ -166,13 +166,13 @@ module Google
       #
       # Schemes other than `http`, `https` (or the empty scheme) might be
       # used with implementation specific semantics.
-      #
+
       optional(1, "type_url", type: :string, json_name: "typeUrl")
       # Must be a valid serialized protocol buffer of the above specified type.
       optional(2, "value", type: :bytes)
     end
-    
-    def self.register_any_protos(registry)   
+
+    def self.register_any_protos(registry)
       registry.register(Google::Protobuf::Any)
     end
   end

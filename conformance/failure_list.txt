@@ -936,7 +936,6 @@ Required.Proto3.ProtobufInput.ValidDataRepeated.DOUBLE.UnpackedInput.ProtobufOut
 Required.Proto3.ProtobufInput.ValidDataRepeated.ENUM.PackedInput.JsonOutput
 Required.Proto3.ProtobufInput.ValidDataRepeated.ENUM.PackedInput.ProtobufOutput
 Required.Proto3.ProtobufInput.ValidDataRepeated.ENUM.UnpackedInput.JsonOutput
-Required.Proto3.ProtobufInput.ValidDataRepeated.ENUM.UnpackedInput.ProtobufOutput
 Required.Proto3.ProtobufInput.ValidDataRepeated.FIXED32.PackedInput.JsonOutput
 Required.Proto3.ProtobufInput.ValidDataRepeated.FIXED32.PackedInput.ProtobufOutput
 Required.Proto3.ProtobufInput.ValidDataRepeated.FIXED32.UnpackedInput.JsonOutput

@@ -46,8 +46,8 @@
 
 require "protobug"
 
-module Google   
-  module Protobuf   
+module Google
+  module Protobuf
     # A Duration represents a signed, fixed-length span of time represented
     # as a count of seconds and fractions of seconds at nanosecond
     # resolution. It is independent of any calendar and concepts like "day"
@@ -106,12 +106,12 @@ module Google
     # encoded in JSON format as "3s", while 3 seconds and 1 nanosecond should
     # be expressed in JSON format as "3.000000001s", and 3 seconds and 1
     # microsecond should be expressed in JSON format as "3.000001s".
-    #
-    class Duration   
+
+    class Duration
       extend Protobug::Message
-      
+
       self.full_name = "google.protobuf.Duration"
-      
+
       # Signed seconds of the span of time. Must be from -315,576,000,000
       # to +315,576,000,000 inclusive. Note: these bounds are computed from:
       # 60 sec/min * 60 min/hr * 24 hr/day * 365.25 days/year * 10000 years
@@ -124,8 +124,8 @@ module Google
       # to +999,999,999 inclusive.
       optional(2, "nanos", type: :int32)
     end
-    
-    def self.register_duration_protos(registry)   
+
+    def self.register_duration_protos(registry)
       registry.register(Google::Protobuf::Duration)
     end
   end

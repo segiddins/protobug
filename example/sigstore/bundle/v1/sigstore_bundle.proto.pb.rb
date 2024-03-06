@@ -33,17 +33,17 @@ require "sigstore/dsse/envelope.proto.pb.rb"
 require "sigstore/common/v1/sigstore_common.proto.pb.rb"
 require "sigstore/rekor/v1/sigstore_rekor.proto.pb.rb"
 
-module Sigstore   
-  module Bundle   
-    module V1   
+module Sigstore
+  module Bundle
+    module V1
       # Various timestamped counter signatures over the artifacts signature.
       # Currently only RFC3161 signatures are provided. More formats may be added
       # in the future.
-      class TimestampVerificationData   
+      class TimestampVerificationData
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.bundle.v1.TimestampVerificationData"
-        
+
         # A list of RFC3161 signed timestamps provided by the user.
         # This can be used when the entry has not been stored on a
         # transparency log, or in conjunction for a stronger trust model.
@@ -51,7 +51,7 @@ module Sigstore
         # against the signature in the bundle.
         repeated(1, "rfc3161_timestamps", type: :message, message_type: "dev.sigstore.common.v1.RFC3161SignedTimestamp", json_name: "rfc3161Timestamps")
       end
-      
+
       # VerificationMaterial captures details on the materials used to verify
       # signatures. This message may be embedded in a DSSE envelope as a signature
       # extension. Specifically, the `ext` field of the extension will expect this
@@ -61,11 +61,11 @@ module Sigstore
       # When used as a DSSE extension, if the `public_key` field is used to indicate
       # the key identifier, it MUST match the `keyid` field of the signature the
       # extension is attached to.
-      class VerificationMaterial   
+      class VerificationMaterial
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.bundle.v1.VerificationMaterial"
-        
+
         optional(1, "public_key", type: :message, message_type: "dev.sigstore.common.v1.PublicKeyIdentifier", json_name: "publicKey", oneof: :content)
         optional(2, "x509_certificate_chain", type: :message, message_type: "dev.sigstore.common.v1.X509CertificateChain", json_name: "x509CertificateChain", oneof: :content)
         optional(5, "certificate", type: :message, message_type: "dev.sigstore.common.v1.X509Certificate", oneof: :content)
@@ -81,12 +81,12 @@ module Sigstore
         # tlog_entries.inclusion_promise.signed_entry_timestamp.
         optional(4, "timestamp_verification_data", type: :message, message_type: "dev.sigstore.bundle.v1.TimestampVerificationData", json_name: "timestampVerificationData")
       end
-      
-      class Bundle   
+
+      class Bundle
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.bundle.v1.Bundle"
-        
+
         # MUST be application/vnd.dev.sigstore.bundle+json;version=0.1
         # or application/vnd.dev.sigstore.bundle+json;version=0.2
         # or application/vnd.dev.sigstore.bundle+json;version=0.3
@@ -109,10 +109,10 @@ module Sigstore
         # protocol which is defined here:
         # <https://github.com/secure-systems-lab/dsse/blob/master/protocol.md>
         optional(4, "dsse_envelope", type: :message, message_type: "io.intoto.Envelope", json_name: "dsseEnvelope", oneof: :content)
-        reserved_range(5 ... 51)
+        reserved_range(5...51)
       end
-      
-      def self.register_sigstore_bundle_protos(registry)   
+
+      def self.register_sigstore_bundle_protos(registry)
         Google::Api.register_field_behavior_protos(registry)
         Sigstore::DSSE.register_envelope_protos(registry)
         Sigstore::Common::V1.register_sigstore_common_protos(registry)

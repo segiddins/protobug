@@ -32,15 +32,15 @@ require "sigstore/common/v1/sigstore_common.proto.pb.rb"
 require "sigstore/trustroot/v1/sigstore_trustroot.proto.pb.rb"
 require "sigstore/bundle/v1/sigstore_bundle.proto.pb.rb"
 
-module Sigstore   
-  module Verification   
-    module V1   
+module Sigstore
+  module Verification
+    module V1
       # The identity of a X.509 Certificate signer.
-      class CertificateIdentity   
+      class CertificateIdentity
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.verification.v1.CertificateIdentity"
-        
+
         # The X.509v3 issuer extension (OID 1.3.6.1.4.1.57264.1.1)
         optional(1, "issuer", type: :string)
         optional(2, "san", type: :message, message_type: "dev.sigstore.common.v1.SubjectAlternativeName")
@@ -49,35 +49,35 @@ module Sigstore
         # the values in the certificate for verification to be successful.
         repeated(3, "oids", type: :message, message_type: "dev.sigstore.common.v1.ObjectIdentifierValuePair")
       end
-      
-      class CertificateIdentities   
+
+      class CertificateIdentities
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.verification.v1.CertificateIdentities"
-        
+
         repeated(1, "identities", type: :message, message_type: "dev.sigstore.verification.v1.CertificateIdentity")
       end
-      
-      class PublicKeyIdentities   
+
+      class PublicKeyIdentities
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.verification.v1.PublicKeyIdentities"
-        
+
         repeated(1, "public_keys", type: :message, message_type: "dev.sigstore.common.v1.PublicKey", json_name: "publicKeys")
       end
-      
+
       # A light-weight set of options/policies for identifying trusted signers,
       # used during verification of a single artifact.
-      class ArtifactVerificationOptions   
+      class ArtifactVerificationOptions
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.verification.v1.ArtifactVerificationOptions"
-        
-        class TlogOptions   
+
+        class TlogOptions
           extend Protobug::Message
-          
+
           self.full_name = "dev.sigstore.verification.v1.ArtifactVerificationOptions.TlogOptions"
-          
+
           # Number of transparency logs the entry must appear on.
           optional(1, "threshold", type: :int32)
           # Perform an online inclusion proof.
@@ -85,47 +85,47 @@ module Sigstore
           # Disable verification for transparency logs.
           optional(3, "disable", type: :bool)
         end
-        
-        class CtlogOptions   
+
+        class CtlogOptions
           extend Protobug::Message
-          
+
           self.full_name = "dev.sigstore.verification.v1.ArtifactVerificationOptions.CtlogOptions"
-          
+
           # The number of ct transparency logs the certificate must
           # appear on.
           optional(1, "threshold", type: :int32)
           # Disable ct transparency log verification
           optional(3, "disable", type: :bool)
-          reserved_range(2 ... 3)
+          reserved_range(2...3)
         end
-        
-        class TimestampAuthorityOptions   
+
+        class TimestampAuthorityOptions
           extend Protobug::Message
-          
+
           self.full_name = "dev.sigstore.verification.v1.ArtifactVerificationOptions.TimestampAuthorityOptions"
-          
+
           # The number of signed timestamps that are expected.
           optional(1, "threshold", type: :int32)
           # Disable signed timestamp verification.
           optional(2, "disable", type: :bool)
         end
-        
-        class TlogIntegratedTimestampOptions   
+
+        class TlogIntegratedTimestampOptions
           extend Protobug::Message
-          
+
           self.full_name = "dev.sigstore.verification.v1.ArtifactVerificationOptions.TlogIntegratedTimestampOptions"
-          
+
           # The number of integrated timestamps that are expected.
           optional(1, "threshold", type: :int32)
           # Disable integrated timestamp verification.
           optional(2, "disable", type: :bool)
         end
-        
-        class ObserverTimestampOptions   
+
+        class ObserverTimestampOptions
           extend Protobug::Message
-          
+
           self.full_name = "dev.sigstore.verification.v1.ArtifactVerificationOptions.ObserverTimestampOptions"
-          
+
           # The number of external observers of the timestamp.
           # This is a union of RFC3161 signed timestamps, and
           # integrated timestamps from a transparency log, that
@@ -135,6 +135,7 @@ module Sigstore
           # Disable observer timestamp verification.
           optional(2, "disable", type: :bool)
         end
+
         optional(1, "certificate_identities", type: :message, message_type: "dev.sigstore.verification.v1.CertificateIdentities", json_name: "certificateIdentities", oneof: :signers)
         # To simplify verification implementation, the logic for
         # bundle verification should be implemented as a
@@ -173,25 +174,25 @@ module Sigstore
         # Disable: false
         optional(7, "observer_options", type: :message, message_type: "dev.sigstore.verification.v1.ArtifactVerificationOptions.ObserverTimestampOptions", json_name: "observerOptions")
       end
-      
-      class Artifact   
+
+      class Artifact
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.verification.v1.Artifact"
-        
+
         # Location of the artifact
         optional(1, "artifact_uri", type: :string, json_name: "artifactUri", oneof: :data)
         # The raw bytes of the artifact
         optional(2, "artifact", type: :bytes, oneof: :data)
       end
-      
+
       # Input captures all that is needed to call the bundle verification method,
       # to verify a single artifact referenced by the bundle.
-      class Input   
+      class Input
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.verification.v1.Input"
-        
+
         # The verification materials provided during a bundle verification.
         # The running process is usually preloaded with a "global"
         # dev.sisgtore.trustroot.TrustedRoot.v1 instance. Prior to
@@ -207,8 +208,8 @@ module Sigstore
         # provided.
         optional(4, "artifact", type: :message, message_type: "dev.sigstore.verification.v1.Artifact")
       end
-      
-      def self.register_sigstore_verification_protos(registry)   
+
+      def self.register_sigstore_verification_protos(registry)
         Sigstore::Common::V1.register_sigstore_common_protos(registry)
         Sigstore::TrustRoot::V1.register_sigstore_trustroot_protos(registry)
         Sigstore::Bundle::V1.register_sigstore_bundle_protos(registry)

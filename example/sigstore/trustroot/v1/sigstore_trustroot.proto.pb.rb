@@ -30,20 +30,20 @@ require "protobug"
 
 require "sigstore/common/v1/sigstore_common.proto.pb.rb"
 
-module Sigstore   
-  module TrustRoot   
-    module V1   
+module Sigstore
+  module TrustRoot
+    module V1
       # TransparencyLogInstance describes the immutable parameters from a
       # transparency log.
       # See https://www.rfc-editor.org/rfc/rfc9162.html#name-log-parameters
       # for more details.
       # The included parameters are the minimal set required to identify a log,
       # and verify an inclusion proof/promise.
-      class TransparencyLogInstance   
+      class TransparencyLogInstance
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.trustroot.v1.TransparencyLogInstance"
-        
+
         # The base URL at which can be used to URLs for the client.
         optional(1, "base_url", type: :string, json_name: "baseUrl")
         # The hash algorithm used for the Merkle Tree.
@@ -54,14 +54,14 @@ module Sigstore
         # The unique identifier for this transparency log.
         optional(4, "log_id", type: :message, message_type: "dev.sigstore.common.v1.LogId", json_name: "logId")
       end
-      
+
       # CertificateAuthority enlists the information required to identify which
       # CA to use and perform signature verification.
-      class CertificateAuthority   
+      class CertificateAuthority
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.trustroot.v1.CertificateAuthority"
-        
+
         # The root certificate MUST be self-signed, and so the subject and
         # issuer are the same.
         optional(1, "subject", type: :message, message_type: "dev.sigstore.common.v1.DistinguishedName")
@@ -83,7 +83,7 @@ module Sigstore
         # endpoints.
         optional(4, "valid_for", type: :message, message_type: "dev.sigstore.common.v1.TimeRange", json_name: "validFor")
       end
-      
+
       # TrustedRoot describes the client's complete set of trusted entities.
       # How the TrustedRoot is populated is not specified, but can be a
       # combination of many sources such as TUF repositories, files on disk etc.
@@ -114,11 +114,11 @@ module Sigstore
       # This should not be a problem as clients SHOULD first seek the trust root
       # for a suitable instance before creating a per artifact trust root (that
       # is, a sub-set of the complete trust root) that is used for verification.
-      class TrustedRoot   
+      class TrustedRoot
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.trustroot.v1.TrustedRoot"
-        
+
         # MUST be application/vnd.dev.sigstore.trustedroot+json;version=0.1
         optional(1, "media_type", type: :string, json_name: "mediaType")
         # A set of trusted Rekor servers.
@@ -137,8 +137,8 @@ module Sigstore
         # A set of trusted timestamping authorities.
         repeated(5, "timestamp_authorities", type: :message, message_type: "dev.sigstore.trustroot.v1.CertificateAuthority", json_name: "timestampAuthorities")
       end
-      
-      def self.register_sigstore_trustroot_protos(registry)   
+
+      def self.register_sigstore_trustroot_protos(registry)
         Sigstore::Common::V1.register_sigstore_common_protos(registry)
         registry.register(Sigstore::TrustRoot::V1::TransparencyLogInstance)
         registry.register(Sigstore::TrustRoot::V1::CertificateAuthority)

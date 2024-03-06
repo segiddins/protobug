@@ -7,6 +7,8 @@ RSpec::Core::RakeTask.new(:spec)
 
 require "rubocop/rake_task"
 
+Dir["tasks/**/*.rake"].each { |file| load file }
+
 RuboCop::RakeTask.new
 
 def git_repo(name, path, url, commit: "main")
@@ -27,14 +29,6 @@ end
 
 task default: %i[spec rubocop]
 
-file "rubby/generated.go" => FileList["genrubby/*.go"] do
-  sh "go", "run", "./genrubby"
-end
-
-file "protoc-gen-protobug" => FileList["go.mod", "go.sum", "rubby/*.go", "cmd/**/*.go"] do
-  sh "go", "build", "--tags=protolegacy", "./cmd/protoc-gen-protobug"
-end
-
 git_repo :protobuf, "tmp/protobuf", "https://github.com/protocolbuffers/protobuf" do
   file "tmp/protobuf/bazel-bin/conformance/conformance_test_runner" => "tmp/protobuf/.git/rake-version" do
     sh "bazel", "build", "//conformance:conformance_test_runner", chdir: "tmp/protobuf"
@@ -44,7 +38,7 @@ end
 git_repo :googleapis, "tmp/googleapis", "https://github.com/googleapis/googleapis", commit: "master"
 git_repo :sigstore, "tmp/sigstore", "https://github.com/sigstore/protobuf-specs", commit: "master"
 
-multitask example: %w[protoc-gen-protobug tmp/googleapis/.git/rake-version tmp/sigstore/.git/rake-version] do
+multitask example: %w[tmp/googleapis/.git/rake-version tmp/sigstore/.git/rake-version compiler] do
   rm_rf FileList["example/*"] - ["example/example.rb"]
   example = "tmp/sigstore"
   sh(
@@ -59,11 +53,12 @@ multitask example: %w[protoc-gen-protobug tmp/googleapis/.git/rake-version tmp/s
   sh "ruby", "-Ilib:example", "example/example.rb"
 end
 
-multitask compiler: %w[protoc-gen-protobug tmp/protobuf/.git/rake-version] do
+multitask compiler: %w[lib/protobug/compiler/builder_gen.rb tmp/protobuf/.git/rake-version] do
   protobuf = "tmp/protobuf"
   sh(
+    "bundle", "exec",
     "protoc",
-    "--plugin=protoc-gen-protobug=#{File.expand_path("protoc-gen-protobug")}",
+    "--plugin=protoc-gen-protobug=#{File.expand_path("exe/protoc-gen-protobug")}",
     "-Isrc",
     "--protobug_out=#{File.expand_path("lib/protobug/compiler")}",
     "src/google/protobuf/compiler/plugin.proto",
@@ -71,11 +66,12 @@ multitask compiler: %w[protoc-gen-protobug tmp/protobuf/.git/rake-version] do
   )
 end
 
-multitask conformance: %w[protoc-gen-protobug tmp/protobuf/bazel-bin/conformance/conformance_test_runner] do
+multitask conformance: %w[compiler tmp/protobuf/bazel-bin/conformance/conformance_test_runner] do
   protobuf = "tmp/protobuf"
   sh(
+    "bundle", "exec",
     "protoc",
-    "--plugin=protoc-gen-protobug=#{File.expand_path("protoc-gen-protobug")}",
+    "--plugin=protoc-gen-protobug=#{File.expand_path("exe/protoc-gen-protobug")}",
     "-I.",
     "--protobug_opt=Mconformance/conformance.proto=example.com/example/project/protos/conformance",
     "--protobug_opt=Msrc/google/protobuf/test_messages_proto2.proto=example.com/example/project/protos/conformance",

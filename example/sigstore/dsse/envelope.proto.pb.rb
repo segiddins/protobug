@@ -10,6 +10,7 @@
 #   ruby_package: "Sigstore::DSSE"
 
 # https://raw.githubusercontent.com/secure-systems-lab/dsse/9c813476bd36de70a5738c72e784f123ecea16af/envelope.proto
+
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -24,14 +25,14 @@
 
 require "protobug"
 
-module Sigstore   
-  module DSSE   
+module Sigstore
+  module DSSE
     # An authenticated message of arbitrary type.
-    class Envelope   
+    class Envelope
       extend Protobug::Message
-      
+
       self.full_name = "io.intoto.Envelope"
-      
+
       # Message to be signed. (In JSON, this is encoded as base64.)
       # REQUIRED.
       optional(1, "payload", type: :bytes)
@@ -49,12 +50,12 @@ module Sigstore
       # REQUIRED (length >= 1).
       repeated(3, "signatures", type: :message, message_type: "io.intoto.Signature")
     end
-    
-    class Signature   
+
+    class Signature
       extend Protobug::Message
-      
+
       self.full_name = "io.intoto.Signature"
-      
+
       # Signature itself. (In JSON, this is encoded as base64.)
       # REQUIRED.
       optional(1, "sig", type: :bytes)
@@ -62,8 +63,8 @@ module Sigstore
       # OPTIONAL.
       optional(2, "keyid", type: :string)
     end
-    
-    def self.register_envelope_protos(registry)   
+
+    def self.register_envelope_protos(registry)
       registry.register(Sigstore::DSSE::Envelope)
       registry.register(Sigstore::DSSE::Signature)
     end

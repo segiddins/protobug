@@ -18,28 +18,28 @@
 
 require "protobug"
 
-module Conformance   
+module Conformance
   # The conformance runner will request a list of failures as the first request.
   # This will be known by message_type == "conformance.FailureSet", a conformance
   # test should return a serialized FailureSet in protobuf_payload.
-  class FailureSet   
+  class FailureSet
     extend Protobug::Message
-    
+
     self.full_name = "conformance.FailureSet"
-    
+
     repeated(1, "failure", type: :string)
   end
-  
+
   # Represents a single test case's input.  The testee should:
   #
   #   1. parse this proto (which should always succeed)
   #   2. parse the protobuf or JSON payload in "payload" (which may fail)
   #   3. if the parse succeeded, serialize the message in the requested format.
-  class ConformanceRequest   
+  class ConformanceRequest
     extend Protobug::Message
-    
+
     self.full_name = "conformance.ConformanceRequest"
-    
+
     optional(1, "protobuf_payload", type: :bytes, json_name: "protobufPayload", oneof: :payload)
     optional(2, "json_payload", type: :string, json_name: "jsonPayload", oneof: :payload)
     # Only used inside Google.  Opensource testees just skip it.
@@ -61,13 +61,13 @@ module Conformance
     # unknown fields instead of ignore. This feature is optional.
     optional(9, "print_unknown_fields", type: :bool, json_name: "printUnknownFields")
   end
-  
+
   # Represents a single test case's output.
-  class ConformanceResponse   
+  class ConformanceResponse
     extend Protobug::Message
-    
+
     self.full_name = "conformance.ConformanceResponse"
-    
+
     # This string should be set to indicate parsing failed.  The string can
     # provide more information about the parse error if it is available.
     #
@@ -103,34 +103,34 @@ module Conformance
     # TEXT_FORMAT, serialize to TEXT_FORMAT and set it in this field.
     optional(8, "text_payload", type: :string, json_name: "textPayload", oneof: :result)
   end
-  
+
   # Encoding options for jspb format.
-  class JspbEncodingConfig   
+  class JspbEncodingConfig
     extend Protobug::Message
-    
+
     self.full_name = "conformance.JspbEncodingConfig"
-    
+
     # Encode the value field of Any as jspb array if true, otherwise binary.
     optional(1, "use_jspb_array_any_format", type: :bool, json_name: "useJspbArrayAnyFormat")
   end
-  
-  class WireFormat   
+
+  class WireFormat
     extend Protobug::Enum
-    
+
     self.full_name = "conformance.WireFormat"
-    
+
     UNSPECIFIED = new("UNSPECIFIED", 0).freeze
     PROTOBUF = new("PROTOBUF", 1).freeze
     JSON = new("JSON", 2).freeze
     JSPB = new("JSPB", 3).freeze
     TEXT_FORMAT = new("TEXT_FORMAT", 4).freeze
   end
-  
-  class TestCategory   
+
+  class TestCategory
     extend Protobug::Enum
-    
+
     self.full_name = "conformance.TestCategory"
-    
+
     UNSPECIFIED_TEST = new("UNSPECIFIED_TEST", 0).freeze
     BINARY_TEST = new("BINARY_TEST", 1).freeze
     JSON_TEST = new("JSON_TEST", 2).freeze
@@ -147,8 +147,8 @@ module Conformance
     # this type. Testees of other languages can simply skip it.
     TEXT_FORMAT_TEST = new("TEXT_FORMAT_TEST", 5).freeze
   end
-  
-  def self.register_conformance_protos(registry)   
+
+  def self.register_conformance_protos(registry)
     registry.register(Conformance::FailureSet)
     registry.register(Conformance::ConformanceRequest)
     registry.register(Conformance::ConformanceResponse)

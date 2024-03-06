@@ -30,19 +30,19 @@ require "protobug"
 
 require "google/protobuf/descriptor.proto.pb.rb"
 
-module Google   
-  module Api   
+module Google
+  module Api
     # An indicator of the behavior of a given field (for example, that a field
     # is required in requests, or given as output but ignored as input).
     # This **does not** change the behavior in protocol buffers itself; it only
     # denotes the behavior and may affect how API tooling handles the field.
     #
     # Note: This enum **may** receive new values in the future.
-    class FieldBehavior   
+    class FieldBehavior
       extend Protobug::Enum
-      
+
       self.full_name = "google.api.FieldBehavior"
-      
+
       # Conventional default for enums. Do not use this.
       FIELD_BEHAVIOR_UNSPECIFIED = new("FIELD_BEHAVIOR_UNSPECIFIED", 0).freeze
       # Specifically denotes a field as optional.
@@ -90,13 +90,25 @@ module Google
       # of method-specific annotations, only `IDENTIFIER` is required.
       IDENTIFIER = new("IDENTIFIER", 8).freeze
     end
-    
-    # extension: enum enum 1052
-    
-    def self.register_field_behavior_protos(registry)   
+
+    # A designation of a specific field behavior (required, output only, etc.)
+    # in protobuf messages.
+    #
+    # Examples:
+    #
+    #   string name = 1 [(google.api.field_behavior) = REQUIRED];
+    #   State state = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
+    #   google.protobuf.Duration ttl = 1
+    #     [(google.api.field_behavior) = INPUT_ONLY];
+    #   google.protobuf.Timestamp expire_time = 1
+    #     [(google.api.field_behavior) = OUTPUT_ONLY,
+    #      (google.api.field_behavior) = IMMUTABLE];
+    # extension: #<Google::Protobuf::DescriptorProto:0x0000000120403c08> .google.protobuf.FieldOptions field_behavior 1052
+
+    def self.register_field_behavior_protos(registry)
       Google::Protobuf.register_descriptor_protos(registry)
       registry.register(Google::Api::FieldBehavior)
-      # extension: google.api.field_behavior enum 1052
+      # extension: google.protobuf.FieldOptions TYPE_ENUM 1052
     end
   end
 end

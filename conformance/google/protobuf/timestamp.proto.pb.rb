@@ -46,8 +46,8 @@
 
 require "protobug"
 
-module Google   
-  module Protobuf   
+module Google
+  module Protobuf
     # A Timestamp represents a point in time independent of any time zone or local
     # calendar, encoded as a count of seconds and fractions of seconds at
     # nanosecond resolution. The count is relative to an epoch at UTC midnight on
@@ -137,12 +137,12 @@ module Google
     # the Joda Time's [`ISODateTimeFormat.dateTime()`](
     # http://joda-time.sourceforge.net/apidocs/org/joda/time/format/ISODateTimeFormat.html#dateTime()
     # ) to obtain a formatter capable of generating timestamps in this format.
-    #
-    class Timestamp   
+
+    class Timestamp
       extend Protobug::Message
-      
+
       self.full_name = "google.protobuf.Timestamp"
-      
+
       # Represents seconds of UTC time since Unix epoch
       # 1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to
       # 9999-12-31T23:59:59Z inclusive.
@@ -153,8 +153,8 @@ module Google
       # inclusive.
       optional(2, "nanos", type: :int32)
     end
-    
-    def self.register_timestamp_protos(registry)   
+
+    def self.register_timestamp_protos(registry)
       registry.register(Google::Protobuf::Timestamp)
     end
   end

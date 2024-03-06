@@ -23,7 +23,7 @@
 # - benchmarks
 # - fuzz tests
 # - conformance tests
-#
+
 
 require "protobug"
 
@@ -34,8 +34,8 @@ require "google/protobuf/struct.proto.pb.rb"
 require "google/protobuf/timestamp.proto.pb.rb"
 require "google/protobuf/wrappers.proto.pb.rb"
 
-module Protobuf_test_messages   
-  module Proto3   
+module Protobuf_test_messages
+  module Proto3
     # This proto includes every type of field in both singular and repeated
     # forms.
     #
@@ -43,36 +43,36 @@ module Protobuf_test_messages
     # submessages of this message.  So for example, a fuzz test of TestAllTypes
     # could trigger bugs that occur in any message type in this file.  We verify
     # this stays true in a unit test.
-    class TestAllTypesProto3   
+    class TestAllTypesProto3
       extend Protobug::Message
-      
+
       self.full_name = "protobuf_test_messages.proto3.TestAllTypesProto3"
-      
-      class NestedMessage   
+
+      class NestedMessage
         extend Protobug::Message
-        
+
         self.full_name = "protobuf_test_messages.proto3.TestAllTypesProto3.NestedMessage"
-        
+
         optional(1, "a", type: :int32)
         optional(2, "corecursive", type: :message, message_type: "protobuf_test_messages.proto3.TestAllTypesProto3")
       end
-      
-      class NestedEnum   
+
+      class NestedEnum
         extend Protobug::Enum
-        
+
         self.full_name = "protobuf_test_messages.proto3.TestAllTypesProto3.NestedEnum"
-        
+
         FOO = new("FOO", 0).freeze
         BAR = new("BAR", 1).freeze
         BAZ = new("BAZ", 2).freeze
         NEG = new("NEG", -1).freeze
       end
-      
-      class AliasedEnum   
+
+      class AliasedEnum
         extend Protobug::Enum
-        
+
         self.full_name = "protobuf_test_messages.proto3.TestAllTypesProto3.AliasedEnum"
-        
+
         ALIAS_FOO = new("ALIAS_FOO", 0).freeze
         ALIAS_BAR = new("ALIAS_BAR", 1).freeze
         ALIAS_BAZ = new("ALIAS_BAZ", 2).freeze
@@ -80,6 +80,7 @@ module Protobuf_test_messages
         moo = new("moo", 2).freeze
         bAz = new("bAz", 2).freeze
       end
+
       # Singular
       optional(1, "optional_int32", type: :int32, json_name: "optionalInt32")
       optional(2, "optional_int64", type: :int64, json_name: "optionalInt64")
@@ -105,42 +106,42 @@ module Protobuf_test_messages
       optional(25, "optional_cord", type: :string, json_name: "optionalCord")
       optional(27, "recursive_message", type: :message, message_type: "protobuf_test_messages.proto3.TestAllTypesProto3", json_name: "recursiveMessage")
       # Repeated
-      repeated(31, "repeated_int32", type: :int32, json_name: "repeatedInt32", packed: true)
-      repeated(32, "repeated_int64", type: :int64, json_name: "repeatedInt64", packed: true)
-      repeated(33, "repeated_uint32", type: :uint32, json_name: "repeatedUint32", packed: true)
-      repeated(34, "repeated_uint64", type: :uint64, json_name: "repeatedUint64", packed: true)
-      repeated(35, "repeated_sint32", type: :sint32, json_name: "repeatedSint32", packed: true)
-      repeated(36, "repeated_sint64", type: :sint64, json_name: "repeatedSint64", packed: true)
-      repeated(37, "repeated_fixed32", type: :fixed32, json_name: "repeatedFixed32", packed: true)
-      repeated(38, "repeated_fixed64", type: :fixed64, json_name: "repeatedFixed64", packed: true)
-      repeated(39, "repeated_sfixed32", type: :sfixed32, json_name: "repeatedSfixed32", packed: true)
-      repeated(40, "repeated_sfixed64", type: :sfixed64, json_name: "repeatedSfixed64", packed: true)
-      repeated(41, "repeated_float", type: :float, json_name: "repeatedFloat", packed: true)
-      repeated(42, "repeated_double", type: :double, json_name: "repeatedDouble", packed: true)
-      repeated(43, "repeated_bool", type: :bool, json_name: "repeatedBool", packed: true)
+      repeated(31, "repeated_int32", type: :int32, packed: true, json_name: "repeatedInt32")
+      repeated(32, "repeated_int64", type: :int64, packed: true, json_name: "repeatedInt64")
+      repeated(33, "repeated_uint32", type: :uint32, packed: true, json_name: "repeatedUint32")
+      repeated(34, "repeated_uint64", type: :uint64, packed: true, json_name: "repeatedUint64")
+      repeated(35, "repeated_sint32", type: :sint32, packed: true, json_name: "repeatedSint32")
+      repeated(36, "repeated_sint64", type: :sint64, packed: true, json_name: "repeatedSint64")
+      repeated(37, "repeated_fixed32", type: :fixed32, packed: true, json_name: "repeatedFixed32")
+      repeated(38, "repeated_fixed64", type: :fixed64, packed: true, json_name: "repeatedFixed64")
+      repeated(39, "repeated_sfixed32", type: :sfixed32, packed: true, json_name: "repeatedSfixed32")
+      repeated(40, "repeated_sfixed64", type: :sfixed64, packed: true, json_name: "repeatedSfixed64")
+      repeated(41, "repeated_float", type: :float, packed: true, json_name: "repeatedFloat")
+      repeated(42, "repeated_double", type: :double, packed: true, json_name: "repeatedDouble")
+      repeated(43, "repeated_bool", type: :bool, packed: true, json_name: "repeatedBool")
       repeated(44, "repeated_string", type: :string, json_name: "repeatedString")
       repeated(45, "repeated_bytes", type: :bytes, json_name: "repeatedBytes")
       repeated(48, "repeated_nested_message", type: :message, message_type: "protobuf_test_messages.proto3.TestAllTypesProto3.NestedMessage", json_name: "repeatedNestedMessage")
       repeated(49, "repeated_foreign_message", type: :message, message_type: "protobuf_test_messages.proto3.ForeignMessage", json_name: "repeatedForeignMessage")
-      repeated(51, "repeated_nested_enum", type: :enum, enum_type: "protobuf_test_messages.proto3.TestAllTypesProto3.NestedEnum", json_name: "repeatedNestedEnum", packed: true)
-      repeated(52, "repeated_foreign_enum", type: :enum, enum_type: "protobuf_test_messages.proto3.ForeignEnum", json_name: "repeatedForeignEnum", packed: true)
+      repeated(51, "repeated_nested_enum", type: :enum, enum_type: "protobuf_test_messages.proto3.TestAllTypesProto3.NestedEnum", json_name: "repeatedNestedEnum")
+      repeated(52, "repeated_foreign_enum", type: :enum, enum_type: "protobuf_test_messages.proto3.ForeignEnum", json_name: "repeatedForeignEnum")
       repeated(54, "repeated_string_piece", type: :string, json_name: "repeatedStringPiece")
       repeated(55, "repeated_cord", type: :string, json_name: "repeatedCord")
       # Packed
-      repeated(75, "packed_int32", type: :int32, json_name: "packedInt32", packed: true)
-      repeated(76, "packed_int64", type: :int64, json_name: "packedInt64", packed: true)
-      repeated(77, "packed_uint32", type: :uint32, json_name: "packedUint32", packed: true)
-      repeated(78, "packed_uint64", type: :uint64, json_name: "packedUint64", packed: true)
-      repeated(79, "packed_sint32", type: :sint32, json_name: "packedSint32", packed: true)
-      repeated(80, "packed_sint64", type: :sint64, json_name: "packedSint64", packed: true)
-      repeated(81, "packed_fixed32", type: :fixed32, json_name: "packedFixed32", packed: true)
-      repeated(82, "packed_fixed64", type: :fixed64, json_name: "packedFixed64", packed: true)
-      repeated(83, "packed_sfixed32", type: :sfixed32, json_name: "packedSfixed32", packed: true)
-      repeated(84, "packed_sfixed64", type: :sfixed64, json_name: "packedSfixed64", packed: true)
-      repeated(85, "packed_float", type: :float, json_name: "packedFloat", packed: true)
-      repeated(86, "packed_double", type: :double, json_name: "packedDouble", packed: true)
-      repeated(87, "packed_bool", type: :bool, json_name: "packedBool", packed: true)
-      repeated(88, "packed_nested_enum", type: :enum, enum_type: "protobuf_test_messages.proto3.TestAllTypesProto3.NestedEnum", json_name: "packedNestedEnum", packed: true)
+      repeated(75, "packed_int32", type: :int32, packed: true, json_name: "packedInt32")
+      repeated(76, "packed_int64", type: :int64, packed: true, json_name: "packedInt64")
+      repeated(77, "packed_uint32", type: :uint32, packed: true, json_name: "packedUint32")
+      repeated(78, "packed_uint64", type: :uint64, packed: true, json_name: "packedUint64")
+      repeated(79, "packed_sint32", type: :sint32, packed: true, json_name: "packedSint32")
+      repeated(80, "packed_sint64", type: :sint64, packed: true, json_name: "packedSint64")
+      repeated(81, "packed_fixed32", type: :fixed32, packed: true, json_name: "packedFixed32")
+      repeated(82, "packed_fixed64", type: :fixed64, packed: true, json_name: "packedFixed64")
+      repeated(83, "packed_sfixed32", type: :sfixed32, packed: true, json_name: "packedSfixed32")
+      repeated(84, "packed_sfixed64", type: :sfixed64, packed: true, json_name: "packedSfixed64")
+      repeated(85, "packed_float", type: :float, packed: true, json_name: "packedFloat")
+      repeated(86, "packed_double", type: :double, packed: true, json_name: "packedDouble")
+      repeated(87, "packed_bool", type: :bool, packed: true, json_name: "packedBool")
+      repeated(88, "packed_nested_enum", type: :enum, enum_type: "protobuf_test_messages.proto3.TestAllTypesProto3.NestedEnum", packed: true, json_name: "packedNestedEnum")
       # Unpacked
       repeated(89, "unpacked_int32", type: :int32, json_name: "unpackedInt32")
       repeated(90, "unpacked_int64", type: :int64, json_name: "unpackedInt64")
@@ -157,25 +158,25 @@ module Protobuf_test_messages
       repeated(101, "unpacked_bool", type: :bool, json_name: "unpackedBool")
       repeated(102, "unpacked_nested_enum", type: :enum, enum_type: "protobuf_test_messages.proto3.TestAllTypesProto3.NestedEnum", json_name: "unpackedNestedEnum")
       # Map
-      # map<int32, int32>: map_int32_int32
-      # map<int64, int64>: map_int64_int64
-      # map<uint32, uint32>: map_uint32_uint32
-      # map<uint64, uint64>: map_uint64_uint64
-      # map<sint32, sint32>: map_sint32_sint32
-      # map<sint64, sint64>: map_sint64_sint64
-      # map<fixed32, fixed32>: map_fixed32_fixed32
-      # map<fixed64, fixed64>: map_fixed64_fixed64
-      # map<sfixed32, sfixed32>: map_sfixed32_sfixed32
-      # map<sfixed64, sfixed64>: map_sfixed64_sfixed64
-      # map<int32, float>: map_int32_float
-      # map<int32, double>: map_int32_double
-      # map<bool, bool>: map_bool_bool
-      # map<string, string>: map_string_string
-      # map<string, bytes>: map_string_bytes
-      # map<string, message>: map_string_nested_message
-      # map<string, message>: map_string_foreign_message
-      # map<string, enum>: map_string_nested_enum
-      # map<string, enum>: map_string_foreign_enum
+      map(56, "map_int32_int32", type: :map, key_type: :int32, value_type: :int32, packed: true, json_name: "mapInt32Int32")
+      map(57, "map_int64_int64", type: :map, key_type: :int64, value_type: :int64, packed: true, json_name: "mapInt64Int64")
+      map(58, "map_uint32_uint32", type: :map, key_type: :uint32, value_type: :uint32, packed: true, json_name: "mapUint32Uint32")
+      map(59, "map_uint64_uint64", type: :map, key_type: :uint64, value_type: :uint64, packed: true, json_name: "mapUint64Uint64")
+      map(60, "map_sint32_sint32", type: :map, key_type: :sint32, value_type: :sint32, packed: true, json_name: "mapSint32Sint32")
+      map(61, "map_sint64_sint64", type: :map, key_type: :sint64, value_type: :sint64, packed: true, json_name: "mapSint64Sint64")
+      map(62, "map_fixed32_fixed32", type: :map, key_type: :fixed32, value_type: :fixed32, packed: true, json_name: "mapFixed32Fixed32")
+      map(63, "map_fixed64_fixed64", type: :map, key_type: :fixed64, value_type: :fixed64, packed: true, json_name: "mapFixed64Fixed64")
+      map(64, "map_sfixed32_sfixed32", type: :map, key_type: :sfixed32, value_type: :sfixed32, packed: true, json_name: "mapSfixed32Sfixed32")
+      map(65, "map_sfixed64_sfixed64", type: :map, key_type: :sfixed64, value_type: :sfixed64, packed: true, json_name: "mapSfixed64Sfixed64")
+      map(66, "map_int32_float", type: :map, key_type: :int32, value_type: :float, packed: true, json_name: "mapInt32Float")
+      map(67, "map_int32_double", type: :map, key_type: :int32, value_type: :double, packed: true, json_name: "mapInt32Double")
+      map(68, "map_bool_bool", type: :map, key_type: :bool, value_type: :bool, packed: true, json_name: "mapBoolBool")
+      map(69, "map_string_string", type: :map, key_type: :string, value_type: :string, packed: true, json_name: "mapStringString")
+      map(70, "map_string_bytes", type: :map, key_type: :string, value_type: :bytes, packed: true, json_name: "mapStringBytes")
+      map(71, "map_string_nested_message", type: :map, key_type: :string, value_type: :message, packed: true, json_name: "mapStringNestedMessage")
+      map(72, "map_string_foreign_message", type: :map, key_type: :string, value_type: :message, packed: true, json_name: "mapStringForeignMessage")
+      map(73, "map_string_nested_enum", type: :map, key_type: :string, value_type: :enum, packed: true, json_name: "mapStringNestedEnum")
+      map(74, "map_string_foreign_enum", type: :map, key_type: :string, value_type: :enum, packed: true, json_name: "mapStringForeignEnum")
       optional(111, "oneof_uint32", type: :uint32, json_name: "oneofUint32", oneof: :oneof_field)
       optional(112, "oneof_nested_message", type: :message, message_type: "protobuf_test_messages.proto3.TestAllTypesProto3.NestedMessage", json_name: "oneofNestedMessage", oneof: :oneof_field)
       optional(113, "oneof_string", type: :string, json_name: "oneofString", oneof: :oneof_field)
@@ -239,50 +240,50 @@ module Protobuf_test_messages
       optional(416, "field__Name16", type: :int32, json_name: "fieldName16")
       optional(417, "field_name17__", type: :int32, json_name: "fieldName17")
       optional(418, "Field_name18__", type: :int32, json_name: "FieldName18")
-      reserved_range(501 ... 511)
+      reserved_range(501...511)
     end
-    
-    class ForeignMessage   
+
+    class ForeignMessage
       extend Protobug::Message
-      
+
       self.full_name = "protobuf_test_messages.proto3.ForeignMessage"
-      
+
       optional(1, "c", type: :int32)
     end
-    
-    class NullHypothesisProto3   
+
+    class NullHypothesisProto3
       extend Protobug::Message
-      
+
       self.full_name = "protobuf_test_messages.proto3.NullHypothesisProto3"
-    
+
     end
-    
-    class EnumOnlyProto3   
+
+    class EnumOnlyProto3
       extend Protobug::Message
-      
+
       self.full_name = "protobuf_test_messages.proto3.EnumOnlyProto3"
-      
-      class Bool   
+
+      class Bool
         extend Protobug::Enum
-        
+
         self.full_name = "protobuf_test_messages.proto3.EnumOnlyProto3.Bool"
-        
+
         kFalse = new("kFalse", 0).freeze
         kTrue = new("kTrue", 1).freeze
       end
     end
-    
-    class ForeignEnum   
+
+    class ForeignEnum
       extend Protobug::Enum
-      
+
       self.full_name = "protobuf_test_messages.proto3.ForeignEnum"
-      
+
       FOREIGN_FOO = new("FOREIGN_FOO", 0).freeze
       FOREIGN_BAR = new("FOREIGN_BAR", 1).freeze
       FOREIGN_BAZ = new("FOREIGN_BAZ", 2).freeze
     end
-    
-    def self.register_test_messages_proto3_protos(registry)   
+
+    def self.register_test_messages_proto3_protos(registry)
       Google::Protobuf.register_any_protos(registry)
       Google::Protobuf.register_duration_protos(registry)
       Google::Protobuf.register_field_mask_protos(registry)

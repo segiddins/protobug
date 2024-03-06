@@ -31,22 +31,22 @@ require "protobug"
 require "google/api/field_behavior.proto.pb.rb"
 require "sigstore/common/v1/sigstore_common.proto.pb.rb"
 
-module Sigstore   
-  module Rekor   
-    module V1   
+module Sigstore
+  module Rekor
+    module V1
       # KindVersion contains the entry's kind and api version.
-      class KindVersion   
+      class KindVersion
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.rekor.v1.KindVersion"
-        
+
         # Kind is the type of entry being stored in the log.
         # See here for a list: https://github.com/sigstore/rekor/tree/main/pkg/types
         optional(1, "kind", type: :string)
         # The specific api version of the type.
         optional(2, "version", type: :string)
       end
-      
+
       # The checkpoint contains a signature of the tree head (root hash),
       # size of the tree, the transparency log's unique identifier (log ID),
       # hostname and the current time.
@@ -55,21 +55,21 @@ module Sigstore
       # The details are here https://github.com/sigstore/rekor/blob/a6e58f72b6b18cc06cefe61808efd562b9726330/pkg/util/signed_note.go#L114
       # The signature has the same format as
       # InclusionPromise.signed_entry_timestamp. See below for more details.
-      class Checkpoint   
+      class Checkpoint
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.rekor.v1.Checkpoint"
-        
+
         optional(1, "envelope", type: :string)
       end
-      
+
       # InclusionProof is the proof returned from the transparency log. Can
       # be used for offline or online verification against the log.
-      class InclusionProof   
+      class InclusionProof
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.rekor.v1.InclusionProof"
-        
+
         # The index of the entry in the tree it was written to.
         optional(1, "log_index", type: :int64, json_name: "logIndex")
         # The hash digest stored at the root of the merkle tree at the time
@@ -87,7 +87,7 @@ module Sigstore
         # generated. See above info on 'Checkpoint' for more details.
         optional(5, "checkpoint", type: :message, message_type: "dev.sigstore.rekor.v1.Checkpoint")
       end
-      
+
       # The inclusion promise is calculated by Rekor. It's calculated as a
       # signature over a canonical JSON serialization of the persisted entry, the
       # log ID, log index and the integration timestamp.
@@ -98,14 +98,14 @@ module Sigstore
       # operators, together with the public key.
       # This is used to verify the integration timestamp's value and that the log
       # has promised to include the entry.
-      class InclusionPromise   
+      class InclusionPromise
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.rekor.v1.InclusionPromise"
-        
+
         optional(1, "signed_entry_timestamp", type: :bytes, json_name: "signedEntryTimestamp")
       end
-      
+
       # TransparencyLogEntry captures all the details required from Rekor to
       # reconstruct an entry, given that the payload is provided via other means.
       # This type can easily be created from the existing response from Rekor.
@@ -114,11 +114,11 @@ module Sigstore
       # inclusion promise. The inclusion promise (called SignedEntryTimestamp in
       # the response from Rekor) is similar to a Signed Certificate Timestamp
       # as described here https://www.rfc-editor.org/rfc/rfc6962.html#section-3.2.
-      class TransparencyLogEntry   
+      class TransparencyLogEntry
         extend Protobug::Message
-        
+
         self.full_name = "dev.sigstore.rekor.v1.TransparencyLogEntry"
-        
+
         # The global index of the entry, used when querying the log by index.
         optional(1, "log_index", type: :int64, json_name: "logIndex")
         # The unique identifier of the log.
@@ -158,8 +158,8 @@ module Sigstore
         # payload from other sources to verify the signature.
         optional(7, "canonicalized_body", type: :bytes, json_name: "canonicalizedBody")
       end
-      
-      def self.register_sigstore_rekor_protos(registry)   
+
+      def self.register_sigstore_rekor_protos(registry)
         Google::Api.register_field_behavior_protos(registry)
         Sigstore::Common::V1.register_sigstore_common_protos(registry)
         registry.register(Sigstore::Rekor::V1::KindVersion)

@@ -46,8 +46,8 @@
 
 require "protobug"
 
-module Google   
-  module Protobuf   
+module Google
+  module Protobuf
     # `FieldMask` represents a set of symbolic field paths, for example:
     #
     #     paths: "f.a"
@@ -247,16 +247,16 @@ module Google
     # The implementation of any API method which has a FieldMask type field in the
     # request should verify the included field paths, and return an
     # `INVALID_ARGUMENT` error if any path is unmappable.
-    class FieldMask   
+    class FieldMask
       extend Protobug::Message
-      
+
       self.full_name = "google.protobuf.FieldMask"
-      
+
       # The set of field mask paths.
       repeated(1, "paths", type: :string)
     end
-    
-    def self.register_field_mask_protos(registry)   
+
+    def self.register_field_mask_protos(registry)
       registry.register(Google::Protobuf::FieldMask)
     end
   end

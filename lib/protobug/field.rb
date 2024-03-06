@@ -1,10 +1,15 @@
 module Protobug
   class Field
-    attr_accessor :number, :name, :type, :json_name, :cardinality, :oneof, :ivar, :setter, :message_type, :enum_type, :adder
+    attr_accessor :number, :name, :type, :json_name, :cardinality, :oneof, :ivar, :setter, :message_type, :enum_type,
+                  :adder
 
-    def initialize(number, name, type: nil, json_name: nil, cardinality: :optional, oneof: nil, message_type: nil, enum_type: nil, packed: false)
+    def initialize(number, name, type: nil, json_name: nil, cardinality: :optional, oneof: nil, message_type: nil,
+                   enum_type: nil, packed: false, key_type: nil, value_type: nil, group_type: nil)
       raise "message_type only allowed for message fields" if !!message_type ^ type == :message
       raise "enum_type only allowed for enum fields" if !!enum_type ^ type == :enum
+      raise "key_type only allowed for map fields" if !!key_type ^ type == :map
+      raise "value_type only allowed for map fields" if !!value_type ^ type == :map
+      raise "group_type only allowed for group fields" if !!group_type ^ type == :group
       @number = number
       @name = name.to_sym
       @type = type
@@ -76,7 +81,7 @@ module Protobug
     end
 
     def to_text(value)
-      case [cardinality, scalar?]
+      case [cardinality, json_scalar?]
       when [:repeated, true]
         Array(value).map { |v| "#{name}: #{scalar_to_text(v)}" }.join("\n")
       when [:repeated, false]
@@ -92,15 +97,15 @@ module Protobug
 
     def scalar?
       case type
-      when :message
-        if @message_type == "google.protobuf.Timestamp"
-          true
-        else
-          false
-        end
+      when :enum, :message
+        false
       else
         true
       end
+    end
+
+    def json_scalar?
+      scalar? || (type == :message && %w[google.protobuf.Timestamp google.protobuf.duration].include?(message_type))
     end
 
     def scalar_to_text(value)

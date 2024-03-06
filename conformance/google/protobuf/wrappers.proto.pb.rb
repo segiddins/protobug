@@ -56,117 +56,117 @@
 
 require "protobug"
 
-module Google   
-  module Protobuf   
+module Google
+  module Protobuf
     # Wrapper message for `double`.
     #
     # The JSON representation for `DoubleValue` is JSON number.
-    class DoubleValue   
+    class DoubleValue
       extend Protobug::Message
-      
+
       self.full_name = "google.protobuf.DoubleValue"
-      
+
       # The double value.
       optional(1, "value", type: :double)
     end
-    
+
     # Wrapper message for `float`.
     #
     # The JSON representation for `FloatValue` is JSON number.
-    class FloatValue   
+    class FloatValue
       extend Protobug::Message
-      
+
       self.full_name = "google.protobuf.FloatValue"
-      
+
       # The float value.
       optional(1, "value", type: :float)
     end
-    
+
     # Wrapper message for `int64`.
     #
     # The JSON representation for `Int64Value` is JSON string.
-    class Int64Value   
+    class Int64Value
       extend Protobug::Message
-      
+
       self.full_name = "google.protobuf.Int64Value"
-      
+
       # The int64 value.
       optional(1, "value", type: :int64)
     end
-    
+
     # Wrapper message for `uint64`.
     #
     # The JSON representation for `UInt64Value` is JSON string.
-    class UInt64Value   
+    class UInt64Value
       extend Protobug::Message
-      
+
       self.full_name = "google.protobuf.UInt64Value"
-      
+
       # The uint64 value.
       optional(1, "value", type: :uint64)
     end
-    
+
     # Wrapper message for `int32`.
     #
     # The JSON representation for `Int32Value` is JSON number.
-    class Int32Value   
+    class Int32Value
       extend Protobug::Message
-      
+
       self.full_name = "google.protobuf.Int32Value"
-      
+
       # The int32 value.
       optional(1, "value", type: :int32)
     end
-    
+
     # Wrapper message for `uint32`.
     #
     # The JSON representation for `UInt32Value` is JSON number.
-    class UInt32Value   
+    class UInt32Value
       extend Protobug::Message
-      
+
       self.full_name = "google.protobuf.UInt32Value"
-      
+
       # The uint32 value.
       optional(1, "value", type: :uint32)
     end
-    
+
     # Wrapper message for `bool`.
     #
     # The JSON representation for `BoolValue` is JSON `true` and `false`.
-    class BoolValue   
+    class BoolValue
       extend Protobug::Message
-      
+
       self.full_name = "google.protobuf.BoolValue"
-      
+
       # The bool value.
       optional(1, "value", type: :bool)
     end
-    
+
     # Wrapper message for `string`.
     #
     # The JSON representation for `StringValue` is JSON string.
-    class StringValue   
+    class StringValue
       extend Protobug::Message
-      
+
       self.full_name = "google.protobuf.StringValue"
-      
+
       # The string value.
       optional(1, "value", type: :string)
     end
-    
+
     # Wrapper message for `bytes`.
     #
     # The JSON representation for `BytesValue` is JSON string.
-    class BytesValue   
+    class BytesValue
       extend Protobug::Message
-      
+
       self.full_name = "google.protobuf.BytesValue"
-      
+
       # The bytes value.
       optional(1, "value", type: :bytes)
     end
-    
-    def self.register_wrappers_protos(registry)   
+
+    def self.register_wrappers_protos(registry)
       registry.register(Google::Protobuf::DoubleValue)
       registry.register(Google::Protobuf::FloatValue)
       registry.register(Google::Protobuf::Int64Value)

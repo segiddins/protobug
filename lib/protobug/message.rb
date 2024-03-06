@@ -59,6 +59,12 @@ module Protobug
       field(number, name, cardinality: :repeated, **kwargs)
     end
 
+    def map(number, name, **kwargs)
+      raise ArgumentError,
+            "expected type: :map, got #{kwargs[:type].inspect}" if kwargs[:type] && kwargs[:type] != :map
+      repeated(number, name, type: :map, **kwargs)
+    end
+
     def required(number, name, **kwargs)
       raise ArgumentError,
             "expected cardinality: :required, got #{kwargs[:cardinality].inspect}" if kwargs[:cardinality] && kwargs[:cardinality] != :required
@@ -405,8 +411,6 @@ module Protobug
         end
         instance_variable_set(:"@#{name}", value)
       end
-
-
 
       define_method(name) do
         value = instance_variable_get(:"@#{name}")
