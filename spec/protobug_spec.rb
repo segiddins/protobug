@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-require 'json'
+
+require "json"
 
 RSpec.describe Protobug do
   it "has a version number" do
@@ -16,6 +17,11 @@ RSpec.describe Protobug do
     optional 1, :n, type: :int32
   end
 
+  test_sint = Class.new do
+    extend Protobug::Message
+    optional 1, :n32, type: :sint32
+    optional 2, :n64, type: :sint64
+  end
 
   it "binary encodes" do
     msg = test2.new
@@ -94,7 +100,7 @@ RSpec.describe Protobug do
 
     ["1970-01-01T00:00:00.000Z", "2023-04-14T00:00:00.000Z"].each do |json|
       msg = c.decode_json(JSON.generate(a: json), registry: registry)
-      expect(JSON.parse(msg.to_json)).to eq("a" =>json)
+      expect(JSON.parse(msg.to_json)).to eq("a" => json)
     end
   end
 
@@ -109,5 +115,40 @@ RSpec.describe Protobug do
     decoded = c.decode(io, registry: nil)
     expect(decoded.f).to eq([3, 270, 86942])
     expect(io).to be_eof
+  end
+
+  it "parses sint32 and sint64" do
+    msg = test_sint.new
+    msg.n32 = 4
+    msg.n64 = -1
+    encoded = test_sint.encode(msg)
+    decoded = test_sint.decode(StringIO.new(encoded), registry: nil)
+    aggregate_failures do
+      expect(encoded).to eq("\x08\x08\x10\x03".b)
+      expect(decoded.n32).to eq(4)
+      expect(decoded.n64).to eq(-1)
+    end
+  end
+
+  it "parses fixed32 and fixed64" do
+    c = Class.new do
+      extend Protobug::Message
+      optional 1, :f, type: :fixed64
+      optional 2, :f32, type: :fixed32
+      optional 3, :sf64, type: :sfixed64
+      optional 4, :sf32, type: :sfixed32
+    end
+    msg = c.new
+    msg.f = 3
+    msg.f32 = 72
+    msg.sf64 = -1
+    msg.sf32 = 76
+    aggregate_failures do
+      encoded = c.encode(msg)
+      decoded = c.decode(StringIO.new(encoded), registry: nil)
+
+      expect(decoded.f).to eq(3)
+      expect(decoded.f32).to eq(72)
+    end
   end
 end

@@ -20,3 +20,6 @@ Layout/LineLength:
 
 Metrics:
   Enabled: false
+
+Style/MultilineBlockChain:
+  Enabled: false

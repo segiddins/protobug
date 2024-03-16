@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require_relative "lib/protobug/version"
+require_relative "../lib/protobug/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "protobug"
+  spec.name = "protobug-compiler"
   spec.version = Protobug::VERSION
   spec.authors = ["Samuel Giddins"]
   spec.email = ["segiddins@segiddins.me"]
 
-  spec.summary = "An embeddable protobuf compiler & runtime for Ruby"
+  spec.summary = "An protobuf compiler for protobug"
   spec.homepage = "https://github.com/segiddins/protobug"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.0.0"
@@ -29,4 +29,10 @@ Gem::Specification.new do |spec|
   spec.bindir = "exe"
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
+
+  spec.add_dependency "delegate"
+  spec.add_dependency "forwardable"
+  spec.add_dependency "prettier_print", "~> 1.2", ">= 1.2.1"
+
+  spec.add_dependency "protobug", spec.version
 end

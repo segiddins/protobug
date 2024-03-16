@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "compiler/google/protobuf/descriptor.proto.pb"
 require_relative "compiler/builder"
 
@@ -20,7 +22,6 @@ module Protobug
 
     attr_reader :request, :response, :files
 
-
     class Files
       def initialize
         @descs_by_name = {}
@@ -28,8 +29,8 @@ module Protobug
         @num_files = 0
       end
 
-      def register_file(f)
-        @files_by_path[f.name] = register_decl(FileDescriptorProto.new(f, nil, path: []))
+      def register_file(file)
+        @files_by_path[file.name] = register_decl(FileDescriptorProto.new(file, nil, path: []))
       end
 
       def fetch(name)
@@ -98,7 +99,9 @@ module Protobug
           return file.options.ruby_package if file.options.ruby_package?
 
           parts = descriptor.package.split(".")
-          parts.map!(&:capitalize)
+          parts.map! do |part|
+            part.split("_").map(&:capitalize).join
+          end
           parts.join("::")
         end
       end
@@ -194,7 +197,7 @@ module Protobug
         files.register_file(file)
       end
 
-      request.proto_file.each do |file|
+      request.proto_file.each do |file| # rubocop:disable Style/CombinableLoops
         file = files.fetch(file.name)
         file_out = Google::Protobuf::Compiler::CodeGeneratorResponse::File.new
         file_out.name = file.file_name
@@ -206,7 +209,6 @@ module Protobug
     def emit_decls(descriptor, group)
       source_loc = descriptor.source_loc
       return unless source_loc
-
 
       source_loc.leading_detached_comments.each do |c|
         group.comment(c)
@@ -221,18 +223,18 @@ module Protobug
           g.identifier("extend").identifier("Protobug::Message")
           g.empty
           g.identifier("self").dot("full_name").op("=").literal(descriptor.full_name)
-          g.empty
 
-          requires_empty = false
+          requires_empty = true
           descriptor.each_declaration do |decl|
             g.empty if requires_empty
-            requires_empty = !decl.is_a?(FieldDescriptorProto)
-            emit_decls(decl, g)
+            requires_empty = emit_decls(decl, g) &&
+                             !decl.is_a?(FieldDescriptorProto) && !decl.is_a?(OneofDescriptorProto)
           end
 
           if descriptor.reserved_range.any? || descriptor.reserved_name.any?
             g.empty
-            descriptor.file.loc_by_path(descriptor.source_loc.path + [DescriptorProto.fields_by_name.fetch("reserved_range").number])&.tap do |loc|
+            descriptor.file.loc_by_path(descriptor.source_loc.path +
+                                        [DescriptorProto.fields_by_name.fetch("reserved_range").number])&.tap do |loc|
               g.comment(loc.leading_comments) if loc.leading_comments?
             end
             descriptor.reserved_range.each_with_index do |range, idx|
@@ -282,12 +284,18 @@ module Protobug
         group.identifier(descriptor.name).op("=").identifier("new").call do |c|
           c.literal(descriptor.name)
           c.literal(descriptor.number)
-        end.dot("freeze") # rubocop:disable Style/MultilineBlockChain
+        end.dot("freeze")
       when FieldDescriptorProto
         if descriptor.extendee?
-          containing_type = files.fetch_type(descriptor.extendee.start_with?(".") ? descriptor.extendee[1..] : "#{descriptor.parent.full_name}.#{descriptor.extendee}")
-          group.comment("extension: #{containing_type.full_name} #{descriptor.name} #{descriptor.number}")
-          return
+          containing_type = files.fetch_type(
+            if descriptor.extendee.start_with?(".")
+              descriptor.extendee[1..]
+            else
+              "#{descriptor.parent.full_name}.#{descriptor.extendee}"
+            end
+          )
+          group.comment("extension: #{containing_type.full_name}\n  #{descriptor.name} #{descriptor.number}")
+          return # rubocop:disable Lint/NonLocalExitFromIterator
         end
 
         type = descriptor.type.name.downcase.delete_prefix("type_").to_sym
@@ -318,15 +326,19 @@ module Protobug
           c.identifier("type:").literal(type)
 
           if type == :map
-            c.identifier("key_type:").literal(referenced_type.field[0].type.name.downcase.delete_prefix("type_").to_sym)
-            c.identifier("value_type:").literal(referenced_type.field[1].type.name.downcase.delete_prefix("type_").to_sym)
+            c.identifier("key_type:")
+             .literal(referenced_type.field[0].type.name.downcase.delete_prefix("type_").to_sym)
+            c.identifier("value_type:")
+             .literal(referenced_type.field[1].type.name.downcase.delete_prefix("type_").to_sym)
           elsif descriptor.type_name?
             c.identifier("#{type}_type:").literal(descriptor.type_name.delete_prefix("."))
           end
 
           packed = descriptor.options&.packed
-          if !descriptor.options&.packed? && !%i[enum message bytes string].include?(type) # TODO: exclude other types that cannot be packed
-            packed = descriptor.label == Google::Protobuf::FieldDescriptorProto::Label::LABEL_REPEATED && descriptor.file.syntax == "proto3"
+          # TODO: exclude other types that cannot be packed
+          if !descriptor.options&.packed? && !%i[enum message bytes string].include?(type)
+            packed = descriptor.label == Google::Protobuf::FieldDescriptorProto::Label::LABEL_REPEATED &&
+                     descriptor.file.syntax == "proto3"
           end
           c.identifier("packed:").literal(packed) if packed
           if descriptor.json_name? && descriptor.json_name != descriptor.name
@@ -341,6 +353,7 @@ module Protobug
           end
         end
       when OneofDescriptorProto
+        group.empty if source_loc.leading_comments?
         # no-op
       else
         raise "Unknown descriptor type: #{descriptor.class}"
@@ -350,7 +363,7 @@ module Protobug
     end
 
     def file_contents(files, file) = Builder.build_file do |f|
-      f.header_comment "# frozen_string_literal: true"
+      f.header_comment "frozen_string_literal: true"
       f.header_comment "Code generated by protoc-gen-protobug. DO NOT EDIT."
 
       f.empty
@@ -382,7 +395,7 @@ module Protobug
       if file.dependency.any?
         f.empty
         file.dependency.each do |dep|
-          f.identifier("require").literal(files.fetch(dep).file_name)
+          f.identifier("require").literal(files.fetch(dep).file_name.delete_suffix(".rb"))
         end
       end
 
@@ -407,7 +420,9 @@ module Protobug
         c.identifier("registry")
       end.block do |defn|
         file.dependency.each do |dep|
-          defn.identifier(files.fetch(dep).to_constant).dot("register_#{File.basename dep.delete_suffix(".proto")}_protos").call do |c|
+          defn.identifier(files.fetch(dep).to_constant)
+              .dot("register_#{File.basename dep.delete_suffix(".proto")}_protos")
+              .call do |c|
             c.identifier("registry")
           end
         end
@@ -426,8 +441,14 @@ module Protobug
       when FieldDescriptorProto
         return unless descriptor.extendee?
 
-        containing_type = files.fetch_type(descriptor.extendee.start_with?(".") ? descriptor.extendee[1..] : "#{descriptor.parent.full_name}.#{descriptor.extendee}")
-        defn.comment("extension: #{containing_type.full_name} #{descriptor.type} #{descriptor.number}")
+        containing_type = files.fetch_type(
+          if descriptor.extendee.start_with?(".")
+            descriptor.extendee[1..]
+          else
+            "#{descriptor.parent.full_name}.#{descriptor.extendee}"
+          end
+        )
+        defn.comment("extension: #{containing_type.full_name}\n  #{descriptor.type} #{descriptor.number}")
       when FileDescriptorProto, EnumValueDescriptorProto, ServiceDescriptorProto, OneofDescriptorProto
         # no-op
       else

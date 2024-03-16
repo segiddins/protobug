@@ -11,4 +11,4 @@ require_relative "protobug/base_descriptor"
 require_relative "protobug/enum"
 require_relative "protobug/message"
 require_relative "protobug/registry"
-require 'date'
+require "date"

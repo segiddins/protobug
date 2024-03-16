@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 namespace :compiler do
-  file "lib/protobug/compiler/builder_gen.rb" => FileList["lib/protobug/compiler/*.rb"].include(__FILE__).exclude("lib/protobug/compiler/builder_gen.rb") do
+  file "protobug-compiler/lib/protobug/compiler/builder_gen.rb" => FileList["protobug-compiler/lib/**/*.rb"]
+    .include(__FILE__).exclude("protobug-compiler/lib/protobug/compiler/builder_gen.rb") do
     keywords = %w[
       alias
       and
@@ -34,20 +37,20 @@ namespace :compiler do
     ].freeze
 
     groups = {
-      parens: { open: "(", close: ")", parameters: %w[item] },
-      list: { variadic: true, separator: ",", parameters: %w[items] },
+      parens: { open: "(", close: ")", parameters: %w[item], indent: 2 },
+      list: { variadic: true, separator: ",", parameters: %w[items], indent: 2 },
       index: { variadic: true, open: "[", close: "]", separator: ",", parameters: %w[items] },
-      call: { variadic: true, open: "(", close: ")", separator: ", ", parameters: %w[args] }
+      call: { variadic: true, open: "(", close: ")", separator: ", ", parameters: %w[args], indent: 2 }
     }.freeze
 
-    require_relative "../lib/protobug/compiler/builder"
+    require_relative "../protobug-compiler/lib/protobug/compiler/builder"
 
     contents = Protobug::Compiler::Builder.build_file do |f|
       f.header_comment "# frozen_string_literal: true"
 
-      f._module.identifier("Protobug").block do |mod|
-        mod._class.identifier("Compiler").block do |mod|
-          mod._module.identifier("Builder").block do |mod|
+      f._module.identifier("Protobug").block do |protobug_mod|
+        protobug_mod._class.identifier("Compiler").block do |compiler_mod|
+          compiler_mod._module.identifier("Builder").block do |mod|
             mod._class.identifier("Statement").block do |cls|
               first = true
               keywords.each do |keyword|
@@ -114,7 +117,6 @@ namespace :compiler do
       end
     end
 
-    File.write("lib/protobug/compiler/builder_gen.rb", contents) if eval(contents.sub("module Protobug",
-                                                                                      "module Protobug2"))
+    File.write("protobug-compiler/lib/protobug/compiler/builder_gen.rb", contents)
   end
 end

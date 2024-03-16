@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Protobug
   class Registry
     def initialize(&blk)
@@ -14,10 +16,15 @@ module Protobug
     end
 
     def register(klass)
-      raise ArgumentError, "expected Protobug::BaseDescriptor, got #{klass.inspect}" unless klass.is_a? Protobug::BaseDescriptor
+      unless klass.is_a? Protobug::BaseDescriptor
+        raise ArgumentError,
+              "expected Protobug::BaseDescriptor, got #{klass.inspect}"
+      end
+
       full_name = klass.full_name
       existing = @registry[full_name]
       raise ArgumentError, "duplicate class #{full_name}" if existing && existing != klass
+
       @registry[full_name] = klass
       klass.freeze
     end

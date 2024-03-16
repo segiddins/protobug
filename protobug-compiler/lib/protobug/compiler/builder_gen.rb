@@ -125,19 +125,43 @@ module Protobug
         end
 
         def parens(item, &blk)
-          append Group.new(name: :parens, items: [item], open: "(", close: ")").tap(&blk)
+          append Group.new(
+            name: :parens,
+            items: [item],
+            open: "(",
+            close: ")",
+            indent: 2
+          ).tap(&blk)
         end
 
         def list(*items, &blk)
-          append Group.new(name: :list, items: items, separator: ",").tap(&blk)
+          append Group.new(
+            name: :list,
+            items: items,
+            separator: ",",
+            indent: 2
+          ).tap(&blk)
         end
 
         def index(*items, &blk)
-          append Group.new(name: :index, items: items, open: "[", close: "]", separator: ",").tap(&blk)
+          append Group.new(
+            name: :index,
+            items: items,
+            open: "[",
+            close: "]",
+            separator: ","
+          ).tap(&blk)
         end
 
         def call(*args, &blk)
-          append Group.new(name: :call, items: args, open: "(", close: ")", separator: ", ").tap(&blk)
+          append Group.new(
+            name: :call,
+            items: args,
+            open: "(",
+            close: ")",
+            separator: ", ",
+            indent: 2
+          ).tap(&blk)
         end
       end
 

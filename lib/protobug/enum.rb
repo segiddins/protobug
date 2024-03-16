@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Protobug
   module Enum
     def self.extended(klass)

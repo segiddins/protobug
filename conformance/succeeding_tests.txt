@@ -1,1 +1,4 @@
-Required.Proto3.ProtobufInput.ValidDataRepeated.ENUM.UnpackedInput.ProtobufOutput
+Required.Proto3.JsonInput.DurationMaxValue.JsonOutput
+Required.Proto3.JsonInput.DurationMaxValue.ProtobufOutput
+Required.Proto3.JsonInput.DurationRepeatedValue.JsonOutput
+Required.Proto3.JsonInput.DurationRepeatedValue.ProtobufOutput

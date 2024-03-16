@@ -4,6 +4,7 @@ source "https://rubygems.org"
 
 # Specify your gem's dependencies in protobug.gemspec
 gemspec
+gemspec path: "protobug-compiler"
 
 gem "rake", "~> 13.0"
 
