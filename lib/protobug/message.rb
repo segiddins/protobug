@@ -96,7 +96,7 @@ module Protobug
       when "google.protobuf.Timestamp"
         raise DecodeError, "expected string for #{full_name}, got #{json.inspect}" unless json.is_a? String
 
-        time = DateTime.rfc3339(json).to_time
+        time = DateTime.rfc3339(json, Date::GREGORIAN).to_time
         json = {
           "seconds" => time.to_i,
           "nanos" => time.nsec
@@ -131,6 +131,26 @@ module Protobug
         when Array
           json = { "listValue" => json }
         end
+      when "google.protobuf.Any"
+        raise DecodeError, "expected hash, got #{json.inspect}" unless json.is_a? Hash
+
+        json = json.dup
+        type_url = json.delete("@type") || raise(DecodeError, "missing @type")
+        raise DecodeError, "expected string for @type, got #{type_url.inspect}" unless type_url.is_a? String
+
+        unless type_url.start_with?("type.googleapis.com/")
+          raise DecodeError, "only type.googleapis.com/ types are supported for Any"
+        end
+
+        # TODO: specifically check for well-known type with custom JSON representation
+        json = json["value"] if json.key?("value") && json.size == 1
+
+        type = registry.fetch(type_url.delete_prefix("type.googleapis.com/"))
+        v = type.decode_json_hash(json, registry: registry)
+        json = {
+          "type_url" => type_url,
+          "value" => [type.encode(v)].pack("m0")
+        }
       end
 
       return if json.nil?
@@ -258,8 +278,8 @@ module Protobug
         value ^= 1 if negative
         value >>= 1
         if negative
+          value += 1
           value *= -1
-          value -= 1
         end
 
         raise DecodeError,
@@ -308,7 +328,7 @@ module Protobug
         return instance_variable_set(:"@#{name}", UNSET) if value.nil? && field.optional? && field.proto3_optional?
 
         case field.type
-        when :int32
+        when :int32, :sint32, :sfixed32
           raise InvalidValueError.new(self, field, value) unless value.is_a? Integer
 
           unless value.bit_length < 32
@@ -320,7 +340,7 @@ module Protobug
 
           raise RangeError,
                 "expected 32-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length <= 32
-        when :int64
+        when :int64, :sint64, :sfixed64
           raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
 
           raise RangeError,
@@ -349,6 +369,8 @@ module Protobug
       define_method(:"#{name}?") do
         value = instance_variable_get(:"@#{name}")
         return false if UNSET == value
+
+        return false if (!field.optional? || !field.proto3_optional?) && !field.oneof && field.default == value
 
         if field.repeated?
           !value.empty?
@@ -442,10 +464,18 @@ module Protobug
         case self.class.full_name
         when "google.protobuf.Timestamp"
           time = Time.at(seconds, nanos, :nanosecond, in: 0)
-          raise EncodeError, "time value too large" if time.year > 9999
-          raise EncodeError, "time value too small" if time.year <= 0
+          raise EncodeError, "time value too large #{time.inspect}" if time.year > 9999
+          raise EncodeError, "time value too small #{time.inspect}" if time.year <= 0
 
-          return time.strftime("%FT%H:%M:%S.%3NZ")
+          nanosecs = time.nsec
+          _, remainder = nanosecs.divmod(1_000_000)
+          digits = if remainder != 0
+                     9
+                   else
+                     3
+                   end
+
+          return time.strftime("%FT%H:%M:%S.%#{digits}NZ")
         when "google.protobuf.Duration"
           seconds = self.seconds
           nanos = self.nanos
@@ -474,6 +504,10 @@ module Protobug
           else
             raise EncodeError, "unknown kind: #{kind.inspect}"
           end
+        when "google.protobuf.Any"
+          # TODO: need a registry to look up the type
+          raise UnsupportedFeatureError.new(:any, "serializing to json")
+          # return value.as_json.merge("@type" => "type.googleapis.com/#{value.class.full_name}")
         end
         fields_with_values = self.class.fields_by_name.select do |name, field|
           send(:"#{field.name}?")

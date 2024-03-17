@@ -78,6 +78,8 @@ def do_test(request)
     when Conformance::WireFormat::JSON
       begin
         response.json_payload = test_message.to_json
+      rescue Protobug::UnsupportedFeatureError
+        raise
       rescue => e
         response.serialize_error = e.full_message.encode("utf-8")
       end

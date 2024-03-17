@@ -155,6 +155,15 @@ RSpec.describe Protobug do
       expect(decoded.n32).to eq(2_147_483_647)
     end
 
+    # int32 min
+    msg.n32 = -2**31
+    msg.n64 = 0
+    encoded = test_sint.encode(msg)
+    aggregate_failures do
+      decoded = test_sint.decode(StringIO.new(encoded), registry: nil)
+      expect(decoded.n32).to eq(-2**31)
+    end
+
     # int64 min
     decoded = test_sint.decode(StringIO.new("\020\377\377\377\377\377\377\377\377\377\001"), registry: nil)
     expect(decoded.n64).to eq(-9_223_372_036_854_775_808)

@@ -246,6 +246,7 @@ module Protobug
       when :bytes
         value # already in binary encoding
       when :message
+        # TODO: allow merging into an existing message
         registry.fetch(message_type).decode(StringIO.new(value), registry: registry)
       when :enum
         registry.fetch(enum_type).decode(value)
