@@ -27,7 +27,7 @@ def git_repo(name, path, url, commit: "main")
   end
 end
 
-task default: %i[spec rubocop]
+task default: %i[spec compiler example conformance rubocop]
 
 git_repo :protobuf, "tmp/protobuf", "https://github.com/protocolbuffers/protobuf" do
   file "tmp/protobuf/bazel-bin/conformance/conformance_test_runner" => "tmp/protobuf/.git/rake-version" do

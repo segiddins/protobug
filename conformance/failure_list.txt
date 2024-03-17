@@ -43,10 +43,6 @@ Required.Proto3.JsonInput.DurationNegativeSeconds.ProtobufOutput
 Required.Proto3.JsonInput.EmptyFieldMask.JsonOutput
 Required.Proto3.JsonInput.EmptyFieldMask.ProtobufOutput
 Required.Proto3.JsonInput.EnumFieldUnknownValue.Validator
-Required.Proto3.JsonInput.EnumFieldWithAliasDifferentCase.JsonOutput
-Required.Proto3.JsonInput.EnumFieldWithAliasDifferentCase.ProtobufOutput
-Required.Proto3.JsonInput.EnumFieldWithAliasLowerCase.JsonOutput
-Required.Proto3.JsonInput.EnumFieldWithAliasLowerCase.ProtobufOutput
 Required.Proto3.JsonInput.FieldMask.JsonOutput
 Required.Proto3.JsonInput.FieldMask.ProtobufOutput
 Required.Proto3.JsonInput.FloatFieldTooLarge

@@ -211,20 +211,7 @@ module Protobug
     end
 
     def binary_decode_one(io, registry, wire_type)
-      case wire_type
-      when 0
-        value = Protobug::Message::BinaryEncoding.decode_varint(io) || raise(EOFError, "unexpected EOF")
-      when 1
-        value = io.read(8)
-        raise EOFError, "unexpected EOF" if value&.bytesize != 8
-      when 2
-        value = Protobug::Message::BinaryEncoding.decode_length(io)
-      when 5
-        value = io.read(4)
-        raise EOFError, "unexpected EOF" if value&.bytesize != 4
-      else
-        raise DecodeError, "unhandled wire type #{wire_type}"
-      end
+      value = Protobug::Message::BinaryEncoding.read_field_value(io, wire_type)
 
       case type
       when :int32
