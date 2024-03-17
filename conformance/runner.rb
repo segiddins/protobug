@@ -28,6 +28,8 @@ def do_test(request)
     when :protobuf_payload
       begin
         test_message = descriptor.decode(StringIO.new(request.protobuf_payload), registry: $registry)
+      rescue Protobug::UnsupportedFeatureError
+        raise
       rescue => e
         response.parse_error = e.full_message.encode("utf-8")
         return response
@@ -41,6 +43,8 @@ def do_test(request)
 
         end
         test_message = descriptor.decode_json(request.json_payload, **options, registry: $registry)
+      rescue Protobug::UnsupportedFeatureError
+        raise
       rescue => e
         if options.any?
           response.skipped = "options not supported: #{options.inspect}"
@@ -81,6 +85,8 @@ def do_test(request)
     else
       fail "Request didn't have requested output format: #{request.requested_output_format.inspect} #{request.inspect}"
     end
+  rescue Protobug::UnsupportedFeatureError => e
+    response.skipped = e.message
   rescue StandardError => e
     response.runtime_error = e.full_message.encode("utf-8")
   end

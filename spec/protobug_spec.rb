@@ -117,17 +117,47 @@ RSpec.describe Protobug do
     expect(io).to be_eof
   end
 
-  it "parses sint32 and sint64" do
+  it "parses sint32 and sint64" do # rubocop:disable RSpec/ExampleLength
     msg = test_sint.new
     msg.n32 = 4
     msg.n64 = -1
     encoded = test_sint.encode(msg)
     decoded = test_sint.decode(StringIO.new(encoded), registry: nil)
     aggregate_failures do
-      expect(encoded).to eq("\x08\x08\x10\x03".b)
+      expect(encoded).to eq("\x08\x08\x10\x01".b)
       expect(decoded.n32).to eq(4)
       expect(decoded.n64).to eq(-1)
     end
+
+    msg.n32 = -33
+    msg.n64 = -0x80000000
+    encoded = test_sint.encode(msg)
+    decoded = test_sint.decode(StringIO.new(encoded), registry: nil)
+    expect(decoded.n32).to eq(-33)
+    expect(decoded.n64).to eq(-0x80000000)
+
+    msg.clear_n32
+
+    msg.n64 = -9_223_372_036_854_775_808
+    encoded = test_sint.encode(msg)
+    aggregate_failures do
+      expect(encoded).to eq("\020\377\377\377\377\377\377\377\377\377\001".b)
+      decoded = test_sint.decode(StringIO.new(encoded), registry: nil)
+      expect(decoded.n64).to eq(-9_223_372_036_854_775_808)
+    end
+
+    # int32 max
+    msg.n32 = 2**31 - 1
+    msg.n64 = 0
+    encoded = test_sint.encode(msg)
+    aggregate_failures do
+      decoded = test_sint.decode(StringIO.new(encoded), registry: nil)
+      expect(decoded.n32).to eq(2_147_483_647)
+    end
+
+    # int64 min
+    decoded = test_sint.decode(StringIO.new("\020\377\377\377\377\377\377\377\377\377\001"), registry: nil)
+    expect(decoded.n64).to eq(-9_223_372_036_854_775_808)
   end
 
   it "parses fixed32 and fixed64" do

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "errors"
 require_relative "field"
 require "stringio"
 
@@ -43,7 +44,7 @@ module Protobug
         end
 
         def reserved_range(range)
-          raise "expected Range, got #{range.inspect}" unless range.is_a? Range
+          raise DefinitionError, "expected Range, got #{range.inspect}" unless range.is_a? Range
 
           reserved_ranges << range
         end
@@ -52,7 +53,7 @@ module Protobug
 
     def optional(number, name, **kwargs)
       if kwargs[:cardinality] && kwargs[:cardinality] != :optional
-        raise ArgumentError,
+        raise DefinitionError,
               "expected cardinality: :optional, got #{kwargs[:cardinality].inspect}"
       end
       field(number, name, cardinality: :optional, **kwargs)
@@ -60,21 +61,21 @@ module Protobug
 
     def repeated(number, name, **kwargs)
       if kwargs[:cardinality] && kwargs[:cardinality] != :repeated
-        raise ArgumentError,
+        raise DefinitionError,
               "expected cardinality: :repeated, got #{kwargs[:cardinality].inspect}"
       end
       field(number, name, cardinality: :repeated, **kwargs)
     end
 
     def map(number, name, **kwargs)
-      raise ArgumentError,
+      raise DefinitionError,
             "expected type: :map, got #{kwargs[:type].inspect}" if kwargs[:type] && kwargs[:type] != :map
       repeated(number, name, type: :map, **kwargs)
     end
 
     def required(number, name, **kwargs)
       if kwargs[:cardinality] && kwargs[:cardinality] != :required
-        raise ArgumentError,
+        raise DefinitionError,
               "expected cardinality: :required, got #{kwargs[:cardinality].inspect}"
       end
       field(number, name, cardinality: :required, **kwargs)
@@ -82,26 +83,26 @@ module Protobug
 
     def decode_json(json, registry:)
       require "json"
-      hash = JSON.parse(json, allow_blank: false, create_additions: false, allow_nan: false)
-      raise "expected hash, got #{hash.inspect}" unless hash.is_a? Hash
+      hash = JSON.parse(json, allow_blank: false, create_additions: false, allow_nan: false, allow_infinity: false)
+      raise DecodeError, "expected hash, got #{hash.inspect}" unless hash.is_a? Hash
 
       decode_json_hash(hash, registry: registry)
     end
 
     def decode_json_hash(json, registry:)
-      return if json.nil?
       return json if UNSET == json
 
-      if full_name == "google.protobuf.Timestamp"
-        raise "expected string for #{full_name}, got #{json.inspect}" unless json.is_a? String
+      case full_name # TODO: put this into the compiler
+      when "google.protobuf.Timestamp"
+        raise DecodeError, "expected string for #{full_name}, got #{json.inspect}" unless json.is_a? String
 
         time = DateTime.rfc3339(json).to_time
         json = {
           "seconds" => time.to_i,
           "nanos" => time.nsec
         }
-      elsif full_name == "google.protobuf.Duration"
-        raise "expected string for #{full_name}, got #{json.inspect}" unless json.is_a? String
+      when "google.protobuf.Duration"
+        raise DecodeError, "expected string for #{full_name}, got #{json.inspect}" unless json.is_a? String
 
         if /\A(-)?(\d+)\.(\d+)s\z/ =~ json
           sign = $1 ? -1 : 1
@@ -113,107 +114,44 @@ module Protobug
             "nanos" => sign * nanos
           }
         else
-          raise "expected string for #{full_name}, got #{json.inspect}"
+          raise DecodeError, "expected string for #{full_name}, got #{json.inspect}"
+        end
+      when "google.protobuf.Value"
+        case json
+        when NilClass
+          json = { "nullValue" => "NULL_VALUE" }
+        when Float, Integer
+          json = { "numberValue" => json.to_f }
+        when String
+          json = { "stringValue" => json }
+        when TrueClass, FalseClass
+          json = { "boolValue" => json }
+        when Hash
+          json = { "structValue" => json }
+        when Array
+          json = { "listValue" => json }
         end
       end
 
-      raise "expected hash, got #{json.inspect}" unless json.is_a? Hash
+      return if json.nil?
+
+      raise DecodeError, "expected hash, got #{json.inspect}" unless json.is_a? Hash
 
       message = new
 
       json.each do |key, value|
         field = fields_by_name.values.find do |f|
           f.json_name == key
-        end || raise("unknown field #{key.inspect} in #{full_name}")
-        if field.oneof && message.send(field.oneof)
-          raise "multiple oneof fields set in #{full_name}: #{message.send(field.oneof)} and #{field.name}"
+        end || fields_by_name[key] || raise(UnknownFieldError, "unknown field #{key.inspect} in #{full_name}")
+
+        if field.oneof && message.send(field.oneof) && !value.nil?
+          raise DecodeError, "multiple oneof fields set in #{full_name}: #{message.send(field.oneof)} and #{field.name}"
         end
 
-        case field.type
-        when :int32, :int64, :uint32, :uint64, :sint32, :sint64
-          case value
-          when Integer
-          when /\A-?\d+\z/
-            value = Integer(value)
-          else
-            raise "expected integer for #{full_name}.#{field.name}, got #{value.inspect}"
-          end
-          raise RangeError if value.bit_length > 64
-
-          message.send(field.setter, value)
-        when :fixed32, :fixed64, :sfixed32, :sfixed64
-          message.send(field.setter, value)
-        when :bool
-          case value
-          when TrueClass, FalseClass
-          else
-            raise "expected boolean, got #{value.inspect}"
-          end
-          message.send(field.setter, value)
-        when :float, :double
-          case value
-          when Float
-          when "Infinity"
-            value = Float::INFINITY
-          when "-Infinity"
-            value = -Float::INFINITY
-          when "NaN"
-            value = Float::NAN
-          else
-            raise "expected float for #{full_name}.#{field.name}, got #{value.inspect}"
-          end
-          message.send(field.setter, value)
-        when :string, :bytes
-          case value
-          when String
-            if field.type == :bytes
-              value = value.unpack1("m")
-            else
-              value.force_encoding("utf-8")
-            end
-          else
-            raise "expected string for #{full_name}.#{field.name}, got #{value.inspect}"
-          end
-          message.send("#{field.name}=", value)
-        when :message
-          klass = registry.fetch(field.message_type)
-          if field.cardinality == :repeated
-            raise "expected array, got #{value.inspect}" unless value.is_a? Array
-
-            message.send(field.setter,
-                         value.map do |v|
-                           klass.decode_json_hash(v, registry: registry) ||
-                            raise("null not allowed in repeated message")
-                         end)
-          else
-            message.send(field.setter, klass.decode_json_hash(value, registry: registry))
-          end
-        when :enum
-          klass = registry.fetch(field.enum_type)
-          if field.cardinality == :repeated
-            raise "expected array, got #{value.inspect}" unless value.is_a? Array
-
-            message.send(field.setter,
-                         value.map do |v|
-                           klass.decode_json_hash(v, registry: registry) || raise("null not allowed in repeated enum")
-                         end)
-          else
-            message.send(field.setter, klass.decode_json_hash(value, registry: registry))
-          end
-        when :group
-          case value
-          when UNSET
-          else
-            raise "unexpected group for #{full_name}.#{field.name}, got #{value.inspect}"
-          end
-        else
-          raise "unhandled type in #{self}.#{__method__}: #{field.inspect}"
-        end
+        field.json_decode(value, message, registry)
       end
 
       message
-    rescue => e
-      raise RuntimeError, "error decoding #{full_name}: #{e.message}"
     end
 
     def decode(binary, registry:)
@@ -226,12 +164,14 @@ module Protobug
         wire_type = header & 0b111
         number = (header ^ wire_type) >> 3
 
-        raise "unexpected field number #{number} in #{full_name || fields_by_name.inspect}" unless number > 0
+        raise DecodeError,
+              "unexpected field number #{number} in #{full_name || fields_by_name.inspect}" unless number > 0
 
         field = fields_by_number[number]
 
         unless field
-          raise "unknown field number #{number} in #{full_name || fields_by_name.inspect} " \
+          # TODO: allow skipping forward in the binary based on the tag
+          raise UnknownFieldError, "unknown field number #{number} in #{full_name || fields_by_name.inspect} " \
                 "of wire_type #{wire_type} (header=#{header.to_s(2)})"
         end
 
@@ -241,7 +181,7 @@ module Protobug
     end
 
     def encode(message)
-      raise "expected #{self}, got #{message.inspect}" unless message.is_a? self
+      raise EncodeError, "expected #{self}, got #{message.inspect}" unless message.is_a? self
 
       fields_by_number.each_with_object("".b) do |(number, field), outbuf|
         next unless message.send(:"#{field.name}?")
@@ -272,10 +212,13 @@ module Protobug
       end
 
       def encode_zigzag(size, value, outbuf)
-        raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
-        raise "bitlength too large for #{size}-bit integer: #{value.bit_length}" unless value.bit_length <= size
+        raise EncodeError, "expected integer, got #{value.inspect}" unless value.is_a? Integer
 
-        encoded = (value.abs << 1) | (value.negative? ? 1 : 0)
+        raise EncodeError,
+              "bitlength too large for #{size}-bit integer: #{value.bit_length}" unless value.bit_length <= size
+
+        encoded = 2 * value.abs
+        encoded -= 1 if value.negative?
         encode_varint encoded, outbuf
       end
 
@@ -290,7 +233,7 @@ module Protobug
         bl = 0
         loop do
           return value if byte.nil?
-          if byte & 0b1000_0000 == 0
+          if byte & 0b1000_0000 == 0 # no continuation bit set
             return value | (byte << bl)
           else
             value |= ((byte & 0b0111_1111) << bl)
@@ -303,15 +246,22 @@ module Protobug
       def decode_length(binary)
         length = decode_varint(binary) || raise(EOFError, "unexpected EOF")
         string = binary.read(length) || raise(EOFError, "unexpected EOF")
-        raise "expected #{length} bytes, got #{string.bytesize}" unless string.bytesize == length
+        raise EOFError, "expected #{length} bytes, got #{string.bytesize}" unless string.bytesize == length
 
         string
       end
 
       def decode_zigzag(size, value)
-        sign = value & 1 == 0 ? 1 : -1
-        value = (value >> 1) * sign
-        raise "bitlength too large for #{size}-bit integer: #{value.bit_length}" unless value.bit_length <= size
+        negative = value & 1 == 1
+        value ^= 1 if negative
+        value >>= 1
+        if negative
+          value *= -1
+          value -= 1
+        end
+
+        raise DecodeError,
+              "bitlength too large for #{size}-bit integer: #{value.bit_length}" unless value.bit_length <= size
 
         value
       end
@@ -322,20 +272,24 @@ module Protobug
     def field(number, name, **kwargs)
       field = Field.new(number, name, **kwargs).freeze
 
-      raise "duplicate field number #{number}" if fields_by_number[number]
+      raise DefinitionError, "duplicate field number #{number}" if fields_by_number[number]
 
       fields_by_number[number] = field
-      raise "duplicate field name #{name}" if fields_by_name[name]
+      raise DefinitionError, "duplicate field name #{name}" if fields_by_name[name]
 
       fields_by_name[name] = field
 
       define_method(field.setter) do |value|
+        return instance_variable_set(:"@#{name}", UNSET) if value.nil? && field.optional? && field.proto3_optional?
+
         case field.type
         when :int32
-          raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
+          raise InvalidValueError.new(self, field, value) unless value.is_a? Integer
 
-          raise RangeError,
-                "expected 32-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length < 32
+          unless value.bit_length < 32
+            raise InvalidValueError.new(self, field, value,
+                                        "expected 32-bit integer, got bit_length: #{value.bit_length}")
+          end
         when :uint32
           raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
 
@@ -460,20 +414,41 @@ module Protobug
       end
 
       def as_json
-        if self.class.full_name == "google.protobuf.Timestamp"
+        case self.class.full_name
+        when "google.protobuf.Timestamp"
           time = Time.at(seconds, nanos, :nanosecond, in: 0)
+          raise EncodeError, "time value too large" if time.year > 9999
+          raise EncodeError, "time value too small" if time.year <= 0
+
           return time.strftime("%FT%H:%M:%S.%3NZ")
-        elsif self.class.full_name == "google.protobuf.Duration"
+        when "google.protobuf.Duration"
           seconds = self.seconds
           nanos = self.nanos
           if seconds != 0 && nanos != 0 && (seconds.negative? ^ nanos.negative?)
-            raise "seconds and nanos must have the same sign"
+            raise EncodeError, "seconds and nanos must have the same sign"
           end
 
           sign = seconds < 0 ? "-" : ""
           seconds = seconds.abs
           nanos = nanos.abs
           return "#{sign}#{seconds}.#{nanos.to_s.rjust(9, "0")}s"
+        when "google.protobuf.Value"
+          case kind
+          when :null_value
+            return nil
+          when :number_value
+            return number_value
+          when :string_value
+            return string_value
+          when :bool_value
+            return bool_value
+          when :struct_value
+            return struct_value.as_json
+          when :list_value
+            return list_value.map(&:as_json)
+          else
+            raise EncodeError, "unknown kind: #{kind.inspect}"
+          end
         end
         fields_with_values = self.class.fields_by_name.select do |name, field|
           send(:"#{field.name}?")
@@ -481,24 +456,13 @@ module Protobug
 
         fields_with_values.to_h do |name, field|
           value = send(field.name)
-          case field.type
-          when :bytes
-            value = [value].pack("m0")
-          when :string
-            value = value.encode("utf-8")
-          when :message, :enum
-            if field.cardinality == :repeated
-              value = value.map(&:as_json)
-            else
-              value = value.as_json
-            end
-          end
 
-          [field.json_name, value]
+          [field.json_name, field.json_encode(value)]
         end
       end
 
       def to_json
+        require "json"
         JSON.generate(as_json, allow_infinity: true)
       end
     end

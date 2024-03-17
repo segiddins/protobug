@@ -326,6 +326,7 @@ module Protobug
           c.identifier("type:").literal(type)
 
           if type == :map
+            # TODO: include key/value message/enum types as well
             c.identifier("key_type:")
              .literal(referenced_type.field[0].type.name.downcase.delete_prefix("type_").to_sym)
             c.identifier("value_type:")
@@ -350,6 +351,9 @@ module Protobug
               _1.oneof_index? && _1.oneof_index == descriptor.oneof_index
             end == 1
             c.identifier("oneof:").literal(oneof.name.to_sym) unless synthetic
+          end
+          if descriptor.label == Google::Protobuf::FieldDescriptorProto::Label::LABEL_OPTIONAL && descriptor.file.syntax == "proto3" && !descriptor.proto3_optional
+            c.identifier("proto3_optional:").literal(false)
           end
         end
       when OneofDescriptorProto

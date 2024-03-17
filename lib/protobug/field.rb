@@ -6,7 +6,8 @@ module Protobug
                   :adder
 
     def initialize(number, name, type: nil, json_name: nil, cardinality: :optional, oneof: nil, message_type: nil,
-                   enum_type: nil, packed: false, key_type: nil, value_type: nil, group_type: nil)
+                   enum_type: nil, packed: false, key_type: nil, value_type: nil, group_type: nil,
+                   proto3_optional: cardinality == :optional)
       raise "message_type only allowed for message fields" if !!message_type ^ type == :message
       raise "enum_type only allowed for enum fields" if !!enum_type ^ type == :enum
       raise "key_type only allowed for map fields" if !!key_type ^ type == :map
@@ -25,6 +26,7 @@ module Protobug
       @message_type = message_type
       @enum_type = enum_type
       @packed = packed
+      @proto3_optional = proto3_optional
     end
 
     def pretty_print(pp)
@@ -52,28 +54,26 @@ module Protobug
     end
 
     def default
-      if cardinality == :repeated
-        []
+      return [] if repeated?
+
+      case type
+      when :int32, :int64, :uint32, :uint64, :sint32, :sint64, :fixed32, :fixed64, :sfixed32, :sfixed64
+        0
+      when :string
+        ""
+      when :message
+        nil
+      when :bytes
+        "".b
+      when :enum
+        # enum_type.default
+        0
+      when :float, :double
+        0.0
+      when :bool
+        false
       else
-        case type
-        when :int32, :int64, :uint32, :uint64, :sint32, :sint64, :fixed32, :fixed64, :sfixed32, :sfixed64
-          0
-        when :string
-          ""
-        when :message
-          nil
-        when :bytes
-          "".b
-        when :enum
-          # enum_type.default
-          0
-        when :float, :double
-          0.0
-        when :bool
-          false
-        else
-          raise "unhandled type in #{self}.#{__method__}: #{type.inspect}"
-        end
+        raise "unhandled type in #{self}.#{__method__}: #{type.inspect}"
       end
     end
 
@@ -83,6 +83,14 @@ module Protobug
 
     def packed?
       @packed
+    end
+
+    def optional?
+      cardinality == :optional
+    end
+
+    def proto3_optional?
+      @proto3_optional
     end
 
     def to_text(value)
@@ -108,6 +116,8 @@ module Protobug
             binary_encode_one(v, outbuf)
           end
         end
+      elsif (!optional? || !proto3_optional?) && !oneof && default == value
+        # omit
       else
         Protobug::Message::BinaryEncoding.encode_varint (number << 3) | wire_type, outbuf
         binary_encode_one(value, outbuf)
@@ -115,6 +125,8 @@ module Protobug
     end
 
     def binary_decode(binary, message, registry, wire_type)
+      raise UnsupportedFeatureError.new(:map, "#{self}.#{__method__}") if type == :map
+
       if repeated? && wire_type == 2 && [0, 1, 5].include?(self.wire_type)
         len = StringIO.new(Protobug::Message::BinaryEncoding.decode_length(binary))
         len.binmode
@@ -124,6 +136,29 @@ module Protobug
         raise "wrong wire type for #{self}: #{wire_type.inspect}"
       else
         message.send(adder || setter, binary_decode_one(binary, registry, wire_type))
+      end
+    end
+
+    def json_encode(value)
+      if repeated?
+        value.map { |v| json_encode_one(v) }
+      elsif (!optional? || !proto3_optional?) && !oneof && default == value
+        # omit
+      else
+        json_encode_one(value)
+      end
+    end
+
+    def json_decode(value, message, registry)
+      raise UnsupportedFeatureError.new(:map, "#{self}.#{__method__}") if type == :map
+
+      if repeated?
+        return if value.nil?
+        raise DecodeError, "expected Array for #{inspect}, got #{value.inspect}" unless value.is_a?(Array)
+
+        value.map { |v| message.send(adder, json_decode_one(v, registry)) }
+      else
+        message.send(setter, json_decode_one(value, registry))
       end
     end
 
@@ -188,16 +223,18 @@ module Protobug
         value = io.read(4)
         raise EOFError, "unexpected EOF" if value&.bytesize != 4
       else
-        raise "unhandled wire type #{wire_type}"
+        raise DecodeError, "unhandled wire type #{wire_type}"
       end
 
       case type
       when :int32
-        [value].pack("l").unpack1("l")
+        [value].pack("l>").unpack1("l>")
       when :int64
-        [value].pack("q").unpack1("q")
-      when :uint32, :uint64
-        value
+        [value].pack("q>").unpack1("q>")
+      when :uint32
+        [value].pack("L>").unpack1("L>")
+      when :uint64
+        [value].pack("Q>").unpack1("Q>")
       when :sint32
         Protobug::Message::BinaryEncoding.decode_zigzag 32, value
       when :sint64
@@ -216,8 +253,11 @@ module Protobug
         value.unpack1("e")
       when :string
         value.force_encoding("utf-8")
+        raise DecodeError, "invalid utf-8 for string" unless value.valid_encoding?
+
+        value
       when :bytes
-        value.b
+        value # already in binary encoding
       when :message
         registry.fetch(message_type).decode(StringIO.new(value), registry: registry)
       when :enum
@@ -226,6 +266,110 @@ module Protobug
         value != 0
       else
         raise "unhandled type in #{self}.#{__method__}: #{type.inspect}"
+      end
+    end
+
+    def json_decode_one(value, registry)
+      return if value.nil?
+
+      case type
+      when :int32, :int64, :uint32, :uint64, :sint32, :sint64
+        case value
+        when Integer
+          # nothing
+        when /\A-?\d+\z/
+          value = Integer(value)
+        when Float
+          value, remainder = value.divmod(1)
+          raise DecodeError, "expected integer for #{inspect}, got #{value.inspect}" unless remainder.zero?
+        else
+          raise DecodeError, "expected integer for #{inspect}, got #{value.inspect}"
+        end
+        raise DecodeError, "#{value.inspect} does not fit in 64 bits" if value && value.bit_length > 64
+
+        value
+      when :fixed32, :fixed64, :sfixed32, :sfixed64
+        value
+      when :bool
+        case value
+        when TrueClass, FalseClass
+          value
+        else
+          raise DecodeError, "expected boolean, got #{value.inspect}"
+        end
+      when :float, :double
+        case value
+        when Float
+          value
+        when "Infinity"
+          Float::INFINITY
+        when "-Infinity"
+          -Float::INFINITY
+        when "NaN"
+          Float::NAN
+        when /\A-?\d+\z/
+          Float(value)
+        when NilClass
+          value
+        else
+          raise DecodeError, "expected float for #{inspect}, got #{value.inspect}"
+        end
+      when :string, :bytes
+        case value
+        when String
+          if type == :bytes
+            # url decode 64
+            value.tr!("-_", "+/")
+            begin
+              value.unpack1("m").force_encoding(Encoding::BINARY)
+            rescue ArgumentError => e
+              raise DecodeError, "Invalid URL-encoded base64 #{value.inspect} for #{inspect}: #{e}"
+            end
+          else
+            value.force_encoding("utf-8")
+          end
+        else
+          raise DecodeError, "expected string for #{inspect}, got #{value.inspect}"
+        end
+      when :message
+        klass = registry.fetch(message_type)
+        klass.decode_json_hash(value, registry: registry)
+      when :enum
+        klass = registry.fetch(enum_type)
+        klass.decode_json_hash(value, registry: registry)
+      else
+        raise DecodeError, "unhandled type in #{self}.#{__method__}: #{inspect}"
+      end
+    end
+
+    def json_encode_one(value)
+      case type
+      when :bytes
+        [value].pack("m0")
+      when :string
+        value.encode("utf-8")
+      when :message, :enum
+        value.as_json
+      when :float, :double
+        if value.nan?
+          "NaN"
+        elsif (sign = value.infinite?)
+          if sign == -1
+            "-Infinity"
+          else
+            "Infinity"
+          end
+        else
+          value
+        end
+      when :int64, :uint64, :sint64, :sfixed64, :fixed64
+        value.to_s
+      when :int32, :uint32, :sint32, :sfixed32, :fixed32
+        value
+      when :bool
+        value
+      else
+        raise EncodeError, "unhandled type in #{self}.#{__method__}: #{field.type.inspect}"
       end
     end
 

@@ -44,9 +44,11 @@ module Protobug
       when UNSET
         default
       when String
-        values.fetch(json) { new("<unknown:#{json}>", 0) }
+        values.fetch(json) { raise DecodeError, "unknown value: #{json.inspect}" }
+        # values.fetch(json) { new("<unknown:#{json}>", 0) }
       when Integer
-        values.fetch(json) { new("<unknown:#{json}>", json) }
+        values.fetch(json) { raise DecodeError, "unknown value: #{json.inspect}" }
+        # values.fetch(json) { new("<unknown:#{json}>", json) }
       else
         raise "expected string for #{full_name}, got #{json.inspect}"
       end
@@ -54,6 +56,8 @@ module Protobug
 
     def decode(value)
       raise "expected Integer, got #{value.inspect}" unless value.is_a? Integer
+
+      value = [value].pack("l>").unpack1("l>")
 
       values.fetch(value) { new("<unknown:#{value}>", value) }
     end
@@ -115,6 +119,8 @@ module Protobug
       end
 
       def as_json
+        return value unless equal?(self.class.values[value]) || equal?(self.class.values[name])
+
         name
       end
     end
