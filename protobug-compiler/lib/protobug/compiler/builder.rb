@@ -181,11 +181,10 @@ module Protobug
 
         def render
           q = PrettierPrint.new(+"")
-          if @headers.any?
-            @headers.each do |header|
-              Comment.new(header).render(q)
-              q.breakable_force
-            end
+          @headers.each_with_index do |header, idx|
+            q.breakable_force if idx.positive?
+            Comment.new(header).render(q)
+            q.breakable_force
           end
           super(q)
           q.trim

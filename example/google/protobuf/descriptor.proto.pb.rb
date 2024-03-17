@@ -1240,7 +1240,7 @@ module Google
         type: :message,
         message_type: "google.protobuf.FeatureSet"
       )
-      # NOTE: Field numbers 1 through 32 are reserved for Google's internal RPC
+      # Note:  Field numbers 1 through 32 are reserved for Google's internal RPC
       #   framework.  We apologize for hoarding these numbers to ourselves, but
       #   we were already using them long before we decided to release Protocol
       #   Buffers.
@@ -1265,7 +1265,7 @@ module Google
 
       self.full_name = "google.protobuf.MethodOptions"
 
-      # NOTE: Field numbers 1 through 32 are reserved for Google's internal RPC
+      # Note:  Field numbers 1 through 32 are reserved for Google's internal RPC
       #   framework.  We apologize for hoarding these numbers to ourselves, but
       #   we were already using them long before we decided to release Protocol
       #   Buffers.
@@ -1374,7 +1374,7 @@ module Google
     # ===================================================================
     # Features
 
-    # TODO: Enums in C++ gencode (and potentially other languages) are
+    # TODO Enums in C++ gencode (and potentially other languages) are
     # not well scoped.  This means that each of the feature enums below can clash
     # with each other.  The short names we've chosen maximize call-site
     # readability, but leave us very open to this scenario.  A future feature will

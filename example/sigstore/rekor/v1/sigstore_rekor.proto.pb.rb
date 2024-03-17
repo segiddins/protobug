@@ -42,9 +42,9 @@ module Sigstore
 
         # Kind is the type of entry being stored in the log.
         # See here for a list: https://github.com/sigstore/rekor/tree/main/pkg/types
-        optional(1, "kind", type: :string)
+        optional(1, "kind", type: :string, proto3_optional: false)
         # The specific api version of the type.
-        optional(2, "version", type: :string)
+        optional(2, "version", type: :string, proto3_optional: false)
       end
 
       # The checkpoint contains a signature of the tree head (root hash),
@@ -60,7 +60,7 @@ module Sigstore
 
         self.full_name = "dev.sigstore.rekor.v1.Checkpoint"
 
-        optional(1, "envelope", type: :string)
+        optional(1, "envelope", type: :string, proto3_optional: false)
       end
 
       # InclusionProof is the proof returned from the transparency log. Can
@@ -71,12 +71,30 @@ module Sigstore
         self.full_name = "dev.sigstore.rekor.v1.InclusionProof"
 
         # The index of the entry in the tree it was written to.
-        optional(1, "log_index", type: :int64, json_name: "logIndex")
+        optional(
+          1,
+          "log_index",
+          type: :int64,
+          json_name: "logIndex",
+          proto3_optional: false
+        )
         # The hash digest stored at the root of the merkle tree at the time
         # the proof was generated.
-        optional(2, "root_hash", type: :bytes, json_name: "rootHash")
+        optional(
+          2,
+          "root_hash",
+          type: :bytes,
+          json_name: "rootHash",
+          proto3_optional: false
+        )
         # The size of the merkle tree at the time the proof was generated.
-        optional(3, "tree_size", type: :int64, json_name: "treeSize")
+        optional(
+          3,
+          "tree_size",
+          type: :int64,
+          json_name: "treeSize",
+          proto3_optional: false
+        )
         # A list of hashes required to compute the inclusion proof, sorted
         # in order from leaf to root.
         # Note that leaf and root hashes are not included.
@@ -89,7 +107,8 @@ module Sigstore
           5,
           "checkpoint",
           type: :message,
-          message_type: "dev.sigstore.rekor.v1.Checkpoint"
+          message_type: "dev.sigstore.rekor.v1.Checkpoint",
+          proto3_optional: false
         )
       end
 
@@ -112,7 +131,8 @@ module Sigstore
           1,
           "signed_entry_timestamp",
           type: :bytes,
-          json_name: "signedEntryTimestamp"
+          json_name: "signedEntryTimestamp",
+          proto3_optional: false
         )
       end
 
@@ -130,14 +150,21 @@ module Sigstore
         self.full_name = "dev.sigstore.rekor.v1.TransparencyLogEntry"
 
         # The global index of the entry, used when querying the log by index.
-        optional(1, "log_index", type: :int64, json_name: "logIndex")
+        optional(
+          1,
+          "log_index",
+          type: :int64,
+          json_name: "logIndex",
+          proto3_optional: false
+        )
         # The unique identifier of the log.
         optional(
           2,
           "log_id",
           type: :message,
           message_type: "dev.sigstore.common.v1.LogId",
-          json_name: "logId"
+          json_name: "logId",
+          proto3_optional: false
         )
         # The kind (type) and version of the object associated with this
         # entry. These values are required to construct the entry during
@@ -147,14 +174,16 @@ module Sigstore
           "kind_version",
           type: :message,
           message_type: "dev.sigstore.rekor.v1.KindVersion",
-          json_name: "kindVersion"
+          json_name: "kindVersion",
+          proto3_optional: false
         )
         # The UNIX timestamp from the log when the entry was persisted.
         optional(
           4,
           "integrated_time",
           type: :int64,
-          json_name: "integratedTime"
+          json_name: "integratedTime",
+          proto3_optional: false
         )
         # The inclusion promise/signed entry timestamp from the log.
         # Required for v0.1 bundles, and MUST be verified.
@@ -165,7 +194,8 @@ module Sigstore
           "inclusion_promise",
           type: :message,
           message_type: "dev.sigstore.rekor.v1.InclusionPromise",
-          json_name: "inclusionPromise"
+          json_name: "inclusionPromise",
+          proto3_optional: false
         )
         # The inclusion proof can be used for offline or online verification
         # that the entry was appended to the log, and that the log has not been
@@ -175,7 +205,8 @@ module Sigstore
           "inclusion_proof",
           type: :message,
           message_type: "dev.sigstore.rekor.v1.InclusionProof",
-          json_name: "inclusionProof"
+          json_name: "inclusionProof",
+          proto3_optional: false
         )
         # Optional. The canonicalized transparency log entry, used to
         # reconstruct the Signed Entry Timestamp (SET) during verification.
@@ -199,7 +230,8 @@ module Sigstore
           7,
           "canonicalized_body",
           type: :bytes,
-          json_name: "canonicalizedBody"
+          json_name: "canonicalizedBody",
+          proto3_optional: false
         )
       end
 

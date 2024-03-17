@@ -42,12 +42,13 @@ module Sigstore
         self.full_name = "dev.sigstore.verification.v1.CertificateIdentity"
 
         # The X.509v3 issuer extension (OID 1.3.6.1.4.1.57264.1.1)
-        optional(1, "issuer", type: :string)
+        optional(1, "issuer", type: :string, proto3_optional: false)
         optional(
           2,
           "san",
           type: :message,
-          message_type: "dev.sigstore.common.v1.SubjectAlternativeName"
+          message_type: "dev.sigstore.common.v1.SubjectAlternativeName",
+          proto3_optional: false
         )
         # An unordered list of OIDs that must be verified.
         # All OID/values provided in this list MUST exactly match against
@@ -100,16 +101,17 @@ module Sigstore
           self.full_name = "dev.sigstore.verification.v1.ArtifactVerificationOptions.TlogOptions"
 
           # Number of transparency logs the entry must appear on.
-          optional(1, "threshold", type: :int32)
+          optional(1, "threshold", type: :int32, proto3_optional: false)
           # Perform an online inclusion proof.
           optional(
             2,
             "perform_online_verification",
             type: :bool,
-            json_name: "performOnlineVerification"
+            json_name: "performOnlineVerification",
+            proto3_optional: false
           )
           # Disable verification for transparency logs.
-          optional(3, "disable", type: :bool)
+          optional(3, "disable", type: :bool, proto3_optional: false)
         end
 
         class CtlogOptions
@@ -119,9 +121,9 @@ module Sigstore
 
           # The number of ct transparency logs the certificate must
           # appear on.
-          optional(1, "threshold", type: :int32)
+          optional(1, "threshold", type: :int32, proto3_optional: false)
           # Disable ct transparency log verification
-          optional(3, "disable", type: :bool)
+          optional(3, "disable", type: :bool, proto3_optional: false)
 
           reserved_range(2...3)
         end
@@ -132,9 +134,9 @@ module Sigstore
           self.full_name = "dev.sigstore.verification.v1.ArtifactVerificationOptions.TimestampAuthorityOptions"
 
           # The number of signed timestamps that are expected.
-          optional(1, "threshold", type: :int32)
+          optional(1, "threshold", type: :int32, proto3_optional: false)
           # Disable signed timestamp verification.
-          optional(2, "disable", type: :bool)
+          optional(2, "disable", type: :bool, proto3_optional: false)
         end
 
         class TlogIntegratedTimestampOptions
@@ -143,9 +145,9 @@ module Sigstore
           self.full_name = "dev.sigstore.verification.v1.ArtifactVerificationOptions.TlogIntegratedTimestampOptions"
 
           # The number of integrated timestamps that are expected.
-          optional(1, "threshold", type: :int32)
+          optional(1, "threshold", type: :int32, proto3_optional: false)
           # Disable integrated timestamp verification.
-          optional(2, "disable", type: :bool)
+          optional(2, "disable", type: :bool, proto3_optional: false)
         end
 
         class ObserverTimestampOptions
@@ -158,9 +160,9 @@ module Sigstore
           # integrated timestamps from a transparency log, that
           # could include additional timestamp sources in the
           # future.
-          optional(1, "threshold", type: :int32)
+          optional(1, "threshold", type: :int32, proto3_optional: false)
           # Disable observer timestamp verification.
-          optional(2, "disable", type: :bool)
+          optional(2, "disable", type: :bool, proto3_optional: false)
         end
 
         # At least one identity MUST be provided. Providing zero identities
@@ -173,7 +175,8 @@ module Sigstore
           type: :message,
           message_type: "dev.sigstore.verification.v1.CertificateIdentities",
           json_name: "certificateIdentities",
-          oneof: :signers
+          oneof: :signers,
+          proto3_optional: false
         )
         # To simplify verification implementation, the logic for
         # bundle verification should be implemented as a
@@ -190,7 +193,8 @@ module Sigstore
           type: :message,
           message_type: "dev.sigstore.verification.v1.PublicKeyIdentities",
           json_name: "publicKeys",
-          oneof: :signers
+          oneof: :signers,
+          proto3_optional: false
         )
         # Optional options for artifact transparency log verification.
         # If none is provided, the default verification options are:
@@ -266,10 +270,17 @@ module Sigstore
           "artifact_uri",
           type: :string,
           json_name: "artifactUri",
-          oneof: :data
+          oneof: :data,
+          proto3_optional: false
         )
         # The raw bytes of the artifact
-        optional(2, "artifact", type: :bytes, oneof: :data)
+        optional(
+          2,
+          "artifact",
+          type: :bytes,
+          oneof: :data,
+          proto3_optional: false
+        )
       end
 
       # Input captures all that is needed to call the bundle verification method,
@@ -292,7 +303,8 @@ module Sigstore
           "artifact_trust_root",
           type: :message,
           message_type: "dev.sigstore.trustroot.v1.TrustedRoot",
-          json_name: "artifactTrustRoot"
+          json_name: "artifactTrustRoot",
+          proto3_optional: false
         )
         optional(
           2,
@@ -300,13 +312,15 @@ module Sigstore
           type: :message,
           message_type:
           "dev.sigstore.verification.v1.ArtifactVerificationOptions",
-          json_name: "artifactVerificationOptions"
+          json_name: "artifactVerificationOptions",
+          proto3_optional: false
         )
         optional(
           3,
           "bundle",
           type: :message,
-          message_type: "dev.sigstore.bundle.v1.Bundle"
+          message_type: "dev.sigstore.bundle.v1.Bundle",
+          proto3_optional: false
         )
         # If the bundle contains a message signature, the artifact must be
         # provided.

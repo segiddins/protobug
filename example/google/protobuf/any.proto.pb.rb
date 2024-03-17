@@ -165,9 +165,15 @@ module Google
       #
       # Schemes other than `http`, `https` (or the empty scheme) might be
       # used with implementation specific semantics.
-      optional(1, "type_url", type: :string, json_name: "typeUrl")
+      optional(
+        1,
+        "type_url",
+        type: :string,
+        json_name: "typeUrl",
+        proto3_optional: false
+      )
       # Must be a valid serialized protocol buffer of the above specified type.
-      optional(2, "value", type: :bytes)
+      optional(2, "value", type: :bytes, proto3_optional: false)
     end
 
     def self.register_any_protos(registry)

@@ -35,10 +35,10 @@ module Sigstore
 
       # Message to be signed. (In JSON, this is encoded as base64.)
       # REQUIRED.
-      optional(1, "payload", type: :bytes)
+      optional(1, "payload", type: :bytes, proto3_optional: false)
       # String unambiguously identifying how to interpret payload.
       # REQUIRED.
-      optional(2, "payloadType", type: :string)
+      optional(2, "payloadType", type: :string, proto3_optional: false)
       # Signature over:
       #     PAE(type, payload)
       # Where PAE is defined as:
@@ -63,10 +63,10 @@ module Sigstore
 
       # Signature itself. (In JSON, this is encoded as base64.)
       # REQUIRED.
-      optional(1, "sig", type: :bytes)
+      optional(1, "sig", type: :bytes, proto3_optional: false)
       # *Unauthenticated* hint identifying which public key was used.
       # OPTIONAL.
-      optional(2, "keyid", type: :string)
+      optional(2, "keyid", type: :string, proto3_optional: false)
     end
 
     def self.register_envelope_protos(registry)

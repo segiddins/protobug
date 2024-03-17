@@ -170,9 +170,26 @@ module Protobug
         field = fields_by_number[number]
 
         unless field
-          # TODO: allow skipping forward in the binary based on the tag
-          raise UnknownFieldError, "unknown field number #{number} in #{full_name || fields_by_name.inspect} " \
-                "of wire_type #{wire_type} (header=#{header.to_s(2)})"
+          case wire_type
+          when 0
+            Protobug::Message::BinaryEncoding.decode_varint(binary) || raise(EOFError, "unexpected EOF")
+          when 1
+            value = binary.read(8)
+            raise EOFError, "unexpected EOF" if value&.bytesize != 8
+          when 2
+            Protobug::Message::BinaryEncoding.decode_length(binary)
+          when 3, 4
+            raise DecodeError, "group not supported"
+          when 5
+            value = binary.read(4)
+            raise EOFError, "unexpected EOF" if value&.bytesize != 4
+          else
+            raise DecodeError, "unknown wire_type: #{wire_type}"
+          end
+          next
+          # TODO: allow raising on unknown fields?
+          # raise UnknownFieldError, "unknown field number #{number} in #{full_name || fields_by_name.inspect} " \
+          #       "of wire_type #{wire_type} (header=#{header.to_s(2)})"
         end
 
         field.binary_decode(binary, object, registry, wire_type)

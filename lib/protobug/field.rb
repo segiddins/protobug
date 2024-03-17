@@ -349,7 +349,7 @@ module Protobug
       when :string
         value.encode("utf-8")
       when :message, :enum
-        value.as_json
+        value&.as_json
       when :float, :double
         if value.nan?
           "NaN"

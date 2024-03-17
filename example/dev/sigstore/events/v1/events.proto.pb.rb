@@ -48,10 +48,21 @@ module Dev
           # -- CloudEvent Context Attributes
 
           # Required Attributes
-          optional(1, "id", type: :string)
-          optional(2, "source", type: :string) # URI-reference
-          optional(3, "spec_version", type: :string, json_name: "specVersion")
-          optional(4, "type", type: :string)
+          optional(1, "id", type: :string, proto3_optional: false)
+          optional(
+            2,
+            "source",
+            type: :string,
+            proto3_optional: false
+          ) # URI-reference
+          optional(
+            3,
+            "spec_version",
+            type: :string,
+            json_name: "specVersion",
+            proto3_optional: false
+          )
+          optional(4, "type", type: :string, proto3_optional: false)
           # Optional & Extension Attributes
           map(
             5,
@@ -68,14 +79,16 @@ module Dev
             "binary_data",
             type: :bytes,
             json_name: "binaryData",
-            oneof: :data
+            oneof: :data,
+            proto3_optional: false
           )
           optional(
             7,
             "text_data",
             type: :string,
             json_name: "textData",
-            oneof: :data
+            oneof: :data,
+            proto3_optional: false
           )
           optional(
             8,
@@ -83,7 +96,8 @@ module Dev
             type: :message,
             message_type: "google.protobuf.Any",
             json_name: "protoData",
-            oneof: :data
+            oneof: :data,
+            proto3_optional: false
           )
           # *
           #  The CloudEvent specification defines
@@ -99,42 +113,48 @@ module Dev
               "ce_boolean",
               type: :bool,
               json_name: "ceBoolean",
-              oneof: :attr
+              oneof: :attr,
+              proto3_optional: false
             )
             optional(
               2,
               "ce_integer",
               type: :int32,
               json_name: "ceInteger",
-              oneof: :attr
+              oneof: :attr,
+              proto3_optional: false
             )
             optional(
               3,
               "ce_string",
               type: :string,
               json_name: "ceString",
-              oneof: :attr
+              oneof: :attr,
+              proto3_optional: false
             )
             optional(
               4,
               "ce_bytes",
               type: :bytes,
               json_name: "ceBytes",
-              oneof: :attr
+              oneof: :attr,
+              proto3_optional: false
             )
             optional(
               5,
               "ce_uri",
               type: :string,
               json_name: "ceUri",
-              oneof: :attr
+              oneof: :attr,
+              proto3_optional: false
             )
             optional(
               6,
               "ce_uri_ref",
               type: :string,
               json_name: "ceUriRef",
-              oneof: :attr
+              oneof: :attr,
+              proto3_optional: false
             )
             optional(
               7,
@@ -142,7 +162,8 @@ module Dev
               type: :message,
               message_type: "google.protobuf.Timestamp",
               json_name: "ceTimestamp",
-              oneof: :attr
+              oneof: :attr,
+              proto3_optional: false
             )
           end
         end

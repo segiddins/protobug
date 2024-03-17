@@ -151,11 +151,12 @@ module Sigstore
           1,
           "algorithm",
           type: :enum,
-          enum_type: "dev.sigstore.common.v1.HashAlgorithm"
+          enum_type: "dev.sigstore.common.v1.HashAlgorithm",
+          proto3_optional: false
         )
         # This is the raw octets of the message digest as computed by
         # the hash algorithm.
-        optional(2, "digest", type: :bytes)
+        optional(2, "digest", type: :bytes, proto3_optional: false)
       end
 
       # MessageSignature stores the computed signature over a message.
@@ -172,7 +173,8 @@ module Sigstore
           "message_digest",
           type: :message,
           message_type: "dev.sigstore.common.v1.HashOutput",
-          json_name: "messageDigest"
+          json_name: "messageDigest",
+          proto3_optional: false
         )
         # The raw bytes as returned from the signature algorithm.
         # The signature algorithm (and so the format of the signature bytes)
@@ -182,7 +184,7 @@ module Sigstore
         # algorithm.
         # When using a key pair, the algorithm MUST be part of the public
         # key, which MUST be communicated out-of-band.
-        optional(2, "signature", type: :bytes)
+        optional(2, "signature", type: :bytes, proto3_optional: false)
       end
 
       # LogId captures the identity of a transparency log.
@@ -195,7 +197,13 @@ module Sigstore
         # of the log's public key, calculated over the DER encoding
         # of the key represented as SubjectPublicKeyInfo.
         # See https://www.rfc-editor.org/rfc/rfc6962#section-3.2
-        optional(1, "key_id", type: :bytes, json_name: "keyId")
+        optional(
+          1,
+          "key_id",
+          type: :bytes,
+          json_name: "keyId",
+          proto3_optional: false
+        )
       end
 
       # This message holds a RFC 3161 timestamp.
@@ -210,7 +218,8 @@ module Sigstore
           1,
           "signed_timestamp",
           type: :bytes,
-          json_name: "signedTimestamp"
+          json_name: "signedTimestamp",
+          proto3_optional: false
         )
       end
 
@@ -228,7 +237,8 @@ module Sigstore
           "key_details",
           type: :enum,
           enum_type: "dev.sigstore.common.v1.PublicKeyDetails",
-          json_name: "keyDetails"
+          json_name: "keyDetails",
+          proto3_optional: false
         )
         # Optional validity period for this key, *inclusive* of the endpoints.
         optional(
@@ -256,7 +266,7 @@ module Sigstore
         # Implementors are RECOMMENDED to derive the value from the public
         # key as described in RFC 6962.
         # See: <https://www.rfc-editor.org/rfc/rfc6962#section-3.2>
-        optional(1, "hint", type: :string)
+        optional(1, "hint", type: :string, proto3_optional: false)
       end
 
       # An ASN.1 OBJECT IDENTIFIER
@@ -278,9 +288,10 @@ module Sigstore
           1,
           "oid",
           type: :message,
-          message_type: "dev.sigstore.common.v1.ObjectIdentifier"
+          message_type: "dev.sigstore.common.v1.ObjectIdentifier",
+          proto3_optional: false
         )
-        optional(2, "value", type: :bytes)
+        optional(2, "value", type: :bytes, proto3_optional: false)
       end
 
       class DistinguishedName
@@ -288,8 +299,14 @@ module Sigstore
 
         self.full_name = "dev.sigstore.common.v1.DistinguishedName"
 
-        optional(1, "organization", type: :string)
-        optional(2, "common_name", type: :string, json_name: "commonName")
+        optional(1, "organization", type: :string, proto3_optional: false)
+        optional(
+          2,
+          "common_name",
+          type: :string,
+          json_name: "commonName",
+          proto3_optional: false
+        )
       end
 
       class X509Certificate
@@ -298,7 +315,13 @@ module Sigstore
         self.full_name = "dev.sigstore.common.v1.X509Certificate"
 
         # DER-encoded X.509 certificate.
-        optional(1, "raw_bytes", type: :bytes, json_name: "rawBytes")
+        optional(
+          1,
+          "raw_bytes",
+          type: :bytes,
+          json_name: "rawBytes",
+          proto3_optional: false
+        )
       end
 
       class SubjectAlternativeNameType
@@ -327,13 +350,26 @@ module Sigstore
           1,
           "type",
           type: :enum,
-          enum_type: "dev.sigstore.common.v1.SubjectAlternativeNameType"
+          enum_type: "dev.sigstore.common.v1.SubjectAlternativeNameType",
+          proto3_optional: false
         )
         # A regular expression describing the expected value for
         # the SAN.
-        optional(2, "regexp", type: :string, oneof: :identity)
+        optional(
+          2,
+          "regexp",
+          type: :string,
+          oneof: :identity,
+          proto3_optional: false
+        )
         # The exact value to match against.
-        optional(3, "value", type: :string, oneof: :identity)
+        optional(
+          3,
+          "value",
+          type: :string,
+          oneof: :identity,
+          proto3_optional: false
+        )
       end
 
       # A collection of X.509 certificates.
@@ -372,7 +408,8 @@ module Sigstore
           1,
           "start",
           type: :message,
-          message_type: "google.protobuf.Timestamp"
+          message_type: "google.protobuf.Timestamp",
+          proto3_optional: false
         )
         optional(
           2,

@@ -119,7 +119,8 @@ module Sigstore
           type: :message,
           message_type: "dev.sigstore.common.v1.PublicKeyIdentifier",
           json_name: "publicKey",
-          oneof: :content
+          oneof: :content,
+          proto3_optional: false
         )
         optional(
           2,
@@ -127,14 +128,16 @@ module Sigstore
           type: :message,
           message_type: "dev.sigstore.common.v1.X509CertificateChain",
           json_name: "x509CertificateChain",
-          oneof: :content
+          oneof: :content,
+          proto3_optional: false
         )
         optional(
           5,
           "certificate",
           type: :message,
           message_type: "dev.sigstore.common.v1.X509Certificate",
-          oneof: :content
+          oneof: :content,
+          proto3_optional: false
         )
         # An inclusion proof and an optional signed timestamp from the log.
         # Client verification libraries MAY provide an option to support v0.1
@@ -157,7 +160,8 @@ module Sigstore
           "timestamp_verification_data",
           type: :message,
           message_type: "dev.sigstore.bundle.v1.TimestampVerificationData",
-          json_name: "timestampVerificationData"
+          json_name: "timestampVerificationData",
+          proto3_optional: false
         )
       end
 
@@ -170,7 +174,13 @@ module Sigstore
         # or application/vnd.dev.sigstore.bundle+json;version=0.2
         # or application/vnd.dev.sigstore.bundle+json;version=0.3
         # when encoded as JSON.
-        optional(1, "media_type", type: :string, json_name: "mediaType")
+        optional(
+          1,
+          "media_type",
+          type: :string,
+          json_name: "mediaType",
+          proto3_optional: false
+        )
         # When a signer is identified by a X.509 certificate, a verifier MUST
         # verify that the signature was computed at the time the certificate
         # was valid as described in the Sigstore client spec: "Verification
@@ -185,7 +195,8 @@ module Sigstore
           "verification_material",
           type: :message,
           message_type: "dev.sigstore.bundle.v1.VerificationMaterial",
-          json_name: "verificationMaterial"
+          json_name: "verificationMaterial",
+          proto3_optional: false
         )
         optional(
           3,
@@ -193,7 +204,8 @@ module Sigstore
           type: :message,
           message_type: "dev.sigstore.common.v1.MessageSignature",
           json_name: "messageSignature",
-          oneof: :content
+          oneof: :content,
+          proto3_optional: false
         )
         # A DSSE envelope can contain arbitrary payloads.
         # Verifiers must verify that the payload type is a
@@ -206,7 +218,8 @@ module Sigstore
           type: :message,
           message_type: "io.intoto.Envelope",
           json_name: "dsseEnvelope",
-          oneof: :content
+          oneof: :content,
+          proto3_optional: false
         )
 
         # Reserved for future additions of artifact types.

@@ -16,11 +16,15 @@ module Protobug
         def const_added(name)
           super
           value = const_get(name)
+
+          const_name = value.name.start_with?("k") ? "K_#{value.name[1..]}" : value.name
+          const_name = "K_#{const_name}" unless const_name.match?(/\A[A-Z]/)
+
           raise "expected #{self}::#{name} to be a #{self}, got #{value.inspect}" unless value.is_a? self
-          raise "expected #{value.name} to be #{name}" unless name.name == value.name
+          raise "expected #{value.name} to be #{const_name}" unless name.name == const_name
           raise "duplicate value #{value.inspect}" if values[value.name]
 
-          @values[name.name] = value
+          @values[value.name] = value
           @values[value.value] ||= value
         end
 
