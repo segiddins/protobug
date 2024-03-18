@@ -68,6 +68,7 @@ module Google
         type: :map,
         key_type: :string,
         value_type: :message,
+        message_type: "google.protobuf.Value",
         packed: true
       )
     end

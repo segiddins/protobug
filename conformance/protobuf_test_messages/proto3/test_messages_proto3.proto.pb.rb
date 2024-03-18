@@ -703,6 +703,8 @@ module ProtobufTestMessages
         type: :map,
         key_type: :string,
         value_type: :message,
+        message_type:
+        "protobuf_test_messages.proto3.TestAllTypesProto3.NestedMessage",
         packed: true,
         json_name: "mapStringNestedMessage"
       )
@@ -712,6 +714,7 @@ module ProtobufTestMessages
         type: :map,
         key_type: :string,
         value_type: :message,
+        message_type: "protobuf_test_messages.proto3.ForeignMessage",
         packed: true,
         json_name: "mapStringForeignMessage"
       )
@@ -721,6 +724,8 @@ module ProtobufTestMessages
         type: :map,
         key_type: :string,
         value_type: :enum,
+        enum_type:
+        "protobuf_test_messages.proto3.TestAllTypesProto3.NestedEnum",
         packed: true,
         json_name: "mapStringNestedEnum"
       )
@@ -730,6 +735,7 @@ module ProtobufTestMessages
         type: :map,
         key_type: :string,
         value_type: :enum,
+        enum_type: "protobuf_test_messages.proto3.ForeignEnum",
         packed: true,
         json_name: "mapStringForeignEnum"
       )

@@ -3,7 +3,7 @@
 module Protobug
   class Field
     attr_accessor :number, :name, :type, :json_name, :cardinality, :oneof, :ivar, :setter, :message_type, :enum_type,
-                  :adder
+                  :adder, :key_type, :value_type
 
     def initialize(number, name, type: nil, json_name: nil, cardinality: :optional, oneof: nil, message_type: nil,
                    enum_type: nil, packed: false, key_type: nil, value_type: nil, group_type: nil,
@@ -21,12 +21,24 @@ module Protobug
       @cardinality = cardinality || raise
       @oneof = oneof
       @setter = :"#{name}="
-      @adder = :"add_#{name}" if repeated?
+      @adder = :"add_#{name}" if repeated? || type == :map
       @ivar = :"@#{name}"
       @message_type = message_type
       @enum_type = enum_type
       @packed = packed
       @proto3_optional = proto3_optional
+      @key_type = key_type
+      @value_type = value_type
+
+      return unless map?
+
+      @map_type = Class.new do
+        extend Protobug::Message
+
+        optional(1, "key", type: key_type, proto3_optional: false)
+        value_type_kwargs = { enum_type: enum_type, message_type: message_type }.compact
+        optional(2, "value", type: value_type, **value_type_kwargs, proto3_optional: false)
+      end
     end
 
     def pretty_print(pp)
@@ -72,6 +84,8 @@ module Protobug
         0.0
       when :bool
         false
+      when :map
+        {}
       else
         raise "unhandled type in #{self}.#{__method__}: #{type.inspect}"
       end
@@ -93,6 +107,10 @@ module Protobug
       @proto3_optional
     end
 
+    def map?
+      type == :map
+    end
+
     def to_text(value)
       case [cardinality, json_scalar?]
       when [:repeated, true]
@@ -107,7 +125,15 @@ module Protobug
     end
 
     def binary_encode(value, outbuf)
-      if repeated?
+      if map?
+        value.each do |k, v|
+          entry = @map_type.new
+          entry.key = k
+          entry.value = v
+          Protobug::Message::BinaryEncoding.encode_varint (number << 3) | wire_type, outbuf
+          Protobug::Message::BinaryEncoding.encode_length @map_type.encode(entry), outbuf
+        end
+      elsif repeated?
         if packed?
           binary_encode_packed(value, outbuf)
         else
@@ -125,8 +151,6 @@ module Protobug
     end
 
     def binary_decode(binary, message, registry, wire_type)
-      raise UnsupportedFeatureError.new(:map, "#{self}.#{__method__}") if type == :map
-
       if repeated? && wire_type == 2 && [0, 1, 5].include?(self.wire_type)
         len = StringIO.new(Protobug::Message::BinaryEncoding.decode_length(binary))
         len.binmode
@@ -140,7 +164,12 @@ module Protobug
     end
 
     def json_encode(value)
-      if repeated?
+      if map?
+        value.to_h do |k, v|
+          value = @map_type.fields_by_name["value"].json_encode(v)
+          [json_key_encode(k), value]
+        end
+      elsif repeated?
         value.map { |v| json_encode_one(v) }
       elsif (!optional? || !proto3_optional?) && !oneof && default == value
         # omit
@@ -149,16 +178,48 @@ module Protobug
       end
     end
 
-    def json_decode(value, message, registry)
-      raise UnsupportedFeatureError.new(:map, "#{self}.#{__method__}") if type == :map
-
-      if repeated?
-        return if value.nil?
-        raise DecodeError, "expected Array for #{inspect}, got #{value.inspect}" unless value.is_a?(Array)
-
-        value.map { |v| message.send(adder, json_decode_one(v, registry)) }
+    def json_key_encode(value)
+      case value
+      when String
+        value
+      when Integer, Float
+        value.to_s
+      when TrueClass
+        "true"
+      when FalseClass
+        "false"
       else
-        message.send(setter, json_decode_one(value, registry))
+        raise EncodeError, "unexpected type for map key: #{value.inspect}"
+      end
+    end
+
+    def json_decode(value, message, registry)
+      if map?
+        return if value.nil?
+
+        unless value.is_a?(Hash)
+          raise DecodeError,
+                "expected Hash for #{inspect}, got #{value.inspect}"
+        end
+
+        value.each do |k, v|
+          entry = @map_type.decode_json_hash({ "key" => k, "value" => v }, registry: registry)
+          message.send(adder, entry)
+        end
+      elsif repeated?
+        return if value.nil?
+
+        unless value.is_a?(Array)
+          raise DecodeError,
+                "expected Array for #{inspect}, got #{value.inspect}"
+        end
+
+        value.map do |v|
+          message.send(adder, json_decode_one(v, registry))
+        end
+      else
+        message.send(setter,
+                     json_decode_one(value, registry))
       end
     end
 
@@ -244,6 +305,10 @@ module Protobug
         Protobug::Message::BinaryEncoding.encode_length value.b, outbuf
       when :message
         Protobug::Message::BinaryEncoding.encode_length value.class.encode(value), outbuf
+      when :map
+        entry = @map_type.new
+        entry.key, entry.value = value
+        Protobug::Message::BinaryEncoding.encode_length @map_type.encode(entry), outbuf
       when :bool
         Protobug::Message::BinaryEncoding.encode_varint value ? 1 : 0, outbuf
       else
@@ -280,7 +345,7 @@ module Protobug
       when :float
         value.unpack1("e")
       when :string
-        value.force_encoding("utf-8")
+        value.force_encoding("utf-8") if value.encoding != Encoding::UTF_8
         raise DecodeError, "invalid utf-8 for string" unless value.valid_encoding?
 
         value
@@ -289,6 +354,8 @@ module Protobug
       when :message
         # TODO: allow merging into an existing message
         registry.fetch(message_type).decode(StringIO.new(value), registry: registry)
+      when :map
+        @map_type.decode(StringIO.new(value), registry: registry)
       when :enum
         registry.fetch(enum_type).decode(value)
       when :bool
@@ -323,6 +390,10 @@ module Protobug
         case value
         when TrueClass, FalseClass
           value
+        when "true"
+          true
+        when "false"
+          false
         else
           raise DecodeError, "expected boolean, got #{value.inspect}"
         end
@@ -354,8 +425,10 @@ module Protobug
             rescue ArgumentError => e
               raise DecodeError, "Invalid URL-encoded base64 #{value.inspect} for #{inspect}: #{e}"
             end
-          else
+          elsif value.encoding != Encoding::UTF_8
             value.force_encoding("utf-8")
+          else
+            value
           end
         else
           raise DecodeError, "expected string for #{inspect}, got #{value.inspect}"
@@ -398,7 +471,7 @@ module Protobug
       when :bool
         value
       else
-        raise EncodeError, "unhandled type in #{self}.#{__method__}: #{field.type.inspect}"
+        raise EncodeError, "unhandled type in #{self}.#{__method__}: #{type.inspect}"
       end
     end
 
@@ -410,7 +483,7 @@ module Protobug
         1
       when :fixed32, :sfixed32, :float
         5
-      when :string, :bytes, :message
+      when :string, :bytes, :message, :map
         2
       else
         raise "unhandled type in #{self}.#{__method__}: #{type.inspect}"

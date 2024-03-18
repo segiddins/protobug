@@ -84,6 +84,9 @@ def do_test(request)
         response.serialize_error = e.full_message.encode("utf-8")
       end
 
+    when Conformance::WireFormat::TEXT_FORMAT
+      response.skipped = "Ruby doesn't support text format"
+
     else
       fail "Request didn't have requested output format: #{request.requested_output_format.inspect} #{request.inspect}"
     end

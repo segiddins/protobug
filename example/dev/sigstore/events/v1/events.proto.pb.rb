@@ -70,6 +70,8 @@ module Dev
             type: :map,
             key_type: :string,
             value_type: :message,
+            message_type:
+            "dev.sigstore.events.v1.CloudEvent.CloudEventAttributeValue",
             packed: true
           )
           # -- CloudEvent Data (Bytes, Text, or Proto)

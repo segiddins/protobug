@@ -210,12 +210,12 @@ module Protobug
       source_loc = descriptor.source_loc
       return unless source_loc
 
-      source_loc.leading_detached_comments.each do |c|
+      source_loc&.leading_detached_comments&.each do |c|
         group.comment(c)
         group.empty
       end
 
-      group.comment(source_loc.leading_comments) if source_loc.leading_comments?
+      group.comment(source_loc.leading_comments) if source_loc&.leading_comments?
 
       case descriptor
       when DescriptorProto
@@ -328,11 +328,15 @@ module Protobug
           c.identifier("type:").literal(type)
 
           if type == :map
-            # TODO: include key/value message/enum types as well
             c.identifier("key_type:")
              .literal(referenced_type.field[0].type.name.downcase.delete_prefix("type_").to_sym)
+            value_type = referenced_type.field[1].type.name.downcase.delete_prefix("type_").to_sym
             c.identifier("value_type:")
-             .literal(referenced_type.field[1].type.name.downcase.delete_prefix("type_").to_sym)
+             .literal(value_type)
+            if referenced_type.field[1].type_name?
+              c.identifier("#{value_type}_type:")
+               .literal(referenced_type.field[1].type_name.delete_prefix("."))
+            end
           elsif descriptor.type_name?
             c.identifier("#{type}_type:").literal(descriptor.type_name.delete_prefix("."))
           end
@@ -360,12 +364,12 @@ module Protobug
           end
         end
       when OneofDescriptorProto
-        group.empty if source_loc.leading_comments?
+        group.empty if source_loc&.leading_comments?
         # no-op
       else
         raise "Unknown descriptor type: #{descriptor.class}"
       end.tap do |s|
-        s.comment(source_loc.trailing_comments) if source_loc.trailing_comments?
+        s.comment(source_loc.trailing_comments) if source_loc&.trailing_comments?
       end
     end
 

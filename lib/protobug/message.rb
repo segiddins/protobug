@@ -311,7 +311,7 @@ module Protobug
         when 2
           Protobug::Message::BinaryEncoding.decode_length(binary)
         when 3, 4
-          raise DecodeError, "group not supported"
+          raise UnsupportedFeatureError.new(:group, "reading groups from binary protos")
         when 5
           value = binary.read(4)
           raise EOFError, "unexpected EOF" if value&.bytesize != 4
@@ -375,6 +375,16 @@ module Protobug
 
         existing << value
       end if field.repeated?
+
+      define_method(field.adder) do |value|
+        existing = instance_variable_get(:"@#{name}")
+        if UNSET == existing
+          existing = {}
+          instance_variable_set(:"@#{name}", existing)
+        end
+
+        existing[value.key] = value.value
+      end if field.map?
 
       if field.oneof
         unless oneofs[field.oneof]
