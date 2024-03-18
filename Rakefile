@@ -16,10 +16,11 @@ def git_repo(name, path, url, commit: "main")
     file "#{path}/.git/config" do
       sh "git", "clone", url, path, "--depth=1"
     end
-    file "#{path}/.git/HEAD" => "#{path}/.git/config" do
+    task checkout: %W[#{path}/.git/config] do
+      sh "git", "fetch", "--tags", "origin", commit, chdir: path
       sh "git", "checkout", commit, chdir: path
     end
-    file "#{path}/.git/rake-version" => %W[#{path}/.git/HEAD] do
+    file "#{path}/.git/rake-version" => %w[checkout] do
       sh "git", "describe", "--tags", "--always", chdir: path,
                                                   out: "#{path}/.git/rake-version"
     end

@@ -672,16 +672,12 @@ module Google
         type: :bool,
         json_name: "javaGenerateEqualsAndHash"
       )
-      # A proto2 file can set this to true to opt in to UTF-8 checking for Java,
-      # which will throw an exception if invalid UTF-8 is parsed from the wire or
-      # assigned to a string field.
-      #
-      # TODO: clarify exactly what kinds of field types this option
-      # applies to, and update these docs accordingly.
-      #
-      # Proto3 files already perform these checks. Setting the option explicitly to
-      # false has no effect: it cannot be used to opt proto3 files out of UTF-8
-      # checks.
+      # If set true, then the Java2 code generator will generate code that
+      # throws an exception whenever an attempt is made to assign a non-UTF-8
+      # byte sequence to a string field.
+      # Message reflection will do the same.
+      # However, an extension field still accepts non-UTF-8 byte sequences.
+      # This option has no effect on when used with the lite runtime.
       optional(
         27,
         "java_string_check_utf8",
