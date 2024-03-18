@@ -98,7 +98,7 @@ RSpec.describe Protobug do
       registry.register c
     end
 
-    ["1970-01-01T00:00:00.000Z", "2023-04-14T00:00:00.000Z"].each do |json|
+    ["1970-01-01T00:00:00Z", "2023-04-14T00:00:00Z", "2023-04-14T00:00:00.010Z"].each do |json|
       msg = c.decode_json(JSON.generate(a: json), registry: registry)
       expect(JSON.parse(msg.to_json)).to eq("a" => json)
     end
@@ -148,7 +148,7 @@ RSpec.describe Protobug do
 
     # int32 max
     msg.n32 = 2**31 - 1
-    msg.n64 = 0
+    msg.clear_n64
     encoded = test_sint.encode(msg)
     aggregate_failures do
       decoded = test_sint.decode(StringIO.new(encoded), registry: nil)

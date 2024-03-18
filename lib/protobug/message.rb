@@ -104,10 +104,12 @@ module Protobug
       when "google.protobuf.Duration"
         raise DecodeError, "expected string for #{full_name}, got #{json.inspect}" unless json.is_a? String
 
-        if /\A(-)?(\d+)\.(\d+)s\z/ =~ json
+        if /\A(-)?(\d+)(?:\.(\d+))?s\z/ =~ json
           sign = $1 ? -1 : 1
           seconds = $2.to_i
-          nanos = $3
+          nanos = $3 || "0"
+          raise RangeError if seconds < -315_576_000_000 || seconds > +315_576_000_000
+
           nanos = nanos.ljust(9, "0").to_i
           json = {
             "seconds" => sign * seconds,
@@ -218,8 +220,11 @@ module Protobug
       module_function
 
       def encode_varint(value, outbuf)
+        raise EncodeError, "expected integer, got #{value.inspect}" unless value.is_a? Integer
+        raise RangeError, "expected 64-bit integer" if value > 2**64 - 1 || value < -2**63
+
         negative = value < 0
-        value = 0b11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111 + value + 1 if negative
+        value = 2**64 + value if negative
         out = []
         loop do
           if value.bit_length > 7
@@ -251,9 +256,12 @@ module Protobug
 
       def decode_varint(binary)
         byte = binary.getbyte
-        value = 0 if byte
+        return unless byte
+
+        value = 0
         bl = 0
         loop do
+          raise DecodeError, "varint too large" if bl > 63
           return value if byte.nil?
           if byte & 0b1000_0000 == 0 # no continuation bit set
             return value | (byte << bl)
@@ -275,12 +283,9 @@ module Protobug
 
       def decode_zigzag(size, value)
         negative = value & 1 == 1
-        value ^= 1 if negative
+        value %= 2**size
         value >>= 1
-        if negative
-          value += 1
-          value *= -1
-        end
+        value = -value - 1 if negative
 
         raise DecodeError,
               "bitlength too large for #{size}-bit integer: #{value.bit_length}" unless value.bit_length <= size
@@ -327,37 +332,7 @@ module Protobug
       define_method(field.setter) do |value|
         return instance_variable_set(:"@#{name}", UNSET) if value.nil? && field.optional? && field.proto3_optional?
 
-        case field.type
-        when :int32, :sint32, :sfixed32
-          raise InvalidValueError.new(self, field, value) unless value.is_a? Integer
-
-          unless value.bit_length < 32
-            raise InvalidValueError.new(self, field, value,
-                                        "expected 32-bit integer, got bit_length: #{value.bit_length}")
-          end
-        when :uint32
-          raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
-
-          raise RangeError,
-                "expected 32-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length <= 32
-        when :int64, :sint64, :sfixed64
-          raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
-
-          raise RangeError,
-                "expected 64-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length < 64
-        when :uint64
-          raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
-
-          raise RangeError,
-                "expected 64-bit integer, got #{value} (bit_length: #{value.bit_length})" unless value.bit_length <= 64
-        end
-        if field.oneof
-          self.class.oneofs[field.oneof].each do |f|
-            next if f == field
-
-            send(:"clear_#{f.name}")
-          end
-        end
+        field.validate!(value, self)
         instance_variable_set(:"@#{name}", value)
       end
 
@@ -384,7 +359,7 @@ module Protobug
       end
 
       define_method(field.adder) do |value|
-        # TODO: validate value
+        field.validate!(value, self)
 
         existing = instance_variable_get(:"@#{name}")
         if UNSET == existing
@@ -468,14 +443,17 @@ module Protobug
           raise EncodeError, "time value too small #{time.inspect}" if time.year <= 0
 
           nanosecs = time.nsec
-          _, remainder = nanosecs.divmod(1_000_000)
-          digits = if remainder != 0
-                     9
-                   else
-                     3
-                   end
 
-          return time.strftime("%FT%H:%M:%S.%#{digits}NZ")
+          if nanosecs > 0
+            nanosecs = nanosecs.to_s.ljust(9, "0")
+            nil while nanosecs.delete_suffix!("000")
+            digits = nanosecs.size
+            format = "%FT%H:%M:%S.%#{digits}NZ"
+          else
+            format = "%FT%H:%M:%SZ"
+          end
+
+          return time.strftime(format)
         when "google.protobuf.Duration"
           seconds = self.seconds
           nanos = self.nanos
@@ -483,7 +461,10 @@ module Protobug
             raise EncodeError, "seconds and nanos must have the same sign"
           end
 
+          raise RangeError if seconds < -315_576_000_000 || seconds > +315_576_000_000
+
           sign = seconds < 0 ? "-" : ""
+          sign = "-" if seconds == 0 && nanos < 0
           seconds = seconds.abs
           nanos = nanos.abs
           return "#{sign}#{seconds}.#{nanos.to_s.rjust(9, "0")}s"

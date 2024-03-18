@@ -133,7 +133,7 @@ module Protobug
 
         message.send(adder, binary_decode_one(len, registry, self.wire_type)) until len.eof?
       elsif wire_type != self.wire_type
-        raise "wrong wire type for #{self}: #{wire_type.inspect}"
+        raise DecodeError, "wrong wire type for #{self}: #{wire_type.inspect}"
       else
         message.send(adder || setter, binary_decode_one(binary, registry, wire_type))
       end
@@ -159,6 +159,47 @@ module Protobug
         value.map { |v| message.send(adder, json_decode_one(v, registry)) }
       else
         message.send(setter, json_decode_one(value, registry))
+      end
+    end
+
+    def validate!(value, message)
+      case type
+      when :int32, :sint32, :sfixed32
+        raise InvalidValueError.new(message, self, value) unless value.is_a? Integer
+
+        unless value >= -(2**31) && value < 2**31
+          raise RangeError,
+                "expected 32-bit integer, got #{value} (bit_length: #{value.bit_length})"
+        end
+      when :uint32
+        raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
+
+        unless value.bit_length <= 32
+          raise RangeError,
+                "expected 32-bit integer, got #{value} (bit_length: #{value.bit_length})"
+        end
+      when :int64, :sint64, :sfixed64
+        raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
+
+        unless value >= -(2**63) && value < 2**63
+          raise RangeError,
+                "expected 64-bit integer, got #{value} (bit_length: #{value.bit_length})"
+        end
+      when :uint64
+        raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
+
+        unless value.bit_length <= 64
+          raise RangeError,
+                "expected 64-bit integer, got #{value} (bit_length: #{value.bit_length})"
+        end
+      end
+
+      return unless oneof
+
+      message.class.oneofs[oneof].each do |f|
+        next if f == self
+
+        message.send(:"clear_#{f.name}")
       end
     end
 

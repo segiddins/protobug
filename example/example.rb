@@ -20,6 +20,6 @@ class TestExample < Minitest::Test
     end
     hash = JSON.parse File.read("tmp/sigstore-conformance/test/assets/trusted_root.public_good.json")
     trusted_root = Sigstore::TrustRoot::V1::TrustedRoot.decode_json_hash(hash, registry: registry)
-    assert_equal(hash, JSON.parse(trusted_root.to_json))
+    assert_equal(hash, JSON.parse(trusted_root.to_json.gsub(/(:\d\d)Z/, "\\1.000Z")))
   end
 end
