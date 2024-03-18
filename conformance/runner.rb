@@ -2,9 +2,9 @@
 # frozen_string_literal: true
 
 $:.unshift(File.expand_path("../lib", __dir__), __dir__)
-require_relative "conformance/conformance.proto.pb"
-require_relative "protobuf_test_messages/proto2/test_messages_proto2.proto.pb"
-require_relative "protobuf_test_messages/proto3/test_messages_proto3.proto.pb"
+require_relative "conformance/conformance_pb"
+require_relative "protobuf_test_messages/proto2/test_messages_proto2_pb"
+require_relative "protobuf_test_messages/proto3/test_messages_proto3_pb"
 require "stringio"
 
 $test_count = 0

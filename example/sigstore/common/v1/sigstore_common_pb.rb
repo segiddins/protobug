@@ -28,8 +28,8 @@
 
 require "protobug"
 
-require "google/api/field_behavior.proto.pb"
-require "google/protobuf/timestamp.proto.pb"
+require "google/api/field_behavior_pb"
+require "google/protobuf/timestamp_pb"
 
 module Sigstore
   module Common

@@ -28,8 +28,8 @@
 
 require "protobug"
 
-require "google/api/field_behavior.proto.pb"
-require "sigstore/common/v1/sigstore_common.proto.pb"
+require "google/api/field_behavior_pb"
+require "sigstore/common/v1/sigstore_common_pb"
 
 module Sigstore
   module Rekor

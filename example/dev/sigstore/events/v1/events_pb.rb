@@ -33,8 +33,8 @@
 
 require "protobug"
 
-require "google/protobuf/any.proto.pb"
-require "google/protobuf/timestamp.proto.pb"
+require "google/protobuf/any_pb"
+require "google/protobuf/timestamp_pb"
 
 module Dev
   module Sigstore

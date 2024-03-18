@@ -28,7 +28,7 @@
 
 require "protobug"
 
-require "google/protobuf/descriptor.proto.pb"
+require "google/protobuf/descriptor_pb"
 
 module Google
   module Api

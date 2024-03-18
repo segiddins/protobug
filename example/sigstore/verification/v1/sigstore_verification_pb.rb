@@ -28,9 +28,9 @@
 
 require "protobug"
 
-require "sigstore/common/v1/sigstore_common.proto.pb"
-require "sigstore/trustroot/v1/sigstore_trustroot.proto.pb"
-require "sigstore/bundle/v1/sigstore_bundle.proto.pb"
+require "sigstore/common/v1/sigstore_common_pb"
+require "sigstore/trustroot/v1/sigstore_trustroot_pb"
+require "sigstore/bundle/v1/sigstore_bundle_pb"
 
 module Sigstore
   module Verification

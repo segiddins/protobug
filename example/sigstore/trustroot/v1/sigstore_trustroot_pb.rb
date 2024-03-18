@@ -28,7 +28,7 @@
 
 require "protobug"
 
-require "sigstore/common/v1/sigstore_common.proto.pb"
+require "sigstore/common/v1/sigstore_common_pb"
 
 module Sigstore
   module TrustRoot

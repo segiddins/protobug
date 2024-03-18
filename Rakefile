@@ -73,6 +73,7 @@ multitask compiler: %w[protobug-compiler/lib/protobug/compiler/builder_gen.rb tm
 end
 
 multitask conformance: %w[compiler tmp/protobuf/bazel-bin/conformance/conformance_test_runner] do
+  rm_rf FileList["conformance/{conformance,google,protobuf_test_messages}"]
   protobuf = "tmp/protobuf"
   sh(
     "bundle", "exec",

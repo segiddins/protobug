@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "compiler/google/protobuf/descriptor.proto.pb"
+require_relative "compiler/google/protobuf/descriptor_pb"
 require_relative "compiler/builder"
 
 module Protobug
@@ -152,11 +152,11 @@ module Protobug
       def file_name
         ruby_package = options.ruby_package if options.ruby_package?
         prefix = if ruby_package
-                   ruby_package.split("::").map(&:downcase).join("/")
+                   ruby_package.split("::").map!(&:downcase).join("/")
                  else
-                   package.split(".").map(&:downcase).join("/")
+                   package.split(".").map!(&:downcase).join("/")
                  end
-        name.gsub(%r{^.*?([^/]+)\.proto$}, "#{prefix}/\\1.proto.pb.rb")
+        name.gsub(%r{^.*?([^/]+)\.proto$}, "#{prefix}/\\1_pb.rb")
       end
 
       def loc_by_path(path)

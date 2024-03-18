@@ -26,12 +26,12 @@
 
 require "protobug"
 
-require "google/protobuf/any.proto.pb"
-require "google/protobuf/duration.proto.pb"
-require "google/protobuf/field_mask.proto.pb"
-require "google/protobuf/struct.proto.pb"
-require "google/protobuf/timestamp.proto.pb"
-require "google/protobuf/wrappers.proto.pb"
+require "google/protobuf/any_pb"
+require "google/protobuf/duration_pb"
+require "google/protobuf/field_mask_pb"
+require "google/protobuf/struct_pb"
+require "google/protobuf/timestamp_pb"
+require "google/protobuf/wrappers_pb"
 
 module ProtobufTestMessages
   module Proto3
