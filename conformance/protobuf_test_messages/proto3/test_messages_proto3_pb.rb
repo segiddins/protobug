@@ -377,6 +377,7 @@ module ProtobufTestMessages
         type: :enum,
         enum_type:
         "protobuf_test_messages.proto3.TestAllTypesProto3.NestedEnum",
+        packed: true,
         json_name: "repeatedNestedEnum"
       )
       repeated(
@@ -384,6 +385,7 @@ module ProtobufTestMessages
         "repeated_foreign_enum",
         type: :enum,
         enum_type: "protobuf_test_messages.proto3.ForeignEnum",
+        packed: true,
         json_name: "repeatedForeignEnum"
       )
       repeated(
@@ -568,7 +570,6 @@ module ProtobufTestMessages
         type: :map,
         key_type: :int32,
         value_type: :int32,
-        packed: true,
         json_name: "mapInt32Int32"
       )
       map(
@@ -577,7 +578,6 @@ module ProtobufTestMessages
         type: :map,
         key_type: :int64,
         value_type: :int64,
-        packed: true,
         json_name: "mapInt64Int64"
       )
       map(
@@ -586,7 +586,6 @@ module ProtobufTestMessages
         type: :map,
         key_type: :uint32,
         value_type: :uint32,
-        packed: true,
         json_name: "mapUint32Uint32"
       )
       map(
@@ -595,7 +594,6 @@ module ProtobufTestMessages
         type: :map,
         key_type: :uint64,
         value_type: :uint64,
-        packed: true,
         json_name: "mapUint64Uint64"
       )
       map(
@@ -604,7 +602,6 @@ module ProtobufTestMessages
         type: :map,
         key_type: :sint32,
         value_type: :sint32,
-        packed: true,
         json_name: "mapSint32Sint32"
       )
       map(
@@ -613,7 +610,6 @@ module ProtobufTestMessages
         type: :map,
         key_type: :sint64,
         value_type: :sint64,
-        packed: true,
         json_name: "mapSint64Sint64"
       )
       map(
@@ -622,7 +618,6 @@ module ProtobufTestMessages
         type: :map,
         key_type: :fixed32,
         value_type: :fixed32,
-        packed: true,
         json_name: "mapFixed32Fixed32"
       )
       map(
@@ -631,7 +626,6 @@ module ProtobufTestMessages
         type: :map,
         key_type: :fixed64,
         value_type: :fixed64,
-        packed: true,
         json_name: "mapFixed64Fixed64"
       )
       map(
@@ -640,7 +634,6 @@ module ProtobufTestMessages
         type: :map,
         key_type: :sfixed32,
         value_type: :sfixed32,
-        packed: true,
         json_name: "mapSfixed32Sfixed32"
       )
       map(
@@ -649,7 +642,6 @@ module ProtobufTestMessages
         type: :map,
         key_type: :sfixed64,
         value_type: :sfixed64,
-        packed: true,
         json_name: "mapSfixed64Sfixed64"
       )
       map(
@@ -658,7 +650,6 @@ module ProtobufTestMessages
         type: :map,
         key_type: :int32,
         value_type: :float,
-        packed: true,
         json_name: "mapInt32Float"
       )
       map(
@@ -667,7 +658,6 @@ module ProtobufTestMessages
         type: :map,
         key_type: :int32,
         value_type: :double,
-        packed: true,
         json_name: "mapInt32Double"
       )
       map(
@@ -676,7 +666,6 @@ module ProtobufTestMessages
         type: :map,
         key_type: :bool,
         value_type: :bool,
-        packed: true,
         json_name: "mapBoolBool"
       )
       map(
@@ -685,7 +674,6 @@ module ProtobufTestMessages
         type: :map,
         key_type: :string,
         value_type: :string,
-        packed: true,
         json_name: "mapStringString"
       )
       map(
@@ -694,7 +682,6 @@ module ProtobufTestMessages
         type: :map,
         key_type: :string,
         value_type: :bytes,
-        packed: true,
         json_name: "mapStringBytes"
       )
       map(
@@ -705,7 +692,6 @@ module ProtobufTestMessages
         value_type: :message,
         message_type:
         "protobuf_test_messages.proto3.TestAllTypesProto3.NestedMessage",
-        packed: true,
         json_name: "mapStringNestedMessage"
       )
       map(
@@ -715,7 +701,6 @@ module ProtobufTestMessages
         key_type: :string,
         value_type: :message,
         message_type: "protobuf_test_messages.proto3.ForeignMessage",
-        packed: true,
         json_name: "mapStringForeignMessage"
       )
       map(
@@ -726,7 +711,6 @@ module ProtobufTestMessages
         value_type: :enum,
         enum_type:
         "protobuf_test_messages.proto3.TestAllTypesProto3.NestedEnum",
-        packed: true,
         json_name: "mapStringNestedEnum"
       )
       map(
@@ -736,7 +720,6 @@ module ProtobufTestMessages
         key_type: :string,
         value_type: :enum,
         enum_type: "protobuf_test_messages.proto3.ForeignEnum",
-        packed: true,
         json_name: "mapStringForeignEnum"
       )
       optional(

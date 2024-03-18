@@ -343,7 +343,7 @@ module Protobug
 
           packed = descriptor.options&.packed
           # TODO: exclude other types that cannot be packed
-          if !descriptor.options&.packed? && !%i[enum message bytes string].include?(type)
+          if !descriptor.options&.packed? && !%i[message bytes string map].include?(type)
             packed = descriptor.label == Google::Protobuf::FieldDescriptorProto::Label::LABEL_REPEATED &&
                      descriptor.file.syntax == "proto3"
           end
