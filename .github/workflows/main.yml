@@ -27,6 +27,8 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - name: Run the default task
         run: bin/rake
       - name: Ensure no changes
