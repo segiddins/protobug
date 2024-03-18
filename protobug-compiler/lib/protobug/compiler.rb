@@ -387,6 +387,8 @@ module Protobug
         value = case value = file.options.send(name)
                 when Enum::InstanceMethods
                   value.name
+                when Symbol
+                  raise "Unknown symbol: #{value} for #{name} in #{file.options.inspect}"
                 else
                   value.inspect
                 end

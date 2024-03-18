@@ -35,6 +35,17 @@ module Protobug
         end
 
         def freeze
+          # const_added was added in 3.2
+          unless RUBY_VERSION >= "3.2"
+            constants.each do |n|
+              c = const_get(n)
+              next unless c.is_a? self
+
+              @values[c.name] ||= c
+              @values[c.value] ||= c
+            end
+          end
+
           @values.freeze
           @reserved_ranges.freeze
           full_name.freeze
@@ -48,13 +59,11 @@ module Protobug
       when UNSET
         default
       when String
-        values.fetch(json) { raise DecodeError, "unknown value: #{json.inspect}" }
-        # values.fetch(json) { new("<unknown:#{json}>", 0) }
+        values[json] || raise(DecodeError, "unknown value: #{json.inspect}")
       when Integer
-        # values.fetch(json) { raise DecodeError, "unknown value: #{json.inspect}" }
-        values.fetch(json) { new("<unknown:#{json}>", json) }
+        values[json] || new("<unknown:#{json}>", json)
       else
-        raise "expected string for #{full_name}, got #{json.inspect}"
+        raise ArgumentError, "expected string for #{full_name}, got #{json.inspect}"
       end
     end
 
@@ -63,7 +72,8 @@ module Protobug
 
       value = [value].pack("l>").unpack1("l>")
 
-      values.fetch(value) { new("<unknown:#{value}>", value) }
+      # TODO: use fetch instead of []
+      values[value] || new("<unknown:#{value}>", value)
     end
 
     def default
@@ -79,6 +89,9 @@ module Protobug
       end
 
       def initialize(name, value)
+        raise ArgumentError, "expected String, got #{name.inspect}" unless name.is_a? String
+        raise ArgumentError, "expected Integer, got #{value.inspect}" unless value.is_a? Integer
+
         @name = -name
         @value = value
       end
