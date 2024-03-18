@@ -153,11 +153,17 @@ module Protobug
           "type_url" => type_url,
           "value" => [type.encode(v)].pack("m0")
         }
+      when "google.protobuf.FieldMask"
+        raise DecodeError, "expected string for #{full_name}, got #{json.inspect}" unless json.is_a? String
+
+        json = { "paths" => json.split(",").each do |field|
+          field.gsub!(/(?<!\A)([A-Z])/) { |m| "_#{m.downcase}" }
+        end }
       end
 
       return if json.nil?
 
-      raise DecodeError, "expected hash, got #{json.inspect}" unless json.is_a? Hash
+      raise DecodeError, "expected hash for #{full_name}, got #{json.inspect}" unless json.is_a? Hash
 
       message = new
 

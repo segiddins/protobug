@@ -8,8 +8,6 @@ Required.Proto2.ProtobufInput.ValidDataOneof.MESSAGE.Merge.JsonOutput
 Required.Proto2.ProtobufInput.ValidDataOneof.MESSAGE.Merge.ProtobufOutput
 Required.Proto3.JsonInput.AllFieldAcceptNull.JsonOutput
 Required.Proto3.JsonInput.AllFieldAcceptNull.ProtobufOutput
-Required.Proto3.JsonInput.AnyWithFieldMask.JsonOutput
-Required.Proto3.JsonInput.AnyWithFieldMask.ProtobufOutput
 Required.Proto3.JsonInput.AnyWithInt32ValueWrapper.JsonOutput
 Required.Proto3.JsonInput.AnyWithInt32ValueWrapper.ProtobufOutput
 Required.Proto3.JsonInput.AnyWithStruct.JsonOutput
@@ -17,11 +15,6 @@ Required.Proto3.JsonInput.AnyWithStruct.ProtobufOutput
 Required.Proto3.JsonInput.AnyWithValueForJsonObject.JsonOutput
 Required.Proto3.JsonInput.AnyWithValueForJsonObject.ProtobufOutput
 Required.Proto3.JsonInput.DoubleFieldTooSmall
-Required.Proto3.JsonInput.EmptyFieldMask.JsonOutput
-Required.Proto3.JsonInput.EmptyFieldMask.ProtobufOutput
-Required.Proto3.JsonInput.EnumFieldUnknownValue.Validator
-Required.Proto3.JsonInput.FieldMask.JsonOutput
-Required.Proto3.JsonInput.FieldMask.ProtobufOutput
 Required.Proto3.JsonInput.FloatFieldTooLarge
 Required.Proto3.JsonInput.FloatFieldTooSmall
 Required.Proto3.JsonInput.OneofFieldNullFirst.JsonOutput

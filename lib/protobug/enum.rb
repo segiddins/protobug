@@ -51,8 +51,8 @@ module Protobug
         values.fetch(json) { raise DecodeError, "unknown value: #{json.inspect}" }
         # values.fetch(json) { new("<unknown:#{json}>", 0) }
       when Integer
-        values.fetch(json) { raise DecodeError, "unknown value: #{json.inspect}" }
-        # values.fetch(json) { new("<unknown:#{json}>", json) }
+        # values.fetch(json) { raise DecodeError, "unknown value: #{json.inspect}" }
+        values.fetch(json) { new("<unknown:#{json}>", json) }
       else
         raise "expected string for #{full_name}, got #{json.inspect}"
       end
