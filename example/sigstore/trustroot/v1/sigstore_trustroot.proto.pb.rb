@@ -105,7 +105,9 @@ module Sigstore
         # by the certificate authority to interact with the certificate
         # authority.
         optional(2, "uri", type: :string, proto3_optional: false)
-        # The certificate chain for this CA.
+        # The certificate chain for this CA. The last certificate in the chain
+        # MUST be the trust anchor. The trust anchor MAY be a self-signed root
+        # CA certificate or MAY be an intermediate CA certificate.
         optional(
           3,
           "cert_chain",

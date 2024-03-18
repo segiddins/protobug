@@ -29,16 +29,18 @@ end
 
 task default: %i[spec compiler example conformance rubocop]
 
-git_repo :protobuf, "tmp/protobuf", "https://github.com/protocolbuffers/protobuf" do
+git_repo :protobuf, "tmp/protobuf", "https://github.com/protocolbuffers/protobuf", commit: "v26.0" do
   file "tmp/protobuf/bazel-bin/conformance/conformance_test_runner" => "tmp/protobuf/.git/rake-version" do
     sh "bazel", "build", "//conformance:conformance_test_runner", chdir: "tmp/protobuf"
   end
 end
 
-git_repo :googleapis, "tmp/googleapis", "https://github.com/googleapis/googleapis", commit: "master"
-git_repo :sigstore, "tmp/sigstore", "https://github.com/sigstore/protobuf-specs", commit: "master"
+git_repo :googleapis, "tmp/googleapis", "https://github.com/googleapis/googleapis",
+         commit: "1e6517ef4f949191c9e471857cf5811c8abcab84"
+git_repo :sigstore, "tmp/sigstore", "https://github.com/sigstore/protobuf-specs",
+         commit: "a57a7caac5f4daf428055a34c872c810a6c0a968"
 git_repo :"sigstore-conformance", "tmp/sigstore-conformance", "https://github.com/sigstore/sigstore-conformance",
-         commit: "main"
+         commit: "v0.0.11"
 
 multitask example: %w[tmp/googleapis/.git/rake-version tmp/sigstore/.git/rake-version
                       tmp/sigstore-conformance/.git/rake-version compiler] do
