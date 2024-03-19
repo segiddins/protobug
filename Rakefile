@@ -17,10 +17,13 @@ def git_repo(name, path, url, commit: "main")
       sh "git", "clone", url, path, "--depth=1"
     end
     task checkout: %W[#{path}/.git/config] do
+      sh "git", "checkout", commit, chdir: path
+    rescue StandardError
       sh "git", "fetch", "--tags", "origin", commit, chdir: path
       sh "git", "checkout", commit, chdir: path
     end
     file "#{path}/.git/rake-version" => %w[checkout] do
+      # TODO: only write file if changed
       sh "git", "describe", "--tags", "--always", chdir: path,
                                                   out: "#{path}/.git/rake-version"
     end
@@ -91,6 +94,7 @@ multitask conformance: %w[compiler tmp/protobuf/bazel-bin/conformance/conformanc
 
   sh(
     File.join(protobuf, "bazel-bin/conformance/conformance_test_runner"),
+    "--enforce_recommended",
     "--failure_list", "conformance/failure_list.txt",
     "--output_dir", "conformance",
     "conformance/runner.rb"
