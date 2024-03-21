@@ -34,7 +34,35 @@ namespace :compiler do
       when
       while
       yield
-    ].freeze
+    ].-(%w[
+          alias
+          and
+          begin
+          break
+          case
+          defined?
+          do
+          else
+          elsif
+          end
+          ensure
+          false
+          for
+          if
+          in
+          next
+          not
+          or
+          rescue
+          retry
+          return
+          then
+          true
+          until
+          when
+          while
+          yield
+        ]).freeze
 
     groups = {
       parens: { open: "(", close: ")", parameters: %w[item], indent: 2 },

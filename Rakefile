@@ -53,7 +53,7 @@ multitask example: %w[tmp/googleapis/.git/rake-version tmp/sigstore/.git/rake-ve
   sh(
     "bundle", "exec",
     "protoc",
-    "--plugin=protoc-gen-protobug=#{File.expand_path("protobug-compiler/exe/protoc-gen-protobug")}",
+    "--plugin=protoc-gen-protobug=#{File.expand_path("bin/protoc-gen-protobug")}",
     "-I#{example}/protos/",
     "-Itmp/googleapis/",
     "--protobug_out=example",
@@ -67,7 +67,7 @@ multitask compiler: %w[protobug-compiler/lib/protobug/compiler/builder_gen.rb tm
   sh(
     "bundle", "exec",
     "protoc",
-    "--plugin=protoc-gen-protobug=#{File.expand_path("protobug-compiler/exe/protoc-gen-protobug")}",
+    "--plugin=protoc-gen-protobug=#{File.expand_path("bin/protoc-gen-protobug")}",
     "-Isrc",
     "--protobug_out=#{File.expand_path("protobug-compiler/lib/protobug/compiler")}",
     "src/google/protobuf/compiler/plugin.proto",
@@ -81,7 +81,7 @@ multitask conformance: %w[compiler tmp/protobuf/bazel-bin/conformance/conformanc
   sh(
     "bundle", "exec",
     "protoc",
-    "--plugin=protoc-gen-protobug=#{File.expand_path("protobug-compiler/exe/protoc-gen-protobug")}",
+    "--plugin=protoc-gen-protobug=#{File.expand_path("bin/protoc-gen-protobug")}",
     "-I.",
     "--protobug_opt=Mconformance/conformance.proto=example.com/example/project/protos/conformance",
     "--protobug_opt=Msrc/google/protobuf/test_messages_proto2.proto=example.com/example/project/protos/conformance",

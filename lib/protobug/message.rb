@@ -461,7 +461,7 @@ module Protobug
           nanosecs = time.nsec
 
           if nanosecs > 0
-            nanosecs = nanosecs.to_s.ljust(9, "0")
+            nanosecs = nanosecs.to_s.rjust(9, "0")
             nil while nanosecs.delete_suffix!("000")
             digits = nanosecs.size
             format = "%FT%H:%M:%S.%#{digits}NZ"
@@ -483,7 +483,11 @@ module Protobug
           sign = "-" if seconds == 0 && nanos < 0
           seconds = seconds.abs
           nanos = nanos.abs
-          return "#{sign}#{seconds}.#{nanos.to_s.rjust(9, "0")}s"
+          if nanos.nonzero?
+            nanos_s = ".#{nanos.to_s.rjust(9, "0")}"
+            nil while nanos_s.delete_suffix!("000")
+          end
+          return "#{sign}#{seconds}#{nanos_s}s"
         when "google.protobuf.Value"
           case kind
           when :null_value

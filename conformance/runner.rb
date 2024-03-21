@@ -1,7 +1,14 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-$:.unshift(File.expand_path("../lib", __dir__), __dir__)
+require "simplecov"
+
+SimpleCov.root(File.expand_path("..", __dir__))
+SimpleCov.start do
+  enable_coverage :branch
+end
+
+$:.unshift(__dir__)
 require_relative "conformance/conformance_pb"
 require_relative "protobuf_test_messages/proto2/test_messages_proto2_pb"
 require_relative "protobuf_test_messages/proto3/test_messages_proto3_pb"
@@ -137,3 +144,5 @@ loop do
               "after #{$test_count} tests, exiting")
   break
 end
+
+SimpleCov.command_name "conformance:#{$test_count}"
