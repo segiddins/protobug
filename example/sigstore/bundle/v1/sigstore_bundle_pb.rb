@@ -29,9 +29,10 @@
 require "protobug"
 
 require "google/api/field_behavior_pb"
-require "sigstore/dsse/envelope_pb"
-require "sigstore/common/v1/sigstore_common_pb"
-require "sigstore/rekor/v1/sigstore_rekor_pb"
+
+require_relative "../../dsse/envelope_pb"
+require_relative "../../common/v1/sigstore_common_pb"
+require_relative "../../rekor/v1/sigstore_rekor_pb"
 
 module Sigstore
   module Bundle

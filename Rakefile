@@ -51,7 +51,6 @@ multitask example: %w[tmp/googleapis/.git/rake-version tmp/sigstore/.git/rake-ve
   rm_rf FileList["example/*"] - ["example/example.rb"]
   example = "tmp/sigstore"
   sh(
-    "bundle", "exec",
     "protoc",
     "--plugin=protoc-gen-protobug=#{File.expand_path("bin/protoc-gen-protobug")}",
     "-I#{example}/protos/",
@@ -62,10 +61,21 @@ multitask example: %w[tmp/googleapis/.git/rake-version tmp/sigstore/.git/rake-ve
   sh "ruby", "-Ilib:example", "example/example.rb"
 end
 
+multitask well_known_protos: %w[tmp/protobuf/.git/rake-version compiler] do
+  protobuf = "tmp/protobuf"
+  proto_files = FileList["#{protobuf}/src/google/protobuf/*.proto"] - FileList["#{protobuf}/src/google/protobuf/*test*"]
+  sh(
+    "protoc",
+    "--plugin=protoc-gen-protobug=#{File.expand_path("bin/protoc-gen-protobug")}",
+    "-I#{protobuf}/src",
+    "--protobug_out=gen/",
+    *proto_files
+  )
+end
+
 multitask compiler: %w[protobug-compiler/lib/protobug/compiler/builder_gen.rb tmp/protobuf/.git/rake-version] do
   protobuf = "tmp/protobuf"
   sh(
-    "bundle", "exec",
     "protoc",
     "--plugin=protoc-gen-protobug=#{File.expand_path("bin/protoc-gen-protobug")}",
     "-Isrc",
@@ -79,13 +89,9 @@ multitask conformance: %w[compiler tmp/protobuf/bazel-bin/conformance/conformanc
   rm_rf FileList["conformance/{conformance,google,protobuf_test_messages}"]
   protobuf = "tmp/protobuf"
   sh(
-    "bundle", "exec",
     "protoc",
     "--plugin=protoc-gen-protobug=#{File.expand_path("bin/protoc-gen-protobug")}",
     "-I.",
-    "--protobug_opt=Mconformance/conformance.proto=example.com/example/project/protos/conformance",
-    "--protobug_opt=Msrc/google/protobuf/test_messages_proto2.proto=example.com/example/project/protos/conformance",
-    "--protobug_opt=Msrc/google/protobuf/test_messages_proto3.proto=example.com/example/project/protos/conformance",
     "--protobug_out=#{File.expand_path("conformance")}",
     "conformance/conformance.proto",
     *Dir["src/google/protobuf/test_messages*.proto", base: protobuf],

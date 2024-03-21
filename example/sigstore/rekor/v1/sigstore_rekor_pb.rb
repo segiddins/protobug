@@ -29,7 +29,8 @@
 require "protobug"
 
 require "google/api/field_behavior_pb"
-require "sigstore/common/v1/sigstore_common_pb"
+
+require_relative "../../common/v1/sigstore_common_pb"
 
 module Sigstore
   module Rekor

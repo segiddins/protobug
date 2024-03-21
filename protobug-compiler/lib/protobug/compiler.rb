@@ -96,7 +96,7 @@ module Protobug
         if parent
           "#{parent.to_constant}::#{name}"
         else
-          return file.options.ruby_package if file.options.ruby_package?
+          return file.options.ruby_package if file.options&.ruby_package?
 
           parts = descriptor.package.split(".")
           parts.map! do |part|
@@ -150,7 +150,7 @@ module Protobug
       include Descriptor
 
       def file_name
-        ruby_package = options.ruby_package if options.ruby_package?
+        ruby_package = options.ruby_package if options&.ruby_package?
         prefix = if ruby_package
                    ruby_package.split("::").map!(&:downcase).join("/")
                  else
@@ -162,6 +162,8 @@ module Protobug
       def loc_by_path(path)
         source_code_info.location.find { |loc| loc.path == path }
       end
+
+      attr_accessor :file_to_generate
     end
 
     class DescriptorProto < DelegateClass(Google::Protobuf::DescriptorProto)
@@ -197,7 +199,11 @@ module Protobug
         files.register_file(file)
       end
 
-      request.proto_file.each do |file| # rubocop:disable Style/CombinableLoops
+      request.file_to_generate.each do |name|
+        files.fetch(name).file_to_generate = true
+      end
+
+      request.proto_file.each do |file|
         file = files.fetch(file.name)
         file_out = Google::Protobuf::Compiler::CodeGeneratorResponse::File.new
         file_out.name = file.file_name
@@ -381,19 +387,21 @@ module Protobug
       f.comment "syntax: #{file.syntax? ? file.syntax : "proto2"}"
       f.comment "package: #{file.package}"
       f.comment "options:"
-      file.options.class.fields_by_name.each_key do |name|
-        next unless file.options.send(:"#{name}?")
+      if file.options
+        file.options.class.fields_by_name.each_key do |name|
+          next unless file.options.send(:"#{name}?")
 
-        value = case value = file.options.send(name)
-                when Enum::InstanceMethods
-                  value.name
-                when Symbol
-                  raise "Unknown symbol: #{value} for #{name} in #{file.options.inspect}"
-                else
-                  value.inspect
-                end
+          value = case value = file.options.send(name)
+                  when Enum::InstanceMethods
+                    value.name
+                  when Symbol
+                    raise "Unknown symbol: #{value} for #{name} in #{file.options.inspect}"
+                  else
+                    value.inspect
+                  end
 
-        f.comment "   #{name}: #{value}"
+          f.comment "   #{name}: #{value}"
+        end
       end
 
       file.source_loc.leading_detached_comments.each do |c|
@@ -404,10 +412,22 @@ module Protobug
       f.empty
       f.identifier("require").literal("protobug")
 
-      if file.dependency.any?
+      local, external = file.dependency.map do |dep|
+        files.fetch(dep)
+      end.partition(&:file_to_generate)
+      if external.any?
         f.empty
-        file.dependency.each do |dep|
-          f.identifier("require").literal(files.fetch(dep).file_name.delete_suffix(".rb"))
+        external.each do |dep|
+          f.identifier("require").literal(dep.file_name.delete_suffix(".rb"))
+        end
+      end
+      if local.any?
+        f.empty
+        local.each do |dep|
+          relative_path = Pathname(dep.file_name.delete_suffix(".rb"))
+                          .relative_path_from(Pathname(file.file_name).dirname)
+                          .to_path
+          f.identifier("require_relative").literal(relative_path)
         end
       end
 

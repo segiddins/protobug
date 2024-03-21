@@ -311,7 +311,7 @@ module Protobug
         when 2
           Protobug::Message::BinaryEncoding.decode_length(binary)
         when 3, 4
-          raise UnsupportedFeatureError.new(:group, "reading groups from binary protos")
+          raise UnsupportedFeatureError.new(:group, "reading groups from binary protos (in #{self})")
         when 5
           value = binary.read(4)
           raise EOFError, "unexpected EOF" if value&.bytesize != 4
