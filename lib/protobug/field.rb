@@ -31,6 +31,7 @@ module Protobug
       @proto3_optional = proto3_optional
       @key_type = key_type
       @value_type = value_type
+      @map_type = nil
 
       return unless map?
 
@@ -76,11 +77,12 @@ module Protobug
       when :string
         ""
       when :message
+        # TODO: message_type.default
         nil
       when :bytes
         "".b
       when :enum
-        # enum_type.default
+        # TODO: enum_type.default
         0
       when :float, :double
         0.0

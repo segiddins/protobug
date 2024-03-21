@@ -77,6 +77,7 @@ module Protobug
     end
 
     def default
+      # TODO: default is 0 on proto3, first value on proto2
       values.values.first
     end
 
