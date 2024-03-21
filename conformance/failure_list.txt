@@ -5,7 +5,6 @@ Recommended.Proto2.JsonInput.JsonWithComments
 Recommended.Proto2.JsonInput.RepeatedFieldMessageElementIsNull
 Recommended.Proto2.JsonInput.StringFieldUnpairedLowSurrogate
 Recommended.Proto2.JsonInput.StringFieldUppercaseEscapeLetter
-Recommended.Proto2.ProtobufInput.ValidDataOneofBinary.MESSAGE.Merge.ProtobufOutput
 Recommended.Proto3.FieldMaskNumbersDontRoundTrip.JsonOutput
 Recommended.Proto3.FieldMaskPathsDontRoundTrip.JsonOutput
 Recommended.Proto3.FieldMaskTooManyUnderscore.JsonOutput
@@ -18,15 +17,9 @@ Recommended.Proto3.JsonInput.NullValueInOtherOneofOldFormat.Validator
 Recommended.Proto3.JsonInput.RepeatedFieldMessageElementIsNull
 Recommended.Proto3.JsonInput.StringFieldUnpairedLowSurrogate
 Recommended.Proto3.JsonInput.StringFieldUppercaseEscapeLetter
-Recommended.Proto3.ProtobufInput.ValidDataOneofBinary.MESSAGE.Merge.ProtobufOutput
 Required.Proto2.JsonInput.DoubleFieldTooSmall
 Required.Proto2.JsonInput.FloatFieldTooLarge
 Required.Proto2.JsonInput.FloatFieldTooSmall
-Required.Proto2.ProtobufInput.RepeatedScalarMessageMerge.JsonOutput
-Required.Proto2.ProtobufInput.RepeatedScalarMessageMerge.ProtobufOutput
-Required.Proto2.ProtobufInput.UnknownVarint.ProtobufOutput
-Required.Proto2.ProtobufInput.ValidDataOneof.MESSAGE.Merge.JsonOutput
-Required.Proto2.ProtobufInput.ValidDataOneof.MESSAGE.Merge.ProtobufOutput
 Required.Proto3.JsonInput.AllFieldAcceptNull.JsonOutput
 Required.Proto3.JsonInput.AllFieldAcceptNull.ProtobufOutput
 Required.Proto3.JsonInput.AnyWithInt32ValueWrapper.JsonOutput
@@ -98,8 +91,3 @@ Required.Proto3.JsonInput.ValueAcceptNull.JsonOutput
 Required.Proto3.JsonInput.ValueAcceptNull.ProtobufOutput
 Required.Proto3.JsonInput.ValueAcceptObject.JsonOutput
 Required.Proto3.JsonInput.ValueAcceptObject.ProtobufOutput
-Required.Proto3.ProtobufInput.RepeatedScalarMessageMerge.JsonOutput
-Required.Proto3.ProtobufInput.RepeatedScalarMessageMerge.ProtobufOutput
-Required.Proto3.ProtobufInput.UnknownVarint.ProtobufOutput
-Required.Proto3.ProtobufInput.ValidDataOneof.MESSAGE.Merge.JsonOutput
-Required.Proto3.ProtobufInput.ValidDataOneof.MESSAGE.Merge.ProtobufOutput

@@ -159,26 +159,26 @@ module Protobug
         len = StringIO.new(Protobug::Message::BinaryEncoding.decode_length(binary))
         len.binmode
 
-        message.send(adder, binary_decode_one(len, registry, self.wire_type)) until len.eof?
+        message.send(adder, binary_decode_one(len, message, registry, self.wire_type)) until len.eof?
       elsif wire_type != self.wire_type
         raise DecodeError, "wrong wire type for #{self}: #{wire_type.inspect}"
       else
-        message.send(adder || setter, binary_decode_one(binary, registry, wire_type))
+        message.send(adder || setter, binary_decode_one(binary, message, registry, wire_type))
       end
     end
 
-    def json_encode(value)
+    def json_encode(value, print_unknown_fields:)
       if map?
         value.to_h do |k, v|
-          value = @map_type.fields_by_name["value"].json_encode(v)
+          value = @map_type.fields_by_name["value"].json_encode(v, print_unknown_fields: print_unknown_fields)
           [json_key_encode(k), value]
         end
       elsif repeated?
-        value.map { |v| json_encode_one(v) }
+        value.map { |v| json_encode_one(v, print_unknown_fields: print_unknown_fields) }
       elsif (!optional? || !proto3_optional?) && !oneof && default == value
         # omit
       else
-        json_encode_one(value)
+        json_encode_one(value, print_unknown_fields: print_unknown_fields)
       end
     end
 
@@ -320,7 +320,7 @@ module Protobug
       end
     end
 
-    def binary_decode_one(io, registry, wire_type)
+    def binary_decode_one(io, message, registry, wire_type)
       value = Protobug::Message::BinaryEncoding.read_field_value(io, wire_type)
 
       case type
@@ -356,8 +356,9 @@ module Protobug
       when :bytes
         value # already in binary encoding
       when :message
-        # TODO: allow merging into an existing message
-        registry.fetch(message_type).decode(StringIO.new(value), registry: registry)
+        kwargs = {}
+        kwargs[:object] = message.send(name) if !repeated? && message.send(haser)
+        registry.fetch(message_type).decode(StringIO.new(value), registry: registry, **kwargs)
       when :map
         @map_type.decode(StringIO.new(value), registry: registry)
       when :enum
@@ -448,13 +449,15 @@ module Protobug
       end
     end
 
-    def json_encode_one(value)
+    def json_encode_one(value, print_unknown_fields:)
       case type
       when :bytes
         [value].pack("m0")
       when :string
         value.encode("utf-8")
-      when :message, :enum
+      when :message
+        value.as_json(print_unknown_fields: print_unknown_fields)
+      when :enum
         value&.as_json
       when :float, :double
         if value.nan?

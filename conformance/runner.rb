@@ -84,7 +84,7 @@ def do_test(request)
 
     when Conformance::WireFormat::JSON
       begin
-        response.json_payload = test_message.to_json
+        response.json_payload = test_message.to_json(print_unknown_fields: request.print_unknown_fields)
       rescue Protobug::UnsupportedFeatureError
         raise
       rescue => e

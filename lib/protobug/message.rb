@@ -182,9 +182,8 @@ module Protobug
       message
     end
 
-    def decode(binary, registry:)
+    def decode(binary, registry:, object: new)
       binary.binmode
-      object = new
       loop do
         header = decode_varint(binary)
         break if header.nil?
@@ -197,15 +196,11 @@ module Protobug
 
         field = fields_by_number[number]
 
-        unless field
-          read_field_value(binary, wire_type)
-          next
-          # TODO: allow raising on unknown fields?
-          # raise UnknownFieldError, "unknown field number #{number} in #{full_name || fields_by_name.inspect} " \
-          #       "of wire_type #{wire_type} (header=#{header.to_s(2)})"
+        if field
+          field.binary_decode(binary, object, registry, wire_type)
+        else
+          object.unknown_fields << [number, wire_type, read_field_value(binary, wire_type)]
         end
-
-        field.binary_decode(binary, object, registry, wire_type)
       end
       object
     end
@@ -213,12 +208,23 @@ module Protobug
     def encode(message)
       raise EncodeError, "expected #{self}, got #{message.inspect}" unless message.is_a? self
 
-      fields_by_number.each_with_object("".b) do |(number, field), outbuf|
+      buf = fields_by_number.each_with_object("".b) do |(number, field), outbuf|
         next unless message.send(field.haser)
 
         value = message.instance_variable_get(field.ivar)
 
         field.binary_encode(value, outbuf)
+      end
+      message.unknown_fields.each_with_object(buf) do |(number, wire_type, value), outbuf|
+        encode_varint((number << 3) | wire_type, outbuf)
+        case wire_type
+        when 0, 5
+          encode_varint(value, outbuf)
+        when 2
+          encode_length(value, outbuf)
+        else
+          raise EncodeError, "unknown wire_type: #{wire_type}"
+        end
       end
     end
 
@@ -406,11 +412,14 @@ module Protobug
       end
       alias eql? ==
 
+      attr_reader :unknown_fields
+
       def initialize
         super
-        self.class.fields_by_name.each_key do |name|
-          instance_variable_set("@#{name}", UNSET)
+        self.class.fields_by_name.each_value do |field|
+          instance_variable_set(field.ivar, UNSET)
         end
+        @unknown_fields = []
       end
 
       def pretty_print(pp)
@@ -451,7 +460,7 @@ module Protobug
         self.class.encode(self)
       end
 
-      def as_json
+      def as_json(print_unknown_fields: false)
         case self.class.full_name
         when "google.protobuf.Timestamp"
           time = Time.at(seconds, nanos, :nanosecond, in: 0)
@@ -517,13 +526,13 @@ module Protobug
         fields_with_values.to_h do |name, field|
           value = send(field.name)
 
-          [field.json_name, field.json_encode(value)]
+          [field.json_name, field.json_encode(value, print_unknown_fields: print_unknown_fields)]
         end
       end
 
-      def to_json
+      def to_json(print_unknown_fields: false)
         require "json"
-        JSON.generate(as_json, allow_infinity: true)
+        JSON.generate(as_json(print_unknown_fields: print_unknown_fields), allow_infinity: true)
       end
     end
   end
