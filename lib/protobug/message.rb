@@ -214,9 +214,9 @@ module Protobug
       raise EncodeError, "expected #{self}, got #{message.inspect}" unless message.is_a? self
 
       fields_by_number.each_with_object("".b) do |(number, field), outbuf|
-        next unless message.send(:"#{field.name}?")
+        next unless message.send(field.haser)
 
-        value = message.instance_variable_get(:"@#{field.name}")
+        value = message.instance_variable_get(field.ivar)
 
         field.binary_encode(value, outbuf)
       end
@@ -336,19 +336,19 @@ module Protobug
       fields_by_name[name] = field
 
       define_method(field.setter) do |value|
-        return instance_variable_set(:"@#{name}", UNSET) if value.nil? && field.optional? && field.proto3_optional?
+        return instance_variable_set(field.ivar, UNSET) if value.nil? && field.optional? && field.proto3_optional?
 
         field.validate!(value, self)
-        instance_variable_set(:"@#{name}", value)
+        instance_variable_set(field.ivar, value)
       end
 
       define_method(name) do
-        value = instance_variable_get(:"@#{name}")
+        value = instance_variable_get(field.ivar)
         UNSET == value ? field.default : value
       end
 
-      define_method(:"#{name}?") do
-        value = instance_variable_get(:"@#{name}")
+      define_method(field.haser) do
+        value = instance_variable_get(field.ivar)
         return false if UNSET == value
 
         return false if (!field.optional? || !field.proto3_optional?) && !field.oneof && field.default == value
@@ -360,27 +360,27 @@ module Protobug
         end
       end
 
-      define_method(:"clear_#{name}") do
-        instance_variable_set(:"@#{name}", UNSET)
+      define_method(field.clearer) do
+        instance_variable_set(field.ivar, UNSET)
       end
 
       define_method(field.adder) do |value|
         field.validate!(value, self)
 
-        existing = instance_variable_get(:"@#{name}")
+        existing = instance_variable_get(field.ivar)
         if UNSET == existing
           existing = []
-          instance_variable_set(:"@#{name}", existing)
+          instance_variable_set(field.ivar, existing)
         end
 
         existing << value
       end if field.repeated?
 
       define_method(field.adder) do |value|
-        existing = instance_variable_get(:"@#{name}")
+        existing = instance_variable_get(field.ivar)
         if UNSET == existing
           existing = {}
-          instance_variable_set(:"@#{name}", existing)
+          instance_variable_set(field.ivar, existing)
         end
 
         existing[value.key] = value.value
@@ -390,7 +390,7 @@ module Protobug
         unless oneofs[field.oneof]
           oneofs[field.oneof] = ary = []
           define_method(field.oneof) do
-            ary.find { |f| send(:"#{f.name}?") }&.name
+            ary.find { |f| send(f.haser) }&.name
           end
         end
         oneofs[field.oneof] << field
@@ -415,7 +415,7 @@ module Protobug
 
       def pretty_print(pp)
         fields_with_values = self.class.fields_by_name.select do |name, field|
-          send(:"#{name}?")
+          send(field.haser)
         end
         pp.group 2, "#{self.class}.new(", ")" do
           pp.breakable
@@ -438,7 +438,7 @@ module Protobug
 
       def to_text
         fields_with_values = self.class.fields_by_name.select do |name, field|
-          send(:"#{name}?")
+          send(field.haser)
         end
 
         fields_with_values.map do |name, field|
@@ -511,7 +511,7 @@ module Protobug
           # return value.as_json.merge("@type" => "type.googleapis.com/#{value.class.full_name}")
         end
         fields_with_values = self.class.fields_by_name.select do |name, field|
-          send(:"#{field.name}?")
+          send(field.haser)
         end
 
         fields_with_values.to_h do |name, field|

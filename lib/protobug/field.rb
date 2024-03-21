@@ -3,7 +3,7 @@
 module Protobug
   class Field
     attr_accessor :number, :name, :type, :json_name, :cardinality, :oneof, :ivar, :setter, :message_type, :enum_type,
-                  :adder, :key_type, :value_type
+                  :adder, :key_type, :value_type, :haser, :clearer
 
     def initialize(number, name, type: nil, json_name: nil, cardinality: :optional, oneof: nil, message_type: nil,
                    enum_type: nil, packed: false, key_type: nil, value_type: nil, group_type: nil,
@@ -23,6 +23,8 @@ module Protobug
       @setter = :"#{name}="
       @adder = :"add_#{name}" if repeated? || type == :map
       @ivar = :"@#{name}"
+      @clearer = :"clear_#{name}"
+      @haser = :"#{name}?"
       @message_type = message_type
       @enum_type = enum_type
       @packed = packed
@@ -260,7 +262,7 @@ module Protobug
       message.class.oneofs[oneof].each do |f|
         next if f == self
 
-        message.send(:"clear_#{f.name}")
+        message.send(f.clearer)
       end
     end
 
