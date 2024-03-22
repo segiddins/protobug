@@ -159,6 +159,10 @@ module Protobug
         json = { "paths" => json.split(",").each do |field|
           field.gsub!(/(?<!\A)([A-Z])/) { |m| "_#{m.downcase}" }
         end }
+      when "google.protobuf.Struct"
+        json = { "fields" => json }
+      when "google.protobuf.ListValue"
+        json = { "values" => json }
       end
 
       return if json.nil?
@@ -510,10 +514,14 @@ module Protobug
           when :struct_value
             return struct_value.as_json
           when :list_value
-            return list_value.map(&:as_json)
+            return list_value.values.map(&:as_json)
           else
             raise EncodeError, "unknown kind: #{kind.inspect}"
           end
+        when "google.protobuf.Struct"
+          return fields.transform_values(&:as_json)
+        when "google.protobuf.ListValue"
+          return values.map(&:as_json)
         when "google.protobuf.Any"
           # TODO: need a registry to look up the type
           raise UnsupportedFeatureError.new(:any, "serializing to json")
