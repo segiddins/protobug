@@ -216,12 +216,12 @@ module Protobug
       source_loc = descriptor.source_loc
       return unless source_loc
 
-      source_loc&.leading_detached_comments&.each do |c|
+      source_loc.leading_detached_comments&.each do |c|
         group.comment(c)
         group.empty
       end
 
-      group.comment(source_loc.leading_comments) if source_loc&.leading_comments?
+      group.comment(source_loc.leading_comments) if source_loc.leading_comments?
 
       case descriptor
       when DescriptorProto
@@ -370,12 +370,12 @@ module Protobug
           end
         end
       when OneofDescriptorProto
-        group.empty if source_loc&.leading_comments?
+        group.empty if source_loc.leading_comments?
         # no-op
       else
         raise "Unknown descriptor type: #{descriptor.class}"
       end.tap do |s|
-        s.comment(source_loc.trailing_comments) if source_loc&.trailing_comments?
+        s.comment(source_loc.trailing_comments) if source_loc.trailing_comments?
       end
     end
 
