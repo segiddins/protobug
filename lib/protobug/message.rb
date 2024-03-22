@@ -163,6 +163,12 @@ module Protobug
         json = { "fields" => json }
       when "google.protobuf.ListValue"
         json = { "values" => json }
+      when "google.protobuf.DoubleValue", "google.protobuf.FloatValue",
+          "google.protobuf.Int64Value", "google.protobuf.UInt64Value",
+          "google.protobuf.Int32Value", "google.protobuf.UInt32Value",
+          "google.protobuf.BoolValue",
+          "google.protobuf.StringValue", "google.protobuf.BytesValue"
+        json = { "value" => json }
       end
 
       return if json.nil?
@@ -522,6 +528,13 @@ module Protobug
           return fields.transform_values(&:as_json)
         when "google.protobuf.ListValue"
           return values.map(&:as_json)
+        when "google.protobuf.DoubleValue", "google.protobuf.FloatValue",
+            "google.protobuf.Int64Value", "google.protobuf.UInt64Value",
+            "google.protobuf.Int32Value", "google.protobuf.UInt32Value",
+            "google.protobuf.BoolValue",
+            "google.protobuf.StringValue", "google.protobuf.BytesValue"
+          return self.class.fields_by_name.fetch("value").send(:json_encode_one, value,
+                                                               print_unknown_fields: print_unknown_fields)
         when "google.protobuf.Any"
           # TODO: need a registry to look up the type
           raise UnsupportedFeatureError.new(:any, "serializing to json")

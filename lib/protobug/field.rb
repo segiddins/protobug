@@ -406,6 +406,8 @@ module Protobug
         case value
         when Float
           value
+        when Integer
+          value.to_f
         when "Infinity"
           Float::INFINITY
         when "-Infinity"
