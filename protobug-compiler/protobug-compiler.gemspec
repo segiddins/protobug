@@ -35,4 +35,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "prettier_print", "~> 1.2", ">= 1.2.1"
 
   spec.add_dependency "protobug", spec.version
+  spec.add_dependency "protobug_compiler_protos", spec.version
 end

@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-Dir["**/*.rb", base: __dir__].each do |file|
-  next if file == "example.rb"
-
-  require_relative file
-end
+require "protobug_sigstore_protos"
 
 ENV["MT_NO_PLUGINS"] = "1" # Work around autoloading of plugins
 

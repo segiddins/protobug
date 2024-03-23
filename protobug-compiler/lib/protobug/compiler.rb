@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require_relative "compiler/google/protobuf/descriptor_pb"
+require "protobug_compiler_protos"
+
 require_relative "compiler/builder"
 
 module Protobug
@@ -203,8 +204,8 @@ module Protobug
         files.fetch(name).file_to_generate = true
       end
 
-      request.proto_file.each do |file|
-        file = files.fetch(file.name)
+      request.file_to_generate.each do |name| # rubocop:disable Style/CombinableLoops
+        file = files.fetch(name)
         file_out = Google::Protobuf::Compiler::CodeGeneratorResponse::File.new
         file_out.name = file.file_name
         file_out.content = file_contents(files, file)

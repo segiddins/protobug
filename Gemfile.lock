@@ -4,6 +4,28 @@ PATH
     protobug (0.1.0)
 
 PATH
+  remote: gen/protobug_compiler_protos
+  specs:
+    protobug_compiler_protos (0.1.0)
+      protobug_well_known_protos (= 0.1.0)
+
+PATH
+  remote: gen/protobug_googleapis_field_behavior_protos
+  specs:
+    protobug_googleapis_field_behavior_protos (0.1.0)
+      protobug_well_known_protos (= 0.1.0)
+
+PATH
+  remote: gen/protobug_sigstore_protos
+  specs:
+    protobug_sigstore_protos (0.1.0)
+
+PATH
+  remote: gen/protobug_well_known_protos
+  specs:
+    protobug_well_known_protos (0.1.0)
+
+PATH
   remote: protobug-compiler
   specs:
     protobug-compiler (0.1.0)
@@ -11,6 +33,7 @@ PATH
       forwardable
       prettier_print (~> 1.2, >= 1.2.1)
       protobug (= 0.1.0)
+      protobug_compiler_protos (= 0.1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -89,6 +112,10 @@ DEPENDENCIES
   minitest (~> 5.22)
   protobug!
   protobug-compiler!
+  protobug_compiler_protos!
+  protobug_googleapis_field_behavior_protos!
+  protobug_sigstore_protos!
+  protobug_well_known_protos!
   rake (~> 13.0)
   rspec (~> 3.0)
   rubocop (~> 1.21)

@@ -5,6 +5,10 @@ source "https://rubygems.org"
 # Specify your gem's dependencies in protobug.gemspec
 gemspec
 gemspec path: "protobug-compiler"
+gemspec path: "gen/protobug_compiler_protos"
+gemspec path: "gen/protobug_googleapis_field_behavior_protos"
+gemspec path: "gen/protobug_well_known_protos"
+gemspec path: "gen/protobug_sigstore_protos"
 
 gem "rake", "~> 13.0"
 
