@@ -80,30 +80,6 @@ RSpec.describe Protobug do
     expect(msg.x).to eq(:b)
   end
 
-  it "parses JSON timestamps" do
-    t = Class.new do
-      extend Protobug::Message
-      self.full_name = "google.protobuf.Timestamp"
-      optional 1, :seconds, type: :int64
-      optional 2, :nanos, type: :int32
-    end
-    c = Class.new do
-      extend Protobug::Message
-      self.full_name = "test.Timestamp"
-      optional 1, :a, type: :message, message_type: "google.protobuf.Timestamp"
-    end
-
-    registry = Protobug::Registry.new do |r|
-      r.register t
-      r.register c
-    end
-
-    ["1970-01-01T00:00:00Z", "2023-04-14T00:00:00Z", "2023-04-14T00:00:00.010Z"].each do |json|
-      msg = c.decode_json(JSON.generate(a: json), registry: registry)
-      expect(JSON.parse(msg.to_json)).to eq("a" => json)
-    end
-  end
-
   it "parses packed field" do
     c = Class.new do
       extend Protobug::Message

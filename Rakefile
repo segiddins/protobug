@@ -103,13 +103,26 @@ class ProtoGem < Rake::FileTask
   include FileUtils
 
   attr_accessor :source_repo
-  attr_reader :patterns
+  attr_reader :patterns, :gemspec
 
   def initialize(*)
     super
 
     @patterns = {}
     @actions << method(:protoc!)
+    @gemspec = Gem::Specification.new do |spec|
+      spec.name = "protobug_#{name}"
+      spec.version = Protobug::VERSION
+      spec.authors = ["Samuel Giddins"]
+      spec.email = ["segiddins@segiddins.me"]
+
+      spec.required_ruby_version = ">= 3.0.0"
+      spec.metadata["rubygems_mfa_required"] = "true"
+      spec.files << "lib/protobug_#{name}.rb"
+      spec.require_paths = ["lib"]
+      spec.add_runtime_dependency "protobug"
+      prerequisite_tasks.grep(self.class).each { spec.add_runtime_dependency "protobug_#{_1.name}" }
+    end
   end
 
   def needed?
@@ -184,7 +197,7 @@ def git_repo(name, path, url, commit: "main")
   task
 end
 
-task default: %i[spec example conformance rubocop]
+task default: %i[spec verify_proto_gems example conformance rubocop]
 
 git_repo :protobuf, "tmp/protobuf", "https://github.com/protocolbuffers/protobuf", commit: "refs/tags/v26.0"
 file "tmp/protobuf/bazel-bin/conformance/conformance_test_runner" => "protobuf" do
@@ -198,15 +211,18 @@ git_repo :sigstore, "tmp/sigstore", "https://github.com/sigstore/protobuf-specs"
 git_repo :"sigstore-conformance", "tmp/sigstore-conformance", "https://github.com/sigstore/sigstore-conformance",
          commit: "v0.0.11"
 
-multitask example: %w[sigstore sigstore-conformance sigstore_protos compiler_protos googleapis_field_behavior_protos] do
-  sh "ruby", "example/example.rb"
+multitask example: %w[sigstore sigstore-conformance sigstore_protos] do
+  ruby "-rbundler/setup", "example/example.rb"
 end
 
 def proto_gem(name, source_repo, deps: [])
+  desc "Build protobug_#{name}"
   task = ProtoGem.define_task(name)
   directory task.lib
   task.source_repo = Rake.application.lookup(source_repo)
   yield task
+  task.gemspec.summary = "Compiled protos for protobug from #{task.source_repo.url} (#{name})"
+  task.gemspec.files += task.outputs.map { _1.sub(%r{^#{task.lib}/}, "lib/") }
   rb = File.join(task.lib, "protobug_#{name}.rb")
   file rb do |t|
     File.write(t.name, <<~RB)
@@ -219,27 +235,36 @@ def proto_gem(name, source_repo, deps: [])
   end
   gemspec = File.join(File.dirname(task.lib), "protobug_#{name}.gemspec")
   file gemspec => rb do |t|
-    File.write(t.name, Gem::Specification.new do |spec|
-      spec.name = "protobug_#{name}"
-      spec.version = Protobug::VERSION
-      spec.authors = ["Samuel Giddins"]
-      spec.email = ["segiddins@segiddins.me"]
-
-      spec.summary = "Compiled protos for protobug from #{task.source_repo.url} (#{name})"
-      spec.required_ruby_version = ">= 3.0.0"
-      spec.metadata["rubygems_mfa_required"] = "true"
-      spec.files = task.outputs.map { _1.sub(%r{^#{task.lib}/}, "") } << "lib/protobug_#{name}.rb"
-      spec.require_paths = ["lib"]
-      spec.add_runtime_dependency "protobug"
-      task.prerequisite_tasks.grep(task.class).each { spec.add_runtime_dependency "protobug_#{_1.name}" }
-    end.to_ruby)
+    File.write(t.name, task.gemspec.to_ruby)
   end
   task.inputs.each do |i|
     file i => source_repo
   end
   multitask name => [source_repo, task.lib, rb, gemspec, *task.inputs, *deps]
+  namespace name do
+    desc "Verify that #{name} has dependencies properly specified & is requireable"
+    task verify: name do
+      Bundler.with_unbundled_env do
+        ruby "-e", <<~RB, verbose: false
+          require "bundler/inline"
+          gemfile do
+            path ".", glob: "{,*,*/*,gen/*/*}.gemspec" do
+            end
+            gemspec path: "gen/protobug_#{name}"
+          end
+          require "protobug_#{name}"
+        RB
+        ruby "-S", "gem", "-C", "gen/protobug_#{name}", "build"
+        rm FileList["gen/protobug_#{name}/protobug_#{name}*.gem"]
+      end
+    end
+  end
+  multitask verify_proto_gems: "#{name}:verify"
   task
 end
+
+desc "Verify that proto gems are usable in isolation"
+multitask :verify_proto_gems
 
 proto_gem :well_known_protos, :protobuf, deps: [] do |task|
   task
@@ -247,6 +272,19 @@ proto_gem :well_known_protos, :protobuf, deps: [] do |task|
     .include("google/protobuf/*.proto")
     .exclude("google/protobuf/*test*")
     .exclude("google/protobuf/cpp_features.proto")
+
+  task.outputs.each do |pb|
+    well_known = pb.pathmap("%{_pb.rb$,_well_known.rb}p")
+    next unless File.file?(well_known)
+
+    task.gemspec.files << well_known
+
+    task.enhance([well_known]) do |_t|
+      File.open(pb, "a") do |f|
+        f.write "\nrequire_relative #{well_known.pathmap("%n").dump}\n"
+      end
+    end
+  end
 end
 
 proto_gem :compiler_protos, :protobuf, deps: %i[well_known_protos] do |task|

@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.authors = ["Samuel Giddins".freeze]
   s.date = "2024-03-24"
   s.email = ["segiddins@segiddins.me".freeze]
-  s.files = ["conformance/conformance_pb.rb".freeze, "lib/protobug_conformance_protos.rb".freeze, "protobuf_test_messages/proto2/test_messages_proto2_pb.rb".freeze, "protobuf_test_messages/proto3/test_messages_proto3_pb.rb".freeze]
+  s.files = ["lib/conformance/conformance_pb.rb".freeze, "lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb".freeze, "lib/protobuf_test_messages/proto3/test_messages_proto3_pb.rb".freeze, "lib/protobug_conformance_protos.rb".freeze]
   s.required_ruby_version = Gem::Requirement.new(">= 3.0.0".freeze)
   s.rubygems_version = "3.5.6".freeze
   s.summary = "Compiled protos for protobug from https://github.com/protocolbuffers/protobuf (conformance_protos)".freeze

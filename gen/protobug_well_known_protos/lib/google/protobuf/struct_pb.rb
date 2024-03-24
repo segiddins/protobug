@@ -182,3 +182,5 @@ module Google
     end
   end
 end
+
+require_relative "struct_well_known"

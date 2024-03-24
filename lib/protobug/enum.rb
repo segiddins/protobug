@@ -9,49 +9,47 @@ module Protobug
         extend BaseDescriptor
         include Protobug::Enum::InstanceMethods
       end
-      klass.singleton_class.class_eval do
-        attr_reader :values
-        attr_reader :reserved_ranges
+    end
 
-        def const_added(name)
-          super
-          value = const_get(name)
+    attr_reader :values, :reserved_ranges
 
-          const_name = value.name.start_with?("k") ? "K_#{value.name[1..]}" : value.name
-          const_name = "K_#{const_name}" unless const_name.match?(/\A[A-Z]/)
+    def const_added(name)
+      super
+      value = const_get(name)
 
-          raise "expected #{self}::#{name} to be a #{self}, got #{value.inspect}" unless value.is_a? self
-          raise "expected #{value.name} to be #{const_name}" unless name.name == const_name
-          raise "duplicate value #{value.inspect}" if values[value.name]
+      const_name = value.name.start_with?("k") ? "K_#{value.name[1..]}" : value.name
+      const_name = "K_#{const_name}" unless const_name.match?(/\A[A-Z]/)
 
-          @values[value.name] = value
-          @values[value.value] ||= value
-        end
+      raise "expected #{self}::#{name} to be a #{self}, got #{value.inspect}" unless value.is_a? self
+      raise "expected #{value.name} to be #{const_name}" unless name.name == const_name
+      raise "duplicate value #{value.inspect}" if values[value.name]
 
-        def reserved_range(range)
-          raise "expected Range, got #{range.inspect}" unless range.is_a? Range
+      @values[value.name] = value
+      @values[value.value] ||= value
+    end
 
-          reserved_ranges << range
-        end
+    def reserved_range(range)
+      raise "expected Range, got #{range.inspect}" unless range.is_a? Range
 
-        def freeze
-          # const_added was added in 3.2
-          unless RUBY_VERSION >= "3.2"
-            constants.each do |n|
-              c = const_get(n)
-              next unless c.is_a? self
+      reserved_ranges << range
+    end
 
-              @values[c.name] ||= c
-              @values[c.value] ||= c
-            end
-          end
+    def freeze
+      # const_added was added in 3.2
+      unless RUBY_VERSION >= "3.2"
+        constants.each do |n|
+          c = const_get(n)
+          next unless c.is_a? self
 
-          @values.freeze
-          @reserved_ranges.freeze
-          full_name.freeze
-          super
+          @values[c.name] ||= c
+          @values[c.value] ||= c
         end
       end
+
+      @values.freeze
+      @reserved_ranges.freeze
+      full_name.freeze
+      super
     end
 
     def decode_json_hash(json, registry: nil)

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "binary_encoding"
+
 module Protobug
   class Field
     attr_accessor :number, :name, :type, :json_name, :cardinality, :oneof, :ivar, :setter, :message_type, :enum_type,
@@ -136,29 +138,29 @@ module Protobug
           entry = @map_type.new
           entry.key = k
           entry.value = v
-          Protobug::Message::BinaryEncoding.encode_varint (number << 3) | wire_type, outbuf
-          Protobug::Message::BinaryEncoding.encode_length @map_type.encode(entry), outbuf
+          BinaryEncoding.encode_varint (number << 3) | wire_type, outbuf
+          BinaryEncoding.encode_length @map_type.encode(entry), outbuf
         end
       elsif repeated?
         if packed?
           binary_encode_packed(value, outbuf)
         else
           value.each do |v|
-            Protobug::Message::BinaryEncoding.encode_varint (number << 3) | wire_type, outbuf
+            BinaryEncoding.encode_varint (number << 3) | wire_type, outbuf
             binary_encode_one(v, outbuf)
           end
         end
       elsif (!optional? || !proto3_optional?) && !oneof && default == value
         # omit
       else
-        Protobug::Message::BinaryEncoding.encode_varint (number << 3) | wire_type, outbuf
+        BinaryEncoding.encode_varint (number << 3) | wire_type, outbuf
         binary_encode_one(value, outbuf)
       end
     end
 
     def binary_decode(binary, message, registry, wire_type)
       if repeated? && wire_type == 2 && [0, 1, 5].include?(self.wire_type)
-        len = StringIO.new(Protobug::Message::BinaryEncoding.decode_length(binary))
+        len = StringIO.new(BinaryEncoding.decode_length(binary))
         len.binmode
 
         message.send(adder, binary_decode_one(len, message, registry, self.wire_type)) until len.eof?
@@ -275,9 +277,9 @@ module Protobug
     def binary_encode_packed(value, outbuf)
       return if value.empty?
 
-      Protobug::Message::BinaryEncoding.encode_varint (number << 3) | 2, outbuf
+      BinaryEncoding.encode_varint (number << 3) | 2, outbuf
 
-      Protobug::Message::BinaryEncoding.encode_length(value.each_with_object("".b) do |v, buf|
+      BinaryEncoding.encode_length(value.each_with_object("".b) do |v, buf|
         binary_encode_one(v, buf)
       end, outbuf)
     end
@@ -285,13 +287,13 @@ module Protobug
     def binary_encode_one(value, outbuf)
       case type
       when :int32, :int64, :uint32, :uint64
-        Protobug::Message::BinaryEncoding.encode_varint value, outbuf
+        BinaryEncoding.encode_varint value, outbuf
       when :enum
-        Protobug::Message::BinaryEncoding.encode_varint value.value, outbuf
+        BinaryEncoding.encode_varint value.value, outbuf
       when :sint32
-        Protobug::Message::BinaryEncoding.encode_zigzag 32, value, outbuf
+        BinaryEncoding.encode_zigzag 32, value, outbuf
       when :sint64
-        Protobug::Message::BinaryEncoding.encode_zigzag 64, value, outbuf
+        BinaryEncoding.encode_zigzag 64, value, outbuf
       when :fixed64
         outbuf << [value].pack("Q")
       when :fixed32
@@ -306,24 +308,24 @@ module Protobug
         outbuf << [value].pack("e")
       when :string
         value = value.encode("utf-8") if value.encoding != Encoding::UTF_8
-        Protobug::Message::BinaryEncoding.encode_length value.b, outbuf
+        BinaryEncoding.encode_length value.b, outbuf
       when :bytes
-        Protobug::Message::BinaryEncoding.encode_length value.b, outbuf
+        BinaryEncoding.encode_length value.b, outbuf
       when :message
-        Protobug::Message::BinaryEncoding.encode_length value.class.encode(value), outbuf
+        BinaryEncoding.encode_length value.class.encode(value), outbuf
       when :map
         entry = @map_type.new
         entry.key, entry.value = value
-        Protobug::Message::BinaryEncoding.encode_length @map_type.encode(entry), outbuf
+        BinaryEncoding.encode_length @map_type.encode(entry), outbuf
       when :bool
-        Protobug::Message::BinaryEncoding.encode_varint value ? 1 : 0, outbuf
+        BinaryEncoding.encode_varint value ? 1 : 0, outbuf
       else
         raise "unhandled type in #{self}.#{__method__}: #{type.inspect}"
       end
     end
 
     def binary_decode_one(io, message, registry, wire_type)
-      value = Protobug::Message::BinaryEncoding.read_field_value(io, wire_type)
+      value = BinaryEncoding.read_field_value(io, wire_type)
 
       case type
       when :int32
@@ -335,9 +337,9 @@ module Protobug
       when :uint64
         [value].pack("Q>").unpack1("Q>")
       when :sint32
-        Protobug::Message::BinaryEncoding.decode_zigzag 32, value
+        BinaryEncoding.decode_zigzag 32, value
       when :sint64
-        Protobug::Message::BinaryEncoding.decode_zigzag 64, value
+        BinaryEncoding.decode_zigzag 64, value
       when :fixed64
         value.unpack1("Q")
       when :fixed32

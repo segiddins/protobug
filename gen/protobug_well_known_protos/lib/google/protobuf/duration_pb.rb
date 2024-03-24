@@ -129,3 +129,5 @@ module Google
     end
   end
 end
+
+require_relative "duration_well_known"

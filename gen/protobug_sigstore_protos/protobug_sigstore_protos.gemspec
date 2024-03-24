@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.authors = ["Samuel Giddins".freeze]
   s.date = "2024-03-24"
   s.email = ["segiddins@segiddins.me".freeze]
-  s.files = ["dev/sigstore/events/v1/events_pb.rb".freeze, "lib/protobug_sigstore_protos.rb".freeze, "sigstore/bundle/v1/sigstore_bundle_pb.rb".freeze, "sigstore/common/v1/sigstore_common_pb.rb".freeze, "sigstore/dsse/envelope_pb.rb".freeze, "sigstore/rekor/v1/sigstore_rekor_pb.rb".freeze, "sigstore/trustroot/v1/sigstore_trustroot_pb.rb".freeze, "sigstore/verification/v1/sigstore_verification_pb.rb".freeze]
+  s.files = ["lib/dev/sigstore/events/v1/events_pb.rb".freeze, "lib/protobug_sigstore_protos.rb".freeze, "lib/sigstore/bundle/v1/sigstore_bundle_pb.rb".freeze, "lib/sigstore/common/v1/sigstore_common_pb.rb".freeze, "lib/sigstore/dsse/envelope_pb.rb".freeze, "lib/sigstore/rekor/v1/sigstore_rekor_pb.rb".freeze, "lib/sigstore/trustroot/v1/sigstore_trustroot_pb.rb".freeze, "lib/sigstore/verification/v1/sigstore_verification_pb.rb".freeze]
   s.required_ruby_version = Gem::Requirement.new(">= 3.0.0".freeze)
   s.rubygems_version = "3.5.6".freeze
   s.summary = "Compiled protos for protobug from https://github.com/sigstore/protobuf-specs (sigstore_protos)".freeze

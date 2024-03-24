@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require "bundler/setup"
 require "simplecov"
 
 SimpleCov.root(File.expand_path("..", __dir__))
@@ -117,7 +118,7 @@ def do_test_io
 
   response = do_test(request)
 
-  serialized_response = Conformance::ConformanceResponse.encode(response)
+  serialized_response = response.to_proto
   warn "conformance_ruby: response too large: #{serialized_response.length}" if serialized_response.length > 1 << 20
   warn "conformance_ruby: response too small: #{response.inspect}" if serialized_response.empty?
   $stdout.write([serialized_response.length].pack("V"))

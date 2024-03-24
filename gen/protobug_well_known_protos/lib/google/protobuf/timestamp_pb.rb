@@ -158,3 +158,5 @@ module Google
     end
   end
 end
+
+require_relative "timestamp_well_known"
