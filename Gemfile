@@ -6,6 +6,7 @@ source "https://rubygems.org"
 gemspec
 gemspec path: "protobug-compiler"
 gemspec path: "gen/protobug_compiler_protos"
+gemspec path: "gen/protobug_conformance_protos"
 gemspec path: "gen/protobug_googleapis_field_behavior_protos"
 gemspec path: "gen/protobug_well_known_protos"
 gemspec path: "gen/protobug_sigstore_protos"

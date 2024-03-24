@@ -4,10 +4,10 @@ module Protobug
   class Registry
     def initialize(&blk)
       @registry = {}
-      if blk
-        yield self
-        freeze
-      end
+      return unless blk
+
+      yield self
+      freeze
     end
 
     def freeze
@@ -29,8 +29,8 @@ module Protobug
       klass.freeze
     end
 
-    def fetch(*args, &blk)
-      @registry.fetch(*args, &blk)
+    def fetch(...)
+      @registry.fetch(...)
     end
   end
 end

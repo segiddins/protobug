@@ -7,7 +7,7 @@ module Protobug
   class UnsupportedFeatureError < Error
     def initialize(feature, msg)
       @feature = feature
-      super "feature #{feature} is unsupported: #{msg}"
+      super("feature #{feature} is unsupported: #{msg}")
     end
   end
 
@@ -25,8 +25,8 @@ module Protobug
 
   class InvalidValueError < Error
     def initialize(msg, field, value, message = "")
-      super "invalid value for #{field.name} (#{field.number}, #{field.inspect}) of #{msg.class.full_name}: " \
-            "#{value.inspect}#{" (#{message})" if message}"
+      super("invalid value for #{field.name} (#{field.number}, #{field.inspect}) of #{msg.class.full_name}: " \
+            "#{value.inspect}#{" (#{message})" if message}")
     end
   end
 end

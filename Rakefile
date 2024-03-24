@@ -63,6 +63,117 @@ class GitRepo < Rake::Task
       end
     end
   end
+
+  def timestamp
+    File.mtime(path)
+  rescue Errno::ENOENT
+    Time.now
+  end
+end
+
+require "delegate"
+
+class BaseFileList < DelegateClass(Rake::FileList)
+  attr_reader :base
+
+  def initialize(base)
+    @base = base
+    nil while base.delete_suffix!("/.")
+    super(FileList[])
+  end
+
+  def include(*filenames)
+    super(*_apply_base!(filenames))
+    self
+  end
+
+  def exclude(*filenames)
+    super(*_apply_base!(filenames))
+    self
+  end
+
+  private
+
+  def _apply_base!(ary)
+    ary.map! { File.join(@base, _1) }
+  end
+end
+
+class ProtoGem < Rake::FileTask
+  include FileUtils
+
+  attr_accessor :source_repo
+  attr_reader :patterns
+
+  def initialize(*)
+    super
+
+    @patterns = {}
+    @actions << method(:protoc!)
+  end
+
+  def needed?
+    outputs.any? { out_of_date?(File.mtime(_1)) } || @application.options.build_all
+  rescue Errno::ENOENT
+    warn $!
+    true
+  end
+
+  def timestamp
+    outputs.map do |name|
+      File.mtime(name)
+    rescue Errno::ENOENT
+      Rake::LATE
+    end.max
+  end
+
+  def base(path)
+    @patterns[path] ||= BaseFileList.new(File.join(source_repo.path, path))
+  end
+
+  def inputs
+    @patterns.flat_map do |_, list|
+      list
+    end
+  end
+
+  def outputs
+    inputs.map do |proto|
+      contents = File.read(proto)
+      ruby_package = contents[/^\s*option\s+ruby_package\s*=\s*"(.+)"\s*;$/, 1]
+      package = if ruby_package
+                  ruby_package.split("::").map!(&:downcase).join(".")
+                else
+                  contents[/^\s*package (.+);\s*$/, 1]
+                end
+      raise "No package in #{proto}" unless package
+
+      package.tr!(".", "/")
+      proto.pathmap("#{File.join(lib, package)}/%n_pb.rb")
+    end
+  end
+
+  def lib
+    "gen/protobug_#{name}/lib"
+  end
+
+  def includes
+    @patterns.map { |_, v| "-I#{v.base}" }
+  end
+
+  def all_includes
+    includes + all_prerequisite_tasks.grep(self.class).flat_map(&:includes).uniq
+  end
+
+  def protoc!(_, _)
+    sh(
+      "protoc",
+      "--plugin=protoc-gen-protobug=bin/protoc-gen-protobug",
+      *all_includes,
+      "--protobug_out=#{lib}",
+      *inputs
+    )
+  end
 end
 
 def git_repo(name, path, url, commit: "main")
@@ -91,74 +202,71 @@ multitask example: %w[sigstore sigstore-conformance sigstore_protos compiler_pro
   sh "ruby", "example/example.rb"
 end
 
-directory "gen/protobug_well_known_protos/lib"
-multitask well_known_protos: %w[protobuf] do
-  protobuf = "tmp/protobuf"
-  proto_files = FileList["#{protobuf}/src/google/protobuf/*.proto"] -
-                FileList["#{protobuf}/src/google/protobuf/*test*"] -
-                FileList["#{protobuf}/src/google/protobuf/cpp_features.proto"]
-  sh(
-    "protoc",
-    "--plugin=protoc-gen-protobug=#{File.expand_path("bin/protoc-gen-protobug")}",
-    "-I#{protobuf}/src",
-    "--protobug_out=gen/protobug_well_known_protos/lib",
-    *proto_files
-  )
+def proto_gem(name, source_repo, deps: [])
+  task = ProtoGem.define_task(name)
+  directory task.lib
+  task.source_repo = Rake.application.lookup(source_repo)
+  yield task
+  rb = File.join(task.lib, "protobug_#{name}.rb")
+  file rb do |t|
+    File.write(t.name, <<~RB)
+      # frozen_string_literal: true
+
+      require "protobug"
+
+      #{task.outputs.map { %(require_relative #{_1.delete_prefix("#{task.lib}/").delete_suffix(".rb").dump}) }.sort.join("\n")}
+    RB
+  end
+  gemspec = File.join(File.dirname(task.lib), "protobug_#{name}.gemspec")
+  file gemspec => rb do |t|
+    File.write(t.name, Gem::Specification.new do |spec|
+      spec.name = "protobug_#{name}"
+      spec.version = Protobug::VERSION
+      spec.authors = ["Samuel Giddins"]
+      spec.email = ["segiddins@segiddins.me"]
+
+      spec.summary = "Compiled protos for protobug from #{task.source_repo.url} (#{name})"
+      spec.required_ruby_version = ">= 3.0.0"
+      spec.metadata["rubygems_mfa_required"] = "true"
+      spec.files = task.outputs.map { _1.sub(%r{^#{task.lib}/}, "") } << "lib/protobug_#{name}.rb"
+      spec.require_paths = ["lib"]
+      spec.add_runtime_dependency "protobug"
+      task.prerequisite_tasks.grep(task.class).each { spec.add_runtime_dependency "protobug_#{_1.name}" }
+    end.to_ruby)
+  end
+  multitask name => [source_repo, task.lib, rb, gemspec, *task.inputs, *deps]
+  task
 end
 
-directory "gen/protobug_compiler_protos/lib"
-multitask compiler_protos: %w[well_known_protos protobuf gen/protobug_compiler_protos/lib] do
-  protobuf = "tmp/protobuf"
-  sh(
-    "protoc",
-    "--plugin=protoc-gen-protobug=#{File.expand_path("bin/protoc-gen-protobug")}",
-    "-I#{protobuf}/src",
-    "--protobug_out=gen/protobug_compiler_protos/lib",
-    "#{protobuf}/src/google/protobuf/compiler/plugin.proto"
-  )
+proto_gem :well_known_protos, :protobuf, deps: [] do |task|
+  task
+    .base("src")
+    .include("google/protobuf/*.proto")
+    .exclude("google/protobuf/*test*")
+    .exclude("google/protobuf/cpp_features.proto")
 end
 
-directory "gen/protobug_conformance_protos/lib"
-multitask conformance_protos: %w[compiler_protos protobuf gen/protobug_conformance_protos/lib] do
-  protobuf = "tmp/protobuf"
-  sh(
-    "protoc",
-    "--plugin=protoc-gen-protobug=#{File.expand_path("bin/protoc-gen-protobug")}",
-    "-I#{protobuf}/src",
-    "-I#{protobuf}/conformance",
-    "--protobug_out=gen/protobug_conformance_protos/lib",
-    "#{protobuf}/conformance/conformance.proto",
-    *FileList["#{protobuf}/src/google/protobuf/test_messages*.proto"]
-  )
+proto_gem :compiler_protos, :protobuf, deps: %i[well_known_protos] do |task|
+  task
+    .base("src")
+    .include("google/protobuf/compiler/plugin.proto")
 end
 
-directory "gen/protobug_googleapis_field_behavior_protos/lib"
-multitask googleapis_field_behavior_protos: %w[compiler_protos protobuf googleapis
-                                               gen/protobug_googleapis_field_behavior_protos/lib] do
-  protobuf = "tmp/protobuf"
-  sh(
-    "protoc",
-    "--plugin=protoc-gen-protobug=#{File.expand_path("bin/protoc-gen-protobug")}",
-    "-I#{protobuf}/src",
-    "-Itmp/googleapis",
-    "--protobug_out=gen/protobug_googleapis_field_behavior_protos/lib",
-    *FileList["tmp/googleapis/google/api/field_behavior.proto"]
-  )
+proto_gem :conformance_protos, :protobuf, deps: %i[well_known_protos] do |task|
+  task.base("conformance")
+      .include("conformance.proto")
+  task.base("src")
+      .include("google/protobuf/test_messages*.proto")
 end
 
-directory "gen/protobug_sigstore_protos/lib"
-multitask sigstore_protos: %w[compiler_protos protobuf sigstore
-                              gen/protobug_sigstore_protos/lib] do
-  protobuf = "tmp/protobuf"
-  sh(
-    "protoc",
-    "--plugin=protoc-gen-protobug=#{File.expand_path("bin/protoc-gen-protobug")}",
-    "-I#{protobuf}/src",
-    "-Itmp/googleapis",
-    "-Itmp/sigstore/protos",
-    "--protobug_out=gen/protobug_sigstore_protos/lib",
-    *FileList["tmp/sigstore/protos/*.proto"]
-  )
+proto_gem :googleapis_field_behavior_protos, :googleapis, deps: %i[well_known_protos] do |task|
+  task.base(".")
+      .include("google/api/field_behavior.proto")
+end
+
+proto_gem :sigstore_protos, :sigstore, deps: %i[well_known_protos googleapis_field_behavior_protos] do |task|
+  task.base("protos")
+      .include("*.proto")
 end
 
 multitask conformance: %w[conformance_protos tmp/protobuf/bazel-bin/conformance/conformance_test_runner] do

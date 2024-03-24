@@ -88,19 +88,19 @@ module Google
       # Editions that have been released.  The specific values are arbitrary and
       # should not be depended on, but they will always be time-ordered for easy
       # comparison.
-      EDITION_2023 = new("EDITION_2023", 1000).freeze
-      EDITION_2024 = new("EDITION_2024", 1001).freeze
+      EDITION_2023 = new("EDITION_2023", 1_000).freeze
+      EDITION_2024 = new("EDITION_2024", 1_001).freeze
       # Placeholder editions for testing feature resolution.  These should not be
       # used or relyed on outside of tests.
       EDITION_1_TEST_ONLY = new("EDITION_1_TEST_ONLY", 1).freeze
       EDITION_2_TEST_ONLY = new("EDITION_2_TEST_ONLY", 2).freeze
-      EDITION_99997_TEST_ONLY = new("EDITION_99997_TEST_ONLY", 99997).freeze
-      EDITION_99998_TEST_ONLY = new("EDITION_99998_TEST_ONLY", 99998).freeze
-      EDITION_99999_TEST_ONLY = new("EDITION_99999_TEST_ONLY", 99999).freeze
+      EDITION_99997_TEST_ONLY = new("EDITION_99997_TEST_ONLY", 99_997).freeze
+      EDITION_99998_TEST_ONLY = new("EDITION_99998_TEST_ONLY", 99_998).freeze
+      EDITION_99999_TEST_ONLY = new("EDITION_99999_TEST_ONLY", 99_999).freeze
       # Placeholder for specifying unbounded edition support.  This should only
       # ever be used by plugins that can expect to never require any changes to
       # support a new edition.
-      EDITION_MAX = new("EDITION_MAX", 2147483647).freeze
+      EDITION_MAX = new("EDITION_MAX", 2_147_483_647).freeze
     end
 
     # Describes a complete .proto file.
@@ -1484,7 +1484,7 @@ module Google
         json_name: "jsonFormat"
       )
 
-      reserved_range(999...1000)
+      reserved_range(999...1_000)
     end
 
     # A compiled specification for the defaults of a set of features.  These

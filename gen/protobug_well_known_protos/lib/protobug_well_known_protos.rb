@@ -3,6 +3,7 @@
 require "protobug"
 
 require_relative "google/protobuf/any_pb"
+require_relative "google/protobuf/api_pb"
 require_relative "google/protobuf/descriptor_pb"
 require_relative "google/protobuf/duration_pb"
 require_relative "google/protobuf/empty_pb"

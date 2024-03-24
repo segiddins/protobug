@@ -172,7 +172,7 @@ module Protobug
       class File < DelegateClass(Group)
         def initialize
           @headers = []
-          super Group.new(name: "file", items: [], multi: true)
+          super(Group.new(name: "file", items: [], multi: true))
         end
 
         def header_comment(text)
@@ -223,12 +223,18 @@ module Protobug
                          keyword_init: true) do
         def render(q) # rubocop:disable Naming/MethodParameterName
           case type
-          when :empty, :keyword, :identifier, :delimiter
-            q.text content
-          when :operator
+          when :empty, :keyword, :identifier, :delimiter, :operator
             q.text content
           when :literal
-            q.text content.inspect
+            case content
+            when Integer
+              int_part = Integer(content)
+              formatted_int = int_part.abs.to_s.reverse.gsub(/...(?=.)/, '\&_').reverse
+              formatted_int.insert(0, "-") if int_part.negative?
+              q.text formatted_int
+            else
+              q.text content.inspect
+            end
           else
             raise "Unknown token type: #{type}"
           end

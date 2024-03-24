@@ -4,7 +4,7 @@ require "json"
 
 RSpec.describe Protobug do
   it "has a version number" do
-    expect(Protobug::VERSION).not_to be nil
+    expect(Protobug::VERSION).not_to be_nil
   end
 
   test2 = Class.new do
@@ -64,7 +64,7 @@ RSpec.describe Protobug do
     msg = c.new
     expect(msg.a).to eq("")
     expect(msg.b).to eq(0)
-    expect(msg.x).to eq(nil)
+    expect(msg.x).to be_nil
 
     msg.a = "test"
 
@@ -93,9 +93,9 @@ RSpec.describe Protobug do
       optional 1, :a, type: :message, message_type: "google.protobuf.Timestamp"
     end
 
-    registry = Protobug::Registry.new do |registry|
-      registry.register t
-      registry.register c
+    registry = Protobug::Registry.new do |r|
+      r.register t
+      r.register c
     end
 
     ["1970-01-01T00:00:00Z", "2023-04-14T00:00:00Z", "2023-04-14T00:00:00.010Z"].each do |json|
@@ -113,7 +113,7 @@ RSpec.describe Protobug do
     encoded = ["3206038e029ea705"].pack("H*")
     io = StringIO.new(encoded)
     decoded = c.decode(io, registry: nil)
-    expect(decoded.f).to eq([3, 270, 86942])
+    expect(decoded.f).to eq([3, 270, 86_942])
     expect(io).to be_eof
   end
 
@@ -147,7 +147,7 @@ RSpec.describe Protobug do
     end
 
     # int32 max
-    msg.n32 = 2**31 - 1
+    msg.n32 = (2**31) - 1
     msg.clear_n64
     encoded = test_sint.encode(msg)
     aggregate_failures do

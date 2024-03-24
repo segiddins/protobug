@@ -7,7 +7,15 @@ PATH
   remote: gen/protobug_compiler_protos
   specs:
     protobug_compiler_protos (0.1.0)
-      protobug_well_known_protos (= 0.1.0)
+      protobug
+      protobug_well_known_protos
+
+PATH
+  remote: gen/protobug_conformance_protos
+  specs:
+    protobug_conformance_protos (0.1.0)
+      protobug
+      protobug_well_known_protos
 
 PATH
   remote: gen/protobug_googleapis_field_behavior_protos
@@ -24,6 +32,7 @@ PATH
   remote: gen/protobug_well_known_protos
   specs:
     protobug_well_known_protos (0.1.0)
+      protobug
 
 PATH
   remote: protobug-compiler
@@ -113,6 +122,7 @@ DEPENDENCIES
   protobug!
   protobug-compiler!
   protobug_compiler_protos!
+  protobug_conformance_protos!
   protobug_googleapis_field_behavior_protos!
   protobug_sigstore_protos!
   protobug_well_known_protos!

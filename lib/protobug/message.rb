@@ -68,8 +68,10 @@ module Protobug
     end
 
     def map(number, name, **kwargs)
-      raise DefinitionError,
-            "expected type: :map, got #{kwargs[:type].inspect}" if kwargs[:type] && kwargs[:type] != :map
+      if kwargs[:type] && kwargs[:type] != :map
+        raise DefinitionError,
+              "expected type: :map, got #{kwargs[:type].inspect}"
+      end
       repeated(number, name, type: :map, **kwargs)
     end
 
@@ -104,20 +106,21 @@ module Protobug
       when "google.protobuf.Duration"
         raise DecodeError, "expected string for #{full_name}, got #{json.inspect}" unless json.is_a? String
 
-        if /\A(-)?(\d+)(?:\.(\d+))?s\z/ =~ json
-          sign = $1 ? -1 : 1
-          seconds = $2.to_i
-          nanos = $3 || "0"
-          raise RangeError if seconds < -315_576_000_000 || seconds > +315_576_000_000
-
-          nanos = nanos.ljust(9, "0").to_i
-          json = {
-            "seconds" => sign * seconds,
-            "nanos" => sign * nanos
-          }
-        else
+        unless /\A(-)?(\d+)(?:\.(\d+))?s\z/ =~ json
           raise DecodeError, "expected string for #{full_name}, got #{json.inspect}"
         end
+
+        sign = ::Regexp.last_match(1) ? -1 : 1
+        seconds = ::Regexp.last_match(2).to_i
+        nanos = ::Regexp.last_match(3) || "0"
+        raise RangeError if seconds < -315_576_000_000 || seconds > +315_576_000_000
+
+        nanos = nanos.ljust(9, "0").to_i
+        json = {
+          "seconds" => sign * seconds,
+          "nanos" => sign * nanos
+        }
+
       when "google.protobuf.Value"
         case json
         when NilClass
@@ -201,8 +204,10 @@ module Protobug
         wire_type = header & 0b111
         number = (header ^ wire_type) >> 3
 
-        raise DecodeError,
-              "unexpected field number #{number} in #{full_name || fields_by_name.inspect}" unless number > 0
+        unless number.positive?
+          raise DecodeError,
+                "unexpected field number #{number} in #{full_name || fields_by_name.inspect}"
+        end
 
         field = fields_by_number[number]
 
@@ -218,7 +223,7 @@ module Protobug
     def encode(message)
       raise EncodeError, "expected #{self}, got #{message.inspect}" unless message.is_a? self
 
-      buf = fields_by_number.each_with_object("".b) do |(number, field), outbuf|
+      buf = fields_by_number.each_with_object("".b) do |(_number, field), outbuf|
         next unless message.send(field.haser)
 
         value = message.instance_variable_get(field.ivar)
@@ -243,10 +248,10 @@ module Protobug
 
       def encode_varint(value, outbuf)
         raise EncodeError, "expected integer, got #{value.inspect}" unless value.is_a? Integer
-        raise RangeError, "expected 64-bit integer" if value > 2**64 - 1 || value < -2**63
+        raise RangeError, "expected 64-bit integer" if value > (2**64) - 1 || value < -2**63
 
-        negative = value < 0
-        value = 2**64 + value if negative
+        negative = value.negative?
+        value = (2**64) + value if negative
         out = []
         loop do
           if value.bit_length > 7
@@ -263,8 +268,10 @@ module Protobug
       def encode_zigzag(size, value, outbuf)
         raise EncodeError, "expected integer, got #{value.inspect}" unless value.is_a? Integer
 
-        raise EncodeError,
-              "bitlength too large for #{size}-bit integer: #{value.bit_length}" unless value.bit_length <= size
+        unless value.bit_length <= size
+          raise EncodeError,
+                "bitlength too large for #{size}-bit integer: #{value.bit_length}"
+        end
 
         encoded = 2 * value.abs
         encoded -= 1 if value.negative?
@@ -285,13 +292,11 @@ module Protobug
         loop do
           raise DecodeError, "varint too large" if bl > 63
           return value if byte.nil?
-          if byte & 0b1000_0000 == 0 # no continuation bit set
-            return value | (byte << bl)
-          else
-            value |= ((byte & 0b0111_1111) << bl)
-            bl += 7
-            byte = binary.getbyte || raise(EOFError, "unexpected EOF")
-          end
+          return value | (byte << bl) if (byte & 0b1000_0000).zero? # no continuation bit set
+
+          value |= ((byte & 0b0111_1111) << bl)
+          bl += 7
+          byte = binary.getbyte || raise(EOFError, "unexpected EOF")
         end
       end
 
@@ -309,8 +314,10 @@ module Protobug
         value >>= 1
         value = -value - 1 if negative
 
-        raise DecodeError,
-              "bitlength too large for #{size}-bit integer: #{value.bit_length}" unless value.bit_length <= size
+        unless value.bit_length <= size
+          raise DecodeError,
+                "bitlength too large for #{size}-bit integer: #{value.bit_length}"
+        end
 
         value
       end
@@ -380,37 +387,41 @@ module Protobug
         instance_variable_set(field.ivar, UNSET)
       end
 
-      define_method(field.adder) do |value|
-        field.validate!(value, self)
+      if field.repeated?
+        define_method(field.adder) do |value|
+          field.validate!(value, self)
 
-        existing = instance_variable_get(field.ivar)
-        if UNSET == existing
-          existing = []
-          instance_variable_set(field.ivar, existing)
-        end
-
-        existing << value
-      end if field.repeated?
-
-      define_method(field.adder) do |value|
-        existing = instance_variable_get(field.ivar)
-        if UNSET == existing
-          existing = {}
-          instance_variable_set(field.ivar, existing)
-        end
-
-        existing[value.key] = value.value
-      end if field.map?
-
-      if field.oneof
-        unless oneofs[field.oneof]
-          oneofs[field.oneof] = ary = []
-          define_method(field.oneof) do
-            ary.find { |f| send(f.haser) }&.name
+          existing = instance_variable_get(field.ivar)
+          if UNSET == existing
+            existing = []
+            instance_variable_set(field.ivar, existing)
           end
+
+          existing << value
         end
-        oneofs[field.oneof] << field
       end
+
+      if field.map?
+        define_method(field.adder) do |value|
+          existing = instance_variable_get(field.ivar)
+          if UNSET == existing
+            existing = {}
+            instance_variable_set(field.ivar, existing)
+          end
+
+          existing[value.key] = value.value
+        end
+      end
+
+      return unless field.oneof
+
+      unless oneofs[field.oneof]
+        oneofs[field.oneof] = ary = []
+        define_method(field.oneof) do
+          ary.find { |f| send(f.haser) }&.name
+        end
+      end
+      oneofs[field.oneof] << field
     end
 
     module InstanceMethods
@@ -433,7 +444,7 @@ module Protobug
       end
 
       def pretty_print(pp)
-        fields_with_values = self.class.fields_by_name.select do |name, field|
+        fields_with_values = self.class.fields_by_name.select do |_name, field|
           send(field.haser)
         end
         pp.group 2, "#{self.class}.new(", ")" do
@@ -456,11 +467,11 @@ module Protobug
       end
 
       def to_text
-        fields_with_values = self.class.fields_by_name.select do |name, field|
+        fields_with_values = self.class.fields_by_name.select do |_name, field|
           send(field.haser)
         end
 
-        fields_with_values.map do |name, field|
+        fields_with_values.map do |_name, field|
           value = send(field.name)
           field.to_text(value)
         end.join("\n")
@@ -479,7 +490,7 @@ module Protobug
 
           nanosecs = time.nsec
 
-          if nanosecs > 0
+          if nanosecs.positive?
             nanosecs = nanosecs.to_s.rjust(9, "0")
             nil while nanosecs.delete_suffix!("000")
             digits = nanosecs.size
@@ -498,8 +509,8 @@ module Protobug
 
           raise RangeError if seconds < -315_576_000_000 || seconds > +315_576_000_000
 
-          sign = seconds < 0 ? "-" : ""
-          sign = "-" if seconds == 0 && nanos < 0
+          sign = seconds.negative? ? "-" : ""
+          sign = "-" if seconds.zero? && nanos.negative?
           seconds = seconds.abs
           nanos = nanos.abs
           if nanos.nonzero?
@@ -540,11 +551,11 @@ module Protobug
           raise UnsupportedFeatureError.new(:any, "serializing to json")
           # return value.as_json.merge("@type" => "type.googleapis.com/#{value.class.full_name}")
         end
-        fields_with_values = self.class.fields_by_name.select do |name, field|
+        fields_with_values = self.class.fields_by_name.select do |_name, field|
           send(field.haser)
         end
 
-        fields_with_values.to_h do |name, field|
+        fields_with_values.to_h do |_name, field|
           value = send(field.name)
 
           [field.json_name, field.json_encode(value, print_unknown_fields: print_unknown_fields)]

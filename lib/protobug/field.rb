@@ -8,11 +8,13 @@ module Protobug
     def initialize(number, name, type: nil, json_name: nil, cardinality: :optional, oneof: nil, message_type: nil,
                    enum_type: nil, packed: false, key_type: nil, value_type: nil, group_type: nil,
                    proto3_optional: cardinality == :optional)
+      # rubocop:disable Style/DoubleNegation
       raise "message_type only allowed for message fields" if !!message_type ^ type == :message
       raise "enum_type only allowed for enum fields" if !!enum_type ^ type == :enum
       raise "key_type only allowed for map fields" if !!key_type ^ type == :map
       raise "value_type only allowed for map fields" if !!value_type ^ type == :map
       raise "group_type only allowed for group fields" if !!group_type ^ type == :group
+      # rubocop:enable Style/DoubleNegation
 
       @number = number
       @name = name.to_sym
@@ -81,7 +83,7 @@ module Protobug
         nil
       when :bytes
         "".b
-      when :enum
+      when :enum # rubocop:disable Lint/DuplicateBranch
         # TODO: enum_type.default
         0
       when :float, :double
@@ -404,7 +406,7 @@ module Protobug
         end
       when :float, :double
         case value
-        when Float
+        when Float, NilClass
           value
         when Integer
           value.to_f
@@ -416,8 +418,6 @@ module Protobug
           Float::NAN
         when /\A-?\d+\z/
           Float(value)
-        when NilClass
-          value
         else
           raise DecodeError, "expected float for #{inspect}, got #{value.inspect}"
         end
@@ -475,9 +475,7 @@ module Protobug
         end
       when :int64, :uint64, :sint64, :sfixed64, :fixed64
         value.to_s
-      when :int32, :uint32, :sint32, :sfixed32, :fixed32
-        value
-      when :bool
+      when :int32, :uint32, :sint32, :sfixed32, :fixed32, :bool
         value
       else
         raise EncodeError, "unhandled type in #{self}.#{__method__}: #{type.inspect}"

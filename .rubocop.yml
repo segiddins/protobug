@@ -7,6 +7,7 @@ require:
 
 AllCops:
   TargetRubyVersion: 3.0
+  NewCops: enable
 
 Style/StringLiterals:
   Enabled: true
@@ -26,4 +27,10 @@ Style/MultilineBlockChain:
   Enabled: false
 
 Style/CommentAnnotation:
+  Enabled: false
+
+Style/DoubleNegation:
+  EnforcedStyle: allowed_in_returns
+
+Style/YodaCondition:
   Enabled: false

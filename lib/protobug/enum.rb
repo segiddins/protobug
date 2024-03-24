@@ -55,6 +55,8 @@ module Protobug
     end
 
     def decode_json_hash(json, registry: nil)
+      _ = registry
+
       case json
       when UNSET
         default

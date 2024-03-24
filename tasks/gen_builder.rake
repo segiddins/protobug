@@ -135,7 +135,9 @@ namespace :compiler do
               keywords.each do |keyword|
                 cls.empty unless first
                 cls._def.identifier("_#{keyword}").block do |defn|
-                  defn.identifier("append").identifier("Statement").dot("new").dot("_#{keyword}").call {}
+                  defn.identifier("append").identifier("Statement").dot("new").dot("_#{keyword}").call do
+                    nil
+                  end
                 end
                 first = false
               end

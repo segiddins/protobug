@@ -1,0 +1,29 @@
+inherit_from: ../.rubocop.yml
+
+Style/PercentLiteralDelimiters:
+  Exclude:
+    - "*/*.gemspec"
+
+Style/RedundantPercentQ:
+  Exclude:
+    - "*/*.gemspec"
+
+Style/Encoding:
+  Exclude:
+    - "*/*.gemspec"
+
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - "*/*.gemspec"
+
+Gemspec/DeprecatedAttributeAssignment:
+  Exclude:
+    - "*/*.gemspec"
+
+Layout/LineLength:
+  Exclude:
+    - "*/*.gemspec"
+
+Layout/EmptyLineAfterMagicComment:
+  Exclude:
+    - "*/*.gemspec"

@@ -8,10 +8,7 @@ SimpleCov.start do
   enable_coverage :branch
 end
 
-$:.unshift(__dir__)
-require_relative "conformance/conformance_pb"
-require_relative "protobuf_test_messages/proto2/test_messages_proto2_pb"
-require_relative "protobuf_test_messages/proto3/test_messages_proto3_pb"
+require "protobug_conformance_protos"
 require "stringio"
 
 $test_count = 0
@@ -37,7 +34,7 @@ def do_test(request)
         test_message = descriptor.decode(StringIO.new(request.protobuf_payload), registry: $registry)
       rescue Protobug::UnsupportedFeatureError
         raise
-      rescue => e
+      rescue StandardError => e
         response.parse_error = e.full_message.encode("utf-8")
         return response
       end
@@ -52,7 +49,7 @@ def do_test(request)
         test_message = descriptor.decode_json(request.json_payload, **options, registry: $registry)
       rescue Protobug::UnsupportedFeatureError
         raise
-      rescue => e
+      rescue StandardError => e
         if options.any?
           response.skipped = "options not supported: #{options.inspect}"
         else
@@ -68,17 +65,17 @@ def do_test(request)
       end
 
     else
-      fail "Request didn't have payload: #{request.payload.inspect} #{request.inspect}"
+      raise "Request didn't have payload: #{request.payload.inspect} #{request.inspect}"
     end
 
     case request.requested_output_format
     when Conformance::WireFormat::UNSPECIFIED
-      fail "Unspecified output format"
+      raise "Unspecified output format"
 
     when Conformance::WireFormat::PROTOBUF
       begin
         response.protobuf_payload = test_message.to_proto
-      rescue => e
+      rescue StandardError => e
         response.serialize_error = e.full_message.encode("utf-8")
       end
 
@@ -87,7 +84,7 @@ def do_test(request)
         response.json_payload = test_message.to_json(print_unknown_fields: request.print_unknown_fields)
       rescue Protobug::UnsupportedFeatureError
         raise
-      rescue => e
+      rescue StandardError => e
         response.serialize_error = e.full_message.encode("utf-8")
       end
 
@@ -95,7 +92,7 @@ def do_test(request)
       response.skipped = "Ruby doesn't support text format"
 
     else
-      fail "Request didn't have requested output format: #{request.requested_output_format.inspect} #{request.inspect}"
+      raise "Request didn't have requested output format: #{request.requested_output_format.inspect} #{request.inspect}"
     end
   rescue Protobug::UnsupportedFeatureError => e
     response.skipped = e.message
@@ -114,7 +111,7 @@ def do_test_io
 
   length = length_bytes.unpack1("V")
   serialized_request = $stdin.read(length)
-  fail IOError if serialized_request.nil? || serialized_request.length != length
+  raise IOError if serialized_request.nil? || serialized_request.length != length
 
   request = Conformance::ConformanceRequest.decode(StringIO.new(serialized_request), registry: $registry)
 
@@ -128,8 +125,8 @@ def do_test_io
   $stdout.flush
 
   if $verbose
-    $stderr.puts("conformance_ruby: request=#{request.to_json}, " \
-                                 "response=#{response.to_json}\n")
+    warn("conformance_ruby: request=#{request.to_json}, " \
+         "response=#{response.to_json}\n")
   end
 
   $test_count += 1
@@ -140,8 +137,8 @@ end
 loop do
   next if do_test_io
 
-  $stderr.puts("conformance_ruby: received EOF from test runner " \
-              "after #{$test_count} tests, exiting")
+  warn("conformance_ruby: received EOF from test runner " \
+       "after #{$test_count} tests, exiting")
   break
 end
 
