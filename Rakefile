@@ -234,6 +234,9 @@ def proto_gem(name, source_repo, deps: [])
       task.prerequisite_tasks.grep(task.class).each { spec.add_runtime_dependency "protobug_#{_1.name}" }
     end.to_ruby)
   end
+  task.inputs.each do |i|
+    file i => source_repo
+  end
   multitask name => [source_repo, task.lib, rb, gemspec, *task.inputs, *deps]
   task
 end

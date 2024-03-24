@@ -27,6 +27,9 @@ PATH
   remote: gen/protobug_sigstore_protos
   specs:
     protobug_sigstore_protos (0.1.0)
+      protobug
+      protobug_googleapis_field_behavior_protos
+      protobug_well_known_protos
 
 PATH
   remote: gen/protobug_well_known_protos
