@@ -430,7 +430,6 @@ module ProtobufTestMessages
       map(
         56,
         "map_int32_int32",
-        type: :map,
         key_type: :int32,
         value_type: :int32,
         json_name: "mapInt32Int32"
@@ -438,7 +437,6 @@ module ProtobufTestMessages
       map(
         57,
         "map_int64_int64",
-        type: :map,
         key_type: :int64,
         value_type: :int64,
         json_name: "mapInt64Int64"
@@ -446,7 +444,6 @@ module ProtobufTestMessages
       map(
         58,
         "map_uint32_uint32",
-        type: :map,
         key_type: :uint32,
         value_type: :uint32,
         json_name: "mapUint32Uint32"
@@ -454,7 +451,6 @@ module ProtobufTestMessages
       map(
         59,
         "map_uint64_uint64",
-        type: :map,
         key_type: :uint64,
         value_type: :uint64,
         json_name: "mapUint64Uint64"
@@ -462,7 +458,6 @@ module ProtobufTestMessages
       map(
         60,
         "map_sint32_sint32",
-        type: :map,
         key_type: :sint32,
         value_type: :sint32,
         json_name: "mapSint32Sint32"
@@ -470,7 +465,6 @@ module ProtobufTestMessages
       map(
         61,
         "map_sint64_sint64",
-        type: :map,
         key_type: :sint64,
         value_type: :sint64,
         json_name: "mapSint64Sint64"
@@ -478,7 +472,6 @@ module ProtobufTestMessages
       map(
         62,
         "map_fixed32_fixed32",
-        type: :map,
         key_type: :fixed32,
         value_type: :fixed32,
         json_name: "mapFixed32Fixed32"
@@ -486,7 +479,6 @@ module ProtobufTestMessages
       map(
         63,
         "map_fixed64_fixed64",
-        type: :map,
         key_type: :fixed64,
         value_type: :fixed64,
         json_name: "mapFixed64Fixed64"
@@ -494,7 +486,6 @@ module ProtobufTestMessages
       map(
         64,
         "map_sfixed32_sfixed32",
-        type: :map,
         key_type: :sfixed32,
         value_type: :sfixed32,
         json_name: "mapSfixed32Sfixed32"
@@ -502,7 +493,6 @@ module ProtobufTestMessages
       map(
         65,
         "map_sfixed64_sfixed64",
-        type: :map,
         key_type: :sfixed64,
         value_type: :sfixed64,
         json_name: "mapSfixed64Sfixed64"
@@ -510,7 +500,6 @@ module ProtobufTestMessages
       map(
         66,
         "map_int32_float",
-        type: :map,
         key_type: :int32,
         value_type: :float,
         json_name: "mapInt32Float"
@@ -518,7 +507,6 @@ module ProtobufTestMessages
       map(
         67,
         "map_int32_double",
-        type: :map,
         key_type: :int32,
         value_type: :double,
         json_name: "mapInt32Double"
@@ -526,7 +514,6 @@ module ProtobufTestMessages
       map(
         68,
         "map_bool_bool",
-        type: :map,
         key_type: :bool,
         value_type: :bool,
         json_name: "mapBoolBool"
@@ -534,7 +521,6 @@ module ProtobufTestMessages
       map(
         69,
         "map_string_string",
-        type: :map,
         key_type: :string,
         value_type: :string,
         json_name: "mapStringString"
@@ -542,7 +528,6 @@ module ProtobufTestMessages
       map(
         70,
         "map_string_bytes",
-        type: :map,
         key_type: :string,
         value_type: :bytes,
         json_name: "mapStringBytes"
@@ -550,7 +535,6 @@ module ProtobufTestMessages
       map(
         71,
         "map_string_nested_message",
-        type: :map,
         key_type: :string,
         value_type: :message,
         message_type:
@@ -560,7 +544,6 @@ module ProtobufTestMessages
       map(
         72,
         "map_string_foreign_message",
-        type: :map,
         key_type: :string,
         value_type: :message,
         message_type: "protobuf_test_messages.proto2.ForeignMessageProto2",
@@ -569,7 +552,6 @@ module ProtobufTestMessages
       map(
         73,
         "map_string_nested_enum",
-        type: :map,
         key_type: :string,
         value_type: :enum,
         enum_type:
@@ -579,7 +561,6 @@ module ProtobufTestMessages
       map(
         74,
         "map_string_foreign_enum",
-        type: :map,
         key_type: :string,
         value_type: :enum,
         enum_type: "protobuf_test_messages.proto2.ForeignEnumProto2",

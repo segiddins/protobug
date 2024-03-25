@@ -332,7 +332,7 @@ module Protobug
         ).call do |c|
           c.literal(descriptor.number)
           c.literal(descriptor.name)
-          c.identifier("type:").literal(type)
+          c.identifier("type:").literal(type) unless type == :map
 
           if type == :map
             c.identifier("key_type:")

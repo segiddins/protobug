@@ -56,6 +56,8 @@ module Protobug
       _ = registry
 
       case json
+      when NilClass
+        nil
       when UNSET
         default
       when String

@@ -61,3 +61,17 @@ Google::Protobuf::ListValue.class_eval do
     values.map { _1.as_json(print_unknown_fields: print_unknown_fields) }
   end
 end
+
+Google::Protobuf::NullValue.class_eval do
+  def self.decode_json_hash(json, registry:)
+    return values.fetch(0) if json.nil?
+
+    super
+  end
+
+  def as_json(print_unknown_fields: false)
+    return if value.zero?
+
+    super
+  end
+end

@@ -215,6 +215,11 @@ multitask example: %w[sigstore sigstore-conformance sigstore_protos] do
   ruby "-rbundler/setup", "example/example.rb"
 end
 
+PROTOBUG_FILES = Gem::Specification.load("protobug.gemspec").files
+PROTOBUG_COMPILER_FILES = Gem::Specification.load("protobug-compiler/protobug-compiler.gemspec").files.map do |f|
+  File.join("protobug-compiler", f)
+end
+
 def proto_gem(name, source_repo, deps: [])
   desc "Build protobug_#{name}"
   task = ProtoGem.define_task(name)
@@ -240,7 +245,7 @@ def proto_gem(name, source_repo, deps: [])
   task.inputs.each do |i|
     file i => source_repo
   end
-  multitask name => [source_repo, task.lib, rb, gemspec, *task.inputs, *deps]
+  multitask name => [*PROTOBUG_FILES, *PROTOBUG_COMPILER_FILES, source_repo, task.lib, rb, gemspec, *task.inputs, *deps]
   namespace name do
     desc "Verify that #{name} has dependencies properly specified & is requireable"
     task verify: name do

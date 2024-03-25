@@ -3,7 +3,6 @@ Recommended.Proto2.JsonInput.BoolFieldDoubleQuotedTrue
 Recommended.Proto2.JsonInput.FieldNameExtension.Validator
 Recommended.Proto2.JsonInput.JsonWithComments
 Recommended.Proto2.JsonInput.RepeatedFieldMessageElementIsNull
-Recommended.Proto2.JsonInput.StringFieldUnpairedLowSurrogate
 Recommended.Proto2.JsonInput.StringFieldUppercaseEscapeLetter
 Recommended.Proto3.FieldMaskNumbersDontRoundTrip.JsonOutput
 Recommended.Proto3.FieldMaskPathsDontRoundTrip.JsonOutput
@@ -12,10 +11,7 @@ Recommended.Proto3.JsonInput.BoolFieldDoubleQuotedFalse
 Recommended.Proto3.JsonInput.BoolFieldDoubleQuotedTrue
 Recommended.Proto3.JsonInput.FieldMaskInvalidCharacter
 Recommended.Proto3.JsonInput.JsonWithComments
-Recommended.Proto3.JsonInput.NullValueInNormalMessage.Validator
-Recommended.Proto3.JsonInput.NullValueInOtherOneofOldFormat.Validator
 Recommended.Proto3.JsonInput.RepeatedFieldMessageElementIsNull
-Recommended.Proto3.JsonInput.StringFieldUnpairedLowSurrogate
 Recommended.Proto3.JsonInput.StringFieldUppercaseEscapeLetter
 Required.Proto2.JsonInput.DoubleFieldTooSmall
 Required.Proto2.JsonInput.FloatFieldTooLarge

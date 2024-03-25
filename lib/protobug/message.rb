@@ -89,8 +89,6 @@ module Protobug
     end
 
     def decode_json_hash(json, registry:)
-      return if json.nil?
-
       raise DecodeError, "expected hash for #{self} (#{full_name}), got #{json.inspect}" unless json.is_a? Hash
 
       message = new
@@ -98,7 +96,9 @@ module Protobug
       json.each do |key, value|
         field = fields_by_name.values.find do |f|
           f.json_name == key
-        end || fields_by_name[key] || raise(UnknownFieldError, "unknown field #{key.inspect} in #{full_name}")
+        end
+        field ||= fields_by_name[key]
+        raise(UnknownFieldError, "unknown field #{key.inspect} in #{full_name}") unless field
 
         if field.oneof && message.send(field.oneof) && !value.nil?
           raise DecodeError, "multiple oneof fields set in #{full_name}: #{message.send(field.oneof)} and #{field.name}"
@@ -158,8 +158,50 @@ module Protobug
       end
     end
 
-    def field(number, name, **kwargs)
-      field = Field.new(number, name, **kwargs).freeze
+    def field(number, name, type:, **kwargs)
+      field = case type
+              when :message
+                Field::MessageField.new(number, name, **kwargs)
+              when :enum
+                Field::EnumField.new(number, name, **kwargs)
+              when :bytes
+                Field::BytesField.new(number, name, **kwargs)
+              when :string
+                Field::StringField.new(number, name, **kwargs)
+              when :map
+                kwargs.delete(:cardinality) if kwargs[:cardinality] == :repeated
+                Field::MapField.new(number, name, **kwargs)
+              when :int64
+                Field::Int64Field.new(number, name, type: type, **kwargs)
+              when :uint64
+                Field::UInt64Field.new(number, name, type: type, **kwargs)
+              when :sint64
+                Field::SInt64Field.new(number, name, type: type, **kwargs)
+              when :fixed64
+                Field::Fixed64Field.new(number, name, type: type, **kwargs)
+              when :sfixed64
+                Field::SFixed64Field.new(number, name, type: type, **kwargs)
+              when :int32
+                Field::Int32Field.new(number, name, type: type, **kwargs)
+              when :uint32
+                Field::UInt32Field.new(number, name, type: type, **kwargs)
+              when :sint32
+                Field::SInt32Field.new(number, name, type: type, **kwargs)
+              when :fixed32
+                Field::Fixed32Field.new(number, name, type: type, **kwargs)
+              when :sfixed32
+                Field::SFixed32Field.new(number, name, type: type, **kwargs)
+              when :bool
+                Field::BoolField.new(number, name, type: type, **kwargs)
+              when :float
+                Field::FloatField.new(number, name, **kwargs)
+              when :double
+                Field::DoubleField.new(number, name, **kwargs)
+              when :group
+                Field::GroupField.new(number, name, **kwargs)
+              else
+                raise ArgumentError, "Unknown field type #{type.inspect}"
+              end.freeze
 
       raise DefinitionError, "duplicate field number #{number}" if fields_by_number[number]
 

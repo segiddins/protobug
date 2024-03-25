@@ -22,10 +22,10 @@ module Protobug
       @name = name.to_sym
       @type = type
       @json_name = json_name || name.to_s
-      @cardinality = cardinality || raise
+      @cardinality = cardinality || raise(ArgumentError, "cardinality is required")
       @oneof = oneof
       @setter = :"#{name}="
-      @adder = :"add_#{name}" if repeated? || type == :map
+      @adder = :"add_#{name}" if repeated? || map?
       @ivar = :"@#{name}"
       @clearer = :"clear_#{name}"
       @haser = :"#{name}?"
@@ -69,33 +69,6 @@ module Protobug
           pp.text("oneof: ")
           pp.text(@oneof.inspect)
         end
-      end
-    end
-
-    def default
-      return [] if repeated?
-
-      case type
-      when :int32, :int64, :uint32, :uint64, :sint32, :sint64, :fixed32, :fixed64, :sfixed32, :sfixed64
-        0
-      when :string
-        ""
-      when :message
-        # TODO: message_type.default
-        nil
-      when :bytes
-        "".b
-      when :enum # rubocop:disable Lint/DuplicateBranch
-        # TODO: enum_type.default
-        0
-      when :float, :double
-        0.0
-      when :bool
-        false
-      when :map
-        {}
-      else
-        raise "unhandled type in #{self}.#{__method__}: #{type.inspect}"
       end
     end
 
@@ -226,43 +199,11 @@ module Protobug
           message.send(adder, json_decode_one(v, registry))
         end
       else
-        message.send(setter,
-                     json_decode_one(value, registry))
+        message.send(setter, json_decode_one(value, registry))
       end
     end
 
-    def validate!(value, message)
-      case type
-      when :int32, :sint32, :sfixed32
-        raise InvalidValueError.new(message, self, value) unless value.is_a? Integer
-
-        unless value >= -(2**31) && value < 2**31
-          raise RangeError,
-                "expected 32-bit integer, got #{value} (bit_length: #{value.bit_length})"
-        end
-      when :uint32
-        raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
-
-        unless value.bit_length <= 32
-          raise RangeError,
-                "expected 32-bit integer, got #{value} (bit_length: #{value.bit_length})"
-        end
-      when :int64, :sint64, :sfixed64
-        raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
-
-        unless value >= -(2**63) && value < 2**63
-          raise RangeError,
-                "expected 64-bit integer, got #{value} (bit_length: #{value.bit_length})"
-        end
-      when :uint64
-        raise "expected integer, got #{value.inspect}" unless value.is_a? Integer
-
-        unless value.bit_length <= 64
-          raise RangeError,
-                "expected 64-bit integer, got #{value} (bit_length: #{value.bit_length})"
-        end
-      end
-
+    def validate!(_value, message)
       return unless oneof
 
       message.class.oneofs[oneof].each do |f|
@@ -284,101 +225,223 @@ module Protobug
       end, outbuf)
     end
 
-    def binary_encode_one(value, outbuf)
+    def wire_type
       case type
-      when :int32, :int64, :uint32, :uint64
-        BinaryEncoding.encode_varint value, outbuf
-      when :enum
-        BinaryEncoding.encode_varint value.value, outbuf
-      when :sint32
-        BinaryEncoding.encode_zigzag 32, value, outbuf
-      when :sint64
-        BinaryEncoding.encode_zigzag 64, value, outbuf
-      when :fixed64
-        outbuf << [value].pack("Q")
-      when :fixed32
-        outbuf << [value].pack("V")
-      when :sfixed64
-        outbuf << [value].pack("q")
-      when :sfixed32
-        outbuf << [value].pack("l")
-      when :double
-        outbuf << [value].pack("E")
-      when :float
-        outbuf << [value].pack("e")
-      when :string
-        value = value.encode("utf-8") if value.encoding != Encoding::UTF_8
-        BinaryEncoding.encode_length value.b, outbuf
-      when :bytes
-        BinaryEncoding.encode_length value.b, outbuf
-      when :message
-        BinaryEncoding.encode_length value.class.encode(value), outbuf
-      when :map
-        entry = @map_type.new
-        entry.key, entry.value = value
-        BinaryEncoding.encode_length @map_type.encode(entry), outbuf
-      when :bool
-        BinaryEncoding.encode_varint value ? 1 : 0, outbuf
+      when :int32, :int64, :uint32, :uint64, :sint32, :sint64, :bool, :enum
+        0
+      when :fixed64, :sfixed64, :double
+        1
+      when :fixed32, :sfixed32, :float
+        5
+      when :string, :bytes, :message, :map
+        2
       else
         raise "unhandled type in #{self}.#{__method__}: #{type.inspect}"
       end
     end
 
-    def binary_decode_one(io, message, registry, wire_type)
-      value = BinaryEncoding.read_field_value(io, wire_type)
+    class MessageField < Field
+      def initialize(number, name, cardinality:, message_type:, json_name: name, oneof: nil,
+                     proto3_optional: cardinality == :optional)
+        super(number, name, type: :message, json_name: json_name, cardinality: cardinality, oneof: oneof,
+                            message_type: message_type, proto3_optional: proto3_optional)
+      end
 
-      case type
-      when :int32
-        [value].pack("l>").unpack1("l>")
-      when :int64
-        [value].pack("q>").unpack1("q>")
-      when :uint32
-        [value].pack("L>").unpack1("L>")
-      when :uint64
-        [value].pack("Q>").unpack1("Q>")
-      when :sint32
-        BinaryEncoding.decode_zigzag 32, value
-      when :sint64
-        BinaryEncoding.decode_zigzag 64, value
-      when :fixed64
-        value.unpack1("Q")
-      when :fixed32
-        value.unpack1("V")
-      when :sfixed64
-        value.unpack1("q")
-      when :sfixed32
-        value.unpack1("l")
-      when :double
-        value.unpack1("E")
-      when :float
-        value.unpack1("e")
-      when :string
+      def binary_encode_one(value, outbuf)
+        BinaryEncoding.encode_length value.class.encode(value), outbuf
+      end
+
+      def binary_decode_one(io, message, registry, wire_type)
+        value = BinaryEncoding.read_field_value(io, wire_type)
+        kwargs = {}
+        kwargs[:object] = message.send(name) if !repeated? && message.send(haser)
+        type_lookup(registry).decode(StringIO.new(value), registry: registry, **kwargs)
+      end
+
+      def json_decode_one(value, registry)
+        return if value.nil?
+
+        klass = type_lookup(registry)
+        klass.decode_json_hash(value, registry: registry)
+      end
+
+      def type_lookup(registry)
+        registry.fetch(message_type)
+      end
+
+      def json_encode_one(value, print_unknown_fields:)
+        value.as_json(print_unknown_fields: print_unknown_fields)
+      end
+
+      def default
+        return [] if repeated?
+
+        # TODO: message_type.default
+        nil
+      end
+    end
+
+    class MapField < MessageField
+      SUPER_INITIALIZE = instance_method(:initialize).super_method
+      def initialize(number, name, key_type:, value_type:, json_name: name, oneof: nil, # rubocop:disable Lint/MissingSuper,
+                     enum_type: nil, message_type: nil)
+        SUPER_INITIALIZE.bind_call(
+          self, number, name,
+          cardinality: repeated,
+          type: :map, json_name: json_name,
+          oneof: oneof,
+          enum_type: enum_type, message_type: message_type,
+          key_type: key_type, value_type: value_type
+        )
+
+        @map_class = Class.new do
+          extend Protobug::Message
+
+          optional(1, "key", type: key_type, proto3_optional: false)
+          value_type_kwargs = { enum_type: enum_type, message_type: message_type }.compact
+          optional(2, "value", type: value_type, **value_type_kwargs, proto3_optional: false)
+        end
+      end
+
+      def repeated = true
+      def default = {}
+      def repeated? = true
+
+      def type_lookup(_registry) = @map_class
+    end
+
+    class BytesField < Field
+      def self.type = :bytes
+
+      def initialize(number, name, cardinality:, json_name: name, oneof: nil,
+                     proto3_optional: cardinality == :optional)
+        super(number, name, type: self.class.type, json_name: json_name, cardinality: cardinality, oneof: oneof,
+                            proto3_optional: proto3_optional)
+      end
+
+      def binary_encode_one(value, outbuf)
+        BinaryEncoding.encode_length value.b, outbuf
+      end
+
+      def binary_decode_one(io, _message, _registry, wire_type)
+        BinaryEncoding.read_field_value(io, wire_type)
+      end
+
+      def json_decode_one(value, _registry)
+        return if value.nil?
+
+        # url decode 64
+        value.tr!("-_", "+/")
+        begin
+          value = value.unpack1("m").force_encoding(Encoding::BINARY)
+        rescue ArgumentError => e
+          raise DecodeError, "Invalid URL-encoded base64 #{value.inspect} for #{inspect}: #{e}"
+        end
+
+        value
+      end
+
+      def json_encode_one(value, print_unknown_fields:) # rubocop:disable Lint/UnusedMethodArgument
+        [value].pack("m0")
+      end
+
+      def default
+        return [] if repeated?
+
+        "".b
+      end
+    end
+
+    class StringField < BytesField
+      def self.type = :string
+
+      def initialize(number, name, cardinality:, json_name: name, oneof: nil,
+                     proto3_optional: cardinality == :optional)
+        super(number, name, json_name: json_name, cardinality: cardinality, oneof: oneof,
+                            proto3_optional: proto3_optional)
+      end
+
+      def binary_encode_one(value, outbuf)
+        value = value.encode("utf-8") if value.encoding != Encoding::UTF_8
+        super
+      end
+
+      def binary_decode_one(io, _message, _registry, wire_type)
+        value = super
+
         value.force_encoding("utf-8") if value.encoding != Encoding::UTF_8
         raise DecodeError, "invalid utf-8 for string" unless value.valid_encoding?
 
         value
-      when :bytes
-        value # already in binary encoding
-      when :message
-        kwargs = {}
-        kwargs[:object] = message.send(name) if !repeated? && message.send(haser)
-        registry.fetch(message_type).decode(StringIO.new(value), registry: registry, **kwargs)
-      when :map
-        @map_type.decode(StringIO.new(value), registry: registry)
-      when :enum
-        registry.fetch(enum_type).decode(value)
-      when :bool
-        value != 0
-      else
-        raise "unhandled type in #{self}.#{__method__}: #{type.inspect}"
+      end
+
+      def json_decode_one(value, _registry)
+        return if value.nil?
+
+        value.force_encoding("utf-8") if value.encoding != Encoding::UTF_8
+        raise DecodeError, "invalid utf-8 for string" unless value.valid_encoding?
+
+        value
+      end
+
+      def json_encode_one(value, print_unknown_fields:) # rubocop:disable Lint/UnusedMethodArgument
+        value.encode("utf-8")
+      end
+
+      def default
+        return [] if repeated?
+
+        +""
       end
     end
 
-    def json_decode_one(value, registry)
-      return if value.nil?
+    class IntegerField < Field
+      def default
+        return [] if repeated?
 
-      case type
-      when :int32, :int64, :uint32, :uint64, :sint32, :sint64
+        0
+      end
+
+      def binary_decode_one(io, _message, _registry, wire_type)
+        value = BinaryEncoding.read_field_value(io, wire_type)
+        case encoding
+        when :zigzag
+          BinaryEncoding.decode_zigzag bit_length, value
+        when :varint
+          length_mask = (2**bit_length) - 1
+          negative = signed && value & (2**bit_length.pred) != 0
+          # warn negative
+          length_mask >> 1 if signed
+          if negative
+            value &= length_mask # remove sign bit
+
+            # 2's complement
+            value ^= length_mask
+            value += 1
+            # value &= length_mask
+            -value
+          else
+            value & length_mask
+          end
+        when :fixed
+          value.unpack1(binary_pack)
+        end
+      end
+
+      def binary_encode_one(value, outbuf)
+        case encoding
+        when :zigzag
+          BinaryEncoding.encode_zigzag bit_length, value, outbuf
+        when :varint
+          BinaryEncoding.encode_varint value, outbuf
+        when :fixed
+          outbuf << [value].pack(binary_pack)
+        end
+      end
+
+      def json_decode_one(value, _registry)
+        return if value.nil?
+
         case value
         when Integer
           # nothing
@@ -393,9 +456,129 @@ module Protobug
         raise DecodeError, "#{value.inspect} does not fit in 64 bits" if value && value.bit_length > 64
 
         value
-      when :fixed32, :fixed64, :sfixed32, :sfixed64
-        value
-      when :bool
+      end
+
+      def json_encode_one(value, print_unknown_fields:) # rubocop:disable Lint/UnusedMethodArgument
+        if bit_length >= 64
+          value.to_s
+        else
+          value
+        end
+      end
+
+      def validate!(value, _message)
+        raise "expected integer, got #{value.inspect}" unless value.is_a?(Integer)
+
+        if signed
+          min = -2**(bit_length - 1)
+          max = 2**(bit_length - 1)
+        else
+          min = 0
+          max = 2**bit_length
+        end
+
+        if value < min || value >= max
+          raise RangeError,
+                "#{value} does not fit into a #{self.class.name} [#{min}, #{max})"
+        end
+
+        super
+      end
+    end
+
+    # encoding: fixed, varint, zigzag
+    # bitlength: 32, 64
+    # signed: true, false
+    # EXCEPT: no unsigned zigzag
+    class Int64Field < IntegerField
+      def encoding = :varint
+      def bit_length = 64
+      def signed = true
+      def wire_type = 0
+    end
+
+    class UInt64Field < IntegerField
+      def encoding = :varint
+      def bit_length = 64
+      def signed = false
+      def wire_type = 0
+    end
+
+    class SInt64Field < IntegerField
+      def encoding = :zigzag
+      def bit_length = 64
+      def signed = true
+      def wire_type = 0
+    end
+
+    class Fixed64Field < IntegerField
+      def encoding = :fixed
+      def bit_length = 64
+      def signed = false
+      def wire_type = 1
+      def binary_pack = "Q"
+    end
+
+    class SFixed64Field < IntegerField
+      def encoding = :fixed
+      def bit_length = 64
+      def signed = true
+      def wire_type = 1
+      def binary_pack = "q"
+    end
+
+    class Int32Field < IntegerField
+      def encoding = :varint
+      def bit_length = 32
+      def signed = true
+      def wire_type = 0
+    end
+
+    class UInt32Field < IntegerField
+      def encoding = :varint
+      def bit_length = 32
+      def signed = false
+      def wire_type = 0
+    end
+
+    class SInt32Field < IntegerField
+      def encoding = :zigzag
+      def bit_length = 32
+      def signed = true
+      def wire_type = 0
+    end
+
+    class Fixed32Field < IntegerField
+      def encoding = :fixed
+      def bit_length = 32
+      def signed = false
+      def wire_type = 5
+      def binary_pack = "V"
+    end
+
+    class SFixed32Field < IntegerField
+      def encoding = :fixed
+      def bit_length = 32
+      def signed = true
+      def wire_type = 5
+      def binary_pack = "l"
+    end
+
+    class BoolField < IntegerField
+      def encoding = :varint
+      def bit_length = 64
+      def signed = false
+      def wire_type = 0
+
+      def binary_decode_one(*)
+        super != 0
+      end
+
+      def binary_encode_one(value, outbuf)
+        super(value ? 1 : 0, outbuf)
+      end
+
+      def json_decode_one(value, _registry)
         case value
         when TrueClass, FalseClass
           value
@@ -403,10 +586,80 @@ module Protobug
           true
         when "false"
           false
+        when NilClass
+          nil
         else
           raise DecodeError, "expected boolean, got #{value.inspect}"
         end
-      when :float, :double
+      end
+
+      def validate!(value, message)
+        raise "expected boolean, got #{value.inspect}" unless [true, false].include?(value)
+
+        super(value ? 1 : 0, message)
+      end
+
+      def default = false
+    end
+
+    class EnumField < Int32Field
+      def initialize(number, name, cardinality:, enum_type:, json_name: name, oneof: nil, packed: false,
+                     proto3_optional: cardinality == :optional)
+        super(number, name, type: :enum, json_name: json_name, cardinality: cardinality, oneof: oneof,
+                            enum_type: enum_type, proto3_optional: proto3_optional, packed: packed)
+      end
+
+      def binary_encode_one(value, outbuf)
+        super(value.value, outbuf)
+      end
+
+      def binary_decode_one(io, _message, registry, wire_type)
+        value = super
+        registry.fetch(enum_type).decode(value)
+      end
+
+      def json_decode_one(value, registry)
+        klass = registry.fetch(enum_type)
+        klass.decode_json_hash(value, registry: registry)
+      end
+
+      def json_encode_one(value, print_unknown_fields:) # rubocop:disable Lint/UnusedMethodArgument
+        value&.as_json
+      end
+
+      def default
+        return [] if repeated?
+
+        # TODO: enum_type.default
+        0
+      end
+
+      def validate!(value, message)
+        value = value.value if value.is_a?(Enum::InstanceMethods)
+        super
+      end
+    end
+
+    class DoubleField < Field
+      def type = :double
+      def binary_pack = "E"
+
+      def initialize(number, name, cardinality:, json_name: name, oneof: nil, packed: false,
+                     proto3_optional: cardinality == :optional)
+        super(number, name, type: type, json_name: json_name, cardinality: cardinality, oneof: oneof,
+                            proto3_optional: proto3_optional, packed: packed)
+      end
+
+      def binary_encode_one(value, outbuf)
+        outbuf << [value].pack(binary_pack)
+      end
+
+      def binary_decode_one(io, _message, _registry, wire_type)
+        value = BinaryEncoding.read_field_value(io, wire_type)
+        value.unpack1(binary_pack)
+      end
+
+      def json_decode_one(value, _registry)
         case value
         when Float, NilClass
           value
@@ -423,47 +676,9 @@ module Protobug
         else
           raise DecodeError, "expected float for #{inspect}, got #{value.inspect}"
         end
-      when :string, :bytes
-        case value
-        when String
-          if type == :bytes
-            # url decode 64
-            value.tr!("-_", "+/")
-            begin
-              value.unpack1("m").force_encoding(Encoding::BINARY)
-            rescue ArgumentError => e
-              raise DecodeError, "Invalid URL-encoded base64 #{value.inspect} for #{inspect}: #{e}"
-            end
-          elsif value.encoding != Encoding::UTF_8
-            value.force_encoding("utf-8")
-          else
-            value
-          end
-        else
-          raise DecodeError, "expected string for #{inspect}, got #{value.inspect}"
-        end
-      when :message
-        klass = registry.fetch(message_type)
-        klass.decode_json_hash(value, registry: registry)
-      when :enum
-        klass = registry.fetch(enum_type)
-        klass.decode_json_hash(value, registry: registry)
-      else
-        raise DecodeError, "unhandled type in #{self}.#{__method__}: #{inspect}"
       end
-    end
 
-    def json_encode_one(value, print_unknown_fields:)
-      case type
-      when :bytes
-        [value].pack("m0")
-      when :string
-        value.encode("utf-8")
-      when :message
-        value.as_json(print_unknown_fields: print_unknown_fields)
-      when :enum
-        value&.as_json
-      when :float, :double
+      def json_encode_one(value, print_unknown_fields:) # rubocop:disable Lint/UnusedMethodArgument
         if value.nan?
           "NaN"
         elsif (sign = value.infinite?)
@@ -475,60 +690,21 @@ module Protobug
         else
           value
         end
-      when :int64, :uint64, :sint64, :sfixed64, :fixed64
-        value.to_s
-      when :int32, :uint32, :sint32, :sfixed32, :fixed32, :bool
-        value
-      else
-        raise EncodeError, "unhandled type in #{self}.#{__method__}: #{type.inspect}"
+      end
+
+      def default
+        return [] if repeated?
+
+        0.0
       end
     end
 
-    def wire_type
-      case type
-      when :int32, :int64, :uint32, :uint64, :sint32, :sint64, :bool, :enum
-        0
-      when :fixed64, :sfixed64, :double
-        1
-      when :fixed32, :sfixed32, :float
-        5
-      when :string, :bytes, :message, :map
-        2
-      else
-        raise "unhandled type in #{self}.#{__method__}: #{type.inspect}"
-      end
+    class FloatField < DoubleField
+      def type = :float
+      def binary_pack = "e"
     end
 
-    def scalar?
-      case type
-      when :enum, :message
-        false
-      else
-        true
-      end
-    end
-
-    def json_scalar?
-      scalar? || (type == :message && %w[google.protobuf.Timestamp google.protobuf.duration].include?(message_type))
-    end
-
-    def scalar_to_text(value)
-      case type
-      when :int32, :int64
-        value.to_s
-      when :string
-        value.encode("utf-8").dump
-      when :bytes
-        value.b.dump
-      when "google.protobuf.Timestamp"
-        value.rfc3339.inspect
-      when :enum
-        value
-      when :bool
-        value.inspect
-      else
-        raise "unhandled type in #{self}.#{__method__}: #{type.inspect}"
-      end
+    class GroupField < Field
     end
   end
 end

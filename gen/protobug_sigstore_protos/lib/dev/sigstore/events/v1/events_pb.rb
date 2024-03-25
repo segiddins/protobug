@@ -67,7 +67,6 @@ module Dev
           map(
             5,
             "attributes",
-            type: :map,
             key_type: :string,
             value_type: :message,
             message_type:

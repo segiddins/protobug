@@ -15,6 +15,7 @@ RSpec.describe Protobug do
   test3 = Class.new do
     extend Protobug::Message
     optional 1, :n, type: :int32
+    optional 2, :n64, type: :int64
   end
 
   test_sint = Class.new do
@@ -51,6 +52,29 @@ RSpec.describe Protobug do
       expect(encoded).to eq("\x08\xfe\xff\xff\xff\xff\xff\xff\xff\xff\x01".b)
       decoded = test3.decode(StringIO.new(encoded), registry: nil)
       expect(decoded.n).to eq(-2)
+    end
+    msg.n = -1
+    encoded = test3.encode(msg)
+    aggregate_failures do
+      expect(encoded).to eq("\x08\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01".b)
+      decoded = test3.decode(StringIO.new(encoded), registry: nil)
+      expect(decoded.n).to eq(-1)
+    end
+
+    decoded = test3.decode(StringIO.new("\x08\x80\x80\x80\x80\x10"), registry: nil)
+    expect(decoded.n64).to eq(0)
+
+    {
+      (1 << 33) => 0,
+      (1 << 33) - 1 => -1,
+      9_223_372_036_854_775_807 => -1,
+      -9_223_372_036_854_775_807 => 1
+    }.each do |varint, expected|
+      io = StringIO.new.binmode
+      io << "\x08".b
+      encoded = Protobug::BinaryEncoding.encode_varint(varint, io)
+      io.rewind
+      expect(test3.decode(io, registry: nil).n).to eq(expected)
     end
   end
 
@@ -93,7 +117,7 @@ RSpec.describe Protobug do
     expect(io).to be_eof
   end
 
-  it "parses sint32 and sint64" do # rubocop:disable RSpec/ExampleLength
+  it "parses sint32 and sint64" do
     msg = test_sint.new
     msg.n32 = 4
     msg.n64 = -1
