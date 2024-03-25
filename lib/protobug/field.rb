@@ -145,7 +145,7 @@ module Protobug
       end
     end
 
-    def json_decode(value, message, registry)
+    def json_decode(value, message, ignore_unknown_fields, registry)
       if repeated?
         return if value.nil?
 
@@ -155,10 +155,10 @@ module Protobug
         end
 
         value.map do |v|
-          message.send(adder, json_decode_one(v, registry))
+          message.send(adder, json_decode_one(v, ignore_unknown_fields, registry))
         end
       else
-        value = json_decode_one(value, registry)
+        value = json_decode_one(value, ignore_unknown_fields, registry)
         message.send(setter, value) unless UNSET == value
       end
     end
@@ -206,9 +206,9 @@ module Protobug
         type_lookup(registry).decode(StringIO.new(value), registry: registry, **kwargs)
       end
 
-      def json_decode_one(value, registry)
+      def json_decode_one(value, ignore_unknown_fields, registry)
         klass = type_lookup(registry)
-        klass.decode_json_hash(value, registry: registry)
+        klass.decode_json_hash(value, registry: registry, ignore_unknown_fields: ignore_unknown_fields)
       end
 
       def type_lookup(registry)
@@ -270,7 +270,7 @@ module Protobug
         end
       end
 
-      def json_decode(value, message, registry)
+      def json_decode(value, message, ignore_unknown_fields, registry)
         return if value.nil?
 
         unless value.is_a?(Hash)
@@ -279,9 +279,15 @@ module Protobug
         end
 
         value.each do |k, v|
-          entry = @map_class.decode_json_hash({ "key" => k, "value" => v }, registry: registry)
+          entry = @map_class.decode_json_hash(
+            { "key" => k, "value" => v },
+            registry: registry,
+            ignore_unknown_fields: ignore_unknown_fields
+          )
           # can't use haser because default values should also be counted...
           if UNSET == entry.instance_variable_get(:@value)
+            next if ignore_unknown_fields && @map_class.fields_by_name.fetch("value").is_a?(EnumField)
+
             raise DecodeError, "nil values are not allowed in map #{name} in #{message.class}"
           end
 
@@ -322,7 +328,7 @@ module Protobug
         BinaryEncoding.read_field_value(io, wire_type)
       end
 
-      def json_decode_one(value, _registry)
+      def json_decode_one(value, _ignore_unknown_fields, _registry)
         return UNSET if value.nil?
 
         # url decode 64
@@ -372,8 +378,9 @@ module Protobug
         value
       end
 
-      def json_decode_one(value, _registry)
+      def json_decode_one(value, _ignore_unknown_fields, _registry)
         return UNSET if value.nil?
+        raise DecodeError, "expected string, got #{value.inspect}" unless value.is_a?(String)
 
         value.force_encoding("utf-8") if value.encoding != Encoding::UTF_8
         raise DecodeError, "invalid utf-8 for string" unless value.valid_encoding?
@@ -436,7 +443,7 @@ module Protobug
         end
       end
 
-      def json_decode_one(value, _registry)
+      def json_decode_one(value, _ignore_unknown_fields, _registry)
         return UNSET if value.nil?
 
         case value
@@ -463,8 +470,8 @@ module Protobug
         end
       end
 
-      def validate!(value, _message)
-        raise "expected integer for #{name}, got #{value.inspect}" unless value.is_a?(Integer)
+      def validate!(value, message)
+        raise InvalidValueError.new(message, self, value, "expected integer") unless value.is_a?(Integer)
 
         if signed
           min = -2**(bit_length - 1)
@@ -475,8 +482,7 @@ module Protobug
         end
 
         if value < min || value >= max
-          raise RangeError,
-                "#{value} does not fit into a #{self.class.name} [#{min}, #{max})"
+          raise InvalidValueError.new(message, self, value, "does not fit into [#{min}, #{max})")
         end
 
         super
@@ -570,7 +576,7 @@ module Protobug
         super(value ? 1 : 0, outbuf)
       end
 
-      def json_decode_one(value, _registry)
+      def json_decode_one(value, _ignore_unknown_fields, _registry)
         case value
         when TrueClass, FalseClass
           value
@@ -608,6 +614,29 @@ module Protobug
         @enum_type = enum_type
       end
 
+      def json_decode(value, message, ignore_unknown_fields, registry)
+        return super unless ignore_unknown_fields
+
+        if repeated?
+          return if value.nil?
+
+          unless value.is_a?(Array)
+            raise DecodeError,
+                  "expected Array for #{inspect}, got #{value.inspect}"
+          end
+
+          value.map do |v|
+            v = json_decode_one(v, ignore_unknown_fields, registry)
+            next if UNSET == v
+
+            message.send(adder, v)
+          end.tap(&:compact!)
+        else
+          value = json_decode_one(value, ignore_unknown_fields, registry)
+          message.send(setter, value) unless UNSET == value
+        end
+      end
+
       def binary_encode_one(value, outbuf)
         super(value.value, outbuf)
       end
@@ -617,13 +646,13 @@ module Protobug
         registry.fetch(enum_type).decode(value)
       end
 
-      def json_decode_one(value, registry)
+      def json_decode_one(value, ignore_unknown_fields, registry)
         klass = registry.fetch(enum_type)
-        klass.decode_json_hash(value, registry: registry)
+        klass.decode_json_hash(value, registry: registry, ignore_unknown_fields: ignore_unknown_fields)
       end
 
       def json_encode_one(value, print_unknown_fields:) # rubocop:disable Lint/UnusedMethodArgument
-        value&.as_json
+        value.as_json
       end
 
       def default
@@ -659,7 +688,7 @@ module Protobug
         value.unpack1(binary_pack)
       end
 
-      def json_decode_one(value, _registry)
+      def json_decode_one(value, _ignore_unknown_fields, _registry)
         case value
         when Float
           value

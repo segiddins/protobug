@@ -17,6 +17,3 @@ Required.Proto2.JsonInput.FloatFieldTooSmall
 Required.Proto3.JsonInput.DoubleFieldTooSmall
 Required.Proto3.JsonInput.FloatFieldTooLarge
 Required.Proto3.JsonInput.FloatFieldTooSmall
-Required.Proto3.JsonInput.TimestampJsonInputLowercaseT
-Required.Proto3.JsonInput.TimestampJsonInputLowercaseZ
-Required.Proto3.JsonInput.TimestampJsonInputMissingT

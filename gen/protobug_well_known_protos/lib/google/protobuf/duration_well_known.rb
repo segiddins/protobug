@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Google::Protobuf::Duration.class_eval do
-  def self.decode_json_hash(json, registry:)
+  def self.decode_json_hash(json, registry:, ignore_unknown_fields: false)
     return Protobug::UNSET if json.nil?
     raise Protobug::DecodeError, "expected string for #{full_name}, got #{json.inspect}" unless json.is_a? String
 
@@ -13,10 +13,11 @@ Google::Protobuf::Duration.class_eval do
     seconds = Regexp.last_match(2).to_i
     nanos = Regexp.last_match(3)&.ljust(9, "0").to_i
     validate_json_range(Protobug::DecodeError, seconds, nanos)
-    super({
+    json = {
       "seconds" => sign * seconds,
       "nanos" => sign * nanos
-    }, registry: registry)
+    }
+    super
   end
 
   def as_json(print_unknown_fields: false) # rubocop:disable Lint/UnusedMethodArgument
@@ -41,6 +42,6 @@ Google::Protobuf::Duration.class_eval do
       raise err, "seconds and nanos must have the same sign"
     end
 
-    raise RangeError if seconds < -315_576_000_000 || seconds > +315_576_000_000
+    raise err, "seconds out of range for json duration" if seconds < -315_576_000_000 || seconds > +315_576_000_000
   end
 end

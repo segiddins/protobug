@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Google::Protobuf::Value.class_eval do
-  def self.decode_json_hash(json, registry:)
+  def self.decode_json_hash(json, registry:, ignore_unknown_fields: false)
     case json
     when NilClass
       json = { "nullValue" => "NULL_VALUE" }
@@ -20,7 +20,7 @@ Google::Protobuf::Value.class_eval do
     super
   end
 
-  def as_json(print_unknown_fields: false) # rubocop:disable Lint/UnusedMethodArgument
+  def as_json(print_unknown_fields: false)
     case kind
     when :null_value
       nil
@@ -31,9 +31,9 @@ Google::Protobuf::Value.class_eval do
     when :bool_value
       bool_value
     when :struct_value
-      struct_value.as_json(print_unknown_fields: false)
+      struct_value.as_json(print_unknown_fields: print_unknown_fields)
     when :list_value
-      list_value.values.map! { _1.as_json(print_unknown_fields: false) }
+      list_value.values.map! { _1.as_json(print_unknown_fields: print_unknown_fields) }
     else
       raise Protobug::EncodeError, "unknown kind: #{kind.inspect}"
     end
@@ -41,7 +41,7 @@ Google::Protobuf::Value.class_eval do
 end
 
 Google::Protobuf::Struct.class_eval do
-  def self.decode_json_hash(json, registry:)
+  def self.decode_json_hash(json, registry:, ignore_unknown_fields: false)
     json = { "fields" => json }
     super
   end
@@ -52,7 +52,7 @@ Google::Protobuf::Struct.class_eval do
 end
 
 Google::Protobuf::ListValue.class_eval do
-  def self.decode_json_hash(json, registry:)
+  def self.decode_json_hash(json, registry:, ignore_unknown_fields: false)
     json = { "values" => json }
     super
   end
@@ -63,7 +63,7 @@ Google::Protobuf::ListValue.class_eval do
 end
 
 Google::Protobuf::NullValue.class_eval do
-  def self.decode_json_hash(json, registry:)
+  def self.decode_json_hash(json, registry:, ignore_unknown_fields: false)
     return values.fetch(0) if json.nil?
 
     super

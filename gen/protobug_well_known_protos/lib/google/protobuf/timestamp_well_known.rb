@@ -1,16 +1,27 @@
 # frozen_string_literal: true
 
 Google::Protobuf::Timestamp.class_eval do
-  def self.decode_json_hash(json, registry:)
+  def self.decode_json_hash(json, registry:, ignore_unknown_fields: false)
     return Protobug::UNSET if json.nil?
     raise Protobug::DecodeError, "expected string for #{full_name}, got #{json.inspect}" unless json.is_a? String
 
-    time = DateTime.rfc3339(json, Date::GREGORIAN).to_time
+    if /t|z/.match?(json)
+      raise Protobug::DecodeError, "json timestamp string has incorrect capitalization: #{json.inspect}"
+    elsif !json.include?("T")
+      raise Protobug::DecodeError, "json timestamp string missing T: #{json.inspect}"
+    end
+
+    begin
+      time = DateTime.rfc3339(json, Date::GREGORIAN).to_time
+    rescue Date::Error => e
+      raise Protobug::DecodeError, "json timestamp string invalid: #{json.inspect} (#{e})"
+    end
     validate_json_range(Protobug::DecodeError, time)
-    super({
+    json = {
       "seconds" => time.to_i,
       "nanos" => time.nsec
-    }, registry: registry)
+    }
+    super
   end
 
   def as_json(print_unknown_fields: false) # rubocop:disable Lint/UnusedMethodArgument

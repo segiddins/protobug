@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Google::Protobuf::Any.class_eval do
-  def self.decode_json_hash(json, registry:)
+  def self.decode_json_hash(json, registry:, ignore_unknown_fields: false)
     raise Protobug::DecodeError, "expected hash, got #{json.inspect}" unless json.is_a? Hash
 
     json = json.dup
@@ -16,7 +16,7 @@ Google::Protobuf::Any.class_eval do
     json = json["value"] if json.key?("value") && json.size == 1
 
     type = registry.fetch(type_url.delete_prefix("type.googleapis.com/"))
-    v = type.decode_json_hash(json, registry: registry)
+    v = type.decode_json_hash(json, registry: registry, ignore_unknown_fields: ignore_unknown_fields)
     json = {
       "type_url" => type_url,
       "value" => [type.encode(v)].pack("m0")

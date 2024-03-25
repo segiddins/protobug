@@ -52,14 +52,16 @@ module Protobug
       super
     end
 
-    def decode_json_hash(json, registry: nil)
+    def decode_json_hash(json, registry: nil, ignore_unknown_fields: false)
       _ = registry
+      _ = ignore_unknown_fields
 
       case json
       when NilClass
         UNSET
       when String
-        values[json] || raise(DecodeError, "unknown value: #{json.inspect}")
+        values[json] || (ignore_unknown_fields && UNSET) ||
+          raise(DecodeError, "unknown value: #{json.inspect}")
       when Integer
         values[json] || new("<unknown:#{json}>", json)
       else

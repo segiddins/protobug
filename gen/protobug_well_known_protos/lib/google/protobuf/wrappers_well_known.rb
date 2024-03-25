@@ -9,7 +9,7 @@ Google::Protobuf.module_eval do
     .each do |const|
     klass = const_get(const)
     klass.class_eval do
-      def self.decode_json_hash(json, registry:)
+      def self.decode_json_hash(json, registry:, ignore_unknown_fields: false)
         return Protobug::UNSET if json.nil?
 
         json = { "value" => json }

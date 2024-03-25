@@ -82,15 +82,19 @@ module Protobug
       reserved_ranges << range
     end
 
-    def decode_json(json, registry:)
+    def decode_json(json, registry:, ignore_unknown_fields: false)
       require "json"
-      hash = JSON.parse(json, allow_blank: false, create_additions: false, allow_nan: false, allow_infinity: false)
+      hash = begin
+        JSON.parse(json, allow_blank: false, create_additions: false, allow_nan: false, allow_infinity: false)
+      rescue JSON::ParserError => e
+        raise DecodeError, "JSON failed to parse: #{e.message}"
+      end
       raise DecodeError, "expected hash, got #{hash.inspect}" unless hash.is_a? Hash
 
-      decode_json_hash(hash, registry: registry)
+      decode_json_hash(hash, registry: registry, ignore_unknown_fields: ignore_unknown_fields)
     end
 
-    def decode_json_hash(json, registry:)
+    def decode_json_hash(json, registry:, ignore_unknown_fields: false)
       return UNSET if json.nil?
       raise DecodeError, "expected hash for #{self} (#{full_name}), got #{json.inspect}" unless json.is_a? Hash
 
@@ -98,13 +102,17 @@ module Protobug
 
       json.each do |key, value|
         field = fields_by_json_name[key]
-        raise(UnknownFieldError, "unknown field #{key.inspect} in #{full_name}") unless field
+        unless field
+          next if ignore_unknown_fields
+
+          raise(UnknownFieldError, "unknown field #{key.inspect} in #{full_name}")
+        end
 
         if field.oneof && message.send(field.oneof) && !value.nil?
           raise DecodeError, "multiple oneof fields set in #{full_name}: #{message.send(field.oneof)} and #{field.name}"
         end
 
-        field.json_decode(value, message, registry)
+        field.json_decode(value, message, ignore_unknown_fields, registry)
       end
 
       message
@@ -328,6 +336,8 @@ module Protobug
       def to_json(print_unknown_fields: false)
         require "json"
         JSON.generate(as_json(print_unknown_fields: print_unknown_fields), allow_infinity: true)
+      rescue JSON::GeneratorError => e
+        raise EncodeError, "failed to generate JSON: #{e}"
       end
     end
   end
