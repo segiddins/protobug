@@ -21,6 +21,7 @@ module Protobug
       base.class_eval do
         @full_name = nil
         @fields_by_number = {}
+        @fields_by_json_name = {}
         @fields_by_name = {}
         @reserved_ranges = []
         @oneofs = {}
@@ -30,11 +31,12 @@ module Protobug
     end
 
     attr_accessor :full_name
-    attr_reader :fields_by_number, :fields_by_name, :reserved_ranges, :oneofs
+    attr_reader :fields_by_number, :fields_by_name, :fields_by_json_name, :reserved_ranges, :oneofs
 
     def freeze
       fields_by_number.freeze
       fields_by_name.freeze
+      fields_by_json_name.freeze
       full_name.freeze
       reserved_ranges.freeze
       oneofs.each_value(&:freeze)
@@ -94,10 +96,7 @@ module Protobug
       message = new
 
       json.each do |key, value|
-        field = fields_by_name.values.find do |f|
-          f.json_name == key
-        end
-        field ||= fields_by_name[key]
+        field = fields_by_json_name[key]
         raise(UnknownFieldError, "unknown field #{key.inspect} in #{full_name}") unless field
 
         if field.oneof && message.send(field.oneof) && !value.nil?
@@ -159,49 +158,50 @@ module Protobug
     end
 
     def field(number, name, type:, **kwargs)
-      field = case type
-              when :message
-                Field::MessageField.new(number, name, **kwargs)
-              when :enum
-                Field::EnumField.new(number, name, **kwargs)
-              when :bytes
-                Field::BytesField.new(number, name, **kwargs)
-              when :string
-                Field::StringField.new(number, name, **kwargs)
-              when :map
-                kwargs.delete(:cardinality) if kwargs[:cardinality] == :repeated
-                Field::MapField.new(number, name, **kwargs)
-              when :int64
-                Field::Int64Field.new(number, name, **kwargs)
-              when :uint64
-                Field::UInt64Field.new(number, name, **kwargs)
-              when :sint64
-                Field::SInt64Field.new(number, name, **kwargs)
-              when :fixed64
-                Field::Fixed64Field.new(number, name, **kwargs)
-              when :sfixed64
-                Field::SFixed64Field.new(number, name, **kwargs)
-              when :int32
-                Field::Int32Field.new(number, name, **kwargs)
-              when :uint32
-                Field::UInt32Field.new(number, name, **kwargs)
-              when :sint32
-                Field::SInt32Field.new(number, name, **kwargs)
-              when :fixed32
-                Field::Fixed32Field.new(number, name, **kwargs)
-              when :sfixed32
-                Field::SFixed32Field.new(number, name, **kwargs)
-              when :bool
-                Field::BoolField.new(number, name, **kwargs)
-              when :float
-                Field::FloatField.new(number, name, **kwargs)
-              when :double
-                Field::DoubleField.new(number, name, **kwargs)
-              when :group
-                Field::GroupField.new(number, name, **kwargs)
-              else
-                raise ArgumentError, "Unknown field type #{type.inspect}"
-              end.freeze
+      field =
+        case type
+        when :message
+          Field::MessageField
+        when :enum
+          Field::EnumField
+        when :bytes
+          Field::BytesField
+        when :string
+          Field::StringField
+        when :map
+          kwargs.delete(:cardinality) if kwargs[:cardinality] == :repeated
+          Field::MapField
+        when :int64
+          Field::Int64Field
+        when :uint64
+          Field::UInt64Field
+        when :sint64
+          Field::SInt64Field
+        when :fixed64
+          Field::Fixed64Field
+        when :sfixed64
+          Field::SFixed64Field
+        when :int32
+          Field::Int32Field
+        when :uint32
+          Field::UInt32Field
+        when :sint32
+          Field::SInt32Field
+        when :fixed32
+          Field::Fixed32Field
+        when :sfixed32
+          Field::SFixed32Field
+        when :bool
+          Field::BoolField
+        when :float
+          Field::FloatField
+        when :double
+          Field::DoubleField
+        when :group
+          Field::GroupField
+        else
+          raise ArgumentError, "Unknown field type #{type.inspect}"
+        end.new(number, name, **kwargs).freeze
 
       raise DefinitionError, "duplicate field number #{number}" if fields_by_number[number]
 
@@ -209,6 +209,9 @@ module Protobug
       raise DefinitionError, "duplicate field name #{name}" if fields_by_name[name]
 
       fields_by_name[name] = field
+
+      fields_by_json_name[name] = field
+      fields_by_json_name[field.json_name] = field
 
       define_method(field.setter) do |value|
         return instance_variable_set(field.ivar, UNSET) if value.nil? && field.optional? && field.proto3_optional?
