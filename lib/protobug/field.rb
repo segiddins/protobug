@@ -4,13 +4,11 @@ require_relative "binary_encoding"
 
 module Protobug
   class Field
-    attr_accessor :number, :name, :json_name, :cardinality, :oneof, :ivar, :setter, :message_type, :enum_type,
-                  :adder, :key_type, :value_type, :haser, :clearer
+    attr_accessor :number, :name, :json_name, :cardinality, :oneof, :ivar, :setter,
+                  :adder, :haser, :clearer
 
-    def initialize(number, name, json_name: nil, cardinality: :optional, oneof: nil, message_type: nil,
-                   enum_type: nil, packed: false, key_type: nil, value_type: nil, group_type: nil,
+    def initialize(number, name, json_name: nil, cardinality: :optional, oneof: nil, packed: false,
                    proto3_optional: cardinality == :optional)
-      _ = group_type
       @number = number
       @name = name.to_sym
       @json_name = json_name || name.to_s
@@ -21,13 +19,8 @@ module Protobug
       @ivar = :"@#{name}"
       @clearer = :"clear_#{name}"
       @haser = :"#{name}?"
-      @message_type = message_type
-      @enum_type = enum_type
       @packed = packed
       @proto3_optional = proto3_optional
-      @key_type = key_type
-      @value_type = value_type
-      @map_type = nil
     end
 
     def pretty_print(pp)
@@ -182,8 +175,6 @@ module Protobug
     private
 
     def binary_encode_packed(value, outbuf)
-      return if value.empty?
-
       BinaryEncoding.encode_varint (number << 3) | 2, outbuf
 
       BinaryEncoding.encode_length(value.each_with_object("".b) do |v, buf|
@@ -192,10 +183,13 @@ module Protobug
     end
 
     class MessageField < Field
+      attr_reader :message_type
+
       def initialize(number, name, cardinality:, message_type:, json_name: name, oneof: nil,
                      proto3_optional: cardinality == :optional)
         super(number, name, json_name: json_name, cardinality: cardinality, oneof: oneof,
-                            message_type: message_type, proto3_optional: proto3_optional)
+                            proto3_optional: proto3_optional)
+        @message_type = message_type
       end
 
       def binary_encode_one(value, outbuf)
@@ -242,9 +236,7 @@ module Protobug
           self, number, name,
           cardinality: repeated,
           json_name: json_name,
-          oneof: oneof,
-          enum_type: enum_type, message_type: message_type,
-          key_type: key_type, value_type: value_type
+          oneof: oneof
         )
 
         @map_class = Class.new do
@@ -600,10 +592,13 @@ module Protobug
     end
 
     class EnumField < Int32Field
+      attr_reader :enum_type
+
       def initialize(number, name, cardinality:, enum_type:, json_name: name, oneof: nil, packed: false,
                      proto3_optional: cardinality == :optional)
         super(number, name, json_name: json_name, cardinality: cardinality, oneof: oneof,
-                            enum_type: enum_type, proto3_optional: proto3_optional, packed: packed)
+                            proto3_optional: proto3_optional, packed: packed)
+        @enum_type = enum_type
       end
 
       def binary_encode_one(value, outbuf)
@@ -704,6 +699,10 @@ module Protobug
     end
 
     class GroupField < Field
+      def initialize(*args, group_type:, **kwargs)
+        _ = group_type
+        super(*args, **kwargs)
+      end
     end
   end
 end

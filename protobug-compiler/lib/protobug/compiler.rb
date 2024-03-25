@@ -113,7 +113,10 @@ module Protobug
           methods = []
 
           fields_by_name.each do |name, field|
-            next unless /\Agoogle\.protobuf\.([^.]*Descriptor[^.]*)\z/ =~ field.message_type
+            unless field.is_a?(Field::MessageField) &&
+                   /\Agoogle\.protobuf\.([^.]*Descriptor[^.]*)\z/ =~ field.message_type
+              next
+            end
             raise "expected #{self}.#{name} to be repeated" unless field.repeated?
 
             message_name = Regexp.last_match(1)
