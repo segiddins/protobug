@@ -1,6 +1,22 @@
 # frozen_string_literal: true
 
 Google::Protobuf::Any.class_eval do
+  def self.pack(msg)
+    any = new
+    any.pack(msg)
+    any
+  end
+
+  def pack(msg)
+    self.type_url = "type.googleapis.com/#{msg.class.full_name}"
+    self.value = msg.to_proto
+  end
+
+  def unpack(registry)
+    type = registry.fetch(type_url.delete_prefix("type.googleapis.com/"))
+    type.decode(value, registry: registry)
+  end
+
   def self.decode_json_hash(json, registry:, ignore_unknown_fields: false)
     raise Protobug::DecodeError, "expected hash, got #{json.inspect}" unless json.is_a? Hash
 
