@@ -2,6 +2,7 @@
 
 Google::Protobuf::Timestamp.class_eval do
   def self.decode_json_hash(json, registry:)
+    return Protobug::UNSET if json.nil?
     raise Protobug::DecodeError, "expected string for #{full_name}, got #{json.inspect}" unless json.is_a? String
 
     time = DateTime.rfc3339(json, Date::GREGORIAN).to_time

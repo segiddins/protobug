@@ -91,6 +91,7 @@ module Protobug
     end
 
     def decode_json_hash(json, registry:)
+      return UNSET if json.nil?
       raise DecodeError, "expected hash for #{self} (#{full_name}), got #{json.inspect}" unless json.is_a? Hash
 
       message = new

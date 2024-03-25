@@ -47,7 +47,7 @@ Google::Protobuf::Struct.class_eval do
   end
 
   def as_json(print_unknown_fields: false)
-    fields.transform_values { _1.as_json(print_unknown_fields: print_unknown_fields) }
+    fields.transform_values { _1&.as_json(print_unknown_fields: print_unknown_fields) }
   end
 end
 

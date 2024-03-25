@@ -57,7 +57,7 @@ module Protobug
 
       case json
       when NilClass
-        nil
+        UNSET
       when String
         values[json] || raise(DecodeError, "unknown value: #{json.inspect}")
       when Integer

@@ -158,11 +158,14 @@ module Protobug
           message.send(adder, json_decode_one(v, registry))
         end
       else
-        message.send(setter, json_decode_one(value, registry))
+        value = json_decode_one(value, registry)
+        message.send(setter, value) unless UNSET == value
       end
     end
 
-    def validate!(_value, message)
+    def validate!(value, message)
+      raise DecodeError, "nil is invalid for #{name} in #{message}" if UNSET == value
+
       return unless oneof
 
       message.class.oneofs[oneof].each do |f|
@@ -204,8 +207,6 @@ module Protobug
       end
 
       def json_decode_one(value, registry)
-        return if value.nil?
-
         klass = type_lookup(registry)
         klass.decode_json_hash(value, registry: registry)
       end
@@ -234,7 +235,7 @@ module Protobug
                      enum_type: nil, message_type: nil)
         SUPER_INITIALIZE.bind_call(
           self, number, name,
-          cardinality: repeated,
+          cardinality: :repeated,
           json_name: json_name,
           oneof: oneof
         )
@@ -243,7 +244,8 @@ module Protobug
           extend Protobug::Message
 
           optional(1, "key", type: key_type, proto3_optional: false)
-          value_type_kwargs = { enum_type: enum_type, message_type: message_type }.compact
+          value_type_kwargs = { enum_type: enum_type, message_type: message_type }
+          value_type_kwargs.compact!
           optional(2, "value", type: value_type, **value_type_kwargs, proto3_optional: false)
         end
       end
@@ -278,6 +280,11 @@ module Protobug
 
         value.each do |k, v|
           entry = @map_class.decode_json_hash({ "key" => k, "value" => v }, registry: registry)
+          # can't use haser because default values should also be counted...
+          if UNSET == entry.instance_variable_get(:@value)
+            raise DecodeError, "nil values are not allowed in map #{name} in #{message.class}"
+          end
+
           message.send(adder, entry)
         end
       end
@@ -286,14 +293,14 @@ module Protobug
 
       def define_adder(message)
         field = self
-        message.define_method(adder) do |value|
+        message.define_method(adder) do |msg|
           existing = instance_variable_get(field.ivar)
           if UNSET == existing
             existing = field.default
             instance_variable_set(field.ivar, existing)
           end
 
-          existing[value.key] = value.value
+          existing[msg.key] = msg.value
         end
       end
     end
@@ -316,7 +323,7 @@ module Protobug
       end
 
       def json_decode_one(value, _registry)
-        return if value.nil?
+        return UNSET if value.nil?
 
         # url decode 64
         value.tr!("-_", "+/")
@@ -366,7 +373,7 @@ module Protobug
       end
 
       def json_decode_one(value, _registry)
-        return if value.nil?
+        return UNSET if value.nil?
 
         value.force_encoding("utf-8") if value.encoding != Encoding::UTF_8
         raise DecodeError, "invalid utf-8 for string" unless value.valid_encoding?
@@ -430,7 +437,7 @@ module Protobug
       end
 
       def json_decode_one(value, _registry)
-        return if value.nil?
+        return UNSET if value.nil?
 
         case value
         when Integer
@@ -457,7 +464,7 @@ module Protobug
       end
 
       def validate!(value, _message)
-        raise "expected integer, got #{value.inspect}" unless value.is_a?(Integer)
+        raise "expected integer for #{name}, got #{value.inspect}" unless value.is_a?(Integer)
 
         if signed
           min = -2**(bit_length - 1)
@@ -572,7 +579,7 @@ module Protobug
         when "false"
           false
         when NilClass
-          nil
+          UNSET
         else
           raise DecodeError, "expected boolean, got #{value.inspect}"
         end
@@ -654,7 +661,7 @@ module Protobug
 
       def json_decode_one(value, _registry)
         case value
-        when Float, NilClass
+        when Float
           value
         when Integer
           value.to_f
@@ -666,6 +673,8 @@ module Protobug
           Float::NAN
         when /\A-?\d+\z/
           Float(value)
+        when NilClass
+          UNSET
         else
           raise DecodeError, "expected float for #{inspect}, got #{value.inspect}"
         end
