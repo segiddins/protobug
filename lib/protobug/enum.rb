@@ -58,8 +58,6 @@ module Protobug
       case json
       when NilClass
         nil
-      when UNSET
-        default
       when String
         values[json] || raise(DecodeError, "unknown value: #{json.inspect}")
       when Integer
@@ -71,8 +69,6 @@ module Protobug
 
     def decode(value)
       raise "expected Integer, got #{value.inspect}" unless value.is_a? Integer
-
-      value = [value].pack("l>").unpack1("l>")
 
       # TODO: use fetch instead of []
       values[value] || new("<unknown:#{value}>", value)
