@@ -172,27 +172,27 @@ module Protobug
                 kwargs.delete(:cardinality) if kwargs[:cardinality] == :repeated
                 Field::MapField.new(number, name, **kwargs)
               when :int64
-                Field::Int64Field.new(number, name, type: type, **kwargs)
+                Field::Int64Field.new(number, name, **kwargs)
               when :uint64
-                Field::UInt64Field.new(number, name, type: type, **kwargs)
+                Field::UInt64Field.new(number, name, **kwargs)
               when :sint64
-                Field::SInt64Field.new(number, name, type: type, **kwargs)
+                Field::SInt64Field.new(number, name, **kwargs)
               when :fixed64
-                Field::Fixed64Field.new(number, name, type: type, **kwargs)
+                Field::Fixed64Field.new(number, name, **kwargs)
               when :sfixed64
-                Field::SFixed64Field.new(number, name, type: type, **kwargs)
+                Field::SFixed64Field.new(number, name, **kwargs)
               when :int32
-                Field::Int32Field.new(number, name, type: type, **kwargs)
+                Field::Int32Field.new(number, name, **kwargs)
               when :uint32
-                Field::UInt32Field.new(number, name, type: type, **kwargs)
+                Field::UInt32Field.new(number, name, **kwargs)
               when :sint32
-                Field::SInt32Field.new(number, name, type: type, **kwargs)
+                Field::SInt32Field.new(number, name, **kwargs)
               when :fixed32
-                Field::Fixed32Field.new(number, name, type: type, **kwargs)
+                Field::Fixed32Field.new(number, name, **kwargs)
               when :sfixed32
-                Field::SFixed32Field.new(number, name, type: type, **kwargs)
+                Field::SFixed32Field.new(number, name, **kwargs)
               when :bool
-                Field::BoolField.new(number, name, type: type, **kwargs)
+                Field::BoolField.new(number, name, **kwargs)
               when :float
                 Field::FloatField.new(number, name, **kwargs)
               when :double
@@ -239,31 +239,7 @@ module Protobug
         instance_variable_set(field.ivar, UNSET)
       end
 
-      if field.repeated?
-        define_method(field.adder) do |value|
-          field.validate!(value, self)
-
-          existing = instance_variable_get(field.ivar)
-          if UNSET == existing
-            existing = []
-            instance_variable_set(field.ivar, existing)
-          end
-
-          existing << value
-        end
-      end
-
-      if field.map?
-        define_method(field.adder) do |value|
-          existing = instance_variable_get(field.ivar)
-          if UNSET == existing
-            existing = {}
-            instance_variable_set(field.ivar, existing)
-          end
-
-          existing[value.key] = value.value
-        end
-      end
+      field.define_adder(self) if field.repeated?
 
       return unless field.oneof
 

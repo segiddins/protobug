@@ -4,28 +4,20 @@ require_relative "binary_encoding"
 
 module Protobug
   class Field
-    attr_accessor :number, :name, :type, :json_name, :cardinality, :oneof, :ivar, :setter, :message_type, :enum_type,
+    attr_accessor :number, :name, :json_name, :cardinality, :oneof, :ivar, :setter, :message_type, :enum_type,
                   :adder, :key_type, :value_type, :haser, :clearer
 
-    def initialize(number, name, type: nil, json_name: nil, cardinality: :optional, oneof: nil, message_type: nil,
+    def initialize(number, name, json_name: nil, cardinality: :optional, oneof: nil, message_type: nil,
                    enum_type: nil, packed: false, key_type: nil, value_type: nil, group_type: nil,
                    proto3_optional: cardinality == :optional)
-      # rubocop:disable Style/DoubleNegation
-      raise "message_type only allowed for message fields" if !!message_type ^ type == :message
-      raise "enum_type only allowed for enum fields" if !!enum_type ^ type == :enum
-      raise "key_type only allowed for map fields" if !!key_type ^ type == :map
-      raise "value_type only allowed for map fields" if !!value_type ^ type == :map
-      raise "group_type only allowed for group fields" if !!group_type ^ type == :group
-      # rubocop:enable Style/DoubleNegation
-
+      _ = group_type
       @number = number
       @name = name.to_sym
-      @type = type
       @json_name = json_name || name.to_s
       @cardinality = cardinality || raise(ArgumentError, "cardinality is required")
       @oneof = oneof
       @setter = :"#{name}="
-      @adder = :"add_#{name}" if repeated? || map?
+      @adder = :"add_#{name}" if repeated?
       @ivar = :"@#{name}"
       @clearer = :"clear_#{name}"
       @haser = :"#{name}?"
@@ -36,16 +28,6 @@ module Protobug
       @key_type = key_type
       @value_type = value_type
       @map_type = nil
-
-      return unless map?
-
-      @map_type = Class.new do
-        extend Protobug::Message
-
-        optional(1, "key", type: key_type, proto3_optional: false)
-        value_type_kwargs = { enum_type: enum_type, message_type: message_type }.compact
-        optional(2, "value", type: value_type, **value_type_kwargs, proto3_optional: false)
-      end
     end
 
     def pretty_print(pp)
@@ -54,8 +36,6 @@ module Protobug
         pp.breakable(", ")
         pp.text(@name.inspect)
         pp.breakable(", ")
-        pp.text("type: ")
-        pp.pp @type
         if json_name != name.name
           pp.breakable(", ")
           pp.text("json_name: ")
@@ -88,8 +68,19 @@ module Protobug
       @proto3_optional
     end
 
-    def map?
-      type == :map
+    def define_adder(message)
+      field = self
+      message.define_method(adder) do |value|
+        field.validate!(value, self)
+
+        existing = instance_variable_get(field.ivar)
+        if UNSET == existing
+          existing = field.default
+          instance_variable_set(field.ivar, existing)
+        end
+
+        existing << value
+      end
     end
 
     def to_text(value)
@@ -106,15 +97,7 @@ module Protobug
     end
 
     def binary_encode(value, outbuf)
-      if map?
-        value.each do |k, v|
-          entry = @map_type.new
-          entry.key = k
-          entry.value = v
-          BinaryEncoding.encode_varint (number << 3) | wire_type, outbuf
-          BinaryEncoding.encode_length @map_type.encode(entry), outbuf
-        end
-      elsif repeated?
+      if repeated?
         if packed?
           binary_encode_packed(value, outbuf)
         else
@@ -145,12 +128,7 @@ module Protobug
     end
 
     def json_encode(value, print_unknown_fields:)
-      if map?
-        value.to_h do |k, v|
-          value = @map_type.fields_by_name["value"].json_encode(v, print_unknown_fields: print_unknown_fields)
-          [json_key_encode(k), value]
-        end
-      elsif repeated?
+      if repeated?
         value.map { |v| json_encode_one(v, print_unknown_fields: print_unknown_fields) }
       elsif (!optional? || !proto3_optional?) && !oneof && default == value
         # omit
@@ -175,19 +153,7 @@ module Protobug
     end
 
     def json_decode(value, message, registry)
-      if map?
-        return if value.nil?
-
-        unless value.is_a?(Hash)
-          raise DecodeError,
-                "expected Hash for #{inspect}, got #{value.inspect}"
-        end
-
-        value.each do |k, v|
-          entry = @map_type.decode_json_hash({ "key" => k, "value" => v }, registry: registry)
-          message.send(adder, entry)
-        end
-      elsif repeated?
+      if repeated?
         return if value.nil?
 
         unless value.is_a?(Array)
@@ -225,25 +191,10 @@ module Protobug
       end, outbuf)
     end
 
-    def wire_type
-      case type
-      when :int32, :int64, :uint32, :uint64, :sint32, :sint64, :bool, :enum
-        0
-      when :fixed64, :sfixed64, :double
-        1
-      when :fixed32, :sfixed32, :float
-        5
-      when :string, :bytes, :message, :map
-        2
-      else
-        raise "unhandled type in #{self}.#{__method__}: #{type.inspect}"
-      end
-    end
-
     class MessageField < Field
       def initialize(number, name, cardinality:, message_type:, json_name: name, oneof: nil,
                      proto3_optional: cardinality == :optional)
-        super(number, name, type: :message, json_name: json_name, cardinality: cardinality, oneof: oneof,
+        super(number, name, json_name: json_name, cardinality: cardinality, oneof: oneof,
                             message_type: message_type, proto3_optional: proto3_optional)
       end
 
@@ -279,6 +230,8 @@ module Protobug
         # TODO: message_type.default
         nil
       end
+
+      def wire_type = 2
     end
 
     class MapField < MessageField
@@ -288,7 +241,7 @@ module Protobug
         SUPER_INITIALIZE.bind_call(
           self, number, name,
           cardinality: repeated,
-          type: :map, json_name: json_name,
+          json_name: json_name,
           oneof: oneof,
           enum_type: enum_type, message_type: message_type,
           key_type: key_type, value_type: value_type
@@ -307,7 +260,50 @@ module Protobug
       def default = {}
       def repeated? = true
 
+      def binary_encode(value, outbuf)
+        value.each_with_object(@map_class.new) do |(k, v), entry|
+          entry.key = k
+          entry.value = v
+          BinaryEncoding.encode_varint (number << 3) | wire_type, outbuf
+          BinaryEncoding.encode_length @map_class.encode(entry), outbuf
+        end
+      end
+
+      def json_encode(value, print_unknown_fields:)
+        value.to_h do |k, v|
+          value = @map_class.fields_by_name["value"].json_encode(v, print_unknown_fields: print_unknown_fields)
+          [json_key_encode(k), value]
+        end
+      end
+
+      def json_decode(value, message, registry)
+        return if value.nil?
+
+        unless value.is_a?(Hash)
+          raise DecodeError,
+                "expected Hash for #{inspect}, got #{value.inspect}"
+        end
+
+        value.each do |k, v|
+          entry = @map_class.decode_json_hash({ "key" => k, "value" => v }, registry: registry)
+          message.send(adder, entry)
+        end
+      end
+
       def type_lookup(_registry) = @map_class
+
+      def define_adder(message)
+        field = self
+        message.define_method(adder) do |value|
+          existing = instance_variable_get(field.ivar)
+          if UNSET == existing
+            existing = field.default
+            instance_variable_set(field.ivar, existing)
+          end
+
+          existing[value.key] = value.value
+        end
+      end
     end
 
     class BytesField < Field
@@ -315,7 +311,7 @@ module Protobug
 
       def initialize(number, name, cardinality:, json_name: name, oneof: nil,
                      proto3_optional: cardinality == :optional)
-        super(number, name, type: self.class.type, json_name: json_name, cardinality: cardinality, oneof: oneof,
+        super(number, name, json_name: json_name, cardinality: cardinality, oneof: oneof,
                             proto3_optional: proto3_optional)
       end
 
@@ -350,6 +346,8 @@ module Protobug
 
         "".b
       end
+
+      def wire_type = 2
     end
 
     class StringField < BytesField
@@ -564,12 +562,7 @@ module Protobug
       def binary_pack = "l"
     end
 
-    class BoolField < IntegerField
-      def encoding = :varint
-      def bit_length = 64
-      def signed = false
-      def wire_type = 0
-
+    class BoolField < UInt64Field
       def binary_decode_one(*)
         super != 0
       end
@@ -599,13 +592,17 @@ module Protobug
         super(value ? 1 : 0, message)
       end
 
-      def default = false
+      def default
+        return [] if repeated?
+
+        false
+      end
     end
 
     class EnumField < Int32Field
       def initialize(number, name, cardinality:, enum_type:, json_name: name, oneof: nil, packed: false,
                      proto3_optional: cardinality == :optional)
-        super(number, name, type: :enum, json_name: json_name, cardinality: cardinality, oneof: oneof,
+        super(number, name, json_name: json_name, cardinality: cardinality, oneof: oneof,
                             enum_type: enum_type, proto3_optional: proto3_optional, packed: packed)
       end
 
@@ -643,10 +640,11 @@ module Protobug
     class DoubleField < Field
       def type = :double
       def binary_pack = "E"
+      def wire_type = 1
 
       def initialize(number, name, cardinality:, json_name: name, oneof: nil, packed: false,
                      proto3_optional: cardinality == :optional)
-        super(number, name, type: type, json_name: json_name, cardinality: cardinality, oneof: oneof,
+        super(number, name, json_name: json_name, cardinality: cardinality, oneof: oneof,
                             proto3_optional: proto3_optional, packed: packed)
       end
 
@@ -702,6 +700,7 @@ module Protobug
     class FloatField < DoubleField
       def type = :float
       def binary_pack = "e"
+      def wire_type = 5
     end
 
     class GroupField < Field
