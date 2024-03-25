@@ -118,10 +118,9 @@ class ProtoGem < Rake::FileTask
 
       spec.required_ruby_version = ">= 3.0.0"
       spec.metadata["rubygems_mfa_required"] = "true"
-      spec.files << "lib/protobug_#{name}.rb"
+      spec.files += ["lib/protobug_#{name}.rb"]
       spec.require_paths = ["lib"]
       spec.add_runtime_dependency "protobug"
-      prerequisite_tasks.grep(self.class).each { spec.add_runtime_dependency "protobug_#{_1.name}" }
     end
   end
 
@@ -240,7 +239,8 @@ def proto_gem(name, source_repo, deps: [])
   end
   gemspec = File.join(File.dirname(task.lib), "protobug_#{name}.gemspec")
   file gemspec => rb do |t|
-    File.write(t.name, task.gemspec.to_ruby)
+    task.prerequisite_tasks.grep(ProtoGem).each { task.gemspec.add_runtime_dependency "protobug_#{_1.name}" }
+    File.write(t.name, task.gemspec.to_ruby.sub!(/^  s\.date\ =.+/, ""))
   end
   task.inputs.each do |i|
     file i => source_repo
@@ -282,7 +282,7 @@ proto_gem :well_known_protos, :protobuf, deps: [] do |task|
     well_known = pb.pathmap("%{_pb.rb$,_well_known.rb}p")
     next unless File.file?(well_known)
 
-    task.gemspec.files << well_known
+    task.gemspec.files += [well_known.delete_prefix("gen/protobug_#{task.name}/")]
 
     task.enhance([well_known]) do |_t|
       File.open(pb, "a") do |f|

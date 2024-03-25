@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.metadata = { "rubygems_mfa_required" => "true" } if s.respond_to? :metadata=
   s.require_paths = ["lib".freeze]
   s.authors = ["Samuel Giddins".freeze]
-  s.date = "2024-03-24"
+
   s.email = ["segiddins@segiddins.me".freeze]
   s.files = ["lib/google/api/field_behavior_pb.rb".freeze, "lib/protobug_googleapis_field_behavior_protos.rb".freeze]
   s.required_ruby_version = Gem::Requirement.new(">= 3.0.0".freeze)
