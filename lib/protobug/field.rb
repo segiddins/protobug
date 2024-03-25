@@ -433,7 +433,7 @@ module Protobug
         when :varint
           BinaryEncoding.encode_varint value, outbuf
         when :fixed
-          outbuf << [value].pack(binary_pack)
+          [value].pack(binary_pack, buffer: outbuf)
         end
       end
 
@@ -649,7 +649,7 @@ module Protobug
       end
 
       def binary_encode_one(value, outbuf)
-        outbuf << [value].pack(binary_pack)
+        [value].pack(binary_pack, buffer: outbuf)
       end
 
       def binary_decode_one(io, _message, _registry, wire_type)

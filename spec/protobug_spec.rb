@@ -70,11 +70,9 @@ RSpec.describe Protobug do
       9_223_372_036_854_775_807 => -1,
       -9_223_372_036_854_775_807 => 1
     }.each do |varint, expected|
-      io = StringIO.new.binmode
-      io << "\x08".b
+      io = "\x08".b
       encoded = Protobug::BinaryEncoding.encode_varint(varint, io)
-      io.rewind
-      expect(test3.decode(io, registry: nil).n).to eq(expected)
+      expect(test3.decode(StringIO.new(io), registry: nil).n).to eq(expected)
     end
   end
 

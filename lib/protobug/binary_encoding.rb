@@ -22,7 +22,7 @@ module Protobug
           break
         end
       end
-      outbuf << out.pack("c*")
+      out.pack("c*", buffer: outbuf)
     end
 
     def encode_zigzag(size, value, outbuf)
