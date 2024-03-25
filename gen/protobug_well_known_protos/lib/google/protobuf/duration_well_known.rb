@@ -12,7 +12,7 @@ Google::Protobuf::Duration.class_eval do
     sign = Regexp.last_match(1) ? -1 : 1
     seconds = Regexp.last_match(2).to_i
     nanos = Regexp.last_match(3)&.ljust(9, "0").to_i
-    validate_json_range(seconds, nanos)
+    validate_json_range(Protobug::DecodeError, seconds, nanos)
     super({
       "seconds" => sign * seconds,
       "nanos" => sign * nanos
@@ -23,7 +23,7 @@ Google::Protobuf::Duration.class_eval do
     seconds = self.seconds
     nanos = self.nanos
 
-    self.class.validate_json_range(seconds, nanos)
+    self.class.validate_json_range(Protobug::EncodeError, seconds, nanos)
 
     sign = seconds.negative? ? "-" : ""
     sign = "-" if seconds.zero? && nanos.negative?
@@ -36,9 +36,9 @@ Google::Protobuf::Duration.class_eval do
     "#{sign}#{seconds}#{nanos_s}s"
   end
 
-  def self.validate_json_range(seconds, nanos)
+  def self.validate_json_range(err, seconds, nanos)
     if seconds != 0 && nanos != 0 && (seconds.negative? ^ nanos.negative?)
-      raise Protobug::EncodeError, "seconds and nanos must have the same sign"
+      raise err, "seconds and nanos must have the same sign"
     end
 
     raise RangeError if seconds < -315_576_000_000 || seconds > +315_576_000_000
