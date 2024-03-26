@@ -162,7 +162,9 @@ class ProtoGem < Rake::FileTask
 
       package.tr!(".", "/")
       proto.pathmap("#{File.join(lib, package)}/%n_pb.rb")
-    end
+    rescue Errno::ENOENT
+      nil
+    end.compact
   end
 
   def lib
