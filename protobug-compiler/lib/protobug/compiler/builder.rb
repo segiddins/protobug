@@ -242,10 +242,12 @@ module Protobug
 
         def empty? = false
 
+        COMPACT_OPERATORS = %w[** .. ...].freeze # rubocop:disable Lint/ConstantDefinitionInBlock
+
         def compact?
           case type
           when :operator
-            %w[** .. ...].include?(content)
+            COMPACT_OPERATORS.include?(content)
           when :delimiter
             content == "."
           end

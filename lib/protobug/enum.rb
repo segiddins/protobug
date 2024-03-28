@@ -9,59 +9,59 @@ module Protobug
         extend BaseDescriptor
         include Protobug::Enum::InstanceMethods
       end
-      klass.singleton_class.class_eval do
-        attr_reader :values
-        attr_reader :reserved_ranges
-
-        def const_added(name)
-          super
-          value = const_get(name)
-
-          const_name = value.name.start_with?("k") ? "K_#{value.name[1..]}" : value.name
-          const_name = "K_#{const_name}" unless const_name.match?(/\A[A-Z]/)
-
-          raise "expected #{self}::#{name} to be a #{self}, got #{value.inspect}" unless value.is_a? self
-          raise "expected #{value.name} to be #{const_name}" unless name.name == const_name
-          raise "duplicate value #{value.inspect}" if values[value.name]
-
-          @values[value.name] = value
-          @values[value.value] ||= value
-        end
-
-        def reserved_range(range)
-          raise "expected Range, got #{range.inspect}" unless range.is_a? Range
-
-          reserved_ranges << range
-        end
-
-        def freeze
-          # const_added was added in 3.2
-          unless RUBY_VERSION >= "3.2"
-            constants.each do |n|
-              c = const_get(n)
-              next unless c.is_a? self
-
-              @values[c.name] ||= c
-              @values[c.value] ||= c
-            end
-          end
-
-          @values.freeze
-          @reserved_ranges.freeze
-          full_name.freeze
-          super
-        end
-      end
     end
 
-    def decode_json_hash(json, registry: nil)
+    attr_reader :values, :reserved_ranges
+
+    def const_added(name)
+      super
+      value = const_get(name)
+
+      const_name = value.name.start_with?("k") ? "K_#{value.name[1..]}" : value.name
+      const_name = "K_#{const_name}" unless const_name.match?(/\A[A-Z]/)
+
+      raise "expected #{self}::#{name} to be a #{self}, got #{value.inspect}" unless value.is_a? self
+      raise "expected #{value.name} to be #{const_name}" unless name.name == const_name
+      raise "duplicate value #{value.inspect}" if values[value.name]
+
+      @values[value.name] = value
+      @values[value.value] ||= value
+    end
+
+    def reserved_range(range)
+      raise "expected Range, got #{range.inspect}" unless range.is_a? Range
+
+      reserved_ranges << range
+    end
+
+    def freeze
+      # const_added was added in 3.2
+      unless RUBY_VERSION >= "3.2"
+        constants.each do |n|
+          c = const_get(n)
+          next unless c.is_a? self
+
+          @values[c.name] ||= c
+          @values[c.value] ||= c
+        end
+      end
+
+      @values.freeze
+      @reserved_ranges.freeze
+      full_name.freeze
+      super
+    end
+
+    def decode_json_hash(json, registry: nil, ignore_unknown_fields: false)
       _ = registry
+      _ = ignore_unknown_fields
 
       case json
-      when UNSET
-        default
+      when NilClass
+        UNSET
       when String
-        values[json] || raise(DecodeError, "unknown value: #{json.inspect}")
+        values[json] || (ignore_unknown_fields && UNSET) ||
+          raise(DecodeError, "unknown value: #{json.inspect}")
       when Integer
         values[json] || new("<unknown:#{json}>", json)
       else
@@ -71,8 +71,6 @@ module Protobug
 
     def decode(value)
       raise "expected Integer, got #{value.inspect}" unless value.is_a? Integer
-
-      value = [value].pack("l>").unpack1("l>")
 
       # TODO: use fetch instead of []
       values[value] || new("<unknown:#{value}>", value)

@@ -34,3 +34,6 @@ Style/DoubleNegation:
 
 Style/YodaCondition:
   Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false

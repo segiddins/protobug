@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require "bundler/setup"
 require "simplecov"
 
 SimpleCov.root(File.expand_path("..", __dir__))
@@ -34,8 +35,8 @@ def do_test(request)
         test_message = descriptor.decode(StringIO.new(request.protobuf_payload), registry: $registry)
       rescue Protobug::UnsupportedFeatureError
         raise
-      rescue StandardError => e
-        response.parse_error = e.full_message.encode("utf-8")
+      rescue Protobug::DecodeError, Protobug::InvalidValueError, EOFError => e
+        response.parse_error = e.message.encode("utf-8")
         return response
       end
 
@@ -44,17 +45,12 @@ def do_test(request)
         options = {}
         if request.test_category == Conformance::TestCategory::JSON_IGNORE_UNKNOWN_PARSING_TEST
           options[:ignore_unknown_fields] = true
-
         end
         test_message = descriptor.decode_json(request.json_payload, **options, registry: $registry)
       rescue Protobug::UnsupportedFeatureError
         raise
-      rescue StandardError => e
-        if options.any?
-          response.skipped = "options not supported: #{options.inspect}"
-        else
-          response.parse_error = e.full_message.encode("utf-8")
-        end
+      rescue Protobug::DecodeError, Protobug::InvalidValueError => e
+        response.parse_error = e.message.encode("utf-8")
         return response
       end
 
@@ -75,8 +71,8 @@ def do_test(request)
     when Conformance::WireFormat::PROTOBUF
       begin
         response.protobuf_payload = test_message.to_proto
-      rescue StandardError => e
-        response.serialize_error = e.full_message.encode("utf-8")
+      rescue Protobug::EncodeError => e
+        response.serialize_error = e.message.encode("utf-8")
       end
 
     when Conformance::WireFormat::JSON
@@ -84,8 +80,8 @@ def do_test(request)
         response.json_payload = test_message.to_json(print_unknown_fields: request.print_unknown_fields)
       rescue Protobug::UnsupportedFeatureError
         raise
-      rescue StandardError => e
-        response.serialize_error = e.full_message.encode("utf-8")
+      rescue Protobug::EncodeError => e
+        response.serialize_error = e.message.encode("utf-8")
       end
 
     when Conformance::WireFormat::TEXT_FORMAT
@@ -117,7 +113,7 @@ def do_test_io
 
   response = do_test(request)
 
-  serialized_response = Conformance::ConformanceResponse.encode(response)
+  serialized_response = response.to_proto
   warn "conformance_ruby: response too large: #{serialized_response.length}" if serialized_response.length > 1 << 20
   warn "conformance_ruby: response too small: #{response.inspect}" if serialized_response.empty?
   $stdout.write([serialized_response.length].pack("V"))

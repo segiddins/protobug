@@ -9,9 +9,9 @@ Gem::Specification.new do |s|
   s.metadata = { "rubygems_mfa_required" => "true" } if s.respond_to? :metadata=
   s.require_paths = ["lib".freeze]
   s.authors = ["Samuel Giddins".freeze]
-  s.date = "2024-03-24"
+
   s.email = ["segiddins@segiddins.me".freeze]
-  s.files = ["google/protobuf/any_pb.rb".freeze, "google/protobuf/api_pb.rb".freeze, "google/protobuf/descriptor_pb.rb".freeze, "google/protobuf/duration_pb.rb".freeze, "google/protobuf/empty_pb.rb".freeze, "google/protobuf/field_mask_pb.rb".freeze, "google/protobuf/source_context_pb.rb".freeze, "google/protobuf/struct_pb.rb".freeze, "google/protobuf/timestamp_pb.rb".freeze, "google/protobuf/type_pb.rb".freeze, "google/protobuf/wrappers_pb.rb".freeze, "lib/protobug_well_known_protos.rb".freeze]
+  s.files = ["lib/google/protobuf/any_pb.rb".freeze, "lib/google/protobuf/any_well_known.rb".freeze, "lib/google/protobuf/api_pb.rb".freeze, "lib/google/protobuf/descriptor_pb.rb".freeze, "lib/google/protobuf/duration_pb.rb".freeze, "lib/google/protobuf/duration_well_known.rb".freeze, "lib/google/protobuf/empty_pb.rb".freeze, "lib/google/protobuf/field_mask_pb.rb".freeze, "lib/google/protobuf/field_mask_well_known.rb".freeze, "lib/google/protobuf/source_context_pb.rb".freeze, "lib/google/protobuf/struct_pb.rb".freeze, "lib/google/protobuf/struct_well_known.rb".freeze, "lib/google/protobuf/timestamp_pb.rb".freeze, "lib/google/protobuf/timestamp_well_known.rb".freeze, "lib/google/protobuf/type_pb.rb".freeze, "lib/google/protobuf/wrappers_pb.rb".freeze, "lib/google/protobuf/wrappers_well_known.rb".freeze, "lib/protobug_well_known_protos.rb".freeze]
   s.required_ruby_version = Gem::Requirement.new(">= 3.0.0".freeze)
   s.rubygems_version = "3.5.6".freeze
   s.summary = "Compiled protos for protobug from https://github.com/protocolbuffers/protobuf (well_known_protos)".freeze

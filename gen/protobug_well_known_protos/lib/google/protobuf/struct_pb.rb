@@ -65,7 +65,6 @@ module Google
       map(
         1,
         "fields",
-        type: :map,
         key_type: :string,
         value_type: :message,
         message_type: "google.protobuf.Value"
@@ -182,3 +181,5 @@ module Google
     end
   end
 end
+
+require_relative "struct_well_known"

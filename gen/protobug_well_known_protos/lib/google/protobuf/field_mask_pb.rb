@@ -261,3 +261,5 @@ module Google
     end
   end
 end
+
+require_relative "field_mask_well_known"

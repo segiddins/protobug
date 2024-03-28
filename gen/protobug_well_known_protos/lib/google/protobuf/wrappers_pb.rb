@@ -179,3 +179,5 @@ module Google
     end
   end
 end
+
+require_relative "wrappers_well_known"
