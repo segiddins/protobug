@@ -261,7 +261,7 @@ def proto_gem(name, source_repo, deps: [])
           end
           require "protobug_#{name}"
         RB
-        ruby "-S", "gem", "-C", "gen/protobug_#{name}", "build"
+        ruby "-S", "gem", "build", chdir: "gen/protobug_#{name}"
         rm FileList["gen/protobug_#{name}/protobug_#{name}*.gem"]
       end
     end
