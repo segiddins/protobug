@@ -115,7 +115,7 @@ class ProtoGem < Rake::FileTask
       spec.version = Protobug::VERSION
       spec.authors = ["Samuel Giddins"]
       spec.email = ["segiddins@segiddins.me"]
-      spec.license = nil
+      spec.licenses = ["Unlicense"]
       spec.homepage = "https://github.com/segiddins/protobug/blob/v#{spec.version}/gen/protobug_#{name}"
 
       spec.required_ruby_version = ">= 3.0.0"
@@ -242,8 +242,10 @@ def proto_gem(name, source_repo, deps: [])
     RB
   end
   gemspec = File.join(File.dirname(task.lib), "protobug_#{name}.gemspec")
-  file gemspec => rb do |t|
-    task.prerequisite_tasks.grep(ProtoGem).each { task.gemspec.add_runtime_dependency "protobug_#{_1.name}" }
+  file gemspec => [rb, "Rakefile"] do |t|
+    task.prerequisite_tasks.grep(ProtoGem).each do |dep|
+      task.gemspec.add_runtime_dependency "protobug_#{dep.name}", Protobug::VERSION
+    end
     File.write(t.name, task.gemspec.to_ruby.sub!(/^  s\.date\ =.+/, ""))
   end
   task.inputs.each do |i|

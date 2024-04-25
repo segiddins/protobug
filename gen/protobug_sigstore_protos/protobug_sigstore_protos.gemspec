@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.email = ["segiddins@segiddins.me".freeze]
   s.files = ["lib/protobug_sigstore_protos.rb".freeze, "lib/sigstore/bundle/v1/sigstore_bundle_pb.rb".freeze, "lib/sigstore/common/v1/sigstore_common_pb.rb".freeze, "lib/sigstore/dsse/envelope_pb.rb".freeze, "lib/sigstore/events/events_pb.rb".freeze, "lib/sigstore/rekor/v1/sigstore_rekor_pb.rb".freeze, "lib/sigstore/trustroot/v1/sigstore_trustroot_pb.rb".freeze, "lib/sigstore/verification/v1/sigstore_verification_pb.rb".freeze]
   s.homepage = "https://github.com/segiddins/protobug/blob/v0.1.0/gen/protobug_sigstore_protos".freeze
-  s.licenses = [nil]
+  s.licenses = ["Unlicense".freeze]
   s.required_ruby_version = Gem::Requirement.new(">= 3.0.0".freeze)
   s.rubygems_version = "3.5.9".freeze
   s.summary = "Compiled protos for protobug from https://github.com/sigstore/protobuf-specs (sigstore_protos)".freeze
