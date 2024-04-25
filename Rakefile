@@ -242,10 +242,8 @@ def proto_gem(name, source_repo, deps: [])
     RB
   end
   gemspec = File.join(File.dirname(task.lib), "protobug_#{name}.gemspec")
-  file gemspec => [rb, "Rakefile"] do |t|
-    task.prerequisite_tasks.grep(ProtoGem).each do |dep|
-      task.gemspec.add_runtime_dependency "protobug_#{dep.name}", Protobug::VERSION
-    end
+  file gemspec => rb do |t|
+    task.prerequisite_tasks.grep(ProtoGem).each { task.gemspec.add_runtime_dependency "protobug_#{_1.name}" }
     File.write(t.name, task.gemspec.to_ruby.sub!(/^  s\.date\ =.+/, ""))
   end
   task.inputs.each do |i|
@@ -344,7 +342,7 @@ Bundler.definition.specs.select { _1.name.start_with?("protobug") }.each do |spe
   multitask build: path
   CLEAN.include(path)
 
-  namespace :release do
+  namespace :release do # rubocop:disable Rake/DuplicateNamespace
     namespace :rubygem_push do
       task spec.name => path do # rubocop:disable Rake/Desc
         Bundler.with_unbundled_env do
@@ -352,23 +350,6 @@ Bundler.definition.specs.select { _1.name.start_with?("protobug") }.each do |spe
         end
       end
     end
+    task rubygem_push: "rubygem_push:#{spec.name}" # rubocop:disable Rake/Desc,Rake/DuplicateTask
   end
-  task rubygem_push: spec.name # rubocop:disable Rake/Desc
 end
-
-# namespace :release do
-#   task push_all: %i[verify_proto_gems pkg] do
-#     outputs = []
-#     Bundler.definition.specs.select { _1.name.start_with?("protobug") }.each do |spec|
-#       output =
-#         outputs << output
-#       Bundler.with_unbundled_env do
-#         sh("gem", "-C", File.dirname(spec.loaded_from), "build", "-o", output,
-#            spec.loaded_from)
-#       end
-#     end
-#     outputs.each do |output|
-#     end
-#     rm_rf outputs
-#   end
-# end
