@@ -19,6 +19,4 @@ jobs:
         with:
           ruby-version: 3.3.1
           bundler-cache: true
-      - uses: rubygems/configure-rubygems-credentials@main
-      - name: publish gems
-        run: bin/rake push_all
+      - uses: rubygems/release-gem@v1
