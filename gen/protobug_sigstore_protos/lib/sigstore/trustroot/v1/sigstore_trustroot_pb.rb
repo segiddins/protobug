@@ -28,6 +28,8 @@
 
 require "protobug"
 
+require "google/api/field_behavior_pb"
+
 require_relative "../../common/v1/sigstore_common_pb"
 
 module Sigstore
@@ -72,12 +74,39 @@ module Sigstore
           proto3_optional: false
         )
         # The unique identifier for this transparency log.
+        # Represented as the SHA-256 hash of the log's public key,
+        # calculated over the DER encoding of the key represented as
+        # SubjectPublicKeyInfo.
+        # See https://www.rfc-editor.org/rfc/rfc6962#section-3.2
         optional(
           4,
           "log_id",
           type: :message,
           message_type: "dev.sigstore.common.v1.LogId",
           json_name: "logId",
+          proto3_optional: false
+        )
+        # The checkpoint key identifier for the log used in a checkpoint.
+        # Optional, not provided for logs that do not generate checkpoints.
+        # For logs that do generate checkpoints, if not set, assume
+        # log_id equals checkpoint_key_id.
+        # Follows the specification described here
+        # for ECDSA and Ed25519 signatures:
+        # https://github.com/C2SP/C2SP/blob/main/signed-note.md#signatures
+        # For RSA signatures, the key ID will match the ECDSA format, the
+        # hashed DER-encoded SPKI public key. Publicly witnessed logs MUST NOT
+        # use RSA-signed checkpoints, since witnesses do not support
+        # RSA signatures.
+        # This is provided for convenience. Clients can also calculate the
+        # checkpoint key ID given the log's public key.
+        # SHOULD be set for logs generating Ed25519 signatures.
+        # SHOULD be 4 bytes long, as a truncated hash.
+        optional(
+          5,
+          "checkpoint_key_id",
+          type: :message,
+          message_type: "dev.sigstore.common.v1.LogId",
+          json_name: "checkpointKeyId",
           proto3_optional: false
         )
       end
@@ -168,7 +197,11 @@ module Sigstore
 
         self.full_name = "dev.sigstore.trustroot.v1.TrustedRoot"
 
-        # MUST be application/vnd.dev.sigstore.trustedroot+json;version=0.1
+        # MUST be application/vnd.dev.sigstore.trustedroot.v0.1+json
+        # when encoded as JSON.
+        # Clients MUST be able to process and parse content with the media
+        # type defined in the old format:
+        # application/vnd.dev.sigstore.trustedroot+json;version=0.1
         optional(
           1,
           "media_type",
@@ -215,11 +248,98 @@ module Sigstore
         )
       end
 
+      # SigningConfig represents the trusted entities/state needed by Sigstore
+      # signing. In particular, it primarily contains service URLs that a Sigstore
+      # signer may need to connect to for the online aspects of signing.
+      class SigningConfig
+        extend Protobug::Message
+
+        self.full_name = "dev.sigstore.trustroot.v1.SigningConfig"
+
+        # A URL to a Fulcio-compatible CA, capable of receiving
+        # Certificate Signing Requests (CSRs) and responding with
+        # issued certificates.
+        #
+        # This URL **MUST** be the "base" URL for the CA, which clients
+        # should construct an appropriate CSR endpoint on top of.
+        # For example, if `ca_url` is `https://example.com/ca`, then
+        # the client **MAY** construct the CSR endpoint as
+        # `https://example.com/ca/api/v2/signingCert`.
+        optional(
+          1,
+          "ca_url",
+          type: :string,
+          json_name: "caUrl",
+          proto3_optional: false
+        )
+        # A URL to an OpenID Connect identity provider.
+        #
+        # This URL **MUST** be the "base" URL for the OIDC IdP, which clients
+        # should perform well-known OpenID Connect discovery against.
+        optional(
+          2,
+          "oidc_url",
+          type: :string,
+          json_name: "oidcUrl",
+          proto3_optional: false
+        )
+        # One or more URLs to Rekor-compatible transparency log.
+        #
+        # Each URL **MUST** be the "base" URL for the transparency log,
+        # which clients should construct appropriate API endpoints on top of.
+        repeated(3, "tlog_urls", type: :string, json_name: "tlogUrls")
+        # One ore more URLs to RFC 3161 Time Stamping Authority (TSA).
+        #
+        # Each URL **MUST** be the **full** URL for the TSA, meaning that it
+        # should be suitable for submitting Time Stamp Requests (TSRs) to
+        # via HTTP, per RFC 3161.
+        repeated(4, "tsa_urls", type: :string, json_name: "tsaUrls")
+      end
+
+      # ClientTrustConfig describes the complete state needed by a client
+      # to perform both signing and verification operations against a particular
+      # instance of Sigstore.
+      class ClientTrustConfig
+        extend Protobug::Message
+
+        self.full_name = "dev.sigstore.trustroot.v1.ClientTrustConfig"
+
+        # MUST be application/vnd.dev.sigstore.clienttrustconfig.v0.1+json
+        optional(
+          1,
+          "media_type",
+          type: :string,
+          json_name: "mediaType",
+          proto3_optional: false
+        )
+        # The root of trust, which MUST be present.
+        optional(
+          2,
+          "trusted_root",
+          type: :message,
+          message_type: "dev.sigstore.trustroot.v1.TrustedRoot",
+          json_name: "trustedRoot",
+          proto3_optional: false
+        )
+        # Configuration for signing clients, which MUST be present.
+        optional(
+          3,
+          "signing_config",
+          type: :message,
+          message_type: "dev.sigstore.trustroot.v1.SigningConfig",
+          json_name: "signingConfig",
+          proto3_optional: false
+        )
+      end
+
       def self.register_sigstore_trustroot_protos(registry)
+        Google::Api.register_field_behavior_protos(registry)
         Sigstore::Common::V1.register_sigstore_common_protos(registry)
         registry.register(Sigstore::TrustRoot::V1::TransparencyLogInstance)
         registry.register(Sigstore::TrustRoot::V1::CertificateAuthority)
         registry.register(Sigstore::TrustRoot::V1::TrustedRoot)
+        registry.register(Sigstore::TrustRoot::V1::SigningConfig)
+        registry.register(Sigstore::TrustRoot::V1::ClientTrustConfig)
       end
     end
   end

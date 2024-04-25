@@ -12,12 +12,14 @@ Gem::Specification.new do |s|
 
   s.email = ["segiddins@segiddins.me".freeze]
   s.files = ["lib/conformance/conformance_pb.rb".freeze, "lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb".freeze, "lib/protobuf_test_messages/proto3/test_messages_proto3_pb.rb".freeze, "lib/protobug_conformance_protos.rb".freeze]
+  s.homepage = "https://github.com/segiddins/protobug/blob/v0.1.0/gen/protobug_conformance_protos".freeze
+  s.licenses = [nil]
   s.required_ruby_version = Gem::Requirement.new(">= 3.0.0".freeze)
-  s.rubygems_version = "3.5.6".freeze
+  s.rubygems_version = "3.5.9".freeze
   s.summary = "Compiled protos for protobug from https://github.com/protocolbuffers/protobuf (conformance_protos)".freeze
 
   s.specification_version = 4
 
-  s.add_runtime_dependency(%q<protobug>.freeze, [">= 0".freeze])
-  s.add_runtime_dependency(%q<protobug_well_known_protos>.freeze, [">= 0".freeze])
+  s.add_runtime_dependency(%q<protobug>.freeze, ["= 0.1.0".freeze])
+  s.add_runtime_dependency(%q<protobug_well_known_protos>.freeze, ["= 0.1.0".freeze])
 end

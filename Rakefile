@@ -115,12 +115,14 @@ class ProtoGem < Rake::FileTask
       spec.version = Protobug::VERSION
       spec.authors = ["Samuel Giddins"]
       spec.email = ["segiddins@segiddins.me"]
+      spec.license = nil
+      spec.homepage = "https://github.com/segiddins/protobug/blob/v#{spec.version}/gen/protobug_#{name}"
 
       spec.required_ruby_version = ">= 3.0.0"
       spec.metadata["rubygems_mfa_required"] = "true"
       spec.files += ["lib/protobug_#{name}.rb"]
       spec.require_paths = ["lib"]
-      spec.add_runtime_dependency "protobug"
+      spec.add_runtime_dependency "protobug", Protobug::VERSION
     end
   end
 
@@ -208,7 +210,7 @@ end
 git_repo :googleapis, "tmp/googleapis", "https://github.com/googleapis/googleapis",
          commit: "1e6517ef4f949191c9e471857cf5811c8abcab84"
 git_repo :sigstore, "tmp/sigstore", "https://github.com/sigstore/protobuf-specs",
-         commit: "a57a7caac5f4daf428055a34c872c810a6c0a968"
+         commit: "c6dcd0b9785f7ef205bddf8e4f21f29f5604e980"
 git_repo :"sigstore-conformance", "tmp/sigstore-conformance", "https://github.com/sigstore/sigstore-conformance",
          commit: "v0.0.11"
 
@@ -240,8 +242,10 @@ def proto_gem(name, source_repo, deps: [])
     RB
   end
   gemspec = File.join(File.dirname(task.lib), "protobug_#{name}.gemspec")
-  file gemspec => rb do |t|
-    task.prerequisite_tasks.grep(ProtoGem).each { task.gemspec.add_runtime_dependency "protobug_#{_1.name}" }
+  file gemspec => [rb, "Rakefile"] do |t|
+    task.prerequisite_tasks.grep(ProtoGem).each do |dep|
+      task.gemspec.add_runtime_dependency "protobug_#{dep.name}", Protobug::VERSION
+    end
     File.write(t.name, task.gemspec.to_ruby.sub!(/^  s\.date\ =.+/, ""))
   end
   task.inputs.each do |i|
@@ -261,7 +265,7 @@ def proto_gem(name, source_repo, deps: [])
           end
           require "protobug_#{name}"
         RB
-        ruby "-S", "gem", "build", chdir: "gen/protobug_#{name}"
+        ruby "-S", "gem", "build", "--strict", File.basename(gemspec), chdir: "gen/protobug_#{name}"
         rm FileList["gen/protobug_#{name}/protobug_#{name}*.gem"]
       end
     end
@@ -326,3 +330,45 @@ multitask conformance: %w[conformance_protos tmp/protobuf/bazel-bin/conformance/
     "conformance/runner.rb"
   )
 end
+
+directory "pkg"
+task(:build).clear_actions
+namespace(:release) { task(:rubygem_push).clear_actions }
+Bundler.definition.specs.select { _1.name.start_with?("protobug") }.each do |spec|
+  path = "pkg/#{spec.full_name}.gem"
+  file path => [spec.loaded_from, :pkg] do
+    Bundler.with_unbundled_env do
+      sh("gem", "-C", File.dirname(spec.loaded_from), "build", "-o", File.expand_path(path), spec.loaded_from)
+    end
+  end
+  multitask build: path
+  CLEAN.include(path)
+
+  namespace :release do
+    namespace :rubygem_push do
+      task spec.name => path do # rubocop:disable Rake/Desc
+        Bundler.with_unbundled_env do
+          sh("gem", "push", path)
+        end
+      end
+    end
+  end
+  task rubygem_push: spec.name # rubocop:disable Rake/Desc
+end
+
+# namespace :release do
+#   task push_all: %i[verify_proto_gems pkg] do
+#     outputs = []
+#     Bundler.definition.specs.select { _1.name.start_with?("protobug") }.each do |spec|
+#       output =
+#         outputs << output
+#       Bundler.with_unbundled_env do
+#         sh("gem", "-C", File.dirname(spec.loaded_from), "build", "-o", output,
+#            spec.loaded_from)
+#       end
+#     end
+#     outputs.each do |output|
+#     end
+#     rm_rf outputs
+#   end
+# end

@@ -193,10 +193,7 @@ module Sigstore
 
         self.full_name = "dev.sigstore.common.v1.LogId"
 
-        # The unique id of the log, represented as the SHA-256 hash
-        # of the log's public key, calculated over the DER encoding
-        # of the key represented as SubjectPublicKeyInfo.
-        # See https://www.rfc-editor.org/rfc/rfc6962#section-3.2
+        # The unique identity of the log, represented by its public key.
         optional(
           1,
           "key_id",

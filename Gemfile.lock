@@ -7,36 +7,36 @@ PATH
   remote: gen/protobug_compiler_protos
   specs:
     protobug_compiler_protos (0.1.0)
-      protobug
-      protobug_well_known_protos
+      protobug (= 0.1.0)
+      protobug_well_known_protos (= 0.1.0)
 
 PATH
   remote: gen/protobug_conformance_protos
   specs:
     protobug_conformance_protos (0.1.0)
-      protobug
-      protobug_well_known_protos
+      protobug (= 0.1.0)
+      protobug_well_known_protos (= 0.1.0)
 
 PATH
   remote: gen/protobug_googleapis_field_behavior_protos
   specs:
     protobug_googleapis_field_behavior_protos (0.1.0)
-      protobug
-      protobug_well_known_protos
+      protobug (= 0.1.0)
+      protobug_well_known_protos (= 0.1.0)
 
 PATH
   remote: gen/protobug_sigstore_protos
   specs:
     protobug_sigstore_protos (0.1.0)
-      protobug
-      protobug_googleapis_field_behavior_protos
-      protobug_well_known_protos
+      protobug (= 0.1.0)
+      protobug_googleapis_field_behavior_protos (= 0.1.0)
+      protobug_well_known_protos (= 0.1.0)
 
 PATH
   remote: gen/protobug_well_known_protos
   specs:
     protobug_well_known_protos (0.1.0)
-      protobug
+      protobug (= 0.1.0)
 
 PATH
   remote: protobug-compiler
@@ -139,4 +139,4 @@ DEPENDENCIES
   simplecov (~> 0.22.0)
 
 BUNDLED WITH
-   2.4.4
+   2.5.9

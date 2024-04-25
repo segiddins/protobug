@@ -41,7 +41,7 @@ module Sigstore
       # The primary message ('Bundle') MUST be versioned, by populating the
       # 'media_type' field. Semver-ish (only major/minor versions) scheme MUST
       # be used. The current version as specified by this file is:
-      # application/vnd.dev.sigstore.bundle+json;version=0.3
+      # application/vnd.dev.sigstore.bundle.v0.3+json
       # The semantic version is thus '0.3'.
 
       # Various timestamped counter signatures over the artifacts signature.
@@ -171,10 +171,13 @@ module Sigstore
 
         self.full_name = "dev.sigstore.bundle.v1.Bundle"
 
-        # MUST be application/vnd.dev.sigstore.bundle+json;version=0.1
-        # or application/vnd.dev.sigstore.bundle+json;version=0.2
-        # or application/vnd.dev.sigstore.bundle+json;version=0.3
+        # MUST be application/vnd.dev.sigstore.bundle.v0.3+json when
         # when encoded as JSON.
+        # Clients must to be able to accept media type using the previously
+        # defined formats:
+        # * application/vnd.dev.sigstore.bundle+json;version=0.1
+        # * application/vnd.dev.sigstore.bundle+json;version=0.2
+        # * application/vnd.dev.sigstore.bundle+json;version=0.3
         optional(
           1,
           "media_type",
