@@ -145,8 +145,13 @@ module Protobug
           Google::Protobuf.const_get(name.split("::").last)
         end
 
-        def fields_by_number = descriptor_class.fields_by_number
-        def fields_by_name = descriptor_class.fields_by_name
+        def fields_by_number
+          descriptor_class.fields_by_number
+        end
+
+        def fields_by_name
+          descriptor_class.fields_by_name
+        end
       end
     end
 

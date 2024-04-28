@@ -17,6 +17,9 @@ Style/StringLiteralsInInterpolation:
   Enabled: true
   EnforcedStyle: double_quotes
 
+Style/EndlessMethod:
+  EnforcedStyle: disallow # truffleruby does not support endless method syntax on 23.x
+
 Layout/LineLength:
   Max: 120
 
