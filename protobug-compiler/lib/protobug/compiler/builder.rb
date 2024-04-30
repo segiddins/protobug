@@ -86,7 +86,9 @@ module Protobug
           items.none? { |item| !item.empty? }
         end
 
-        def compact? = false
+        def compact?
+          false
+        end
       end
 
       Group = Struct.new(:name, :items, :open, :close, :separator, :multi, :indent,
@@ -146,7 +148,9 @@ module Protobug
           items.none? { |item| !item.empty? }
         end
 
-        def compact? = false
+        def compact?
+          false
+        end
 
         private
 
@@ -215,8 +219,13 @@ module Protobug
           end
         end
 
-        def empty? = false
-        def compact? = false
+        def empty?
+          false
+        end
+
+        def compact?
+          false
+        end
       end
 
       Token = Struct.new(:type, :content,
@@ -240,7 +249,9 @@ module Protobug
           end
         end
 
-        def empty? = false
+        def empty?
+          false
+        end
 
         COMPACT_OPERATORS = %w[** .. ...].freeze # rubocop:disable Lint/ConstantDefinitionInBlock
 

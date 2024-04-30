@@ -226,7 +226,9 @@ module Protobug
         nil
       end
 
-      def wire_type = 2
+      def wire_type
+        2
+      end
     end
 
     class MapField < MessageField
@@ -250,9 +252,17 @@ module Protobug
         end
       end
 
-      def repeated = true
-      def default = {}
-      def repeated? = true
+      def repeated
+        true
+      end
+
+      def default
+        {}
+      end
+
+      def repeated?
+        true
+      end
 
       def binary_encode(value, outbuf)
         value.each_with_object(@map_class.new) do |(k, v), entry|
@@ -295,7 +305,9 @@ module Protobug
         end
       end
 
-      def type_lookup(_registry) = @map_class
+      def type_lookup(_registry)
+        @map_class
+      end
 
       def define_adder(message)
         field = self
@@ -312,7 +324,9 @@ module Protobug
     end
 
     class BytesField < Field
-      def self.type = :bytes
+      def self.type
+        :bytes
+      end
 
       def initialize(number, name, cardinality:, json_name: name, oneof: nil,
                      proto3_optional: cardinality == :optional)
@@ -352,11 +366,15 @@ module Protobug
         "".b
       end
 
-      def wire_type = 2
+      def wire_type
+        2
+      end
     end
 
     class StringField < BytesField
-      def self.type = :string
+      def self.type
+        :string
+      end
 
       def initialize(number, name, cardinality:, json_name: name, oneof: nil,
                      proto3_optional: cardinality == :optional)
@@ -439,7 +457,7 @@ module Protobug
         when :varint
           BinaryEncoding.encode_varint value, outbuf
         when :fixed
-          [value].pack(binary_pack, buffer: outbuf)
+          BinaryEncoding.pack([value], binary_pack, buffer: outbuf)
         end
       end
 
@@ -494,77 +512,199 @@ module Protobug
     # signed: true, false
     # EXCEPT: no unsigned zigzag
     class Int64Field < IntegerField
-      def encoding = :varint
-      def bit_length = 64
-      def signed = true
-      def wire_type = 0
+      def encoding
+        :varint
+      end
+
+      def bit_length
+        64
+      end
+
+      def signed
+        true
+      end
+
+      def wire_type
+        0
+      end
     end
 
     class UInt64Field < IntegerField
-      def encoding = :varint
-      def bit_length = 64
-      def signed = false
-      def wire_type = 0
+      def encoding
+        :varint
+      end
+
+      def bit_length
+        64
+      end
+
+      def signed
+        false
+      end
+
+      def wire_type
+        0
+      end
     end
 
     class SInt64Field < IntegerField
-      def encoding = :zigzag
-      def bit_length = 64
-      def signed = true
-      def wire_type = 0
+      def encoding
+        :zigzag
+      end
+
+      def bit_length
+        64
+      end
+
+      def signed
+        true
+      end
+
+      def wire_type
+        0
+      end
     end
 
     class Fixed64Field < IntegerField
-      def encoding = :fixed
-      def bit_length = 64
-      def signed = false
-      def wire_type = 1
-      def binary_pack = "Q"
+      def encoding
+        :fixed
+      end
+
+      def bit_length
+        64
+      end
+
+      def signed
+        false
+      end
+
+      def wire_type
+        1
+      end
+
+      def binary_pack
+        "Q"
+      end
     end
 
     class SFixed64Field < IntegerField
-      def encoding = :fixed
-      def bit_length = 64
-      def signed = true
-      def wire_type = 1
-      def binary_pack = "q"
+      def encoding
+        :fixed
+      end
+
+      def bit_length
+        64
+      end
+
+      def signed
+        true
+      end
+
+      def wire_type
+        1
+      end
+
+      def binary_pack
+        "q"
+      end
     end
 
     class Int32Field < IntegerField
-      def encoding = :varint
-      def bit_length = 32
-      def signed = true
-      def wire_type = 0
+      def encoding
+        :varint
+      end
+
+      def bit_length
+        32
+      end
+
+      def signed
+        true
+      end
+
+      def wire_type
+        0
+      end
     end
 
     class UInt32Field < IntegerField
-      def encoding = :varint
-      def bit_length = 32
-      def signed = false
-      def wire_type = 0
+      def encoding
+        :varint
+      end
+
+      def bit_length
+        32
+      end
+
+      def signed
+        false
+      end
+
+      def wire_type
+        0
+      end
     end
 
     class SInt32Field < IntegerField
-      def encoding = :zigzag
-      def bit_length = 32
-      def signed = true
-      def wire_type = 0
+      def encoding
+        :zigzag
+      end
+
+      def bit_length
+        32
+      end
+
+      def signed
+        true
+      end
+
+      def wire_type
+        0
+      end
     end
 
     class Fixed32Field < IntegerField
-      def encoding = :fixed
-      def bit_length = 32
-      def signed = false
-      def wire_type = 5
-      def binary_pack = "V"
+      def encoding
+        :fixed
+      end
+
+      def bit_length
+        32
+      end
+
+      def signed
+        false
+      end
+
+      def wire_type
+        5
+      end
+
+      def binary_pack
+        "V"
+      end
     end
 
     class SFixed32Field < IntegerField
-      def encoding = :fixed
-      def bit_length = 32
-      def signed = true
-      def wire_type = 5
-      def binary_pack = "l"
+      def encoding
+        :fixed
+      end
+
+      def bit_length
+        32
+      end
+
+      def signed
+        true
+      end
+
+      def wire_type
+        5
+      end
+
+      def binary_pack
+        "l"
+      end
     end
 
     class BoolField < UInt64Field
@@ -669,9 +809,17 @@ module Protobug
     end
 
     class DoubleField < Field
-      def type = :double
-      def binary_pack = "E"
-      def wire_type = 1
+      def type
+        :double
+      end
+
+      def binary_pack
+        "E"
+      end
+
+      def wire_type
+        1
+      end
 
       def initialize(number, name, cardinality:, json_name: name, oneof: nil, packed: false,
                      proto3_optional: cardinality == :optional)
@@ -680,7 +828,7 @@ module Protobug
       end
 
       def binary_encode_one(value, outbuf)
-        [value].pack(binary_pack, buffer: outbuf)
+        BinaryEncoding.pack([value], binary_pack, buffer: outbuf)
       end
 
       def binary_decode_one(io, _message, _registry, wire_type)
@@ -731,9 +879,17 @@ module Protobug
     end
 
     class FloatField < DoubleField
-      def type = :float
-      def binary_pack = "e"
-      def wire_type = 5
+      def type
+        :float
+      end
+
+      def binary_pack
+        "e"
+      end
+
+      def wire_type
+        5
+      end
     end
 
     class GroupField < Field

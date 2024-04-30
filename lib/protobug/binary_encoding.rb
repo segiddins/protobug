@@ -22,7 +22,18 @@ module Protobug
           break
         end
       end
-      out.pack("c*", buffer: outbuf)
+      pack(out, "c*", buffer: outbuf)
+    end
+
+    if RUBY_ENGINE == "truffleruby"
+      # see https://github.com/oracle/truffleruby/issues/3559
+      def pack(ary, format, buffer:)
+        buffer.concat ary.pack(format)
+      end
+    else
+      def pack(ary, format, buffer:)
+        ary.pack(format, buffer: buffer)
+      end
     end
 
     def encode_zigzag(size, value, outbuf)

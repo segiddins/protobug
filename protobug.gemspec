@@ -22,7 +22,8 @@ Gem::Specification.new do |spec|
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
   spec.files =
-    IO.popen(["git", "ls-files", "-z", "--", "exe/", "lib/", "*.md", "*.txt"], chdir: __dir__, &:read).split("\x0")
+    IO.popen(["git", "-C", __dir__, "ls-files", "-z", "--", "exe/", "lib/", "*.md", "*.txt"],
+             &:read).split("\x0")
       .reject do |f|
       (File.expand_path(f) == __FILE__) ||
         f.start_with?(*%w[bin/ test/ spec/ features/ .git .github appveyor Gemfile gen/ tmp/ protobug-compiler/
