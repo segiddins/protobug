@@ -68,7 +68,7 @@ GEM
     racc (1.7.3)
     racc (1.7.3-java)
     rainbow (3.1.1)
-    rake (13.1.0)
+    rake (13.2.1)
     regexp_parser (2.9.0)
     rexml (3.2.6)
     rspec (3.12.0)
@@ -139,7 +139,7 @@ DEPENDENCIES
   protobug_googleapis_field_behavior_protos!
   protobug_sigstore_protos!
   protobug_well_known_protos!
-  rake (~> 13.0)
+  rake (~> 13.2)
   rspec (~> 3.0)
   rubocop (~> 1.21)
   rubocop-minitest (~> 0.34.5)
