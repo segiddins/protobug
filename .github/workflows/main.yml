@@ -22,7 +22,7 @@ jobs:
           - "3.2.3"
           - "3.1.4"
           - "3.0.5"
-          # - "truffleruby-23.1.2"
+          - "truffleruby-23.1.2"
           - "jruby-9.4.6.0"
         allow_failures:
           - ruby: "truffleruby-23.1.2"
