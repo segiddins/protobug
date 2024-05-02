@@ -50,7 +50,7 @@ class GitRepo < Rake::Task
     return if correct_remote?
 
     rm_rf path
-    sh "git", "clone", url, path
+    sh "git", "clone", "--recursive", url, path
   end
 
   def checkout(_, _)
@@ -62,6 +62,7 @@ class GitRepo < Rake::Task
         sh "git", "-C", path, "switch", "--detach", commit
       end
     end
+    sh "git", "-C", path, "submodule", "update", "--init", "--recursive"
   end
 
   def timestamp
@@ -202,9 +203,13 @@ end
 
 task default: %i[spec verify_proto_gems example conformance rubocop]
 
-git_repo :protobuf, "tmp/protobuf", "https://github.com/protocolbuffers/protobuf", commit: "refs/tags/v26.0"
-file "tmp/protobuf/bazel-bin/conformance/conformance_test_runner" => "protobuf" do
-  sh "bazel", "build", "//conformance:conformance_test_runner", chdir: "tmp/protobuf"
+git_repo :protobuf, "tmp/protobuf", "https://github.com/protocolbuffers/protobuf", commit: "refs/tags/v26.1"
+file "tmp/protobuf/.build/conformance_test_runner" => "protobuf" do
+  mkdir_p "tmp/protobuf/.build"
+  sh "cmake", "..", "-DCMAKE_CXX_STANDARD=14", "-Dprotobuf_BUILD_CONFORMANCE=ON", "-Dprotobuf_BUILD_TESTS=OFF",
+     "-Dprotobuf_BUILD_EXAMPLES=OFF", chdir: "tmp/protobuf/.build"
+  sh "cmake", "--build", ".", "--target", "conformance_test_runner", "-j#{Etc.nprocessors}",
+     chdir: "tmp/protobuf/.build"
 end
 
 git_repo :googleapis, "tmp/googleapis", "https://github.com/googleapis/googleapis",
@@ -321,9 +326,9 @@ proto_gem :sigstore_protos, :sigstore, deps: %i[well_known_protos googleapis_fie
       .include("*.proto")
 end
 
-multitask conformance: %w[conformance_protos tmp/protobuf/bazel-bin/conformance/conformance_test_runner] do
+multitask conformance: %w[conformance_protos tmp/protobuf/.build/conformance_test_runner] do
   sh(
-    "tmp/protobuf/bazel-bin/conformance/conformance_test_runner",
+    "tmp/protobuf/.build/conformance_test_runner",
     "--enforce_recommended",
     "--failure_list", "conformance/failure_list.txt",
     "--output_dir", "conformance",
