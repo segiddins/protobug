@@ -11,7 +11,7 @@ gemspec path: "gen/protobug_googleapis_field_behavior_protos"
 gemspec path: "gen/protobug_well_known_protos"
 gemspec path: "gen/protobug_sigstore_protos"
 
-gem "rake", "~> 13.0"
+gem "rake", "~> 13.2"
 
 gem "minitest", "~> 5.22"
 gem "rspec", "~> 3.0"
