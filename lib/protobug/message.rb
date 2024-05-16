@@ -120,10 +120,7 @@ module Protobug
 
     def decode(binary, registry:, object: new)
       binary.binmode
-      loop do
-        header = BinaryEncoding.decode_varint(binary)
-        break if header.nil?
-
+      while (header = BinaryEncoding.decode_varint(binary))
         wire_type = header & 0b111
         number = (header ^ wire_type) >> 3
 
@@ -255,13 +252,13 @@ module Protobug
 
       return unless field.oneof
 
-      unless oneofs[field.oneof]
-        oneofs[field.oneof] = ary = []
+      unless (oneof = oneofs[field.oneof])
+        oneofs[field.oneof] = oneof = []
         define_method(field.oneof) do
-          ary.find { |f| send(f.haser) }&.name
+          oneof.find { |f| send(f.haser) }&.name
         end
       end
-      oneofs[field.oneof] << field
+      oneof << field
     end
 
     module InstanceMethods
