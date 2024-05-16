@@ -471,7 +471,7 @@ module Protobug
           value = Integer(value)
         when Float
           value, remainder = value.divmod(1)
-          raise DecodeError, "expected integer for #{inspect}, got #{value.inspect}" unless remainder.zero?
+          raise DecodeError, "expected integer for #{inspect}, got #{value.inspect}" unless remainder == 0
         else
           raise DecodeError, "expected integer for #{inspect}, got #{value.inspect}"
         end

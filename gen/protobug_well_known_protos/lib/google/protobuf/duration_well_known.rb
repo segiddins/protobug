@@ -31,8 +31,8 @@ Google::Protobuf::Duration.class_eval do
 
     self.class.validate_json_range(Protobug::EncodeError, seconds, nanos)
 
-    sign = seconds.negative? ? "-" : ""
-    sign = "-" if seconds.zero? && nanos.negative?
+    sign = seconds < 0 ? "-" : ""
+    sign = "-" if seconds == 0 && nanos < 0
     seconds = seconds.abs
     nanos = nanos.abs
     if nanos.nonzero?
@@ -43,8 +43,9 @@ Google::Protobuf::Duration.class_eval do
   end
 
   def self.validate_json_range(err, seconds, nanos)
-    if seconds != 0 && nanos != 0 && (seconds.negative? ^ nanos.negative?)
-      raise err, "seconds and nanos must have the same sign"
+    if seconds != 0 && nanos != 0 && ((seconds < 0) ^ (nanos < 0))
+      raise err,
+            "seconds and nanos must have the same sign"
     end
 
     raise err, "seconds out of range for json duration" if seconds < -315_576_000_000 || seconds > +315_576_000_000

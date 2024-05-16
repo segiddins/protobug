@@ -52,7 +52,7 @@ Google::Protobuf::Timestamp.class_eval do
 
     nanosecs = time.nsec
 
-    if nanosecs.positive?
+    if nanosecs > 0
       nanosecs = nanosecs.to_s.rjust(9, "0")
       nil while nanosecs.delete_suffix!("000")
       digits = nanosecs.size
