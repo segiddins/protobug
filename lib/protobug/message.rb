@@ -124,7 +124,7 @@ module Protobug
         wire_type = header & 0b111
         number = (header ^ wire_type) >> 3
 
-        unless number.positive?
+        unless number > 0
           raise DecodeError,
                 "unexpected field number #{number} in #{full_name || fields_by_name.inspect}"
         end
@@ -288,7 +288,7 @@ module Protobug
           pp.breakable
           fields_with_values.each_with_index do |(name, field), idx|
             pp.nest 2 do
-              unless idx.zero?
+              unless idx == 0
                 pp.text ","
                 pp.breakable " "
               end

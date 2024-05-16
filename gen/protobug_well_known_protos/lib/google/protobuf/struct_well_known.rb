@@ -186,7 +186,7 @@ Google::Protobuf::NullValue.class_eval do
   end
 
   def as_json(print_unknown_fields: false)
-    return if value.zero?
+    return if value == 0
 
     super
   end

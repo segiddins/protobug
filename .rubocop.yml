@@ -40,3 +40,6 @@ Style/YodaCondition:
 
 RSpec/ExampleLength:
   Enabled: false
+
+Style/NumericPredicate:
+  EnforcedStyle: comparison

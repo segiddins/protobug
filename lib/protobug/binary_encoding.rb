@@ -10,8 +10,7 @@ module Protobug
       raise EncodeError, "expected integer, got #{value.inspect}" unless value.is_a? Integer
       raise RangeError, "expected 64-bit integer" if value > (2**64) - 1 || value < -2**63
 
-      negative = value.negative?
-      value = (2**64) + value if negative
+      value += 2**64 if value < 0
       out = []
       loop do
         if value.bit_length > 7
@@ -45,7 +44,7 @@ module Protobug
       end
 
       encoded = 2 * value.abs
-      encoded -= 1 if value.negative?
+      encoded -= 1 if value < 0
       encode_varint encoded, outbuf
     end
 

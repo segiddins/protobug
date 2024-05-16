@@ -186,7 +186,7 @@ module Protobug
         def render
           q = PrettierPrint.new(+"")
           @headers.each_with_index do |header, idx|
-            q.breakable_force if idx.positive?
+            q.breakable_force if idx > 0
             Comment.new(header).render(q)
             q.breakable_force
           end
@@ -239,7 +239,7 @@ module Protobug
             when Integer
               int_part = Integer(content)
               formatted_int = int_part.abs.to_s.reverse.gsub(/...(?=.)/, '\&_').reverse
-              formatted_int.insert(0, "-") if int_part.negative?
+              formatted_int.insert(0, "-") if int_part < 0
               q.text formatted_int
             else
               q.text content.inspect
