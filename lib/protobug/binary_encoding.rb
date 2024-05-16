@@ -55,19 +55,70 @@ module Protobug
     end
 
     def decode_varint(binary)
-      byte = binary.getbyte
-      return unless byte
-
-      value = 0
-      bl = 0
-      loop do
-        raise DecodeError, "varint too large" if bl > 63
-        return value if byte.nil?
-        return value | (byte << bl) if (byte & 0b1000_0000).zero? # no continuation bit set
-
-        value |= ((byte & 0b0111_1111) << bl)
-        bl += 7
-        byte = binary.getbyte || raise(EOFError, "unexpected EOF")
+      if (byte0 = binary.getbyte || return) < 0x80
+        byte0
+      elsif (byte1 = binary.getbyte || return) < 0x80
+        (byte1 << 7) | (byte0 & 0x7F)
+      elsif (byte2 = binary.getbyte || return) < 0x80
+        (byte2 << 14) |
+          ((byte1 & 0x7F) << 7) |
+          (byte0 & 0x7F)
+      elsif (byte3 = binary.getbyte || return) < 0x80
+        (byte3 << 21) |
+          ((byte2 & 0x7F) << 14) |
+          ((byte1 & 0x7F) << 7) |
+          (byte0 & 0x7F)
+      elsif (byte4 = binary.getbyte || return) < 0x80
+        (byte4 << 28) |
+          ((byte3 & 0x7F) << 21) |
+          ((byte2 & 0x7F) << 14) |
+          ((byte1 & 0x7F) << 7) |
+          (byte0 & 0x7F)
+      elsif (byte5 = binary.getbyte || return) < 0x80
+        (byte5 << 35) |
+          ((byte4 & 0x7F) << 28) |
+          ((byte3 & 0x7F) << 21) |
+          ((byte2 & 0x7F) << 14) |
+          ((byte1 & 0x7F) << 7) |
+          (byte0 & 0x7F)
+      elsif (byte6 = binary.getbyte || return) < 0x80
+        (byte6 << 42) |
+          ((byte5 & 0x7F) << 35) |
+          ((byte4 & 0x7F) << 28) |
+          ((byte3 & 0x7F) << 21) |
+          ((byte2 & 0x7F) << 14) |
+          ((byte1 & 0x7F) << 7) |
+          (byte0 & 0x7F)
+      elsif (byte7 = binary.getbyte || return) < 0x80
+        (byte7 << 49) |
+          ((byte6 & 0x7F) << 42) |
+          ((byte5 & 0x7F) << 35) |
+          ((byte4 & 0x7F) << 28) |
+          ((byte3 & 0x7F) << 21) |
+          ((byte2 & 0x7F) << 14) |
+          ((byte1 & 0x7F) << 7) |
+          (byte0 & 0x7F)
+      elsif (byte8 = binary.getbyte || return) < 0x80
+        (byte8 << 56) |
+          ((byte7 & 0x7F) << 49) |
+          ((byte6 & 0x7F) << 42) |
+          ((byte5 & 0x7F) << 35) |
+          ((byte4 & 0x7F) << 28) |
+          ((byte3 & 0x7F) << 21) |
+          ((byte2 & 0x7F) << 14) |
+          ((byte1 & 0x7F) << 7) |
+          (byte0 & 0x7F)
+      elsif (byte9 = binary.getbyte || return) < 0x80
+        (byte9 << 63) |
+          ((byte8 & 0x7F) << 56) |
+          ((byte7 & 0x7F) << 49) |
+          ((byte6 & 0x7F) << 42) |
+          ((byte5 & 0x7F) << 35) |
+          ((byte4 & 0x7F) << 28) |
+          ((byte3 & 0x7F) << 21) |
+          ((byte2 & 0x7F) << 14) |
+          ((byte1 & 0x7F) << 7) |
+          (byte0 & 0x7F)
       end
     end
 
