@@ -23,7 +23,7 @@ jobs:
           egress-policy: audit
 
       - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
-      - uses: ruby/setup-ruby@7dc18ff0ca6e3630d3f29d2a85ebf6cc27ae9d6c # v1.177.0
+      - uses: ruby/setup-ruby@d5fb7a202fc07872cb44f00ba8e6197b70cb0c55 # v1.179.0
         with:
           ruby-version: 3.3.1
           bundler-cache: true
