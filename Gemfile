@@ -19,6 +19,6 @@ gem "rspec", "~> 3.13"
 gem "rubocop", "~> 1.64"
 gem "rubocop-minitest", "~> 0.35.0"
 gem "rubocop-rake", "~> 0.6.0"
-gem "rubocop-rspec", "~> 2.29"
+gem "rubocop-rspec", "~> 2.30"
 
 gem "simplecov", "~> 0.22.0"
