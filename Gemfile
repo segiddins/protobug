@@ -13,7 +13,7 @@ gemspec path: "gen/protobug_sigstore_protos"
 
 gem "rake", "~> 13.2"
 
-gem "minitest", "~> 5.23"
+gem "minitest", "~> 5.24"
 gem "rspec", "~> 3.13"
 
 gem "rubocop", "~> 1.64"
