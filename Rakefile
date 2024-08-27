@@ -139,7 +139,7 @@ class ProtoGem < Rake::FileTask
       File.mtime(name)
     rescue Errno::ENOENT
       Rake::LATE
-    end.max
+    end.max || Rake::LATE
   end
 
   def base(path)
