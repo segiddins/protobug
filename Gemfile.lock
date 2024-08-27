@@ -1,52 +1,52 @@
 PATH
   remote: .
   specs:
-    protobug (0.1.0)
+    protobug (0.1.1)
 
 PATH
   remote: gen/protobug_compiler_protos
   specs:
-    protobug_compiler_protos (0.1.0)
-      protobug (= 0.1.0)
-      protobug_well_known_protos (= 0.1.0)
+    protobug_compiler_protos (0.1.1)
+      protobug (= 0.1.1)
+      protobug_well_known_protos (= 0.1.1)
 
 PATH
   remote: gen/protobug_conformance_protos
   specs:
-    protobug_conformance_protos (0.1.0)
-      protobug (= 0.1.0)
-      protobug_well_known_protos (= 0.1.0)
+    protobug_conformance_protos (0.1.1)
+      protobug (= 0.1.1)
+      protobug_well_known_protos (= 0.1.1)
 
 PATH
   remote: gen/protobug_googleapis_field_behavior_protos
   specs:
-    protobug_googleapis_field_behavior_protos (0.1.0)
-      protobug (= 0.1.0)
-      protobug_well_known_protos (= 0.1.0)
+    protobug_googleapis_field_behavior_protos (0.1.1)
+      protobug (= 0.1.1)
+      protobug_well_known_protos (= 0.1.1)
 
 PATH
   remote: gen/protobug_sigstore_protos
   specs:
-    protobug_sigstore_protos (0.1.0)
-      protobug (= 0.1.0)
-      protobug_googleapis_field_behavior_protos (= 0.1.0)
-      protobug_well_known_protos (= 0.1.0)
+    protobug_sigstore_protos (0.1.1)
+      protobug (= 0.1.1)
+      protobug_googleapis_field_behavior_protos (= 0.1.1)
+      protobug_well_known_protos (= 0.1.1)
 
 PATH
   remote: gen/protobug_well_known_protos
   specs:
-    protobug_well_known_protos (0.1.0)
-      protobug (= 0.1.0)
+    protobug_well_known_protos (0.1.1)
+      protobug (= 0.1.1)
 
 PATH
   remote: protobug-compiler
   specs:
-    protobug-compiler (0.1.0)
+    protobug-compiler (0.1.1)
       delegate
       forwardable
       prettier_print (~> 1.2, >= 1.2.1)
-      protobug (= 0.1.0)
-      protobug_compiler_protos (= 0.1.0)
+      protobug (= 0.1.1)
+      protobug_compiler_protos (= 0.1.1)
 
 GEM
   remote: https://rubygems.org/
@@ -117,14 +117,17 @@ GEM
     unicode-display_width (2.5.0)
 
 PLATFORMS
-  arm64-darwin-22
-  arm64-darwin-23
+  aarch64-linux
+  arm-linux
+  arm64-darwin
   arm64-linux
   java
-  universal-java-19
+  universal-java
+  universal-java-11
   x64-mingw-ucrt
   x64-mingw32
-  x86_64-darwin-22
+  x86-linux
+  x86_64-darwin
   x86_64-linux
 
 DEPENDENCIES
@@ -145,4 +148,4 @@ DEPENDENCIES
   simplecov (~> 0.22.0)
 
 BUNDLED WITH
-   2.5.9
+   2.5.18

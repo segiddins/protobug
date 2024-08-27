@@ -27,3 +27,11 @@ Layout/LineLength:
 Layout/EmptyLineAfterMagicComment:
   Exclude:
     - "*/*.gemspec"
+
+Style/MultilineIfThen:
+  Exclude:
+    - "*/*.gemspec"
+
+Style/IfUnlessModifier:
+  Exclude:
+    - "*/*.gemspec"

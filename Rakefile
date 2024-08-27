@@ -139,7 +139,7 @@ class ProtoGem < Rake::FileTask
       File.mtime(name)
     rescue Errno::ENOENT
       Rake::LATE
-    end.max
+    end.max || Rake::LATE
   end
 
   def base(path)
@@ -193,11 +193,13 @@ class ProtoGem < Rake::FileTask
   end
 end
 
+multitask clone: []
 def git_repo(name, path, url, commit: "main")
   task = GitRepo.define_task(name)
   task.path = path
   task.url = url
   task.commit = commit
+  multitask clone: name
   task
 end
 
@@ -215,7 +217,7 @@ end
 git_repo :googleapis, "tmp/googleapis", "https://github.com/googleapis/googleapis",
          commit: "1e6517ef4f949191c9e471857cf5811c8abcab84"
 git_repo :sigstore, "tmp/sigstore", "https://github.com/sigstore/protobuf-specs",
-         commit: "c6dcd0b9785f7ef205bddf8e4f21f29f5604e980"
+         commit: "v0.3.2"
 git_repo :"sigstore-conformance", "tmp/sigstore-conformance", "https://github.com/sigstore/sigstore-conformance",
          commit: "v0.0.11"
 
@@ -247,11 +249,13 @@ def proto_gem(name, source_repo, deps: [])
     RB
   end
   gemspec = File.join(File.dirname(task.lib), "protobug_#{name}.gemspec")
-  file gemspec => [rb, "Rakefile"] do |t|
+  file gemspec => [rb, "Rakefile", "lib/protobug/version.rb"] do |t|
     task.prerequisite_tasks.grep(ProtoGem).each do |dep|
       task.gemspec.add_runtime_dependency "protobug_#{dep.name}", Protobug::VERSION
     end
-    File.write(t.name, task.gemspec.to_ruby.sub!(/^  s\.date\ =.+/, ""))
+    contents = task.gemspec.to_ruby.sub!(/^  s\.date\ =.+/, "")
+    contents.sub!(/^  s.rubygems_version =.+/, "")
+    File.write(t.name, contents)
   end
   task.inputs.each do |i|
     file i => source_repo
