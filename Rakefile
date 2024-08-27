@@ -224,6 +224,8 @@ git_repo :fulcio, "tmp/fulcio", "https://github.com/sigstore/fulcio",
          commit: "v1.6.3"
 git_repo :grpc_gateway, "tmp/grpc-gateway", "https://github.com/grpc-ecosystem/grpc-gateway",
          commit: "main"
+git_repo :in_toto_attestation, "tmp/in-toto-attestation", "https://github.com/in-toto/attestation",
+         commit: "main"
 
 multitask example: %w[sigstore sigstore-conformance sigstore_protos] do
   ruby "-rbundler/setup", "example/example.rb"
@@ -344,6 +346,12 @@ proto_gem :fulcio_protos, :fulcio,
           deps: %i[well_known_protos googleapis_field_behavior_protos protoc_gen_openapiv2_protos] do |task|
   task.base(".")
       .include("fulcio.proto")
+end
+
+proto_gem :in_toto_attestation_protos, :in_toto_attestation,
+          deps: %i[well_known_protos] do |task|
+  task.base("protos")
+      .include("in_toto_attestation/**/*.proto")
 end
 
 multitask conformance: %w[conformance_protos tmp/protobuf/.build/conformance_test_runner] do
