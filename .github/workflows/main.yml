@@ -41,7 +41,9 @@ jobs:
           bundler-cache: true
       - name: Install Protoc
         uses: arduino/setup-protoc@c65c819552d16ad3c9b72d9dfd5ba5237b9c906b # v3.0.0
+      - name: Clone dependencies
+        run: bin/rake clone
       - name: Run the default task
-        run: bin/rake --trace
+        run: bin/rake
       - name: Ensure no changes
         run: git diff --exit-code HEAD

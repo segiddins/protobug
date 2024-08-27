@@ -193,11 +193,13 @@ class ProtoGem < Rake::FileTask
   end
 end
 
+multitask clone: []
 def git_repo(name, path, url, commit: "main")
   task = GitRepo.define_task(name)
   task.path = path
   task.url = url
   task.commit = commit
+  multitask clone: name
   task
 end
 
