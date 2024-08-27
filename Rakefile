@@ -253,7 +253,9 @@ def proto_gem(name, source_repo, deps: [])
     task.prerequisite_tasks.grep(ProtoGem).each do |dep|
       task.gemspec.add_runtime_dependency "protobug_#{dep.name}", Protobug::VERSION
     end
-    File.write(t.name, task.gemspec.to_ruby.sub!(/^  s\.date\ =.+/, ""))
+    contents = task.gemspec.to_ruby.sub!(/^  s\.date\ =.+/, "")
+    contents.sub!(/^  s.rubygems_version =.+/, "")
+    File.write(t.name, contents)
   end
   task.inputs.each do |i|
     file i => source_repo
