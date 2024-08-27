@@ -118,6 +118,7 @@ module Protobug
               next
             end
             raise "expected #{self}.#{name} to be repeated" unless field.repeated?
+            next if [:method, "method"].include?(name)
 
             message_name = Regexp.last_match(1)
 
@@ -196,6 +197,10 @@ module Protobug
     end
 
     class OneofDescriptorProto < DelegateClass(Google::Protobuf::OneofDescriptorProto)
+      include Descriptor
+    end
+
+    class MethodDescriptorProto < DelegateClass(Google::Protobuf::MethodDescriptorProto)
       include Descriptor
     end
 
@@ -381,6 +386,10 @@ module Protobug
       when OneofDescriptorProto
         group.empty if source_loc.leading_comments?
         # no-op
+      when ServiceDescriptorProto
+        group.empty if source_loc.leading_comments?
+        # TODO: implement services?
+        nil
       else
         raise "Unknown descriptor type: #{descriptor.class}"
       end.tap do |s|
