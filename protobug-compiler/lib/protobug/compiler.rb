@@ -118,7 +118,6 @@ module Protobug
               next
             end
             raise "expected #{self}.#{name} to be repeated" unless field.repeated?
-            next if [:method, "method"].include?(name)
 
             message_name = Regexp.last_match(1)
 
@@ -126,7 +125,9 @@ module Protobug
 
             define_method(name) do
               field_type = Compiler.const_get(message_name)
-              super().map.with_index { |d, idx| field_type.new(d, self, path: @path + [field.number, idx]) }
+              __getobj__.send(name).map.with_index do |d, idx|
+                field_type.new(d, self, path: @path + [field.number, idx])
+              end
             end
           end
 
@@ -202,6 +203,19 @@ module Protobug
 
     class MethodDescriptorProto < DelegateClass(Google::Protobuf::MethodDescriptorProto)
       include Descriptor
+
+      def ruby_method_name
+        return name unless /[A-Z-]|::/.match?(name)
+
+        word = name.gsub("::", "/")
+        # word.gsub!(inflections.acronyms_underscore_regex) do
+        #   "#{::Regexp.last_match(1) && "_"}#{::Regexp.last_match(2).downcase}"
+        # end
+        word.gsub!(/(?<=[A-Z])(?=[A-Z][a-z])|(?<=[a-z\d])(?=[A-Z])/, "_")
+        word.tr!("-", "_")
+        word.downcase!
+        word
+      end
     end
 
     def compile!
@@ -387,9 +401,23 @@ module Protobug
         group.empty if source_loc.leading_comments?
         # no-op
       when ServiceDescriptorProto
-        group.empty if source_loc.leading_comments?
-        # TODO: implement services?
-        nil
+        group._class.identifier(descriptor.name).block do |g|
+          requires_empty = false
+          descriptor.each_declaration do |decl|
+            g.empty if requires_empty
+            requires_empty = true
+            requires_empty = emit_decls(decl, g)
+          end
+        end
+      when MethodDescriptorProto
+        group._def.identifier(descriptor.ruby_method_name)
+             .call do |c|
+          c.identifier("...")
+        end.block do |defn|
+          defn.identifier("raise").call do |c|
+            c.identifier("NotImplementedError")
+          end
+        end
       else
         raise "Unknown descriptor type: #{descriptor.class}"
       end.tap do |s|
@@ -501,7 +529,8 @@ module Protobug
           end
         )
         defn.comment("extension: #{containing_type.full_name}\n  #{descriptor.type} #{descriptor.number}")
-      when FileDescriptorProto, EnumValueDescriptorProto, ServiceDescriptorProto, OneofDescriptorProto
+      when FileDescriptorProto, EnumValueDescriptorProto, ServiceDescriptorProto, OneofDescriptorProto,
+        MethodDescriptorProto
         # no-op
       else
         raise "Unknown descriptor type: #{descriptor.class}"

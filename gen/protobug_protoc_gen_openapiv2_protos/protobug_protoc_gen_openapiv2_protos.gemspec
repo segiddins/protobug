@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.homepage = "https://github.com/segiddins/protobug/blob/v0.1.1/gen/protobug_protoc_gen_openapiv2_protos".freeze
   s.licenses = ["Unlicense".freeze]
   s.required_ruby_version = Gem::Requirement.new(">= 3.0.0".freeze)
-  s.rubygems_version = "3.5.9".freeze
+
   s.summary = "Compiled protos for protobug from https://github.com/grpc-ecosystem/grpc-gateway (protoc_gen_openapiv2_protos)".freeze
 
   s.specification_version = 4

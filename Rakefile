@@ -330,6 +330,10 @@ proto_gem :googleapis_field_behavior_protos, :googleapis, deps: %i[well_known_pr
   task.base(".")
       .include("google/api/field_behavior.proto")
 end
+proto_gem :googleapis_annotations_protos, :googleapis, deps: %i[well_known_protos] do |task|
+  task.base(".")
+      .include("google/api/{annotations,http}.proto")
+end
 
 proto_gem :sigstore_protos, :sigstore, deps: %i[well_known_protos googleapis_field_behavior_protos] do |task|
   task.base("protos")
@@ -343,7 +347,8 @@ proto_gem :protoc_gen_openapiv2_protos, :grpc_gateway,
 end
 
 proto_gem :fulcio_protos, :fulcio,
-          deps: %i[well_known_protos googleapis_field_behavior_protos protoc_gen_openapiv2_protos] do |task|
+          deps: %i[well_known_protos googleapis_field_behavior_protos googleapis_annotations_protos
+                   protoc_gen_openapiv2_protos] do |task|
   task.base(".")
       .include("fulcio.proto")
 end

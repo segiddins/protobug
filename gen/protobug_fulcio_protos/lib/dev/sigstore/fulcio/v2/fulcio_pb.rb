@@ -42,6 +42,25 @@ module Dev
         # If there's a feature that you think would negatively impact the HTTP API,
         # open an issue to discuss.
 
+        class CA
+          # *
+          #  Returns an X.509 certificate created by the Fulcio certificate authority for the given request parameters
+          def create_signing_certificate(...)
+            raise(NotImplementedError)
+          end
+
+          # *
+          #  Returns the bundle of certificates that can be used to validate code signing certificates issued by this Fulcio instance
+          def get_trust_bundle(...)
+            raise(NotImplementedError)
+          end
+
+          # *
+          #  Returns the configuration of supported OIDC issuers, including the required challenge for each issuer.
+          def get_configuration(...)
+            raise(NotImplementedError)
+          end
+        end
 
         class CreateSigningCertificateRequest
           extend Protobug::Message
