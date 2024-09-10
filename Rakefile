@@ -220,6 +220,12 @@ git_repo :sigstore, "tmp/sigstore", "https://github.com/sigstore/protobuf-specs"
          commit: "v0.3.2"
 git_repo :"sigstore-conformance", "tmp/sigstore-conformance", "https://github.com/sigstore/sigstore-conformance",
          commit: "v0.0.11"
+git_repo :fulcio, "tmp/fulcio", "https://github.com/sigstore/fulcio",
+         commit: "v1.6.3"
+git_repo :grpc_gateway, "tmp/grpc-gateway", "https://github.com/grpc-ecosystem/grpc-gateway",
+         commit: "main"
+git_repo :in_toto_attestation, "tmp/in-toto-attestation", "https://github.com/in-toto/attestation",
+         commit: "main"
 
 multitask example: %w[sigstore sigstore-conformance sigstore_protos] do
   ruby "-rbundler/setup", "example/example.rb"
@@ -236,7 +242,7 @@ def proto_gem(name, source_repo, deps: [])
   directory task.lib
   task.source_repo = Rake.application.lookup(source_repo)
   yield task
-  task.gemspec.summary = "Compiled protos for protobug from #{task.source_repo.url} (#{name})"
+  task.gemspec.summary = "Compiled protos for protobug from #{task.source_repo&.url} (#{name})"
   task.gemspec.files += task.outputs.map { _1.sub(%r{^#{task.lib}/}, "lib/") }
   rb = File.join(task.lib, "protobug_#{name}.rb")
   file rb do |t|
@@ -324,10 +330,33 @@ proto_gem :googleapis_field_behavior_protos, :googleapis, deps: %i[well_known_pr
   task.base(".")
       .include("google/api/field_behavior.proto")
 end
+proto_gem :googleapis_annotations_protos, :googleapis, deps: %i[well_known_protos] do |task|
+  task.base(".")
+      .include("google/api/{annotations,http}.proto")
+end
 
 proto_gem :sigstore_protos, :sigstore, deps: %i[well_known_protos googleapis_field_behavior_protos] do |task|
   task.base("protos")
       .include("*.proto")
+end
+
+proto_gem :protoc_gen_openapiv2_protos, :grpc_gateway,
+          deps: %i[well_known_protos googleapis_field_behavior_protos] do |task|
+  task.base(".")
+      .include("protoc-gen-openapiv2/**/*.proto")
+end
+
+proto_gem :fulcio_protos, :fulcio,
+          deps: %i[well_known_protos googleapis_field_behavior_protos googleapis_annotations_protos
+                   protoc_gen_openapiv2_protos] do |task|
+  task.base(".")
+      .include("fulcio.proto")
+end
+
+proto_gem :in_toto_attestation_protos, :in_toto_attestation,
+          deps: %i[well_known_protos] do |task|
+  task.base("protos")
+      .include("in_toto_attestation/**/*.proto")
 end
 
 multitask conformance: %w[conformance_protos tmp/protobuf/.build/conformance_test_runner] do

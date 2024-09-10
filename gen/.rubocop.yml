@@ -23,6 +23,8 @@ Gemspec/DeprecatedAttributeAssignment:
 Layout/LineLength:
   Exclude:
     - "*/*.gemspec"
+  AllowedPatterns:
+    - !ruby/regexp /^\s*#/
 
 Layout/EmptyLineAfterMagicComment:
   Exclude:
