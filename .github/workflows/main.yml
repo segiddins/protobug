@@ -11,21 +11,21 @@ permissions:
   contents: read
 
 jobs:
+  ruby-versions:
+    uses: ruby/actions/.github/workflows/ruby_versions.yml@master
+    with:
+      engine: all
+      min_version: 3.0
+
   build:
     runs-on: ubuntu-latest
     name: Ruby ${{ matrix.ruby }}
+    needs:
+      - ruby-versions
     strategy:
       fail-fast: false
       matrix:
-        ruby:
-          - "3.3.0"
-          - "3.2.3"
-          - "3.1.4"
-          - "3.0.5"
-          - "truffleruby-23.1.2"
-          - "jruby-9.4.6.0"
-        allow_failures:
-          - ruby: "truffleruby-23.1.2"
+        ruby: ${{ fromJson(needs.ruby-versions.outputs.versions) }}
 
     steps:
       - name: Harden Runner
@@ -48,3 +48,24 @@ jobs:
         run: bin/rake
       - name: Ensure no changes
         run: git diff --exit-code HEAD
+        # Since truffleruby does not update rubygems
+        if: success() && !startsWith(matrix.ruby , 'truffleruby')
+
+  all-tests-pass:
+    if: always()
+
+    needs:
+      - build
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@5c7944e73c4c2a096b17a9cb74d65b6c2bbafbde # v2.9.1
+        with:
+          egress-policy: audit
+
+      - name: check test jobs
+        uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}
