@@ -217,15 +217,15 @@ end
 git_repo :googleapis, "tmp/googleapis", "https://github.com/googleapis/googleapis",
          commit: "1e6517ef4f949191c9e471857cf5811c8abcab84"
 git_repo :sigstore, "tmp/sigstore", "https://github.com/sigstore/protobuf-specs",
-         commit: "v0.3.2"
+         commit: "59d84bd5e11aa12d1f7f96edaffd25d2386da34c"
 git_repo :"sigstore-conformance", "tmp/sigstore-conformance", "https://github.com/sigstore/sigstore-conformance",
          commit: "v0.0.11"
 git_repo :fulcio, "tmp/fulcio", "https://github.com/sigstore/fulcio",
-         commit: "v1.6.3"
+         commit: "v1.6.4"
 git_repo :grpc_gateway, "tmp/grpc-gateway", "https://github.com/grpc-ecosystem/grpc-gateway",
-         commit: "main"
+         commit: "v2.22.0"
 git_repo :in_toto_attestation, "tmp/in-toto-attestation", "https://github.com/in-toto/attestation",
-         commit: "main"
+         commit: "v1.1.0"
 
 multitask example: %w[sigstore sigstore-conformance sigstore_protos] do
   ruby "-rbundler/setup", "example/example.rb"

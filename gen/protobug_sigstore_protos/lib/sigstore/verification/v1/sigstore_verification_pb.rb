@@ -281,6 +281,16 @@ module Sigstore
           oneof: :data,
           proto3_optional: false
         )
+        # Digest of the artifact
+        optional(
+          3,
+          "artifact_digest",
+          type: :message,
+          message_type: "dev.sigstore.common.v1.HashOutput",
+          json_name: "artifactDigest",
+          oneof: :data,
+          proto3_optional: false
+        )
       end
 
       # Input captures all that is needed to call the bundle verification method,

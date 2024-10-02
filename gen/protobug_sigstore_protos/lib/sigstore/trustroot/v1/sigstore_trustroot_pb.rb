@@ -256,6 +256,14 @@ module Sigstore
 
         self.full_name = "dev.sigstore.trustroot.v1.SigningConfig"
 
+        # MUST be application/vnd.dev.sigstore.signingconfig.v0.1+json
+        optional(
+          5,
+          "media_type",
+          type: :string,
+          json_name: "mediaType",
+          proto3_optional: false
+        )
         # A URL to a Fulcio-compatible CA, capable of receiving
         # Certificate Signing Requests (CSRs) and responding with
         # issued certificates.
