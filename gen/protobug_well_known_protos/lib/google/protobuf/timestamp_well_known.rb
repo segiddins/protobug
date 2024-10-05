@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "date"
+
 Google::Protobuf::Timestamp.class_eval do
   def to_time
     Time.at(seconds, nanos, :nanosecond, in: 0)
