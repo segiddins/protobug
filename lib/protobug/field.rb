@@ -61,19 +61,55 @@ module Protobug
       @proto3_optional
     end
 
-    def define_adder(message)
-      field = self
-      message.define_method(adder) do |value|
-        field.validate!(value, self)
+    def method_definitions
+      str = +""
 
-        existing = instance_variable_get(field.ivar)
-        if UNSET == existing
-          existing = field.default
-          instance_variable_set(field.ivar, existing)
-        end
+      str << "def #{setter}(value)\n"
+      str << "  return #{ivar} = ::Protobug::UNSET if value.nil?\n" if optional? && proto3_optional?
+      str << "  field = self.class.fields_by_name.fetch(#{name.to_s.dump})\n"
+      str << "  field.validate!(value, self)\n"
+      str << "  #{ivar} = value\n"
+      str << "end\n"
 
-        existing << value
+      str << "def #{name}\n"
+      str << "  value = #{ivar}\n"
+      str << "  ::Protobug::UNSET == value ? self.class.fields_by_name.fetch(#{name.to_s.dump}).default : value\n"
+      str << "end\n"
+
+      str << "def #{haser}\n"
+      str << "  value = #{ivar}\n"
+      str << "  return false if ::Protobug::UNSET == value\n"
+      if (!optional? || !proto3_optional?) && !oneof
+        str << "  field = self.class.fields_by_name.fetch(#{name.to_s.dump})\n"
+        str << "  return false if field.default == value\n"
       end
+      str << if repeated?
+               "  !value.empty?\n"
+             else
+               "  true\n"
+             end
+      str << "end\n"
+
+      str << "def #{clearer}\n"
+      str << "  #{ivar} = ::Protobug::UNSET\n"
+      str << "end\n"
+
+      adder_method_definition(str) if repeated?
+
+      str
+    end
+
+    def adder_method_definition(str)
+      str << "def #{adder}(value)\n"
+      str << "  existing = #{ivar}\n"
+      str << "  field = self.class.fields_by_name.fetch(#{name.to_s.dump})\n"
+      str << "  if ::Protobug::UNSET == existing\n"
+      str << "    existing = field.default\n"
+      str << "    #{ivar} = existing\n"
+      str << "  end\n"
+      str << "  field.validate!(value, self)\n"
+      str << "  existing << value\n"
+      str << "end\n"
     end
 
     def to_text(value)
@@ -309,17 +345,15 @@ module Protobug
         @map_class
       end
 
-      def define_adder(message)
-        field = self
-        message.define_method(adder) do |msg|
-          existing = instance_variable_get(field.ivar)
-          if UNSET == existing
-            existing = field.default
-            instance_variable_set(field.ivar, existing)
-          end
-
-          existing[msg.key] = msg.value
-        end
+      def adder_method_definition(str)
+        str << "def #{adder}(msg)\n"
+        str << "  existing = #{ivar}\n"
+        str << "  if ::Protobug::UNSET == existing\n"
+        str << "    existing = {}\n"
+        str << "    #{ivar} = existing\n"
+        str << "  end\n"
+        str << "  existing[msg.key] = msg.value\n"
+        str << "end\n"
       end
     end
 
