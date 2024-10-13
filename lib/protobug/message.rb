@@ -11,6 +11,10 @@ module Protobug
     "<UNSET>"
   end
 
+  def UNSET.to_s
+    "<UNSET>"
+  end
+
   def UNSET.===(other)
     other.equal? UNSET
   end
@@ -164,6 +168,17 @@ module Protobug
     end
 
     def field(number, name, type:, **kwargs)
+      raise ArgumentError unless number.is_a? Integer
+
+      case name
+      when String
+        # OK
+      when Symbol
+        name = name.name
+      else
+        raise ArgumentError
+      end
+
       field =
         case type
         when :message
@@ -219,36 +234,7 @@ module Protobug
       fields_by_json_name[name] = field
       fields_by_json_name[field.json_name] = field
 
-      define_method(field.setter) do |value|
-        return instance_variable_set(field.ivar, UNSET) if value.nil? && field.optional? && field.proto3_optional?
-
-        field.validate!(value, self)
-        instance_variable_set(field.ivar, value)
-      end
-
-      define_method(name) do
-        value = instance_variable_get(field.ivar)
-        UNSET == value ? field.default : value
-      end
-
-      define_method(field.haser) do
-        value = instance_variable_get(field.ivar)
-        return false if UNSET == value
-
-        return false if (!field.optional? || !field.proto3_optional?) && !field.oneof && field.default == value
-
-        if field.repeated?
-          !value.empty?
-        else
-          true
-        end
-      end
-
-      define_method(field.clearer) do
-        instance_variable_set(field.ivar, UNSET)
-      end
-
-      field.define_adder(self) if field.repeated?
+      class_eval(field.method_definitions, __FILE__, __LINE__)
 
       return unless field.oneof
 
@@ -263,6 +249,8 @@ module Protobug
 
     module InstanceMethods
       def ==(other)
+        return false unless other.is_a? Protobug::Message
+
         self.class.full_name == other.class.full_name &&
           self.class.fields_by_name.all? do |name, _|
             send(name) == other.send(name)
