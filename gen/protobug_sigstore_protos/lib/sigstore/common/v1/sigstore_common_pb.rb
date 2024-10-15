@@ -151,7 +151,7 @@ module Sigstore
           1,
           "algorithm",
           type: :enum,
-          enum_type: "dev.sigstore.common.v1.HashAlgorithm",
+          enum_class: "Sigstore::Common::V1::HashAlgorithm",
           proto3_optional: false
         )
         # This is the raw octets of the message digest as computed by
@@ -172,7 +172,7 @@ module Sigstore
           1,
           "message_digest",
           type: :message,
-          message_type: "dev.sigstore.common.v1.HashOutput",
+          message_class: "Sigstore::Common::V1::HashOutput",
           json_name: "messageDigest",
           proto3_optional: false
         )
@@ -233,7 +233,7 @@ module Sigstore
           2,
           "key_details",
           type: :enum,
-          enum_type: "dev.sigstore.common.v1.PublicKeyDetails",
+          enum_class: "Sigstore::Common::V1::PublicKeyDetails",
           json_name: "keyDetails",
           proto3_optional: false
         )
@@ -242,7 +242,7 @@ module Sigstore
           3,
           "valid_for",
           type: :message,
-          message_type: "dev.sigstore.common.v1.TimeRange",
+          message_class: "Sigstore::Common::V1::TimeRange",
           json_name: "validFor"
         )
       end
@@ -272,7 +272,7 @@ module Sigstore
 
         self.full_name = "dev.sigstore.common.v1.ObjectIdentifier"
 
-        repeated(1, "id", type: :int32, packed: true)
+        repeated(1, "id", type: :int32)
       end
 
       # An OID and the corresponding (byte) value.
@@ -285,7 +285,7 @@ module Sigstore
           1,
           "oid",
           type: :message,
-          message_type: "dev.sigstore.common.v1.ObjectIdentifier",
+          message_class: "Sigstore::Common::V1::ObjectIdentifier",
           proto3_optional: false
         )
         optional(2, "value", type: :bytes, proto3_optional: false)
@@ -347,7 +347,7 @@ module Sigstore
           1,
           "type",
           type: :enum,
-          enum_type: "dev.sigstore.common.v1.SubjectAlternativeNameType",
+          enum_class: "Sigstore::Common::V1::SubjectAlternativeNameType",
           proto3_optional: false
         )
         # A regular expression describing the expected value for
@@ -388,7 +388,7 @@ module Sigstore
           1,
           "certificates",
           type: :message,
-          message_type: "dev.sigstore.common.v1.X509Certificate"
+          message_class: "Sigstore::Common::V1::X509Certificate"
         )
       end
 
@@ -405,36 +405,15 @@ module Sigstore
           1,
           "start",
           type: :message,
-          message_type: "google.protobuf.Timestamp",
+          message_class: "Google::Protobuf::Timestamp",
           proto3_optional: false
         )
         optional(
           2,
           "end",
           type: :message,
-          message_type: "google.protobuf.Timestamp"
+          message_class: "Google::Protobuf::Timestamp"
         )
-      end
-
-      def self.register_sigstore_common_protos(registry)
-        Google::Api.register_field_behavior_protos(registry)
-        Google::Protobuf.register_timestamp_protos(registry)
-        registry.register(Sigstore::Common::V1::HashAlgorithm)
-        registry.register(Sigstore::Common::V1::PublicKeyDetails)
-        registry.register(Sigstore::Common::V1::HashOutput)
-        registry.register(Sigstore::Common::V1::MessageSignature)
-        registry.register(Sigstore::Common::V1::LogId)
-        registry.register(Sigstore::Common::V1::RFC3161SignedTimestamp)
-        registry.register(Sigstore::Common::V1::PublicKey)
-        registry.register(Sigstore::Common::V1::PublicKeyIdentifier)
-        registry.register(Sigstore::Common::V1::ObjectIdentifier)
-        registry.register(Sigstore::Common::V1::ObjectIdentifierValuePair)
-        registry.register(Sigstore::Common::V1::DistinguishedName)
-        registry.register(Sigstore::Common::V1::X509Certificate)
-        registry.register(Sigstore::Common::V1::SubjectAlternativeNameType)
-        registry.register(Sigstore::Common::V1::SubjectAlternativeName)
-        registry.register(Sigstore::Common::V1::X509CertificateChain)
-        registry.register(Sigstore::Common::V1::TimeRange)
       end
     end
   end

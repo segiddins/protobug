@@ -50,7 +50,7 @@ module ProtobufTestMessages
           2,
           "corecursive",
           type: :message,
-          message_type: "protobuf_test_messages.proto2.TestAllTypesProto2"
+          message_class: "ProtobufTestMessages::Proto2::TestAllTypesProto2"
         )
       end
 
@@ -115,30 +115,30 @@ module ProtobufTestMessages
         18,
         "optional_nested_message",
         type: :message,
-        message_type:
-        "protobuf_test_messages.proto2.TestAllTypesProto2.NestedMessage",
+        message_class:
+        "ProtobufTestMessages::Proto2::TestAllTypesProto2::NestedMessage",
         json_name: "optionalNestedMessage"
       )
       optional(
         19,
         "optional_foreign_message",
         type: :message,
-        message_type: "protobuf_test_messages.proto2.ForeignMessageProto2",
+        message_class: "ProtobufTestMessages::Proto2::ForeignMessageProto2",
         json_name: "optionalForeignMessage"
       )
       optional(
         21,
         "optional_nested_enum",
         type: :enum,
-        enum_type:
-        "protobuf_test_messages.proto2.TestAllTypesProto2.NestedEnum",
+        enum_class:
+        "ProtobufTestMessages::Proto2::TestAllTypesProto2::NestedEnum",
         json_name: "optionalNestedEnum"
       )
       optional(
         22,
         "optional_foreign_enum",
         type: :enum,
-        enum_type: "protobuf_test_messages.proto2.ForeignEnumProto2",
+        enum_class: "ProtobufTestMessages::Proto2::ForeignEnumProto2",
         json_name: "optionalForeignEnum"
       )
       optional(
@@ -152,7 +152,7 @@ module ProtobufTestMessages
         27,
         "recursive_message",
         type: :message,
-        message_type: "protobuf_test_messages.proto2.TestAllTypesProto2",
+        message_class: "ProtobufTestMessages::Proto2::TestAllTypesProto2",
         json_name: "recursiveMessage"
       )
       # Repeated
@@ -225,30 +225,30 @@ module ProtobufTestMessages
         48,
         "repeated_nested_message",
         type: :message,
-        message_type:
-        "protobuf_test_messages.proto2.TestAllTypesProto2.NestedMessage",
+        message_class:
+        "ProtobufTestMessages::Proto2::TestAllTypesProto2::NestedMessage",
         json_name: "repeatedNestedMessage"
       )
       repeated(
         49,
         "repeated_foreign_message",
         type: :message,
-        message_type: "protobuf_test_messages.proto2.ForeignMessageProto2",
+        message_class: "ProtobufTestMessages::Proto2::ForeignMessageProto2",
         json_name: "repeatedForeignMessage"
       )
       repeated(
         51,
         "repeated_nested_enum",
         type: :enum,
-        enum_type:
-        "protobuf_test_messages.proto2.TestAllTypesProto2.NestedEnum",
+        enum_class:
+        "ProtobufTestMessages::Proto2::TestAllTypesProto2::NestedEnum",
         json_name: "repeatedNestedEnum"
       )
       repeated(
         52,
         "repeated_foreign_enum",
         type: :enum,
-        enum_type: "protobuf_test_messages.proto2.ForeignEnumProto2",
+        enum_class: "ProtobufTestMessages::Proto2::ForeignEnumProto2",
         json_name: "repeatedForeignEnum"
       )
       repeated(
@@ -354,8 +354,8 @@ module ProtobufTestMessages
         88,
         "packed_nested_enum",
         type: :enum,
-        enum_type:
-        "protobuf_test_messages.proto2.TestAllTypesProto2.NestedEnum",
+        enum_class:
+        "ProtobufTestMessages::Proto2::TestAllTypesProto2::NestedEnum",
         packed: true,
         json_name: "packedNestedEnum"
       )
@@ -422,8 +422,8 @@ module ProtobufTestMessages
         102,
         "unpacked_nested_enum",
         type: :enum,
-        enum_type:
-        "protobuf_test_messages.proto2.TestAllTypesProto2.NestedEnum",
+        enum_class:
+        "ProtobufTestMessages::Proto2::TestAllTypesProto2::NestedEnum",
         json_name: "unpackedNestedEnum"
       )
       # Map
@@ -537,8 +537,8 @@ module ProtobufTestMessages
         "map_string_nested_message",
         key_type: :string,
         value_type: :message,
-        message_type:
-        "protobuf_test_messages.proto2.TestAllTypesProto2.NestedMessage",
+        message_class:
+        "ProtobufTestMessages::Proto2::TestAllTypesProto2::NestedMessage",
         json_name: "mapStringNestedMessage"
       )
       map(
@@ -546,7 +546,7 @@ module ProtobufTestMessages
         "map_string_foreign_message",
         key_type: :string,
         value_type: :message,
-        message_type: "protobuf_test_messages.proto2.ForeignMessageProto2",
+        message_class: "ProtobufTestMessages::Proto2::ForeignMessageProto2",
         json_name: "mapStringForeignMessage"
       )
       map(
@@ -554,8 +554,8 @@ module ProtobufTestMessages
         "map_string_nested_enum",
         key_type: :string,
         value_type: :enum,
-        enum_type:
-        "protobuf_test_messages.proto2.TestAllTypesProto2.NestedEnum",
+        enum_class:
+        "ProtobufTestMessages::Proto2::TestAllTypesProto2::NestedEnum",
         json_name: "mapStringNestedEnum"
       )
       map(
@@ -563,7 +563,7 @@ module ProtobufTestMessages
         "map_string_foreign_enum",
         key_type: :string,
         value_type: :enum,
-        enum_type: "protobuf_test_messages.proto2.ForeignEnumProto2",
+        enum_class: "ProtobufTestMessages::Proto2::ForeignEnumProto2",
         json_name: "mapStringForeignEnum"
       )
       optional(
@@ -577,8 +577,8 @@ module ProtobufTestMessages
         112,
         "oneof_nested_message",
         type: :message,
-        message_type:
-        "protobuf_test_messages.proto2.TestAllTypesProto2.NestedMessage",
+        message_class:
+        "ProtobufTestMessages::Proto2::TestAllTypesProto2::NestedMessage",
         json_name: "oneofNestedMessage",
         oneof: :oneof_field
       )
@@ -628,17 +628,12 @@ module ProtobufTestMessages
         119,
         "oneof_enum",
         type: :enum,
-        enum_type:
-        "protobuf_test_messages.proto2.TestAllTypesProto2.NestedEnum",
+        enum_class:
+        "ProtobufTestMessages::Proto2::TestAllTypesProto2::NestedEnum",
         json_name: "oneofEnum",
         oneof: :oneof_field
       )
-      optional(
-        201,
-        "data",
-        type: :group,
-        group_type: "protobuf_test_messages.proto2.TestAllTypesProto2.Data"
-      )
+      optional(201, "data", type: :group)
       # groups
       class Data
         extend Protobug::Message
@@ -778,16 +773,10 @@ module ProtobufTestMessages
         1_003,
         "nested_message",
         type: :message,
-        message_type: "protobuf_test_messages.proto2.ForeignMessageProto2",
+        message_class: "ProtobufTestMessages::Proto2::ForeignMessageProto2",
         json_name: "nestedMessage"
       )
-      optional(
-        1_004,
-        "optionalgroup",
-        type: :group,
-        group_type:
-        "protobuf_test_messages.proto2.UnknownToTestAllTypes.OptionalGroup"
-      )
+      optional(1_004, "optionalgroup", type: :group)
       class OptionalGroup
         extend Protobug::Message
 
@@ -859,15 +848,15 @@ module ProtobufTestMessages
           2,
           "corecursive",
           type: :message,
-          message_type:
-          "protobuf_test_messages.proto2.TestAllRequiredTypesProto2"
+          message_class:
+          "ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2"
         )
         optional(
           3,
           "optional_corecursive",
           type: :message,
-          message_type:
-          "protobuf_test_messages.proto2.TestAllRequiredTypesProto2",
+          message_class:
+          "ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2",
           json_name: "optionalCorecursive"
         )
       end
@@ -933,30 +922,30 @@ module ProtobufTestMessages
         18,
         "required_nested_message",
         type: :message,
-        message_type:
-        "protobuf_test_messages.proto2.TestAllRequiredTypesProto2.NestedMessage",
+        message_class:
+        "ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::NestedMessage",
         json_name: "requiredNestedMessage"
       )
       required(
         19,
         "required_foreign_message",
         type: :message,
-        message_type: "protobuf_test_messages.proto2.ForeignMessageProto2",
+        message_class: "ProtobufTestMessages::Proto2::ForeignMessageProto2",
         json_name: "requiredForeignMessage"
       )
       required(
         21,
         "required_nested_enum",
         type: :enum,
-        enum_type:
-        "protobuf_test_messages.proto2.TestAllRequiredTypesProto2.NestedEnum",
+        enum_class:
+        "ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::NestedEnum",
         json_name: "requiredNestedEnum"
       )
       required(
         22,
         "required_foreign_enum",
         type: :enum,
-        enum_type: "protobuf_test_messages.proto2.ForeignEnumProto2",
+        enum_class: "ProtobufTestMessages::Proto2::ForeignEnumProto2",
         json_name: "requiredForeignEnum"
       )
       required(
@@ -970,25 +959,19 @@ module ProtobufTestMessages
         27,
         "recursive_message",
         type: :message,
-        message_type:
-        "protobuf_test_messages.proto2.TestAllRequiredTypesProto2",
+        message_class:
+        "ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2",
         json_name: "recursiveMessage"
       )
       optional(
         28,
         "optional_recursive_message",
         type: :message,
-        message_type:
-        "protobuf_test_messages.proto2.TestAllRequiredTypesProto2",
+        message_class:
+        "ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2",
         json_name: "optionalRecursiveMessage"
       )
-      required(
-        201,
-        "data",
-        type: :group,
-        group_type:
-        "protobuf_test_messages.proto2.TestAllRequiredTypesProto2.Data"
-      )
+      required(201, "data", type: :group)
       # groups
       class Data
         extend Protobug::Message
@@ -1064,68 +1047,6 @@ module ProtobufTestMessages
 
       # Reserved for unknown fields test.
       reserved_range(1_000...10_000)
-    end
-
-    def self.register_test_messages_proto2_protos(registry)
-      registry.register(ProtobufTestMessages::Proto2::TestAllTypesProto2)
-      registry.register(
-        ProtobufTestMessages::Proto2::TestAllTypesProto2::NestedMessage
-      )
-      registry.register(
-        ProtobufTestMessages::Proto2::TestAllTypesProto2::NestedEnum
-      )
-      registry.register(ProtobufTestMessages::Proto2::TestAllTypesProto2::Data)
-      registry.register(
-        ProtobufTestMessages::Proto2::TestAllTypesProto2::MessageSetCorrect
-      )
-      registry.register(
-        ProtobufTestMessages::Proto2::TestAllTypesProto2::MessageSetCorrectExtension1
-      )
-      # extension: protobuf_test_messages.proto2.TestAllTypesProto2.MessageSetCorrect
-      #   TYPE_MESSAGE 1547769
-      registry.register(
-        ProtobufTestMessages::Proto2::TestAllTypesProto2::MessageSetCorrectExtension2
-      )
-      # extension: protobuf_test_messages.proto2.TestAllTypesProto2.MessageSetCorrect
-      #   TYPE_MESSAGE 4135312
-      registry.register(ProtobufTestMessages::Proto2::ForeignMessageProto2)
-      registry.register(ProtobufTestMessages::Proto2::ForeignEnumProto2)
-      # extension: protobuf_test_messages.proto2.TestAllTypesProto2
-      #   TYPE_INT32 120
-      registry.register(ProtobufTestMessages::Proto2::UnknownToTestAllTypes)
-      registry.register(
-        ProtobufTestMessages::Proto2::UnknownToTestAllTypes::OptionalGroup
-      )
-      registry.register(ProtobufTestMessages::Proto2::NullHypothesisProto2)
-      registry.register(ProtobufTestMessages::Proto2::EnumOnlyProto2)
-      registry.register(ProtobufTestMessages::Proto2::EnumOnlyProto2::Bool)
-      registry.register(ProtobufTestMessages::Proto2::OneStringProto2)
-      registry.register(ProtobufTestMessages::Proto2::ProtoWithKeywords)
-      registry.register(
-        ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2
-      )
-      registry.register(
-        ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::NestedMessage
-      )
-      registry.register(
-        ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::NestedEnum
-      )
-      registry.register(
-        ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::Data
-      )
-      registry.register(
-        ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrect
-      )
-      registry.register(
-        ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrectExtension1
-      )
-      # extension: protobuf_test_messages.proto2.TestAllRequiredTypesProto2.MessageSetCorrect
-      #   TYPE_MESSAGE 1547769
-      registry.register(
-        ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrectExtension2
-      )
-      # extension: protobuf_test_messages.proto2.TestAllRequiredTypesProto2.MessageSetCorrect
-      #   TYPE_MESSAGE 4135312
     end
   end
 end

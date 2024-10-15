@@ -64,7 +64,7 @@ module Google
         2,
         "fields",
         type: :message,
-        message_type: "google.protobuf.Field"
+        message_class: "Google::Protobuf::Field"
       )
       # The list of types appearing in `oneof` definitions in this type.
       repeated(3, "oneofs", type: :string)
@@ -73,14 +73,14 @@ module Google
         4,
         "options",
         type: :message,
-        message_type: "google.protobuf.Option"
+        message_class: "Google::Protobuf::Option"
       )
       # The source context.
       optional(
         5,
         "source_context",
         type: :message,
-        message_type: "google.protobuf.SourceContext",
+        message_class: "Google::Protobuf::SourceContext",
         json_name: "sourceContext",
         proto3_optional: false
       )
@@ -89,7 +89,7 @@ module Google
         6,
         "syntax",
         type: :enum,
-        enum_type: "google.protobuf.Syntax",
+        enum_class: "Google::Protobuf::Syntax",
         proto3_optional: false
       )
       # The source edition string, only valid when syntax is SYNTAX_EDITIONS.
@@ -169,7 +169,7 @@ module Google
         1,
         "kind",
         type: :enum,
-        enum_type: "google.protobuf.Field.Kind",
+        enum_class: "Google::Protobuf::Field::Kind",
         proto3_optional: false
       )
       # The field cardinality.
@@ -177,7 +177,7 @@ module Google
         2,
         "cardinality",
         type: :enum,
-        enum_type: "google.protobuf.Field.Cardinality",
+        enum_class: "Google::Protobuf::Field::Cardinality",
         proto3_optional: false
       )
       # The field number.
@@ -209,7 +209,7 @@ module Google
         9,
         "options",
         type: :message,
-        message_type: "google.protobuf.Option"
+        message_class: "Google::Protobuf::Option"
       )
       # The field JSON name.
       optional(
@@ -242,21 +242,21 @@ module Google
         2,
         "enumvalue",
         type: :message,
-        message_type: "google.protobuf.EnumValue"
+        message_class: "Google::Protobuf::EnumValue"
       )
       # Protocol buffer options.
       repeated(
         3,
         "options",
         type: :message,
-        message_type: "google.protobuf.Option"
+        message_class: "Google::Protobuf::Option"
       )
       # The source context.
       optional(
         4,
         "source_context",
         type: :message,
-        message_type: "google.protobuf.SourceContext",
+        message_class: "Google::Protobuf::SourceContext",
         json_name: "sourceContext",
         proto3_optional: false
       )
@@ -265,7 +265,7 @@ module Google
         5,
         "syntax",
         type: :enum,
-        enum_type: "google.protobuf.Syntax",
+        enum_class: "Google::Protobuf::Syntax",
         proto3_optional: false
       )
       # The source edition string, only valid when syntax is SYNTAX_EDITIONS.
@@ -287,7 +287,7 @@ module Google
         3,
         "options",
         type: :message,
-        message_type: "google.protobuf.Option"
+        message_class: "Google::Protobuf::Option"
       )
     end
 
@@ -311,7 +311,7 @@ module Google
         2,
         "value",
         type: :message,
-        message_type: "google.protobuf.Any",
+        message_class: "Google::Protobuf::Any",
         proto3_optional: false
       )
     end
@@ -328,19 +328,6 @@ module Google
       SYNTAX_PROTO3 = new("SYNTAX_PROTO3", 1).freeze
       # Syntax `editions`.
       SYNTAX_EDITIONS = new("SYNTAX_EDITIONS", 2).freeze
-    end
-
-    def self.register_type_protos(registry)
-      Google::Protobuf.register_any_protos(registry)
-      Google::Protobuf.register_source_context_protos(registry)
-      registry.register(Google::Protobuf::Type)
-      registry.register(Google::Protobuf::Field)
-      registry.register(Google::Protobuf::Field::Kind)
-      registry.register(Google::Protobuf::Field::Cardinality)
-      registry.register(Google::Protobuf::Enum)
-      registry.register(Google::Protobuf::EnumValue)
-      registry.register(Google::Protobuf::Option)
-      registry.register(Google::Protobuf::Syntax)
     end
   end
 end

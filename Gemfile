@@ -22,3 +22,5 @@ gem "rubocop-rake", "~> 0.6.0"
 gem "rubocop-rspec", "~> 3.1"
 
 gem "simplecov", "~> 0.22.0"
+
+gem "syntax_tree", "~> 6.2"

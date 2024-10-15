@@ -37,12 +37,5 @@ module Google
     # See `HttpRule`.
     # extension: google.protobuf.MethodOptions
     #   http 72295728
-
-    def self.register_annotations_protos(registry)
-      Google::Api.register_http_protos(registry)
-      Google::Protobuf.register_descriptor_protos(registry)
-      # extension: google.protobuf.MethodOptions
-      #   TYPE_MESSAGE 72295728
-    end
   end
 end
