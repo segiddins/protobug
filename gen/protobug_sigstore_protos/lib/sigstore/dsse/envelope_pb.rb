@@ -52,7 +52,7 @@ module Sigstore
         3,
         "signatures",
         type: :message,
-        message_type: "io.intoto.Signature"
+        message_class: "Sigstore::DSSE::Signature"
       )
     end
 
@@ -67,11 +67,6 @@ module Sigstore
       # *Unauthenticated* hint identifying which public key was used.
       # OPTIONAL.
       optional(2, "keyid", type: :string, proto3_optional: false)
-    end
-
-    def self.register_envelope_protos(registry)
-      registry.register(Sigstore::DSSE::Envelope)
-      registry.register(Sigstore::DSSE::Signature)
     end
   end
 end

@@ -62,7 +62,7 @@ Google::Protobuf::Value.class_eval do
     self
   end
 
-  def self.decode_json_hash(json, registry:, ignore_unknown_fields: false)
+  def self.decode_json_hash(json, ignore_unknown_fields: false)
     case json
     when NilClass
       json = { "nullValue" => "NULL_VALUE" }
@@ -125,7 +125,7 @@ Google::Protobuf::Struct.class_eval do
     fields.key?(key)
   end
 
-  def self.decode_json_hash(json, registry:, ignore_unknown_fields: false)
+  def self.decode_json_hash(json, ignore_unknown_fields: false)
     json = { "fields" => json }
     super
   end
@@ -168,7 +168,7 @@ Google::Protobuf::ListValue.class_eval do
     arr.each_with_object(new) { |val, ret| ret << val }
   end
 
-  def self.decode_json_hash(json, registry:, ignore_unknown_fields: false)
+  def self.decode_json_hash(json, ignore_unknown_fields: false)
     json = { "values" => json }
     super
   end
@@ -179,7 +179,7 @@ Google::Protobuf::ListValue.class_eval do
 end
 
 Google::Protobuf::NullValue.class_eval do
-  def self.decode_json_hash(json, registry:, ignore_unknown_fields: false)
+  def self.decode_json_hash(json, ignore_unknown_fields: false)
     return values.fetch(0) if json.nil?
 
     super

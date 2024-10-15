@@ -59,7 +59,7 @@ module Sigstore
           2,
           "hash_algorithm",
           type: :enum,
-          enum_type: "dev.sigstore.common.v1.HashAlgorithm",
+          enum_class: "Sigstore::Common::V1::HashAlgorithm",
           json_name: "hashAlgorithm",
           proto3_optional: false
         )
@@ -69,7 +69,7 @@ module Sigstore
           3,
           "public_key",
           type: :message,
-          message_type: "dev.sigstore.common.v1.PublicKey",
+          message_class: "Sigstore::Common::V1::PublicKey",
           json_name: "publicKey",
           proto3_optional: false
         )
@@ -82,7 +82,7 @@ module Sigstore
           4,
           "log_id",
           type: :message,
-          message_type: "dev.sigstore.common.v1.LogId",
+          message_class: "Sigstore::Common::V1::LogId",
           json_name: "logId",
           proto3_optional: false
         )
@@ -105,7 +105,7 @@ module Sigstore
           5,
           "checkpoint_key_id",
           type: :message,
-          message_type: "dev.sigstore.common.v1.LogId",
+          message_class: "Sigstore::Common::V1::LogId",
           json_name: "checkpointKeyId",
           proto3_optional: false
         )
@@ -124,7 +124,7 @@ module Sigstore
           1,
           "subject",
           type: :message,
-          message_type: "dev.sigstore.common.v1.DistinguishedName",
+          message_class: "Sigstore::Common::V1::DistinguishedName",
           proto3_optional: false
         )
         # The URI identifies the certificate authority.
@@ -141,7 +141,7 @@ module Sigstore
           3,
           "cert_chain",
           type: :message,
-          message_type: "dev.sigstore.common.v1.X509CertificateChain",
+          message_class: "Sigstore::Common::V1::X509CertificateChain",
           json_name: "certChain",
           proto3_optional: false
         )
@@ -156,7 +156,7 @@ module Sigstore
           4,
           "valid_for",
           type: :message,
-          message_type: "dev.sigstore.common.v1.TimeRange",
+          message_class: "Sigstore::Common::V1::TimeRange",
           json_name: "validFor",
           proto3_optional: false
         )
@@ -214,7 +214,7 @@ module Sigstore
           2,
           "tlogs",
           type: :message,
-          message_type: "dev.sigstore.trustroot.v1.TransparencyLogInstance"
+          message_class: "Sigstore::TrustRoot::V1::TransparencyLogInstance"
         )
         # A set of trusted certificate authorities (e.g Fulcio), and any
         # intermediate certificates they provide.
@@ -228,7 +228,7 @@ module Sigstore
           3,
           "certificate_authorities",
           type: :message,
-          message_type: "dev.sigstore.trustroot.v1.CertificateAuthority",
+          message_class: "Sigstore::TrustRoot::V1::CertificateAuthority",
           json_name: "certificateAuthorities"
         )
         # A set of trusted certificate transparency logs.
@@ -236,14 +236,14 @@ module Sigstore
           4,
           "ctlogs",
           type: :message,
-          message_type: "dev.sigstore.trustroot.v1.TransparencyLogInstance"
+          message_class: "Sigstore::TrustRoot::V1::TransparencyLogInstance"
         )
         # A set of trusted timestamping authorities.
         repeated(
           5,
           "timestamp_authorities",
           type: :message,
-          message_type: "dev.sigstore.trustroot.v1.CertificateAuthority",
+          message_class: "Sigstore::TrustRoot::V1::CertificateAuthority",
           json_name: "timestampAuthorities"
         )
       end
@@ -325,7 +325,7 @@ module Sigstore
           2,
           "trusted_root",
           type: :message,
-          message_type: "dev.sigstore.trustroot.v1.TrustedRoot",
+          message_class: "Sigstore::TrustRoot::V1::TrustedRoot",
           json_name: "trustedRoot",
           proto3_optional: false
         )
@@ -334,20 +334,10 @@ module Sigstore
           3,
           "signing_config",
           type: :message,
-          message_type: "dev.sigstore.trustroot.v1.SigningConfig",
+          message_class: "Sigstore::TrustRoot::V1::SigningConfig",
           json_name: "signingConfig",
           proto3_optional: false
         )
-      end
-
-      def self.register_sigstore_trustroot_protos(registry)
-        Google::Api.register_field_behavior_protos(registry)
-        Sigstore::Common::V1.register_sigstore_common_protos(registry)
-        registry.register(Sigstore::TrustRoot::V1::TransparencyLogInstance)
-        registry.register(Sigstore::TrustRoot::V1::CertificateAuthority)
-        registry.register(Sigstore::TrustRoot::V1::TrustedRoot)
-        registry.register(Sigstore::TrustRoot::V1::SigningConfig)
-        registry.register(Sigstore::TrustRoot::V1::ClientTrustConfig)
       end
     end
   end

@@ -4,23 +4,44 @@ require_relative "binary_encoding"
 
 module Protobug
   class Field
+    RUBY_KEYWORDS = %i[alias and begin break case class def do else elsif end ensure false for if in module next nil
+                       not or redo rescue retry return self super then true undef unless until when while yield]
+                    .to_h do |k|
+      [k, :"__#{k}__"]
+    end.freeze
+    private_constant :RUBY_KEYWORDS
+
     attr_accessor :number, :name, :json_name, :cardinality, :oneof, :ivar, :setter,
-                  :adder, :haser, :clearer
+                  :adder, :haser, :clearer, :escaped_name
 
     def initialize(number, name, json_name: nil, cardinality: :optional, oneof: nil, packed: false,
-                   proto3_optional: cardinality == :optional)
+                   proto3_optional: cardinality == :optional, proto3_optional_count: nil)
+      raise DefinitionError, "packed is only valid for repeated fields" if packed && cardinality != :repeated
+
+      if proto3_optional && cardinality != :optional
+        raise DefinitionError,
+              "proto3_optional is only valid for optional fields"
+      end
+
       @number = number
       @name = name.to_sym
       @json_name = json_name || name.to_s
       @cardinality = cardinality || raise(ArgumentError, "cardinality is required")
       @oneof = oneof
       @setter = :"#{name}="
-      @adder = :"add_#{name}" if repeated?
+      @adder = repeated? && !map? ? :"add_#{name}" : nil
       @ivar = :"@#{name}"
       @clearer = :"clear_#{name}"
       @haser = :"#{name}?"
       @packed = packed
       @proto3_optional = proto3_optional
+      @escaped_name = RUBY_KEYWORDS.fetch(@name, @name)
+      @escaped_name = :"__#{escaped_name}__" if @escaped_name.match?(/\A[A-Z]/)
+      @proto3_optional_index = proto3_optional ? proto3_optional_count : nil
+    end
+
+    def to_s
+      "#{cardinality}(#{number}, #{name.inspect}, type: #{self.class})"
     end
 
     def pretty_print(pp)
@@ -49,6 +70,14 @@ module Protobug
       cardinality == :repeated
     end
 
+    def map?
+      false
+    end
+
+    def group?
+      false
+    end
+
     def packed?
       @packed
     end
@@ -62,26 +91,35 @@ module Protobug
     end
 
     def method_definitions
-      str = +""
+      str = +"# frozen_string_literal: true\n"
 
       str << "def #{setter}(value)\n"
-      str << "  return #{ivar} = ::Protobug::UNSET if value.nil?\n" if optional? && proto3_optional?
-      str << "  field = self.class.fields_by_name.fetch(#{name.to_s.dump})\n"
-      str << "  field.validate!(value, self)\n"
-      str << "  #{ivar} = value\n"
-      str << "end\n"
+      str << "  return #{ivar}#{oneof && " = @#{oneof}"} = nil if value.nil?\n" if proto3_optional?
+      str << "  field = self.class.fields_by_name.fetch(#{name.to_s.dump})\n" \
+             "  field.validate!(value, self)\n"
+      str << "  @#{oneof} = #{name.inspect}\n" if oneof
+      str << "  #{ivar} = value\n" \
+             "end\n"
 
-      str << "def #{name}\n"
-      str << "  value = #{ivar}\n"
-      str << "  ::Protobug::UNSET == value ? self.class.fields_by_name.fetch(#{name.to_s.dump}).default : value\n"
-      str << "end\n"
+      if !optional? && !oneof
+        str << "attr_reader #{name.inspect}\n"
+      else
+        str << "def #{name}\n" \
+               "  value = #{ivar}\n"
+        str << "  value = nil if @#{oneof} != #{name.inspect}\n" if oneof
+        str << "  return value unless value.nil?\n"
+        str << "  @#{oneof} = #{name.inspect}\n" if oneof
+        str << "  #{ivar} = #{default.inspect}\n" \
+               "end\n"
+      end
 
       str << "def #{haser}\n"
-      str << "  value = #{ivar}\n"
-      str << "  return false if ::Protobug::UNSET == value\n"
+      str << "  return false unless @#{oneof} == #{name.inspect}\n" if oneof
+      str << "  value = #{ivar}\n" \
+             "  return false if value.nil?\n"
       if (!optional? || !proto3_optional?) && !oneof
-        str << "  field = self.class.fields_by_name.fetch(#{name.to_s.dump})\n"
-        str << "  return false if field.default == value\n"
+        str << "  field = self.class.fields_by_name.fetch(#{name.to_s.dump})\n" \
+               "  return false if field.default == value\n"
       end
       str << if repeated?
                "  !value.empty?\n"
@@ -91,25 +129,26 @@ module Protobug
       str << "end\n"
 
       str << "def #{clearer}\n"
-      str << "  #{ivar} = ::Protobug::UNSET\n"
+      str << "  @#{oneof} = nil\n" if oneof
+      str << if map?
+               "  #{ivar} = {}\n"
+             elsif repeated?
+               "  #{ivar} = []\n"
+             else
+               "  #{ivar} = nil\n"
+             end
       str << "end\n"
 
-      adder_method_definition(str) if repeated?
+      if adder
+        str << "def #{adder}(value)\n" \
+               "  existing = #{ivar}\n" \
+               "  field = self.class.fields_by_name.fetch(#{name.to_s.dump})\n" \
+               "  field.validate!(value, self)\n" \
+               "  existing << value\n" \
+               "end\n"
+      end
 
       str
-    end
-
-    def adder_method_definition(str)
-      str << "def #{adder}(value)\n"
-      str << "  existing = #{ivar}\n"
-      str << "  field = self.class.fields_by_name.fetch(#{name.to_s.dump})\n"
-      str << "  if ::Protobug::UNSET == existing\n"
-      str << "    existing = field.default\n"
-      str << "    #{ivar} = existing\n"
-      str << "  end\n"
-      str << "  field.validate!(value, self)\n"
-      str << "  existing << value\n"
-      str << "end\n"
     end
 
     def to_text(value)
@@ -143,19 +182,6 @@ module Protobug
       end
     end
 
-    def binary_decode(binary, message, registry, wire_type)
-      if repeated? && wire_type == 2 && [0, 1, 5].include?(self.wire_type)
-        len = StringIO.new(BinaryEncoding.decode_length(binary))
-        len.binmode
-
-        message.send(adder, binary_decode_one(len, message, registry, self.wire_type)) until len.eof?
-      elsif wire_type != self.wire_type
-        raise DecodeError, "wrong wire type for #{self}: #{wire_type.inspect}"
-      else
-        message.send(adder || setter, binary_decode_one(binary, message, registry, wire_type))
-      end
-    end
-
     def json_encode(value, print_unknown_fields:)
       if repeated?
         value.map { |v| json_encode_one(v, print_unknown_fields: print_unknown_fields) }
@@ -181,7 +207,7 @@ module Protobug
       end
     end
 
-    def json_decode(value, message, ignore_unknown_fields, registry)
+    def json_decode(value, message, ignore_unknown_fields)
       if repeated?
         return if value.nil?
 
@@ -191,24 +217,19 @@ module Protobug
         end
 
         value.map do |v|
-          message.send(adder, json_decode_one(v, ignore_unknown_fields, registry))
+          v = json_decode_one(v, ignore_unknown_fields)
+          raise DecodeError, "nil is invalid for repeated #{name} in #{message}" if v.nil?
+
+          message.send(adder, v)
         end
       else
-        value = json_decode_one(value, ignore_unknown_fields, registry)
-        message.send(setter, value) unless UNSET == value
+        value = json_decode_one(value, ignore_unknown_fields)
+        message.send(setter, value) unless value.nil?
       end
     end
 
     def validate!(value, message)
-      raise DecodeError, "nil is invalid for #{name} in #{message}" if UNSET == value
-
-      return unless oneof
-
-      message.class.oneofs[oneof].each do |f|
-        next if f == self
-
-        message.send(f.clearer)
-      end
+      raise DecodeError, "nil is invalid for #{name} in #{message}" if value.nil?
     end
 
     private
@@ -222,36 +243,26 @@ module Protobug
     end
 
     class MessageField < Field
-      attr_reader :message_type
+      attr_reader :message_class
 
-      def initialize(number, name, cardinality:, message_type:, json_name: name, oneof: nil,
-                     proto3_optional: cardinality == :optional)
+      def initialize(number, name, cardinality:, message_class: nil, json_name: name, oneof: nil,
+                     proto3_optional: cardinality == :optional, proto3_optional_count: nil)
         super(number, name, json_name: json_name, cardinality: cardinality, oneof: oneof,
-                            proto3_optional: proto3_optional)
-        @message_type = message_type
+                            proto3_optional: proto3_optional, proto3_optional_count: proto3_optional_count)
+        @message_class = message_class
       end
 
       def binary_encode_one(value, outbuf)
         BinaryEncoding.encode_length value.class.encode(value), outbuf
       end
 
-      def binary_decode_one(io, message, registry, wire_type)
-        value = BinaryEncoding.read_field_value(io, wire_type)
-        kwargs = {}
-        kwargs[:object] = message.send(name) if !repeated? && message.send(haser)
-        type_lookup(registry).decode(StringIO.new(value), registry: registry, **kwargs)
-      end
-
-      def json_decode_one(value, ignore_unknown_fields, registry)
-        klass = type_lookup(registry)
-        klass.decode_json_hash(value, registry: registry, ignore_unknown_fields: ignore_unknown_fields)
-      end
-
-      def type_lookup(registry)
-        registry.fetch(message_type)
+      def json_decode_one(value, ignore_unknown_fields)
+        Object.const_get(message_class).decode_json_hash(value, ignore_unknown_fields: ignore_unknown_fields)
       end
 
       def json_encode_one(value, print_unknown_fields:)
+        return nil if value.nil?
+
         value.as_json(print_unknown_fields: print_unknown_fields)
       end
 
@@ -265,24 +276,37 @@ module Protobug
       def wire_type
         2
       end
+
+      def binary_decode_code(protobug_read_varint)
+        raise DefinitionError, "can't decode message field #{self} without message_class" unless message_class
+
+        fetch = "#{message_class}.allocate.__protobug_initialize_defaults"
+        fetch = "#{ivar} || #{fetch}" unless repeated?
+        <<~RUBY
+          length = #{protobug_read_varint}
+          #{ivar} #{adder ? :<< : :"="} (#{fetch}).__protobug_binary_decode(binary, index, index += length)
+        RUBY
+      end
     end
 
     class MapField < MessageField
       SUPER_INITIALIZE = instance_method(:initialize).super_method
       def initialize(number, name, key_type:, value_type:, json_name: name, oneof: nil, # rubocop:disable Lint/MissingSuper,
-                     enum_type: nil, message_type: nil)
+                     enum_class: nil, message_class: nil,
+                     proto3_optional_count: nil)
         SUPER_INITIALIZE.bind_call(
           self, number, name,
           cardinality: :repeated,
           json_name: json_name,
-          oneof: oneof
+          oneof: oneof,
+          proto3_optional_count: proto3_optional_count
         )
 
         @map_class = Class.new do
           extend Protobug::Message
 
           optional(1, "key", type: key_type, proto3_optional: false)
-          value_type_kwargs = { enum_type: enum_type, message_type: message_type }
+          value_type_kwargs = { enum_class: enum_class, message_class: message_class }
           value_type_kwargs.compact!
           optional(2, "value", type: value_type, **value_type_kwargs, proto3_optional: false)
         end
@@ -300,10 +324,14 @@ module Protobug
         true
       end
 
+      def map?
+        true
+      end
+
       def binary_encode(value, outbuf)
         value.each_with_object(@map_class.new) do |(k, v), entry|
           entry.key = k
-          entry.value = v
+          entry.value = v unless v.nil?
           BinaryEncoding.encode_varint (number << 3) | wire_type, outbuf
           BinaryEncoding.encode_length @map_class.encode(entry), outbuf
         end
@@ -316,7 +344,7 @@ module Protobug
         end
       end
 
-      def json_decode(value, message, ignore_unknown_fields, registry)
+      def json_decode(value, message, ignore_unknown_fields)
         return if value.nil?
 
         unless value.is_a?(Hash)
@@ -327,33 +355,45 @@ module Protobug
         value.each do |k, v|
           entry = @map_class.decode_json_hash(
             { "key" => k, "value" => v },
-            registry: registry,
             ignore_unknown_fields: ignore_unknown_fields
           )
           # can't use haser because default values should also be counted...
-          if UNSET == entry.instance_variable_get(:@value)
+          if entry.instance_variable_get(:@value).nil?
             next if ignore_unknown_fields && @map_class.fields_by_name.fetch("value").is_a?(EnumField)
 
             raise DecodeError, "nil values are not allowed in map #{name} in #{message.class}"
           end
 
-          message.send(adder, entry)
+          message.send(name)[entry.key] = entry.value
         end
       end
 
-      def type_lookup(_registry)
+      def type_lookup
         @map_class
       end
 
-      def adder_method_definition(str)
-        str << "def #{adder}(msg)\n"
-        str << "  existing = #{ivar}\n"
-        str << "  if ::Protobug::UNSET == existing\n"
-        str << "    existing = {}\n"
-        str << "    #{ivar} = existing\n"
-        str << "  end\n"
-        str << "  existing[msg.key] = msg.value\n"
-        str << "end\n"
+      def binary_decode_code(protobug_read_varint)
+        key_field, value_field = @map_class.fields_by_number.values_at(1, 2)
+        <<~RUBY
+          kv_length = #{protobug_read_varint}
+          kv_max = index + kv_length
+          kv_key = #{key_field.default.inspect}
+          kv_value = #{value_field.default.inspect}
+          while index < kv_max
+            kv_header = #{protobug_read_varint}
+            case kv_header
+            when #{0b1000 | key_field.wire_type}
+              #{key_field.binary_decode_code(protobug_read_varint).gsub("@key", "kv_key")}
+            when #{0b10000 | value_field.wire_type}
+              # doesn't work for maps
+              #{value_field.binary_decode_code(protobug_read_varint).gsub("@value", "kv_value")}
+            else
+              raise "unknown map field \#{kv_header} \#{kv_length}"
+            end
+          end
+          raise EOFError unless index == kv_max
+          #{@ivar}[kv_key] = kv_value
+        RUBY
       end
     end
 
@@ -363,21 +403,17 @@ module Protobug
       end
 
       def initialize(number, name, cardinality:, json_name: name, oneof: nil,
-                     proto3_optional: cardinality == :optional)
+                     proto3_optional: cardinality == :optional, proto3_optional_count: nil)
         super(number, name, json_name: json_name, cardinality: cardinality, oneof: oneof,
-                            proto3_optional: proto3_optional)
+                            proto3_optional: proto3_optional, proto3_optional_count: proto3_optional_count)
       end
 
       def binary_encode_one(value, outbuf)
         BinaryEncoding.encode_length value.b, outbuf
       end
 
-      def binary_decode_one(io, _message, _registry, wire_type)
-        BinaryEncoding.read_field_value(io, wire_type)
-      end
-
-      def json_decode_one(value, _ignore_unknown_fields, _registry)
-        return UNSET if value.nil?
+      def json_decode_one(value, _ignore_unknown_fields)
+        return nil if value.nil?
 
         # url decode 64
         value.tr!("-_", "+/")
@@ -403,6 +439,15 @@ module Protobug
       def wire_type
         2
       end
+
+      def binary_decode_code(protobug_read_varint)
+        <<~RUBY
+          length = #{protobug_read_varint}
+          value = binary.byteslice(index, length)
+          #{ivar} #{adder ? :<< : :"="} value
+          index += length
+        RUBY
+      end
     end
 
     class StringField < BytesField
@@ -411,9 +456,9 @@ module Protobug
       end
 
       def initialize(number, name, cardinality:, json_name: name, oneof: nil,
-                     proto3_optional: cardinality == :optional)
+                     proto3_optional: cardinality == :optional, proto3_optional_count: nil)
         super(number, name, json_name: json_name, cardinality: cardinality, oneof: oneof,
-                            proto3_optional: proto3_optional)
+                            proto3_optional: proto3_optional, proto3_optional_count: proto3_optional_count)
       end
 
       def binary_encode_one(value, outbuf)
@@ -421,20 +466,11 @@ module Protobug
         super
       end
 
-      def binary_decode_one(io, _message, _registry, wire_type)
-        value = super
-
-        value.force_encoding("utf-8") if value.encoding != Encoding::UTF_8
-        raise DecodeError, "invalid utf-8 for string" unless value.valid_encoding?
-
-        value
-      end
-
-      def json_decode_one(value, _ignore_unknown_fields, _registry)
-        return UNSET if value.nil?
+      def json_decode_one(value, _ignore_unknown_fields)
+        return nil if value.nil?
         raise DecodeError, "expected string, got #{value.inspect}" unless value.is_a?(String)
 
-        value.force_encoding("utf-8") if value.encoding != Encoding::UTF_8
+        value.force_encoding(Encoding::UTF_8) if value.encoding != Encoding::UTF_8
         raise DecodeError, "invalid utf-8 for string" unless value.valid_encoding?
 
         value
@@ -449,6 +485,16 @@ module Protobug
 
         +""
       end
+
+      def binary_decode_code(protobug_read_varint)
+        <<~RUBY
+          length = #{protobug_read_varint}
+          value = binary.byteslice(index, length).force_encoding(Encoding::UTF_8)
+          raise Protobug::DecodeError, "invalid UTF-8 in string \#{value.inspect}" unless value.valid_encoding?
+          #{ivar} #{adder ? :<< : :"="} value
+          index += length
+        RUBY
+      end
     end
 
     class IntegerField < Field
@@ -458,29 +504,36 @@ module Protobug
         0
       end
 
-      def binary_decode_one(io, _message, _registry, wire_type)
-        value = BinaryEncoding.read_field_value(io, wire_type)
-        case encoding
-        when :zigzag
-          BinaryEncoding.decode_zigzag bit_length, value
-        when :varint
-          length_mask = (2**bit_length) - 1
-          negative = signed && value & (2**bit_length.pred) != 0
-          # warn negative
-          length_mask >> 1 if signed
-          if negative
-            value &= length_mask # remove sign bit
-
-            # 2's complement
-            value ^= length_mask
-            value += 1
-            # value &= length_mask
-            -value
-          else
-            value & length_mask
-          end
-        when :fixed
-          value.unpack1(binary_pack)
+      def binary_decode_code(protobug_read_varint)
+        if encoding == :zigzag
+          length_mask = " & 0x#{(1 << bit_length).pred.to_s(16)}" if bit_length < 64
+          <<~RUBY
+            value = #{protobug_read_varint.chomp}#{length_mask}
+            #{ivar} #{adder ? :<< : :"="} (if value.even?
+              value >> 1
+            else
+              -((value + 1) >> 1)
+            end)
+          RUBY
+        elsif encoding == :fixed
+          "#{ivar} #{adder ? :<< : :"="} binary.unpack1(#{binary_pack.dump}, offset: index)\n" \
+            "index += #{bit_length / 8}\n"
+        elsif signed
+          sign_mask = bit_length == 32 ? "0x8000_0000" : "0x8000_0000_0000_0000"
+          length_mask = bit_length == 32 ? "0x7FFF_FFFF" : "0x7fff_ffff_ffff_ffff"
+          <<~RUBY
+            value = #{protobug_read_varint.chomp}
+            #{ivar} #{adder ? :<< : :"="} (if (value & #{sign_mask}) != 0
+              -(((value & #{length_mask}) ^ #{length_mask}) + 1)
+            else
+              value & #{length_mask}
+            end)
+          RUBY
+        else
+          length_mask = " & 0x#{(1 << bit_length).pred.to_s(16)}" if bit_length < 64
+          <<~RUBY
+            #{ivar} #{adder ? :<< : :"="} (#{protobug_read_varint.chomp}#{length_mask})
+          RUBY
         end
       end
 
@@ -495,8 +548,8 @@ module Protobug
         end
       end
 
-      def json_decode_one(value, _ignore_unknown_fields, _registry)
-        return UNSET if value.nil?
+      def json_decode_one(value, _ignore_unknown_fields)
+        return nil if value.nil?
 
         case value
         when Integer
@@ -742,15 +795,11 @@ module Protobug
     end
 
     class BoolField < UInt64Field
-      def binary_decode_one(*)
-        super != 0
-      end
-
       def binary_encode_one(value, outbuf)
         super(value ? 1 : 0, outbuf)
       end
 
-      def json_decode_one(value, _ignore_unknown_fields, _registry)
+      def json_decode_one(value, _ignore_unknown_fields)
         case value
         when TrueClass, FalseClass
           value
@@ -759,7 +808,7 @@ module Protobug
         when "false"
           false
         when NilClass
-          UNSET
+          nil
         else
           raise DecodeError, "expected boolean, got #{value.inspect}"
         end
@@ -776,19 +825,27 @@ module Protobug
 
         false
       end
+
+      def binary_decode_code(protobug_read_varint)
+        <<~RUBY
+          value = #{protobug_read_varint}
+          #{ivar} #{adder ? :<< : :"="} (value != 0)
+        RUBY
+      end
     end
 
     class EnumField < Int32Field
-      attr_reader :enum_type
+      attr_reader :enum_class
 
-      def initialize(number, name, cardinality:, enum_type:, json_name: name, oneof: nil, packed: false,
-                     proto3_optional: cardinality == :optional)
+      def initialize(number, name, cardinality:, enum_class: nil, json_name: name, oneof: nil,
+                     packed: false, proto3_optional: cardinality == :optional, proto3_optional_count: nil)
         super(number, name, json_name: json_name, cardinality: cardinality, oneof: oneof,
-                            proto3_optional: proto3_optional, packed: packed)
-        @enum_type = enum_type
+                            proto3_optional: proto3_optional, packed: packed,
+                            proto3_optional_count: proto3_optional_count)
+        @enum_class = enum_class
       end
 
-      def json_decode(value, message, ignore_unknown_fields, registry)
+      def json_decode(value, message, ignore_unknown_fields)
         return super unless ignore_unknown_fields
 
         if repeated?
@@ -800,14 +857,14 @@ module Protobug
           end
 
           value.map do |v|
-            v = json_decode_one(v, ignore_unknown_fields, registry)
-            next if UNSET == v
+            v = json_decode_one(v, ignore_unknown_fields)
+            next if v.nil?
 
             message.send(adder, v)
           end.tap(&:compact!)
         else
-          value = json_decode_one(value, ignore_unknown_fields, registry)
-          message.send(setter, value) unless UNSET == value
+          value = json_decode_one(value, ignore_unknown_fields)
+          message.send(setter, value) unless value.nil?
         end
       end
 
@@ -815,14 +872,8 @@ module Protobug
         super(value.value, outbuf)
       end
 
-      def binary_decode_one(io, _message, registry, wire_type)
-        value = super
-        registry.fetch(enum_type).decode(value)
-      end
-
-      def json_decode_one(value, ignore_unknown_fields, registry)
-        klass = registry.fetch(enum_type)
-        klass.decode_json_hash(value, registry: registry, ignore_unknown_fields: ignore_unknown_fields)
+      def json_decode_one(value, ignore_unknown_fields)
+        Object.const_get(enum_class).decode_json_hash(value, ignore_unknown_fields: ignore_unknown_fields)
       end
 
       def json_encode_one(value, print_unknown_fields:) # rubocop:disable Lint/UnusedMethodArgument
@@ -840,6 +891,21 @@ module Protobug
         value = value.value if value.is_a?(Enum::InstanceMethods)
         super
       end
+
+      def binary_decode_code(protobug_read_varint)
+        sign_mask = bit_length == 32 ? "0x8000_0000" : "0x8000_0000_0000_0000"
+        length_mask = bit_length == 32 ? "0x7FFF_FFFF" : "0x7fff_ffff_ffff_ffff"
+        <<~RUBY
+          value = #{protobug_read_varint.chomp}
+          #{ivar} #{adder ? :<< : :"="} #{enum_class}.decode(
+            if (value & #{sign_mask}) != 0
+              -(((value & #{length_mask}) ^ #{length_mask}) + 1)
+            else
+              value & #{length_mask}
+            end
+          )
+        RUBY
+      end
     end
 
     class DoubleField < Field
@@ -856,21 +922,17 @@ module Protobug
       end
 
       def initialize(number, name, cardinality:, json_name: name, oneof: nil, packed: false,
-                     proto3_optional: cardinality == :optional)
+                     proto3_optional: cardinality == :optional, proto3_optional_count: nil)
         super(number, name, json_name: json_name, cardinality: cardinality, oneof: oneof,
-                            proto3_optional: proto3_optional, packed: packed)
+                            proto3_optional: proto3_optional, packed: packed,
+                            proto3_optional_count: proto3_optional_count)
       end
 
       def binary_encode_one(value, outbuf)
         BinaryEncoding.pack([value], binary_pack, buffer: outbuf)
       end
 
-      def binary_decode_one(io, _message, _registry, wire_type)
-        value = BinaryEncoding.read_field_value(io, wire_type)
-        value.unpack1(binary_pack)
-      end
-
-      def json_decode_one(value, _ignore_unknown_fields, _registry)
+      def json_decode_one(value, _ignore_unknown_fields)
         case value
         when Float
           value
@@ -885,7 +947,7 @@ module Protobug
         when /\A-?\d+\z/
           Float(value)
         when NilClass
-          UNSET
+          nil
         else
           raise DecodeError, "expected float for #{inspect}, got #{value.inspect}"
         end
@@ -910,6 +972,13 @@ module Protobug
 
         0.0
       end
+
+      def binary_decode_code(_)
+        <<~RUBY
+          #{ivar} #{adder ? :<< : :"="} binary.unpack1(#{binary_pack.dump}, offset: index)
+          index += #{wire_type == 1 ? 8 : 4}
+        RUBY
+      end
     end
 
     class FloatField < DoubleField
@@ -927,9 +996,22 @@ module Protobug
     end
 
     class GroupField < Field
-      def initialize(*args, group_type:, **kwargs)
-        _ = group_type
-        super(*args, **kwargs)
+      def wire_type
+        3
+      end
+
+      def binary_decode_code(_)
+        <<~RUBY
+          raise UnsupportedFeatureError.new(:group, "reading groups from binary protos (in \#{self})")
+        RUBY
+      end
+
+      def default
+        nil
+      end
+
+      def group?
+        true
       end
     end
   end

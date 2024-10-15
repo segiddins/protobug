@@ -36,15 +36,15 @@ module InTotoAttestation
             1,
             "verifier",
             type: :message,
-            message_type:
-            "in_toto_attestation.predicates.vsa.v0.VerificationSummary.Verifier",
+            message_class:
+            "InTotoAttestation::Predicates::Vsa::V0::VerificationSummary::Verifier",
             proto3_optional: false
           )
           optional(
             2,
             "time_verified",
             type: :message,
-            message_type: "google.protobuf.Timestamp",
+            message_class: "Google::Protobuf::Timestamp",
             proto3_optional: false
           )
           optional(3, "resource_uri", type: :string, proto3_optional: false)
@@ -61,8 +61,8 @@ module InTotoAttestation
             4,
             "policy",
             type: :message,
-            message_type:
-            "in_toto_attestation.predicates.vsa.v0.VerificationSummary.Policy",
+            message_class:
+            "InTotoAttestation::Predicates::Vsa::V0::VerificationSummary::Policy",
             proto3_optional: false
           )
           class InputAttestation
@@ -78,8 +78,8 @@ module InTotoAttestation
             5,
             "input_attestations",
             type: :message,
-            message_type:
-            "in_toto_attestation.predicates.vsa.v0.VerificationSummary.InputAttestation"
+            message_class:
+            "InTotoAttestation::Predicates::Vsa::V0::VerificationSummary::InputAttestation"
           )
           optional(
             6,
@@ -89,22 +89,6 @@ module InTotoAttestation
           )
           optional(7, "policy_level", type: :string, proto3_optional: false)
           map(8, "dependency_levels", key_type: :string, value_type: :uint64)
-        end
-
-        def self.register_vsa_protos(registry)
-          Google::Protobuf.register_timestamp_protos(registry)
-          registry.register(
-            InTotoAttestation::Predicates::Vsa::V0::VerificationSummary
-          )
-          registry.register(
-            InTotoAttestation::Predicates::Vsa::V0::VerificationSummary::Verifier
-          )
-          registry.register(
-            InTotoAttestation::Predicates::Vsa::V0::VerificationSummary::Policy
-          )
-          registry.register(
-            InTotoAttestation::Predicates::Vsa::V0::VerificationSummary::InputAttestation
-          )
         end
       end
     end

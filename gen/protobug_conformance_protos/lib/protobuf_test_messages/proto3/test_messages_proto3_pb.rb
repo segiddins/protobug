@@ -57,7 +57,7 @@ module ProtobufTestMessages
           2,
           "corecursive",
           type: :message,
-          message_type: "protobuf_test_messages.proto3.TestAllTypesProto3",
+          message_class: "ProtobufTestMessages::Proto3::TestAllTypesProto3",
           proto3_optional: false
         )
       end
@@ -196,8 +196,8 @@ module ProtobufTestMessages
         18,
         "optional_nested_message",
         type: :message,
-        message_type:
-        "protobuf_test_messages.proto3.TestAllTypesProto3.NestedMessage",
+        message_class:
+        "ProtobufTestMessages::Proto3::TestAllTypesProto3::NestedMessage",
         json_name: "optionalNestedMessage",
         proto3_optional: false
       )
@@ -205,7 +205,7 @@ module ProtobufTestMessages
         19,
         "optional_foreign_message",
         type: :message,
-        message_type: "protobuf_test_messages.proto3.ForeignMessage",
+        message_class: "ProtobufTestMessages::Proto3::ForeignMessage",
         json_name: "optionalForeignMessage",
         proto3_optional: false
       )
@@ -213,8 +213,8 @@ module ProtobufTestMessages
         21,
         "optional_nested_enum",
         type: :enum,
-        enum_type:
-        "protobuf_test_messages.proto3.TestAllTypesProto3.NestedEnum",
+        enum_class:
+        "ProtobufTestMessages::Proto3::TestAllTypesProto3::NestedEnum",
         json_name: "optionalNestedEnum",
         proto3_optional: false
       )
@@ -222,7 +222,7 @@ module ProtobufTestMessages
         22,
         "optional_foreign_enum",
         type: :enum,
-        enum_type: "protobuf_test_messages.proto3.ForeignEnum",
+        enum_class: "ProtobufTestMessages::Proto3::ForeignEnum",
         json_name: "optionalForeignEnum",
         proto3_optional: false
       )
@@ -230,8 +230,8 @@ module ProtobufTestMessages
         23,
         "optional_aliased_enum",
         type: :enum,
-        enum_type:
-        "protobuf_test_messages.proto3.TestAllTypesProto3.AliasedEnum",
+        enum_class:
+        "ProtobufTestMessages::Proto3::TestAllTypesProto3::AliasedEnum",
         json_name: "optionalAliasedEnum",
         proto3_optional: false
       )
@@ -253,7 +253,7 @@ module ProtobufTestMessages
         27,
         "recursive_message",
         type: :message,
-        message_type: "protobuf_test_messages.proto3.TestAllTypesProto3",
+        message_class: "ProtobufTestMessages::Proto3::TestAllTypesProto3",
         json_name: "recursiveMessage",
         proto3_optional: false
       )
@@ -360,23 +360,23 @@ module ProtobufTestMessages
         48,
         "repeated_nested_message",
         type: :message,
-        message_type:
-        "protobuf_test_messages.proto3.TestAllTypesProto3.NestedMessage",
+        message_class:
+        "ProtobufTestMessages::Proto3::TestAllTypesProto3::NestedMessage",
         json_name: "repeatedNestedMessage"
       )
       repeated(
         49,
         "repeated_foreign_message",
         type: :message,
-        message_type: "protobuf_test_messages.proto3.ForeignMessage",
+        message_class: "ProtobufTestMessages::Proto3::ForeignMessage",
         json_name: "repeatedForeignMessage"
       )
       repeated(
         51,
         "repeated_nested_enum",
         type: :enum,
-        enum_type:
-        "protobuf_test_messages.proto3.TestAllTypesProto3.NestedEnum",
+        enum_class:
+        "ProtobufTestMessages::Proto3::TestAllTypesProto3::NestedEnum",
         packed: true,
         json_name: "repeatedNestedEnum"
       )
@@ -384,7 +384,7 @@ module ProtobufTestMessages
         52,
         "repeated_foreign_enum",
         type: :enum,
-        enum_type: "protobuf_test_messages.proto3.ForeignEnum",
+        enum_class: "ProtobufTestMessages::Proto3::ForeignEnum",
         packed: true,
         json_name: "repeatedForeignEnum"
       )
@@ -491,8 +491,8 @@ module ProtobufTestMessages
         88,
         "packed_nested_enum",
         type: :enum,
-        enum_type:
-        "protobuf_test_messages.proto3.TestAllTypesProto3.NestedEnum",
+        enum_class:
+        "ProtobufTestMessages::Proto3::TestAllTypesProto3::NestedEnum",
         packed: true,
         json_name: "packedNestedEnum"
       )
@@ -559,8 +559,8 @@ module ProtobufTestMessages
         102,
         "unpacked_nested_enum",
         type: :enum,
-        enum_type:
-        "protobuf_test_messages.proto3.TestAllTypesProto3.NestedEnum",
+        enum_class:
+        "ProtobufTestMessages::Proto3::TestAllTypesProto3::NestedEnum",
         json_name: "unpackedNestedEnum"
       )
       # Map
@@ -674,8 +674,8 @@ module ProtobufTestMessages
         "map_string_nested_message",
         key_type: :string,
         value_type: :message,
-        message_type:
-        "protobuf_test_messages.proto3.TestAllTypesProto3.NestedMessage",
+        message_class:
+        "ProtobufTestMessages::Proto3::TestAllTypesProto3::NestedMessage",
         json_name: "mapStringNestedMessage"
       )
       map(
@@ -683,7 +683,7 @@ module ProtobufTestMessages
         "map_string_foreign_message",
         key_type: :string,
         value_type: :message,
-        message_type: "protobuf_test_messages.proto3.ForeignMessage",
+        message_class: "ProtobufTestMessages::Proto3::ForeignMessage",
         json_name: "mapStringForeignMessage"
       )
       map(
@@ -691,8 +691,8 @@ module ProtobufTestMessages
         "map_string_nested_enum",
         key_type: :string,
         value_type: :enum,
-        enum_type:
-        "protobuf_test_messages.proto3.TestAllTypesProto3.NestedEnum",
+        enum_class:
+        "ProtobufTestMessages::Proto3::TestAllTypesProto3::NestedEnum",
         json_name: "mapStringNestedEnum"
       )
       map(
@@ -700,7 +700,7 @@ module ProtobufTestMessages
         "map_string_foreign_enum",
         key_type: :string,
         value_type: :enum,
-        enum_type: "protobuf_test_messages.proto3.ForeignEnum",
+        enum_class: "ProtobufTestMessages::Proto3::ForeignEnum",
         json_name: "mapStringForeignEnum"
       )
       optional(
@@ -715,8 +715,8 @@ module ProtobufTestMessages
         112,
         "oneof_nested_message",
         type: :message,
-        message_type:
-        "protobuf_test_messages.proto3.TestAllTypesProto3.NestedMessage",
+        message_class:
+        "ProtobufTestMessages::Proto3::TestAllTypesProto3::NestedMessage",
         json_name: "oneofNestedMessage",
         oneof: :oneof_field,
         proto3_optional: false
@@ -773,8 +773,8 @@ module ProtobufTestMessages
         119,
         "oneof_enum",
         type: :enum,
-        enum_type:
-        "protobuf_test_messages.proto3.TestAllTypesProto3.NestedEnum",
+        enum_class:
+        "ProtobufTestMessages::Proto3::TestAllTypesProto3::NestedEnum",
         json_name: "oneofEnum",
         oneof: :oneof_field,
         proto3_optional: false
@@ -783,7 +783,7 @@ module ProtobufTestMessages
         120,
         "oneof_null_value",
         type: :enum,
-        enum_type: "google.protobuf.NullValue",
+        enum_class: "Google::Protobuf::NullValue",
         json_name: "oneofNullValue",
         oneof: :oneof_field,
         proto3_optional: false
@@ -793,7 +793,7 @@ module ProtobufTestMessages
         201,
         "optional_bool_wrapper",
         type: :message,
-        message_type: "google.protobuf.BoolValue",
+        message_class: "Google::Protobuf::BoolValue",
         json_name: "optionalBoolWrapper",
         proto3_optional: false
       )
@@ -801,7 +801,7 @@ module ProtobufTestMessages
         202,
         "optional_int32_wrapper",
         type: :message,
-        message_type: "google.protobuf.Int32Value",
+        message_class: "Google::Protobuf::Int32Value",
         json_name: "optionalInt32Wrapper",
         proto3_optional: false
       )
@@ -809,7 +809,7 @@ module ProtobufTestMessages
         203,
         "optional_int64_wrapper",
         type: :message,
-        message_type: "google.protobuf.Int64Value",
+        message_class: "Google::Protobuf::Int64Value",
         json_name: "optionalInt64Wrapper",
         proto3_optional: false
       )
@@ -817,7 +817,7 @@ module ProtobufTestMessages
         204,
         "optional_uint32_wrapper",
         type: :message,
-        message_type: "google.protobuf.UInt32Value",
+        message_class: "Google::Protobuf::UInt32Value",
         json_name: "optionalUint32Wrapper",
         proto3_optional: false
       )
@@ -825,7 +825,7 @@ module ProtobufTestMessages
         205,
         "optional_uint64_wrapper",
         type: :message,
-        message_type: "google.protobuf.UInt64Value",
+        message_class: "Google::Protobuf::UInt64Value",
         json_name: "optionalUint64Wrapper",
         proto3_optional: false
       )
@@ -833,7 +833,7 @@ module ProtobufTestMessages
         206,
         "optional_float_wrapper",
         type: :message,
-        message_type: "google.protobuf.FloatValue",
+        message_class: "Google::Protobuf::FloatValue",
         json_name: "optionalFloatWrapper",
         proto3_optional: false
       )
@@ -841,7 +841,7 @@ module ProtobufTestMessages
         207,
         "optional_double_wrapper",
         type: :message,
-        message_type: "google.protobuf.DoubleValue",
+        message_class: "Google::Protobuf::DoubleValue",
         json_name: "optionalDoubleWrapper",
         proto3_optional: false
       )
@@ -849,7 +849,7 @@ module ProtobufTestMessages
         208,
         "optional_string_wrapper",
         type: :message,
-        message_type: "google.protobuf.StringValue",
+        message_class: "Google::Protobuf::StringValue",
         json_name: "optionalStringWrapper",
         proto3_optional: false
       )
@@ -857,7 +857,7 @@ module ProtobufTestMessages
         209,
         "optional_bytes_wrapper",
         type: :message,
-        message_type: "google.protobuf.BytesValue",
+        message_class: "Google::Protobuf::BytesValue",
         json_name: "optionalBytesWrapper",
         proto3_optional: false
       )
@@ -865,70 +865,70 @@ module ProtobufTestMessages
         211,
         "repeated_bool_wrapper",
         type: :message,
-        message_type: "google.protobuf.BoolValue",
+        message_class: "Google::Protobuf::BoolValue",
         json_name: "repeatedBoolWrapper"
       )
       repeated(
         212,
         "repeated_int32_wrapper",
         type: :message,
-        message_type: "google.protobuf.Int32Value",
+        message_class: "Google::Protobuf::Int32Value",
         json_name: "repeatedInt32Wrapper"
       )
       repeated(
         213,
         "repeated_int64_wrapper",
         type: :message,
-        message_type: "google.protobuf.Int64Value",
+        message_class: "Google::Protobuf::Int64Value",
         json_name: "repeatedInt64Wrapper"
       )
       repeated(
         214,
         "repeated_uint32_wrapper",
         type: :message,
-        message_type: "google.protobuf.UInt32Value",
+        message_class: "Google::Protobuf::UInt32Value",
         json_name: "repeatedUint32Wrapper"
       )
       repeated(
         215,
         "repeated_uint64_wrapper",
         type: :message,
-        message_type: "google.protobuf.UInt64Value",
+        message_class: "Google::Protobuf::UInt64Value",
         json_name: "repeatedUint64Wrapper"
       )
       repeated(
         216,
         "repeated_float_wrapper",
         type: :message,
-        message_type: "google.protobuf.FloatValue",
+        message_class: "Google::Protobuf::FloatValue",
         json_name: "repeatedFloatWrapper"
       )
       repeated(
         217,
         "repeated_double_wrapper",
         type: :message,
-        message_type: "google.protobuf.DoubleValue",
+        message_class: "Google::Protobuf::DoubleValue",
         json_name: "repeatedDoubleWrapper"
       )
       repeated(
         218,
         "repeated_string_wrapper",
         type: :message,
-        message_type: "google.protobuf.StringValue",
+        message_class: "Google::Protobuf::StringValue",
         json_name: "repeatedStringWrapper"
       )
       repeated(
         219,
         "repeated_bytes_wrapper",
         type: :message,
-        message_type: "google.protobuf.BytesValue",
+        message_class: "Google::Protobuf::BytesValue",
         json_name: "repeatedBytesWrapper"
       )
       optional(
         301,
         "optional_duration",
         type: :message,
-        message_type: "google.protobuf.Duration",
+        message_class: "Google::Protobuf::Duration",
         json_name: "optionalDuration",
         proto3_optional: false
       )
@@ -936,7 +936,7 @@ module ProtobufTestMessages
         302,
         "optional_timestamp",
         type: :message,
-        message_type: "google.protobuf.Timestamp",
+        message_class: "Google::Protobuf::Timestamp",
         json_name: "optionalTimestamp",
         proto3_optional: false
       )
@@ -944,7 +944,7 @@ module ProtobufTestMessages
         303,
         "optional_field_mask",
         type: :message,
-        message_type: "google.protobuf.FieldMask",
+        message_class: "Google::Protobuf::FieldMask",
         json_name: "optionalFieldMask",
         proto3_optional: false
       )
@@ -952,7 +952,7 @@ module ProtobufTestMessages
         304,
         "optional_struct",
         type: :message,
-        message_type: "google.protobuf.Struct",
+        message_class: "Google::Protobuf::Struct",
         json_name: "optionalStruct",
         proto3_optional: false
       )
@@ -960,7 +960,7 @@ module ProtobufTestMessages
         305,
         "optional_any",
         type: :message,
-        message_type: "google.protobuf.Any",
+        message_class: "Google::Protobuf::Any",
         json_name: "optionalAny",
         proto3_optional: false
       )
@@ -968,7 +968,7 @@ module ProtobufTestMessages
         306,
         "optional_value",
         type: :message,
-        message_type: "google.protobuf.Value",
+        message_class: "Google::Protobuf::Value",
         json_name: "optionalValue",
         proto3_optional: false
       )
@@ -976,7 +976,7 @@ module ProtobufTestMessages
         307,
         "optional_null_value",
         type: :enum,
-        enum_type: "google.protobuf.NullValue",
+        enum_class: "Google::Protobuf::NullValue",
         json_name: "optionalNullValue",
         proto3_optional: false
       )
@@ -984,49 +984,49 @@ module ProtobufTestMessages
         311,
         "repeated_duration",
         type: :message,
-        message_type: "google.protobuf.Duration",
+        message_class: "Google::Protobuf::Duration",
         json_name: "repeatedDuration"
       )
       repeated(
         312,
         "repeated_timestamp",
         type: :message,
-        message_type: "google.protobuf.Timestamp",
+        message_class: "Google::Protobuf::Timestamp",
         json_name: "repeatedTimestamp"
       )
       repeated(
         313,
         "repeated_fieldmask",
         type: :message,
-        message_type: "google.protobuf.FieldMask",
+        message_class: "Google::Protobuf::FieldMask",
         json_name: "repeatedFieldmask"
       )
       repeated(
         324,
         "repeated_struct",
         type: :message,
-        message_type: "google.protobuf.Struct",
+        message_class: "Google::Protobuf::Struct",
         json_name: "repeatedStruct"
       )
       repeated(
         315,
         "repeated_any",
         type: :message,
-        message_type: "google.protobuf.Any",
+        message_class: "Google::Protobuf::Any",
         json_name: "repeatedAny"
       )
       repeated(
         316,
         "repeated_value",
         type: :message,
-        message_type: "google.protobuf.Value",
+        message_class: "Google::Protobuf::Value",
         json_name: "repeatedValue"
       )
       repeated(
         317,
         "repeated_list_value",
         type: :message,
-        message_type: "google.protobuf.ListValue",
+        message_class: "Google::Protobuf::ListValue",
         json_name: "repeatedListValue"
       )
       # Test field-name-to-JSON-name convention.
@@ -1175,30 +1175,6 @@ module ProtobufTestMessages
         K_False = new("kFalse", 0).freeze
         K_True = new("kTrue", 1).freeze
       end
-    end
-
-    def self.register_test_messages_proto3_protos(registry)
-      Google::Protobuf.register_any_protos(registry)
-      Google::Protobuf.register_duration_protos(registry)
-      Google::Protobuf.register_field_mask_protos(registry)
-      Google::Protobuf.register_struct_protos(registry)
-      Google::Protobuf.register_timestamp_protos(registry)
-      Google::Protobuf.register_wrappers_protos(registry)
-      registry.register(ProtobufTestMessages::Proto3::TestAllTypesProto3)
-      registry.register(
-        ProtobufTestMessages::Proto3::TestAllTypesProto3::NestedMessage
-      )
-      registry.register(
-        ProtobufTestMessages::Proto3::TestAllTypesProto3::NestedEnum
-      )
-      registry.register(
-        ProtobufTestMessages::Proto3::TestAllTypesProto3::AliasedEnum
-      )
-      registry.register(ProtobufTestMessages::Proto3::ForeignMessage)
-      registry.register(ProtobufTestMessages::Proto3::ForeignEnum)
-      registry.register(ProtobufTestMessages::Proto3::NullHypothesisProto3)
-      registry.register(ProtobufTestMessages::Proto3::EnumOnlyProto3)
-      registry.register(ProtobufTestMessages::Proto3::EnumOnlyProto3::Bool)
     end
   end
 end

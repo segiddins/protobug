@@ -123,10 +123,6 @@ module Google
       # to +999,999,999 inclusive.
       optional(2, "nanos", type: :int32, proto3_optional: false)
     end
-
-    def self.register_duration_protos(registry)
-      registry.register(Google::Protobuf::Duration)
-    end
   end
 end
 

@@ -175,10 +175,6 @@ module Google
       # Must be a valid serialized protocol buffer of the above specified type.
       optional(2, "value", type: :bytes, proto3_optional: false)
     end
-
-    def self.register_any_protos(registry)
-      registry.register(Google::Protobuf::Any)
-    end
   end
 end
 

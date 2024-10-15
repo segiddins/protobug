@@ -64,9 +64,5 @@ module Google
         proto3_optional: false
       )
     end
-
-    def self.register_source_context_protos(registry)
-      registry.register(Google::Protobuf::SourceContext)
-    end
   end
 end

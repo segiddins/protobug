@@ -52,16 +52,16 @@ module Protobug
       super
     end
 
-    def decode_json_hash(json, registry: nil, ignore_unknown_fields: false)
-      _ = registry
-      _ = ignore_unknown_fields
-
+    def decode_json_hash(json, ignore_unknown_fields: false)
       case json
       when NilClass
-        UNSET
+        nil
       when String
-        values[json] || (ignore_unknown_fields && UNSET) ||
-          raise(DecodeError, "unknown value: #{json.inspect}")
+        value = values[json]
+        return value if value
+        return nil if ignore_unknown_fields
+
+        raise(DecodeError, "unknown value: #{json.inspect}")
       when Integer
         values[json] || new("<unknown:#{json}>", json)
       else
@@ -70,10 +70,7 @@ module Protobug
     end
 
     def decode(value)
-      raise "expected Integer, got #{value.inspect}" unless value.is_a? Integer
-
-      # TODO: use fetch instead of []
-      values[value] || new("<unknown:#{value}>", value)
+      values.fetch(value) { new("<unknown:#{value}>", value) }
     end
 
     def default

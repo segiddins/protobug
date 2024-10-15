@@ -52,23 +52,6 @@ module Grpc
         # different descriptor messages.
         # extension: google.protobuf.FieldOptions
         #   openapiv2_field 1042
-
-        def self.register_annotations_protos(registry)
-          Google::Protobuf.register_descriptor_protos(registry)
-          Grpc::Gateway::ProtocGenOpenapiv2::Options.register_openapiv2_protos(
-            registry
-          )
-          # extension: google.protobuf.FileOptions
-          #   TYPE_MESSAGE 1042
-          # extension: google.protobuf.MethodOptions
-          #   TYPE_MESSAGE 1042
-          # extension: google.protobuf.MessageOptions
-          #   TYPE_MESSAGE 1042
-          # extension: google.protobuf.ServiceOptions
-          #   TYPE_MESSAGE 1042
-          # extension: google.protobuf.FieldOptions
-          #   TYPE_MESSAGE 1042
-        end
       end
     end
   end

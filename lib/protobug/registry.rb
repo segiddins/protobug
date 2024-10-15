@@ -32,5 +32,9 @@ module Protobug
     def fetch(...)
       @registry.fetch(...)
     end
+
+    def each(&blk)
+      @registry.each(&blk)
+    end
   end
 end

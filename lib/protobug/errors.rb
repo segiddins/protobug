@@ -11,6 +11,12 @@ module Protobug
     end
   end
 
+  class GroupsUnsupportedError < UnsupportedFeatureError
+    def initialize(msg)
+      super(:group, "reading groups from binary protos (in #{msg})")
+    end
+  end
+
   class EncodeError < Error
   end
 
@@ -25,8 +31,9 @@ module Protobug
 
   class InvalidValueError < Error
     def initialize(msg, field, value, message = "")
-      super("invalid value for #{field.name} (#{field.number}, #{field.inspect}) of #{msg.class.full_name}: " \
-            "#{value.inspect}#{" (#{message})" if message}")
+      super("invalid value for #{field.name} (#{field.number}): #{value.inspect}#{" (#{message})" if message} " \
+            "(#{field.number} of #{msg.class.full_name}\n" \
+            "#{field.inspect}")
     end
   end
 end

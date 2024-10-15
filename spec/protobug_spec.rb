@@ -43,40 +43,78 @@ RSpec.describe Protobug do
     msg.n = 150
     encoded = test3.encode(msg)
     expect(encoded).to eq("\x08\x96\x01".b)
-    decoded = test3.decode(StringIO.new(encoded), registry: nil)
+    decoded = test3.decode(encoded)
     expect(decoded.n).to eq(150)
 
     msg.n = -2
     encoded = test3.encode(msg)
     aggregate_failures do
       expect(encoded).to eq("\x08\xfe\xff\xff\xff\xff\xff\xff\xff\xff\x01".b)
-      decoded = test3.decode(StringIO.new(encoded), registry: nil)
+      decoded = test3.decode(encoded)
       expect(decoded.n).to eq(-2)
     end
     msg.n = -1
     encoded = test3.encode(msg)
     aggregate_failures do
       expect(encoded).to eq("\x08\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01".b)
-      decoded = test3.decode(StringIO.new(encoded), registry: nil)
+      decoded = test3.decode(encoded)
       expect(decoded.n).to eq(-1)
     end
 
-    decoded = test3.decode(StringIO.new("\x08\x80\x80\x80\x80\x10"), registry: nil)
+    decoded = test3.decode("\x08\x80\x80\x80\x80\x10")
     expect(decoded.n64).to eq(0)
 
     {
       (1 << 33) => 0,
       (1 << 33) - 1 => -1,
+      1 => 1,
+      -1 => -1,
+      0 => 0,
       9_223_372_036_854_775_807 => -1,
-      -9_223_372_036_854_775_807 => 1
+      -9_223_372_036_854_775_807 => 1,
+      -2_147_483_648 => -2_147_483_648
     }.each do |varint, expected|
       io = "\x08".b
       encoded = Protobug::BinaryEncoding.encode_varint(varint, io)
-      expect(test3.decode(StringIO.new(io), registry: nil).n).to eq(expected)
+      actual = test3.decode(io).n
+      expect(actual).to eq(expected),
+                        "int32: #{varint.to_s(16)} => #{actual.to_s(16)}, expected: #{expected.to_s(16)}"
+    end
+
+    test_uint32 = Class.new do
+      extend Protobug::Message
+      optional 1, :n, type: :uint32
+    end
+    test_uint64 = Class.new do
+      extend Protobug::Message
+      optional 1, :n, type: :uint64
+    end
+
+    aggregate_failures do
+      [[32, test_uint32], [64, test_uint64]].each do |bits, cls|
+        {
+          0 => 0,
+          1 => 1,
+          2 => 2,
+          2**bits.pred => 2**bits.pred,
+          (2**bits.pred) - 1 => (2**bits.pred) - 1,
+          2**bits => 0,
+          (2**bits).succ => 1,
+          9_223_372_036_854_775_807 => 9_223_372_036_854_775_807 & ((1 << bits) - 1)
+        }.each do |int, expected|
+          next if int >= 2**64
+
+          io = "\x08".b
+          encoded = Protobug::BinaryEncoding.encode_varint(int, io)
+          actual = cls.decode(io).n
+          expect(actual).to eq(expected),
+                            "uint#{bits}: #{int.to_s(16)} => #{actual.to_s(16)}, expected: #{expected.to_s(16)}"
+        end
+      end
     end
   end
 
-  it "allows oneofs" do
+  it "allows oneofs" do # rubocop:disable RSpec/MultipleExpectations
     c = Class.new do
       extend Protobug::Message
       optional 1, :a, type: :string, oneof: :x
@@ -84,21 +122,27 @@ RSpec.describe Protobug do
     end
 
     msg = c.new
+    expect(msg.x).to be_nil
     expect(msg.a).to eq("")
     expect(msg.b).to eq(0)
-    expect(msg.x).to be_nil
+    expect(msg.x).to eq(:b)
+    expect(msg.a?).to be_falsy # rubocop:disable RSpec/PredicateMatcher
+    expect(msg).to be_b
 
     msg.a = "test"
 
+    expect(msg.x).to eq(:a)
     expect(msg.a).to eq("test")
     expect(msg.b).to eq(0)
-    expect(msg.x).to eq(:a)
+    expect(msg.x).to eq(:b)
 
     msg.clear_a
     msg.b = 1
 
-    expect(msg.a).to eq("")
+    expect(msg.x).to eq(:b)
     expect(msg.b).to eq(1)
+    expect(msg.a).to eq("")
+    expect(msg.b).to eq(0)
     expect(msg.x).to eq(:b)
   end
 
@@ -109,10 +153,8 @@ RSpec.describe Protobug do
     end
 
     encoded = ["3206038e029ea705"].pack("H*")
-    io = StringIO.new(encoded)
-    decoded = c.decode(io, registry: nil)
+    decoded = c.decode(encoded)
     expect(decoded.f).to eq([3, 270, 86_942])
-    expect(io).to be_eof
   end
 
   it "parses sint32 and sint64" do
@@ -120,7 +162,7 @@ RSpec.describe Protobug do
     msg.n32 = 4
     msg.n64 = -1
     encoded = test_sint.encode(msg)
-    decoded = test_sint.decode(StringIO.new(encoded), registry: nil)
+    decoded = test_sint.decode(encoded)
     aggregate_failures do
       expect(encoded).to eq("\x08\x08\x10\x01".b)
       expect(decoded.n32).to eq(4)
@@ -130,7 +172,7 @@ RSpec.describe Protobug do
     msg.n32 = -33
     msg.n64 = -0x80000000
     encoded = test_sint.encode(msg)
-    decoded = test_sint.decode(StringIO.new(encoded), registry: nil)
+    decoded = test_sint.decode(encoded)
     expect(decoded.n32).to eq(-33)
     expect(decoded.n64).to eq(-0x80000000)
 
@@ -140,7 +182,7 @@ RSpec.describe Protobug do
     encoded = test_sint.encode(msg)
     aggregate_failures do
       expect(encoded).to eq("\020\377\377\377\377\377\377\377\377\377\001".b)
-      decoded = test_sint.decode(StringIO.new(encoded), registry: nil)
+      decoded = test_sint.decode(encoded)
       expect(decoded.n64).to eq(-9_223_372_036_854_775_808)
     end
 
@@ -149,7 +191,7 @@ RSpec.describe Protobug do
     msg.clear_n64
     encoded = test_sint.encode(msg)
     aggregate_failures do
-      decoded = test_sint.decode(StringIO.new(encoded), registry: nil)
+      decoded = test_sint.decode(encoded)
       expect(decoded.n32).to eq(2_147_483_647)
     end
 
@@ -158,13 +200,17 @@ RSpec.describe Protobug do
     msg.n64 = 0
     encoded = test_sint.encode(msg)
     aggregate_failures do
-      decoded = test_sint.decode(StringIO.new(encoded), registry: nil)
+      decoded = test_sint.decode(encoded)
       expect(decoded.n32).to eq(-2**31)
     end
 
     # int64 min
-    decoded = test_sint.decode(StringIO.new("\020\377\377\377\377\377\377\377\377\377\001"), registry: nil)
+    decoded = test_sint.decode("\020\377\377\377\377\377\377\377\377\377\001")
     expect(decoded.n64).to eq(-9_223_372_036_854_775_808)
+
+    decoded = test_sint.decode("\020\202\200\200\200\020\x08\202\200\200\200\020")
+    expect(decoded.n64).to eq(2_147_483_649)
+    expect(decoded.n32).to eq(1)
   end
 
   it "parses fixed32 and fixed64" do
@@ -182,10 +228,39 @@ RSpec.describe Protobug do
     msg.sf32 = 76
     aggregate_failures do
       encoded = c.encode(msg)
-      decoded = c.decode(StringIO.new(encoded), registry: nil)
+      decoded = c.decode(encoded)
 
       expect(decoded.f).to eq(3)
       expect(decoded.f32).to eq(72)
     end
+  end
+
+  it "parses maps" do
+    c = Class.new do
+      extend Protobug::Message
+      self.full_name = "protobuf_test_messages.proto3.ForeignMessage"
+
+      map 1, :m1, key_type: :int32, value_type: :int32
+
+      map(
+        72,
+        "map_string_foreign_message",
+        key_type: :string,
+        value_type: :message,
+        message_class: "self.class",
+        json_name: "mapStringForeignMessage"
+      )
+    end
+
+    msg = c.new
+    msg.m1[0] = 0
+    msg.m1[1] = 1
+    msg.m1[-4] = -2
+
+    msg.map_string_foreign_message["foo"] = c.new
+    encoded = c.encode(msg)
+    decoded = c.decode(encoded)
+
+    expect(decoded.m1).to eq(0 => 0, 1 => 1, -4 => -2)
   end
 end

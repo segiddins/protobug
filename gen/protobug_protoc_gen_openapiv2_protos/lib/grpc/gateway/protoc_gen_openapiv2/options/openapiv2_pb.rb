@@ -70,7 +70,7 @@ module Grpc
             2,
             "info",
             type: :message,
-            message_type: "grpc.gateway.protoc_gen_openapiv2.options.Info",
+            message_class: "Grpc::Gateway::ProtocGenOpenapiv2::Options::Info",
             proto3_optional: false
           )
           # The host (name or ip) serving the API. This MUST be the host only and does
@@ -101,7 +101,7 @@ module Grpc
             5,
             "schemes",
             type: :enum,
-            enum_type: "grpc.gateway.protoc_gen_openapiv2.options.Scheme",
+            enum_class: "Grpc::Gateway::ProtocGenOpenapiv2::Options::Scheme",
             packed: true
           )
           # A list of MIME types the APIs can consume. This is global to all APIs but
@@ -119,15 +119,16 @@ module Grpc
             "responses",
             key_type: :string,
             value_type: :message,
-            message_type: "grpc.gateway.protoc_gen_openapiv2.options.Response"
+            message_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::Response"
           )
           # Security scheme definitions that can be used across the specification.
           optional(
             11,
             "security_definitions",
             type: :message,
-            message_type:
-            "grpc.gateway.protoc_gen_openapiv2.options.SecurityDefinitions",
+            message_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityDefinitions",
             json_name: "securityDefinitions",
             proto3_optional: false
           )
@@ -139,8 +140,8 @@ module Grpc
             12,
             "security",
             type: :message,
-            message_type:
-            "grpc.gateway.protoc_gen_openapiv2.options.SecurityRequirement"
+            message_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityRequirement"
           )
           # A list of tags for API documentation control. Tags can be used for logical
           # grouping of operations by resources or any other qualifier.
@@ -148,15 +149,15 @@ module Grpc
             13,
             "tags",
             type: :message,
-            message_type: "grpc.gateway.protoc_gen_openapiv2.options.Tag"
+            message_class: "Grpc::Gateway::ProtocGenOpenapiv2::Options::Tag"
           )
           # Additional external documentation.
           optional(
             14,
             "external_docs",
             type: :message,
-            message_type:
-            "grpc.gateway.protoc_gen_openapiv2.options.ExternalDocumentation",
+            message_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::ExternalDocumentation",
             json_name: "externalDocs",
             proto3_optional: false
           )
@@ -168,7 +169,7 @@ module Grpc
             "extensions",
             key_type: :string,
             value_type: :message,
-            message_type: "google.protobuf.Value"
+            message_class: "Google::Protobuf::Value"
           )
 
           # field 8 is reserved for 'paths'.
@@ -220,8 +221,8 @@ module Grpc
             4,
             "external_docs",
             type: :message,
-            message_type:
-            "grpc.gateway.protoc_gen_openapiv2.options.ExternalDocumentation",
+            message_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::ExternalDocumentation",
             json_name: "externalDocs",
             proto3_optional: false
           )
@@ -251,7 +252,8 @@ module Grpc
             "responses",
             key_type: :string,
             value_type: :message,
-            message_type: "grpc.gateway.protoc_gen_openapiv2.options.Response"
+            message_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::Response"
           )
           # The transfer protocol for the operation. Values MUST be from the list:
           # "http", "https", "ws", "wss". The value overrides the OpenAPI Object
@@ -260,7 +262,7 @@ module Grpc
             10,
             "schemes",
             type: :enum,
-            enum_type: "grpc.gateway.protoc_gen_openapiv2.options.Scheme",
+            enum_class: "Grpc::Gateway::ProtocGenOpenapiv2::Options::Scheme",
             packed: true
           )
           # Declares this operation to be deprecated. Usage of the declared operation
@@ -275,8 +277,8 @@ module Grpc
             12,
             "security",
             type: :message,
-            message_type:
-            "grpc.gateway.protoc_gen_openapiv2.options.SecurityRequirement"
+            message_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityRequirement"
           )
           # Custom properties that start with "x-" such as "x-foo" used to describe
           # extra functionality that is not covered by the standard OpenAPI Specification.
@@ -286,7 +288,7 @@ module Grpc
             "extensions",
             key_type: :string,
             value_type: :message,
-            message_type: "google.protobuf.Value"
+            message_class: "Google::Protobuf::Value"
           )
           # Custom parameters such as HTTP request headers.
           # See: https://swagger.io/docs/specification/2-0/describing-parameters/
@@ -295,8 +297,8 @@ module Grpc
             14,
             "parameters",
             type: :message,
-            message_type:
-            "grpc.gateway.protoc_gen_openapiv2.options.Parameters",
+            message_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::Parameters",
             proto3_optional: false
           )
 
@@ -320,8 +322,8 @@ module Grpc
             1,
             "headers",
             type: :message,
-            message_type:
-            "grpc.gateway.protoc_gen_openapiv2.options.HeaderParameter"
+            message_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::HeaderParameter"
           )
         end
 
@@ -356,8 +358,8 @@ module Grpc
             3,
             "type",
             type: :enum,
-            enum_type:
-            "grpc.gateway.protoc_gen_openapiv2.options.HeaderParameter.Type",
+            enum_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::HeaderParameter::Type",
             proto3_optional: false
           )
           # `Format` The extending format for the previously mentioned type.
@@ -424,7 +426,7 @@ module Grpc
             2,
             "schema",
             type: :message,
-            message_type: "grpc.gateway.protoc_gen_openapiv2.options.Schema",
+            message_class: "Grpc::Gateway::ProtocGenOpenapiv2::Options::Schema",
             proto3_optional: false
           )
           # `Headers` A list of headers that are sent with the response.
@@ -435,7 +437,7 @@ module Grpc
             "headers",
             key_type: :string,
             value_type: :message,
-            message_type: "grpc.gateway.protoc_gen_openapiv2.options.Header"
+            message_class: "Grpc::Gateway::ProtocGenOpenapiv2::Options::Header"
           )
           # `Examples` gives per-mimetype response examples.
           # See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#example-object
@@ -448,7 +450,7 @@ module Grpc
             "extensions",
             key_type: :string,
             value_type: :message,
-            message_type: "google.protobuf.Value"
+            message_class: "Google::Protobuf::Value"
           )
         end
 
@@ -498,7 +500,8 @@ module Grpc
             4,
             "contact",
             type: :message,
-            message_type: "grpc.gateway.protoc_gen_openapiv2.options.Contact",
+            message_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::Contact",
             proto3_optional: false
           )
           # The license information for the exposed API.
@@ -506,7 +509,8 @@ module Grpc
             5,
             "license",
             type: :message,
-            message_type: "grpc.gateway.protoc_gen_openapiv2.options.License",
+            message_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::License",
             proto3_optional: false
           )
           # Provides the version of the application API (not to be confused
@@ -520,7 +524,7 @@ module Grpc
             "extensions",
             key_type: :string,
             value_type: :message,
-            message_type: "google.protobuf.Value"
+            message_class: "Google::Protobuf::Value"
           )
         end
 
@@ -625,8 +629,8 @@ module Grpc
             1,
             "json_schema",
             type: :message,
-            message_type:
-            "grpc.gateway.protoc_gen_openapiv2.options.JSONSchema",
+            message_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::JSONSchema",
             json_name: "jsonSchema",
             proto3_optional: false
           )
@@ -653,8 +657,8 @@ module Grpc
             5,
             "external_docs",
             type: :message,
-            message_type:
-            "grpc.gateway.protoc_gen_openapiv2.options.ExternalDocumentation",
+            message_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::ExternalDocumentation",
             json_name: "externalDocs",
             proto3_optional: false
           )
@@ -820,8 +824,8 @@ module Grpc
             35,
             "type",
             type: :enum,
-            enum_type:
-            "grpc.gateway.protoc_gen_openapiv2.options.JSONSchema.JSONSchemaSimpleTypes",
+            enum_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::JSONSchema::JSONSchemaSimpleTypes",
             packed: true
           )
           # `Format`
@@ -833,8 +837,8 @@ module Grpc
             1_001,
             "field_configuration",
             type: :message,
-            message_type:
-            "grpc.gateway.protoc_gen_openapiv2.options.JSONSchema.FieldConfiguration",
+            message_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::JSONSchema::FieldConfiguration",
             json_name: "fieldConfiguration",
             proto3_optional: false
           )
@@ -866,7 +870,7 @@ module Grpc
             "extensions",
             key_type: :string,
             value_type: :message,
-            message_type: "google.protobuf.Value"
+            message_class: "Google::Protobuf::Value"
           )
 
           # field 1 is reserved for '$id', omitted from OpenAPI v2.
@@ -905,8 +909,8 @@ module Grpc
             3,
             "external_docs",
             type: :message,
-            message_type:
-            "grpc.gateway.protoc_gen_openapiv2.options.ExternalDocumentation",
+            message_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::ExternalDocumentation",
             json_name: "externalDocs",
             proto3_optional: false
           )
@@ -918,7 +922,7 @@ module Grpc
             "extensions",
             key_type: :string,
             value_type: :message,
-            message_type: "google.protobuf.Value"
+            message_class: "Google::Protobuf::Value"
           )
         end
 
@@ -942,8 +946,8 @@ module Grpc
             "security",
             key_type: :string,
             value_type: :message,
-            message_type:
-            "grpc.gateway.protoc_gen_openapiv2.options.SecurityScheme"
+            message_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityScheme"
           )
         end
 
@@ -1005,8 +1009,8 @@ module Grpc
             1,
             "type",
             type: :enum,
-            enum_type:
-            "grpc.gateway.protoc_gen_openapiv2.options.SecurityScheme.Type",
+            enum_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityScheme::Type",
             proto3_optional: false
           )
           # A short description for security scheme.
@@ -1021,8 +1025,8 @@ module Grpc
             4,
             "in",
             type: :enum,
-            enum_type:
-            "grpc.gateway.protoc_gen_openapiv2.options.SecurityScheme.In",
+            enum_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityScheme::In",
             proto3_optional: false
           )
           # The flow used by the OAuth2 security scheme. Valid values are
@@ -1032,8 +1036,8 @@ module Grpc
             5,
             "flow",
             type: :enum,
-            enum_type:
-            "grpc.gateway.protoc_gen_openapiv2.options.SecurityScheme.Flow",
+            enum_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityScheme::Flow",
             proto3_optional: false
           )
           # The authorization URL to be used for this flow. This SHOULD be in
@@ -1062,7 +1066,7 @@ module Grpc
             8,
             "scopes",
             type: :message,
-            message_type: "grpc.gateway.protoc_gen_openapiv2.options.Scopes",
+            message_class: "Grpc::Gateway::ProtocGenOpenapiv2::Options::Scopes",
             proto3_optional: false
           )
           # Custom properties that start with "x-" such as "x-foo" used to describe
@@ -1073,7 +1077,7 @@ module Grpc
             "extensions",
             key_type: :string,
             value_type: :message,
-            message_type: "google.protobuf.Value"
+            message_class: "Google::Protobuf::Value"
           )
         end
 
@@ -1113,8 +1117,8 @@ module Grpc
             "security_requirement",
             key_type: :string,
             value_type: :message,
-            message_type:
-            "grpc.gateway.protoc_gen_openapiv2.options.SecurityRequirement.SecurityRequirementValue",
+            message_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityRequirement::SecurityRequirementValue",
             json_name: "securityRequirement"
           )
         end
@@ -1132,67 +1136,6 @@ module Grpc
           # Maps between a name of a scope to a short description of it (as the value
           # of the property).
           map(1, "scope", key_type: :string, value_type: :string)
-        end
-
-        def self.register_openapiv2_protos(registry)
-          Google::Protobuf.register_struct_protos(registry)
-          registry.register(Grpc::Gateway::ProtocGenOpenapiv2::Options::Scheme)
-          registry.register(Grpc::Gateway::ProtocGenOpenapiv2::Options::Swagger)
-          registry.register(
-            Grpc::Gateway::ProtocGenOpenapiv2::Options::Operation
-          )
-          registry.register(
-            Grpc::Gateway::ProtocGenOpenapiv2::Options::Parameters
-          )
-          registry.register(
-            Grpc::Gateway::ProtocGenOpenapiv2::Options::HeaderParameter
-          )
-          registry.register(
-            Grpc::Gateway::ProtocGenOpenapiv2::Options::HeaderParameter::Type
-          )
-          registry.register(Grpc::Gateway::ProtocGenOpenapiv2::Options::Header)
-          registry.register(
-            Grpc::Gateway::ProtocGenOpenapiv2::Options::Response
-          )
-          registry.register(Grpc::Gateway::ProtocGenOpenapiv2::Options::Info)
-          registry.register(Grpc::Gateway::ProtocGenOpenapiv2::Options::Contact)
-          registry.register(Grpc::Gateway::ProtocGenOpenapiv2::Options::License)
-          registry.register(
-            Grpc::Gateway::ProtocGenOpenapiv2::Options::ExternalDocumentation
-          )
-          registry.register(Grpc::Gateway::ProtocGenOpenapiv2::Options::Schema)
-          registry.register(
-            Grpc::Gateway::ProtocGenOpenapiv2::Options::JSONSchema
-          )
-          registry.register(
-            Grpc::Gateway::ProtocGenOpenapiv2::Options::JSONSchema::JSONSchemaSimpleTypes
-          )
-          registry.register(
-            Grpc::Gateway::ProtocGenOpenapiv2::Options::JSONSchema::FieldConfiguration
-          )
-          registry.register(Grpc::Gateway::ProtocGenOpenapiv2::Options::Tag)
-          registry.register(
-            Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityDefinitions
-          )
-          registry.register(
-            Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityScheme
-          )
-          registry.register(
-            Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityScheme::Type
-          )
-          registry.register(
-            Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityScheme::In
-          )
-          registry.register(
-            Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityScheme::Flow
-          )
-          registry.register(
-            Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityRequirement
-          )
-          registry.register(
-            Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityRequirement::SecurityRequirementValue
-          )
-          registry.register(Grpc::Gateway::ProtocGenOpenapiv2::Options::Scopes)
         end
       end
     end

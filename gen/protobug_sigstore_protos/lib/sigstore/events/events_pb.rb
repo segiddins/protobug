@@ -68,8 +68,7 @@ module Sigstore
         "attributes",
         key_type: :string,
         value_type: :message,
-        message_type:
-        "dev.sigstore.events.v1.CloudEvent.CloudEventAttributeValue"
+        message_class: "Sigstore::Events::CloudEvent::CloudEventAttributeValue"
       )
       # -- CloudEvent Data (Bytes, Text, or Proto)
 
@@ -93,7 +92,7 @@ module Sigstore
         8,
         "proto_data",
         type: :message,
-        message_type: "google.protobuf.Any",
+        message_class: "Google::Protobuf::Any",
         json_name: "protoData",
         oneof: :data,
         proto3_optional: false
@@ -159,7 +158,7 @@ module Sigstore
           7,
           "ce_timestamp",
           type: :message,
-          message_type: "google.protobuf.Timestamp",
+          message_class: "Google::Protobuf::Timestamp",
           json_name: "ceTimestamp",
           oneof: :attr,
           proto3_optional: false
@@ -179,16 +178,8 @@ module Sigstore
         1,
         "events",
         type: :message,
-        message_type: "dev.sigstore.events.v1.CloudEvent"
+        message_class: "Sigstore::Events::CloudEvent"
       )
-    end
-
-    def self.register_events_protos(registry)
-      Google::Protobuf.register_any_protos(registry)
-      Google::Protobuf.register_timestamp_protos(registry)
-      registry.register(Sigstore::Events::CloudEvent)
-      registry.register(Sigstore::Events::CloudEvent::CloudEventAttributeValue)
-      registry.register(Sigstore::Events::CloudEventBatch)
     end
   end
 end

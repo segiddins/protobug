@@ -105,12 +105,5 @@ module Google
       # of method-specific annotations, only `IDENTIFIER` is required.
       IDENTIFIER = new("IDENTIFIER", 8).freeze
     end
-
-    def self.register_field_behavior_protos(registry)
-      Google::Protobuf.register_descriptor_protos(registry)
-      # extension: google.protobuf.FieldOptions
-      #   TYPE_ENUM 1052
-      registry.register(Google::Api::FieldBehavior)
-    end
   end
 end
