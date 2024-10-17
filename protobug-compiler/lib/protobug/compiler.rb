@@ -114,7 +114,7 @@ module Protobug
 
           fields_by_name.each do |name, field|
             unless field.is_a?(Field::MessageField) &&
-                   /\Agoogle\.protobuf\.([^.]*Descriptor[^.]*)\z/ =~ field.message_type
+                   /\AGoogle::Protobuf::([^:]*Descriptor[^:]*)\z/ =~ field.message_class
               next
             end
             raise "expected #{self}.#{name} to be repeated" unless field.repeated?
@@ -362,17 +362,20 @@ module Protobug
           c.identifier("type:").literal(type) unless type == :map
 
           if type == :map
+            raise unless referenced_type.field.count == 2
+
             c.identifier("key_type:")
              .literal(referenced_type.field[0].type.name.downcase.delete_prefix("type_").to_sym)
             value_type = referenced_type.field[1].type.name.downcase.delete_prefix("type_").to_sym
             c.identifier("value_type:")
              .literal(value_type)
             if referenced_type.field[1].type_name?
-              c.identifier("#{value_type}_type:")
-               .literal(referenced_type.field[1].type_name.delete_prefix("."))
+              nested_name = referenced_type.field[1].type_name.delete_prefix(".")
+              c.identifier("#{value_type}_class:").literal(files.fetch_type(nested_name).to_constant)
             end
-          elsif descriptor.type_name?
-            c.identifier("#{type}_type:").literal(descriptor.type_name.delete_prefix("."))
+          elsif descriptor.type_name? && type != :group
+            nested_name = descriptor.type_name.delete_prefix(".")
+            c.identifier("#{type}_class:").literal(files.fetch_type(nested_name).to_constant)
           end
 
           packed = descriptor.options&.packed
@@ -491,52 +494,6 @@ module Protobug
           emit_decls(decl, g)
           first = false
         end
-
-        g.empty unless first
-        g._def.identifier("self")
-         .dot("register_#{File.basename file.name.delete_suffix(".proto")}_protos")
-         .call do |c|
-          c.identifier("registry")
-        end.block do |defn|
-          file.dependency.each do |dep|
-            defn.identifier(files.fetch(dep).to_constant)
-                .dot("register_#{File.basename dep.delete_suffix(".proto")}_protos")
-                .call do |c|
-              c.identifier("registry")
-            end
-          end
-          emit_register(defn, file)
-        end
-      end
-    end
-
-    def emit_register(defn, descriptor)
-      case descriptor
-      when DescriptorProto, EnumDescriptorProto
-        return unless descriptor.source_loc
-
-        defn.identifier("registry").dot("register").call do |c|
-          c.identifier(descriptor.to_constant)
-        end
-      when FieldDescriptorProto
-        return unless descriptor.extendee?
-
-        containing_type = files.fetch_type(
-          if descriptor.extendee.start_with?(".")
-            descriptor.extendee[1..]
-          else
-            "#{descriptor.parent.full_name}.#{descriptor.extendee}"
-          end
-        )
-        defn.comment("extension: #{containing_type.full_name}\n  #{descriptor.type} #{descriptor.number}")
-      when FileDescriptorProto, EnumValueDescriptorProto, ServiceDescriptorProto, OneofDescriptorProto,
-        MethodDescriptorProto
-        # no-op
-      else
-        raise "Unknown descriptor type: #{descriptor.class}"
-      end
-      descriptor.each_declaration do |decl|
-        emit_register(defn, decl)
       end
     end
   end

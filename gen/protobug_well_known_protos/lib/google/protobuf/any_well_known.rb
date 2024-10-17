@@ -2,22 +2,21 @@
 
 Google::Protobuf::Any.class_eval do
   def self.pack(msg)
-    any = new
-    any.pack(msg)
-    any
+    new.pack(msg)
   end
 
   def pack(msg)
     self.type_url = "type.googleapis.com/#{msg.class.full_name}"
     self.value = msg.to_proto
+    self
   end
 
-  def unpack(registry)
-    type = registry.fetch(type_url.delete_prefix("type.googleapis.com/"))
-    type.decode(value, registry: registry)
+  def unpack
+    type = Protobug.resolve_known_type(type_url.delete_prefix("type.googleapis.com/"))
+    type.decode(value)
   end
 
-  def self.decode_json_hash(json, registry:, ignore_unknown_fields: false)
+  def self.decode_json_hash(json, ignore_unknown_fields: false)
     raise Protobug::DecodeError, "expected hash, got #{json.inspect}" unless json.is_a? Hash
 
     json = json.dup
@@ -31,8 +30,8 @@ Google::Protobuf::Any.class_eval do
     # TODO: specifically check for well-known type with custom JSON representation
     json = json["value"] if json.key?("value") && json.size == 1
 
-    type = registry.fetch(type_url.delete_prefix("type.googleapis.com/"))
-    v = type.decode_json_hash(json, registry: registry, ignore_unknown_fields: ignore_unknown_fields)
+    type = Protobug.resolve_known_type(type_url.delete_prefix("type.googleapis.com/"))
+    v = type.decode_json_hash(json, ignore_unknown_fields: ignore_unknown_fields)
     json = {
       "type_url" => type_url,
       "value" => [type.encode(v)].pack("m0")
@@ -40,9 +39,17 @@ Google::Protobuf::Any.class_eval do
     super
   end
 
-  def as_json(print_unknown_fields: false) # rubocop:disable Lint/UnusedMethodArgument
-    # TODO: need a registry to look up the type
-    raise Protobug::UnsupportedFeatureError.new(:any, "serializing to json")
-    # return value.as_json.merge("@type" => "type.googleapis.com/#{value.class.full_name}")
+  def as_json(print_unknown_fields: false)
+    json = unpack.as_json(print_unknown_fields: print_unknown_fields)
+    if json.is_a?(Hash) &&
+       !%w[type.googleapis.com/google.protobuf.Any
+           type.googleapis.com/google.protobuf.Value
+           type.googleapis.com/google.protobuf.Struct].include?(type_url)
+
+      json["@type"] = type_url
+      json
+    else
+      { "value" => json, "@type" => type_url }
+    end
   end
 end

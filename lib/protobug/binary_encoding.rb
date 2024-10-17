@@ -142,28 +142,5 @@ module Protobug
 
       value
     end
-
-    def read_field_value(binary, wire_type)
-      case wire_type
-      when 0
-        decode_varint(binary) || raise(EOFError, "unexpected EOF")
-      when 1
-        value = binary.read(8)
-        raise EOFError, "unexpected EOF" if value&.bytesize != 8
-
-        value
-      when 2
-        decode_length(binary)
-      when 3, 4
-        raise UnsupportedFeatureError.new(:group, "reading groups from binary protos (in #{self})")
-      when 5
-        value = binary.read(4)
-        raise EOFError, "unexpected EOF" if value&.bytesize != 4
-
-        value
-      else
-        raise DecodeError, "unknown wire_type: #{wire_type}"
-      end
-    end
   end
 end
