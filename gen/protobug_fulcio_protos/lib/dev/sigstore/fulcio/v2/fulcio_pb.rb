@@ -290,18 +290,15 @@ module Dev
           repeated(1, "certificates", type: :string)
         end
 
-        class PublicKeyAlgorithm
+        module PublicKeyAlgorithm
           extend Protobug::Enum
 
           self.full_name = "dev.sigstore.fulcio.v2.PublicKeyAlgorithm"
 
-          PUBLIC_KEY_ALGORITHM_UNSPECIFIED = new(
-            "PUBLIC_KEY_ALGORITHM_UNSPECIFIED",
-            0
-          ).freeze
-          RSA_PSS = new("RSA_PSS", 1).freeze
-          ECDSA = new("ECDSA", 2).freeze
-          ED25519 = new("ED25519", 3).freeze
+          UNSPECIFIED = register("PUBLIC_KEY_ALGORITHM_UNSPECIFIED", 0)
+          RSA_PSS = register("RSA_PSS", 1)
+          ECDSA = register("ECDSA", 2)
+          ED25519 = register("ED25519", 3)
         end
 
         # This is created for forward compatibility in case we want to add fields in the future.

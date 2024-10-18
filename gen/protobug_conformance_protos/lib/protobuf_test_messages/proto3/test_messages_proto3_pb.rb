@@ -62,28 +62,28 @@ module ProtobufTestMessages
         )
       end
 
-      class NestedEnum
+      module NestedEnum
         extend Protobug::Enum
 
         self.full_name = "protobuf_test_messages.proto3.TestAllTypesProto3.NestedEnum"
 
-        FOO = new("FOO", 0).freeze
-        BAR = new("BAR", 1).freeze
-        BAZ = new("BAZ", 2).freeze
-        NEG = new("NEG", -1).freeze # Intentionally negative.
+        FOO = register("FOO", 0)
+        BAR = register("BAR", 1)
+        BAZ = register("BAZ", 2)
+        NEG = register("NEG", -1) # Intentionally negative.
       end
 
-      class AliasedEnum
+      module AliasedEnum
         extend Protobug::Enum
 
         self.full_name = "protobuf_test_messages.proto3.TestAllTypesProto3.AliasedEnum"
 
-        ALIAS_FOO = new("ALIAS_FOO", 0).freeze
-        ALIAS_BAR = new("ALIAS_BAR", 1).freeze
-        ALIAS_BAZ = new("ALIAS_BAZ", 2).freeze
-        MOO = new("MOO", 2).freeze
-        K_moo = new("moo", 2).freeze
-        K_bAz = new("bAz", 2).freeze
+        ALIAS_FOO = register("ALIAS_FOO", 0)
+        ALIAS_BAR = register("ALIAS_BAR", 1)
+        ALIAS_BAZ = register("ALIAS_BAZ", 2)
+        MOO = register("MOO", 2)
+        K_moo = register("moo", 2)
+        K_bAz = register("bAz", 2)
       end
 
       # Singular
@@ -1146,14 +1146,14 @@ module ProtobufTestMessages
       optional(1, "c", type: :int32, proto3_optional: false)
     end
 
-    class ForeignEnum
+    module ForeignEnum
       extend Protobug::Enum
 
       self.full_name = "protobuf_test_messages.proto3.ForeignEnum"
 
-      FOREIGN_FOO = new("FOREIGN_FOO", 0).freeze
-      FOREIGN_BAR = new("FOREIGN_BAR", 1).freeze
-      FOREIGN_BAZ = new("FOREIGN_BAZ", 2).freeze
+      FOREIGN_FOO = register("FOREIGN_FOO", 0)
+      FOREIGN_BAR = register("FOREIGN_BAR", 1)
+      FOREIGN_BAZ = register("FOREIGN_BAZ", 2)
     end
 
     class NullHypothesisProto3
@@ -1167,13 +1167,13 @@ module ProtobufTestMessages
 
       self.full_name = "protobuf_test_messages.proto3.EnumOnlyProto3"
 
-      class Bool
+      module Bool
         extend Protobug::Enum
 
         self.full_name = "protobuf_test_messages.proto3.EnumOnlyProto3.Bool"
 
-        K_False = new("kFalse", 0).freeze
-        K_True = new("kTrue", 1).freeze
+        K_False = register("kFalse", 0)
+        K_True = register("kTrue", 1)
       end
     end
   end

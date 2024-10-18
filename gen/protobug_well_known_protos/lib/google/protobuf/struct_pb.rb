@@ -147,13 +147,13 @@ module Google
     # `Value` type union.
     #
     # The JSON representation for `NullValue` is JSON `null`.
-    class NullValue
+    module NullValue
       extend Protobug::Enum
 
       self.full_name = "google.protobuf.NullValue"
 
       # Null value.
-      NULL_VALUE = new("NULL_VALUE", 0).freeze
+      NULL_VALUE = register("NULL_VALUE", 0)
     end
 
     # `ListValue` is a wrapper around a repeated field of values.

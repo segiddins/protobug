@@ -30,10 +30,10 @@ module Protobug
   end
 
   class InvalidValueError < Error
-    def initialize(msg, field, value, message = "")
-      super("invalid value for #{field.name} (#{field.number}): #{value.inspect}#{" (#{message})" if message} " \
-            "(#{field.number} of #{msg.class.full_name}\n" \
-            "#{field.inspect}")
+    def initialize(msg, field_name, value, message = "")
+      field = msg.class.fields_by_name.fetch(field_name)
+      super("invalid value for #{field} of #{msg.class.full_name}#{" (#{message})" if message}\n" \
+            "#{value.class.inspect}: #{value.inspect}")
     end
   end
 end

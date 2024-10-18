@@ -95,8 +95,7 @@ module Protobug
 
       str << "def #{setter}(value)\n"
       str << "  return #{ivar}#{oneof && " = @#{oneof}"} = nil if value.nil?\n" if proto3_optional?
-      str << "  field = self.class.fields_by_name.fetch(#{name.to_s.dump})\n" \
-             "  field.validate!(value, self)\n"
+      str << validate_code
       str << "  @#{oneof} = #{name.inspect}\n" if oneof
       str << "  #{ivar} = value\n" \
              "end\n"
@@ -116,11 +115,9 @@ module Protobug
       str << "def #{haser}\n"
       str << "  return false unless @#{oneof} == #{name.inspect}\n" if oneof
       str << "  value = #{ivar}\n" \
-             "  return false if value.nil?\n"
-      if (!optional? || !proto3_optional?) && !oneof
-        str << "  field = self.class.fields_by_name.fetch(#{name.to_s.dump})\n" \
-               "  return false if field.default == value\n"
-      end
+             "  return false if value.nil?"
+      str << " || #{default.inspect} == value" if (!optional? || !proto3_optional?) && !oneof && !repeated?
+      str << "\n"
       str << if repeated?
                "  !value.empty?\n"
              else
@@ -142,9 +139,14 @@ module Protobug
       if adder
         str << "def #{adder}(value)\n" \
                "  existing = #{ivar}\n" \
-               "  field = self.class.fields_by_name.fetch(#{name.to_s.dump})\n" \
-               "  field.validate!(value, self)\n" \
-               "  existing << value\n" \
+               << validate_code
+        str << "  existing << value\n" \
+               "end\n"
+      end
+
+      if is_a?(EnumField)
+        str << "def #{name}_case_name\n" \
+               "  #{enum_class}.names.fetch(#{ivar})\n" \
                "end\n"
       end
 
@@ -232,6 +234,12 @@ module Protobug
       raise DecodeError, "nil is invalid for #{name} in #{message}" if value.nil?
     end
 
+    def validate_code
+      <<~RUBY
+        raise Protobug::InvalidValueError.new(self, #{name.name.dump}, value) unless value.is_a?(#{expected_class})
+      RUBY
+    end
+
     private
 
     def binary_encode_packed(value, outbuf)
@@ -287,6 +295,10 @@ module Protobug
           #{ivar} #{adder ? :<< : :"="} (#{fetch}).__protobug_binary_decode(binary, index, index += length)
         RUBY
       end
+
+      def expected_class
+        message_class
+      end
     end
 
     class MapField < MessageField
@@ -329,11 +341,14 @@ module Protobug
       end
 
       def binary_encode(value, outbuf)
-        value.each_with_object(@map_class.new) do |(k, v), entry|
-          entry.key = k
-          entry.value = v unless v.nil?
+        key_field, value_field = @map_class.fields_by_number.values_at(1, 2)
+        scratch = +"".b
+        value.each do |k, v|
+          key_field.binary_encode(k, scratch)
+          value_field.binary_encode(v, scratch) unless v.nil?
           BinaryEncoding.encode_varint (number << 3) | wire_type, outbuf
-          BinaryEncoding.encode_length @map_class.encode(entry), outbuf
+          BinaryEncoding.encode_length scratch, outbuf
+          scratch.clear
         end
       end
 
@@ -368,10 +383,6 @@ module Protobug
         end
       end
 
-      def type_lookup
-        @map_class
-      end
-
       def binary_decode_code(protobug_read_varint)
         key_field, value_field = @map_class.fields_by_number.values_at(1, 2)
         <<~RUBY
@@ -394,6 +405,10 @@ module Protobug
           raise EOFError unless index == kv_max
           #{@ivar}[kv_key] = kv_value
         RUBY
+      end
+
+      def expected_class
+        Hash
       end
     end
 
@@ -447,6 +462,10 @@ module Protobug
           #{ivar} #{adder ? :<< : :"="} value
           index += length
         RUBY
+      end
+
+      def expected_class
+        String
       end
     end
 
@@ -575,22 +594,41 @@ module Protobug
         end
       end
 
-      def validate!(value, message)
-        raise InvalidValueError.new(message, self, value, "expected integer") unless value.is_a?(Integer)
-
+      def maximum
         if signed
-          min = -2**(bit_length - 1)
-          max = 2**(bit_length - 1)
+          (2**(bit_length - 1)) - 1
         else
-          min = 0
-          max = 2**bit_length
+          (2**bit_length) - 1
         end
+      end
 
-        if value < min || value >= max
-          raise InvalidValueError.new(message, self, value, "does not fit into [#{min}, #{max})")
+      def minimum
+        if signed
+          -(2**(bit_length - 1))
+        else
+          0
+        end
+      end
+
+      def validate!(value, message)
+        raise InvalidValueError.new(message, name, value, "expected integer") unless value.is_a?(Integer)
+
+        if value < minimum || value >= maximum
+          raise InvalidValueError.new(message, name, value, "does not fit into [#{minimum}, #{maximum})")
         end
 
         super
+      end
+
+      def validate_code
+        super +
+          <<~RUBY
+            raise Protobug::InvalidValueError.new(self, #{name.name.dump}, value, "does not fit into [#{minimum}, #{maximum}]") unless value <= #{maximum} && value >= #{minimum}
+          RUBY
+      end
+
+      def expected_class
+        Integer
       end
     end
 
@@ -820,6 +858,12 @@ module Protobug
         super(value ? 1 : 0, message)
       end
 
+      def validate_code
+        <<~RUBY
+          raise InvalidValueError.new(self, #{name.name.dump}, value, "expected boolean") unless true == value || false == value
+        RUBY
+      end
+
       def default
         return [] if repeated?
 
@@ -868,16 +912,13 @@ module Protobug
         end
       end
 
-      def binary_encode_one(value, outbuf)
-        super(value.value, outbuf)
-      end
-
       def json_decode_one(value, ignore_unknown_fields)
         Object.const_get(enum_class).decode_json_hash(value, ignore_unknown_fields: ignore_unknown_fields)
       end
 
-      def json_encode_one(value, print_unknown_fields:) # rubocop:disable Lint/UnusedMethodArgument
-        value.as_json
+      def json_encode_one(value, print_unknown_fields:)
+        _ = print_unknown_fields
+        Object.const_get(enum_class).as_json(value, print_unknown_fields: print_unknown_fields)
       end
 
       def default
@@ -885,26 +926,6 @@ module Protobug
 
         # TODO: enum_type.default
         0
-      end
-
-      def validate!(value, message)
-        value = value.value if value.is_a?(Enum::InstanceMethods)
-        super
-      end
-
-      def binary_decode_code(protobug_read_varint)
-        sign_mask = bit_length == 32 ? "0x8000_0000" : "0x8000_0000_0000_0000"
-        length_mask = bit_length == 32 ? "0x7FFF_FFFF" : "0x7fff_ffff_ffff_ffff"
-        <<~RUBY
-          value = #{protobug_read_varint.chomp}
-          #{ivar} #{adder ? :<< : :"="} #{enum_class}.decode(
-            if (value & #{sign_mask}) != 0
-              -(((value & #{length_mask}) ^ #{length_mask}) + 1)
-            else
-              value & #{length_mask}
-            end
-          )
-        RUBY
       end
     end
 
@@ -979,6 +1000,10 @@ module Protobug
           index += #{wire_type == 1 ? 8 : 4}
         RUBY
       end
+
+      def expected_class
+        Float
+      end
     end
 
     class FloatField < DoubleField
@@ -1012,6 +1037,10 @@ module Protobug
 
       def group?
         true
+      end
+
+      def validate_code
+        "raise UnsupportedFeatureError.new(:group, \"setting group\")\n"
       end
     end
   end

@@ -72,35 +72,35 @@ module Google
     end
 
     # The full set of known editions.
-    class Edition
+    module Edition
       extend Protobug::Enum
 
       self.full_name = "google.protobuf.Edition"
 
       # A placeholder for an unknown edition value.
-      EDITION_UNKNOWN = new("EDITION_UNKNOWN", 0).freeze
+      UNKNOWN = register("EDITION_UNKNOWN", 0)
       # Legacy syntax "editions".  These pre-date editions, but behave much like
       # distinct editions.  These can't be used to specify the edition of proto
       # files, but feature definitions must supply proto2/proto3 defaults for
       # backwards compatibility.
-      EDITION_PROTO2 = new("EDITION_PROTO2", 998).freeze
-      EDITION_PROTO3 = new("EDITION_PROTO3", 999).freeze
+      PROTO2 = register("EDITION_PROTO2", 998)
+      PROTO3 = register("EDITION_PROTO3", 999)
       # Editions that have been released.  The specific values are arbitrary and
       # should not be depended on, but they will always be time-ordered for easy
       # comparison.
-      EDITION_2023 = new("EDITION_2023", 1_000).freeze
-      EDITION_2024 = new("EDITION_2024", 1_001).freeze
+      EDITION_2023 = register("EDITION_2023", 1_000)
+      EDITION_2024 = register("EDITION_2024", 1_001)
       # Placeholder editions for testing feature resolution.  These should not be
       # used or relyed on outside of tests.
-      EDITION_1_TEST_ONLY = new("EDITION_1_TEST_ONLY", 1).freeze
-      EDITION_2_TEST_ONLY = new("EDITION_2_TEST_ONLY", 2).freeze
-      EDITION_99997_TEST_ONLY = new("EDITION_99997_TEST_ONLY", 99_997).freeze
-      EDITION_99998_TEST_ONLY = new("EDITION_99998_TEST_ONLY", 99_998).freeze
-      EDITION_99999_TEST_ONLY = new("EDITION_99999_TEST_ONLY", 99_999).freeze
+      EDITION_1_TEST_ONLY = register("EDITION_1_TEST_ONLY", 1)
+      EDITION_2_TEST_ONLY = register("EDITION_2_TEST_ONLY", 2)
+      EDITION_99997_TEST_ONLY = register("EDITION_99997_TEST_ONLY", 99_997)
+      EDITION_99998_TEST_ONLY = register("EDITION_99998_TEST_ONLY", 99_998)
+      EDITION_99999_TEST_ONLY = register("EDITION_99999_TEST_ONLY", 99_999)
       # Placeholder for specifying unbounded edition support.  This should only
       # ever be used by plugins that can expect to never require any changes to
       # support a new edition.
-      EDITION_MAX = new("EDITION_MAX", 2_147_483_647).freeze
+      MAX = register("EDITION_MAX", 2_147_483_647)
     end
 
     # Describes a complete .proto file.
@@ -332,14 +332,14 @@ module Google
         message_class: "Google::Protobuf::FeatureSet"
       )
       # The verification state of the extension range.
-      class VerificationState
+      module VerificationState
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.ExtensionRangeOptions.VerificationState"
 
         # All the extensions of the range must be declared.
-        DECLARATION = new("DECLARATION", 0).freeze
-        UNVERIFIED = new("UNVERIFIED", 1).freeze
+        DECLARATION = register("DECLARATION", 0)
+        UNVERIFIED = register("UNVERIFIED", 1)
       end
 
       # The verification state of the range.
@@ -359,58 +359,55 @@ module Google
 
       self.full_name = "google.protobuf.FieldDescriptorProto"
 
-      class Type
+      module Type
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FieldDescriptorProto.Type"
 
         # 0 is reserved for errors.
         # Order is weird for historical reasons.
-        TYPE_DOUBLE = new("TYPE_DOUBLE", 1).freeze
-        TYPE_FLOAT = new("TYPE_FLOAT", 2).freeze
+        DOUBLE = register("TYPE_DOUBLE", 1)
+        FLOAT = register("TYPE_FLOAT", 2)
         # Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT64 if
         # negative values are likely.
-        TYPE_INT64 = new("TYPE_INT64", 3).freeze
-        TYPE_UINT64 = new("TYPE_UINT64", 4).freeze
+        INT64 = register("TYPE_INT64", 3)
+        UINT64 = register("TYPE_UINT64", 4)
         # Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT32 if
         # negative values are likely.
-        TYPE_INT32 = new("TYPE_INT32", 5).freeze
-        TYPE_FIXED64 = new("TYPE_FIXED64", 6).freeze
-        TYPE_FIXED32 = new("TYPE_FIXED32", 7).freeze
-        TYPE_BOOL = new("TYPE_BOOL", 8).freeze
-        TYPE_STRING = new("TYPE_STRING", 9).freeze
+        INT32 = register("TYPE_INT32", 5)
+        FIXED64 = register("TYPE_FIXED64", 6)
+        FIXED32 = register("TYPE_FIXED32", 7)
+        BOOL = register("TYPE_BOOL", 8)
+        STRING = register("TYPE_STRING", 9)
         # Tag-delimited aggregate.
         # Group type is deprecated and not supported after google.protobuf. However, Proto3
         # implementations should still be able to parse the group wire format and
         # treat group fields as unknown fields.  In Editions, the group wire format
         # can be enabled via the `message_encoding` feature.
-        TYPE_GROUP = new("TYPE_GROUP", 10).freeze
-        TYPE_MESSAGE = new(
-          "TYPE_MESSAGE",
-          11
-        ).freeze # Length-delimited aggregate.
+        GROUP = register("TYPE_GROUP", 10)
+        MESSAGE = register("TYPE_MESSAGE", 11) # Length-delimited aggregate.
         # New in version 2.
-        TYPE_BYTES = new("TYPE_BYTES", 12).freeze
-        TYPE_UINT32 = new("TYPE_UINT32", 13).freeze
-        TYPE_ENUM = new("TYPE_ENUM", 14).freeze
-        TYPE_SFIXED32 = new("TYPE_SFIXED32", 15).freeze
-        TYPE_SFIXED64 = new("TYPE_SFIXED64", 16).freeze
-        TYPE_SINT32 = new("TYPE_SINT32", 17).freeze # Uses ZigZag encoding.
-        TYPE_SINT64 = new("TYPE_SINT64", 18).freeze # Uses ZigZag encoding.
+        BYTES = register("TYPE_BYTES", 12)
+        UINT32 = register("TYPE_UINT32", 13)
+        ENUM = register("TYPE_ENUM", 14)
+        SFIXED32 = register("TYPE_SFIXED32", 15)
+        SFIXED64 = register("TYPE_SFIXED64", 16)
+        SINT32 = register("TYPE_SINT32", 17) # Uses ZigZag encoding.
+        SINT64 = register("TYPE_SINT64", 18) # Uses ZigZag encoding.
       end
 
-      class Label
+      module Label
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FieldDescriptorProto.Label"
 
         # 0 is reserved for errors
-        LABEL_OPTIONAL = new("LABEL_OPTIONAL", 1).freeze
-        LABEL_REPEATED = new("LABEL_REPEATED", 3).freeze
+        OPTIONAL = register("LABEL_OPTIONAL", 1)
+        REPEATED = register("LABEL_REPEATED", 3)
         # The required label is only allowed in google.protobuf.  In proto3 and Editions
         # it's explicitly prohibited.  In Editions, the `field_presence` feature
         # can be used to get this behavior.
-        LABEL_REQUIRED = new("LABEL_REQUIRED", 2).freeze
+        REQUIRED = register("LABEL_REQUIRED", 2)
       end
 
       optional(1, "name", type: :string)
@@ -691,24 +688,24 @@ module Google
         json_name: "javaStringCheckUtf8"
       )
       # Generated classes can be optimized for speed or code size.
-      class OptimizeMode
+      module OptimizeMode
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FileOptions.OptimizeMode"
 
-        SPEED = new(
+        SPEED = register(
           "SPEED",
           1
-        ).freeze # Generate complete code for parsing, serialization,
+        ) # Generate complete code for parsing, serialization,
         # etc.
-        CODE_SIZE = new(
+        CODE_SIZE = register(
           "CODE_SIZE",
           2
-        ).freeze # Use ReflectionOps to implement these methods.
-        LITE_RUNTIME = new(
+        ) # Use ReflectionOps to implement these methods.
+        LITE_RUNTIME = register(
           "LITE_RUNTIME",
           3
-        ).freeze # Generate code using MessageLite and the lite runtime.
+        ) # Generate code using MessageLite and the lite runtime.
       end
 
       optional(
@@ -947,21 +944,21 @@ module Google
         type: :enum,
         enum_class: "Google::Protobuf::FieldOptions::CType"
       )
-      class CType
+      module CType
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FieldOptions.CType"
 
         # Default mode.
-        STRING = new("STRING", 0).freeze
+        STRING = register("STRING", 0)
         # The option [ctype=CORD] may be applied to a non-repeated field of type
         # "bytes". It indicates that in C++, the data should be stored in a Cord
         # instead of a string.  For very large strings, this may reduce memory
         # fragmentation. It may also allow better performance when parsing from a
         # Cord, or when parsing with aliasing enabled, as the parsed Cord may then
         # alias the original buffer.
-        CORD = new("CORD", 1).freeze
-        STRING_PIECE = new("STRING_PIECE", 2).freeze
+        CORD = register("CORD", 1)
+        STRING_PIECE = register("STRING_PIECE", 2)
       end
 
       # The packed option can be enabled for repeated primitive fields to enable
@@ -989,17 +986,17 @@ module Google
         type: :enum,
         enum_class: "Google::Protobuf::FieldOptions::JSType"
       )
-      class JSType
+      module JSType
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FieldOptions.JSType"
 
         # Use the default type.
-        JS_NORMAL = new("JS_NORMAL", 0).freeze
+        JS_NORMAL = register("JS_NORMAL", 0)
         # Use JavaScript strings.
-        JS_STRING = new("JS_STRING", 1).freeze
+        JS_STRING = register("JS_STRING", 1)
         # Use JavaScript numbers.
-        JS_NUMBER = new("JS_NUMBER", 2).freeze
+        JS_NUMBER = register("JS_NUMBER", 2)
       end
 
       # Should this field be parsed lazily?  Lazy applies only to message-type
@@ -1042,14 +1039,14 @@ module Google
       # If set to RETENTION_SOURCE, the option will be omitted from the binary.
       # Note: as of January 2023, support for this is in progress and does not yet
       # have an effect (b/264593489).
-      class OptionRetention
+      module OptionRetention
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FieldOptions.OptionRetention"
 
-        RETENTION_UNKNOWN = new("RETENTION_UNKNOWN", 0).freeze
-        RETENTION_RUNTIME = new("RETENTION_RUNTIME", 1).freeze
-        RETENTION_SOURCE = new("RETENTION_SOURCE", 2).freeze
+        RETENTION_UNKNOWN = register("RETENTION_UNKNOWN", 0)
+        RETENTION_RUNTIME = register("RETENTION_RUNTIME", 1)
+        RETENTION_SOURCE = register("RETENTION_SOURCE", 2)
       end
 
       optional(
@@ -1062,24 +1059,21 @@ module Google
       # as an option. If it is unset, then the field may be freely used as an
       # option on any kind of entity. Note: as of January 2023, support for this is
       # in progress and does not yet have an effect (b/264593489).
-      class OptionTargetType
+      module OptionTargetType
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FieldOptions.OptionTargetType"
 
-        TARGET_TYPE_UNKNOWN = new("TARGET_TYPE_UNKNOWN", 0).freeze
-        TARGET_TYPE_FILE = new("TARGET_TYPE_FILE", 1).freeze
-        TARGET_TYPE_EXTENSION_RANGE = new(
-          "TARGET_TYPE_EXTENSION_RANGE",
-          2
-        ).freeze
-        TARGET_TYPE_MESSAGE = new("TARGET_TYPE_MESSAGE", 3).freeze
-        TARGET_TYPE_FIELD = new("TARGET_TYPE_FIELD", 4).freeze
-        TARGET_TYPE_ONEOF = new("TARGET_TYPE_ONEOF", 5).freeze
-        TARGET_TYPE_ENUM = new("TARGET_TYPE_ENUM", 6).freeze
-        TARGET_TYPE_ENUM_ENTRY = new("TARGET_TYPE_ENUM_ENTRY", 7).freeze
-        TARGET_TYPE_SERVICE = new("TARGET_TYPE_SERVICE", 8).freeze
-        TARGET_TYPE_METHOD = new("TARGET_TYPE_METHOD", 9).freeze
+        TARGET_TYPE_UNKNOWN = register("TARGET_TYPE_UNKNOWN", 0)
+        TARGET_TYPE_FILE = register("TARGET_TYPE_FILE", 1)
+        TARGET_TYPE_EXTENSION_RANGE = register("TARGET_TYPE_EXTENSION_RANGE", 2)
+        TARGET_TYPE_MESSAGE = register("TARGET_TYPE_MESSAGE", 3)
+        TARGET_TYPE_FIELD = register("TARGET_TYPE_FIELD", 4)
+        TARGET_TYPE_ONEOF = register("TARGET_TYPE_ONEOF", 5)
+        TARGET_TYPE_ENUM = register("TARGET_TYPE_ENUM", 6)
+        TARGET_TYPE_ENUM_ENTRY = register("TARGET_TYPE_ENUM_ENTRY", 7)
+        TARGET_TYPE_SERVICE = register("TARGET_TYPE_SERVICE", 8)
+        TARGET_TYPE_METHOD = register("TARGET_TYPE_METHOD", 9)
       end
 
       repeated(
@@ -1276,17 +1270,17 @@ module Google
       # Is this method side-effect-free (or safe in HTTP parlance), or idempotent,
       # or neither? HTTP based RPC implementation may choose GET verb for safe
       # methods, and PUT verb for idempotent methods instead of the default POST.
-      class IdempotencyLevel
+      module IdempotencyLevel
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.MethodOptions.IdempotencyLevel"
 
-        IDEMPOTENCY_UNKNOWN = new("IDEMPOTENCY_UNKNOWN", 0).freeze
-        NO_SIDE_EFFECTS = new("NO_SIDE_EFFECTS", 1).freeze # implies idempotent
-        IDEMPOTENT = new(
+        IDEMPOTENCY_UNKNOWN = register("IDEMPOTENCY_UNKNOWN", 0)
+        NO_SIDE_EFFECTS = register("NO_SIDE_EFFECTS", 1) # implies idempotent
+        IDEMPOTENT = register(
           "IDEMPOTENT",
           2
-        ).freeze # idempotent, but may have side effects
+        ) # idempotent, but may have side effects
       end
 
       optional(
@@ -1383,15 +1377,15 @@ module Google
 
       self.full_name = "google.protobuf.FeatureSet"
 
-      class FieldPresence
+      module FieldPresence
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FeatureSet.FieldPresence"
 
-        FIELD_PRESENCE_UNKNOWN = new("FIELD_PRESENCE_UNKNOWN", 0).freeze
-        EXPLICIT = new("EXPLICIT", 1).freeze
-        IMPLICIT = new("IMPLICIT", 2).freeze
-        LEGACY_REQUIRED = new("LEGACY_REQUIRED", 3).freeze
+        UNKNOWN = register("FIELD_PRESENCE_UNKNOWN", 0)
+        EXPLICIT = register("EXPLICIT", 1)
+        IMPLICIT = register("IMPLICIT", 2)
+        LEGACY_REQUIRED = register("LEGACY_REQUIRED", 3)
       end
 
       optional(
@@ -1401,14 +1395,14 @@ module Google
         enum_class: "Google::Protobuf::FeatureSet::FieldPresence",
         json_name: "fieldPresence"
       )
-      class EnumType
+      module EnumType
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FeatureSet.EnumType"
 
-        ENUM_TYPE_UNKNOWN = new("ENUM_TYPE_UNKNOWN", 0).freeze
-        OPEN = new("OPEN", 1).freeze
-        CLOSED = new("CLOSED", 2).freeze
+        UNKNOWN = register("ENUM_TYPE_UNKNOWN", 0)
+        OPEN = register("OPEN", 1)
+        CLOSED = register("CLOSED", 2)
       end
 
       optional(
@@ -1418,17 +1412,14 @@ module Google
         enum_class: "Google::Protobuf::FeatureSet::EnumType",
         json_name: "enumType"
       )
-      class RepeatedFieldEncoding
+      module RepeatedFieldEncoding
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FeatureSet.RepeatedFieldEncoding"
 
-        REPEATED_FIELD_ENCODING_UNKNOWN = new(
-          "REPEATED_FIELD_ENCODING_UNKNOWN",
-          0
-        ).freeze
-        PACKED = new("PACKED", 1).freeze
-        EXPANDED = new("EXPANDED", 2).freeze
+        UNKNOWN = register("REPEATED_FIELD_ENCODING_UNKNOWN", 0)
+        PACKED = register("PACKED", 1)
+        EXPANDED = register("EXPANDED", 2)
       end
 
       optional(
@@ -1438,14 +1429,14 @@ module Google
         enum_class: "Google::Protobuf::FeatureSet::RepeatedFieldEncoding",
         json_name: "repeatedFieldEncoding"
       )
-      class Utf8Validation
+      module Utf8Validation
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FeatureSet.Utf8Validation"
 
-        UTF8_VALIDATION_UNKNOWN = new("UTF8_VALIDATION_UNKNOWN", 0).freeze
-        VERIFY = new("VERIFY", 2).freeze
-        NONE = new("NONE", 3).freeze
+        UTF8_VALIDATION_UNKNOWN = register("UTF8_VALIDATION_UNKNOWN", 0)
+        VERIFY = register("VERIFY", 2)
+        NONE = register("NONE", 3)
       end
 
       optional(
@@ -1455,14 +1446,14 @@ module Google
         enum_class: "Google::Protobuf::FeatureSet::Utf8Validation",
         json_name: "utf8Validation"
       )
-      class MessageEncoding
+      module MessageEncoding
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FeatureSet.MessageEncoding"
 
-        MESSAGE_ENCODING_UNKNOWN = new("MESSAGE_ENCODING_UNKNOWN", 0).freeze
-        LENGTH_PREFIXED = new("LENGTH_PREFIXED", 1).freeze
-        DELIMITED = new("DELIMITED", 2).freeze
+        UNKNOWN = register("MESSAGE_ENCODING_UNKNOWN", 0)
+        LENGTH_PREFIXED = register("LENGTH_PREFIXED", 1)
+        DELIMITED = register("DELIMITED", 2)
       end
 
       optional(
@@ -1472,14 +1463,14 @@ module Google
         enum_class: "Google::Protobuf::FeatureSet::MessageEncoding",
         json_name: "messageEncoding"
       )
-      class JsonFormat
+      module JsonFormat
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FeatureSet.JsonFormat"
 
-        JSON_FORMAT_UNKNOWN = new("JSON_FORMAT_UNKNOWN", 0).freeze
-        ALLOW = new("ALLOW", 1).freeze
-        LEGACY_BEST_EFFORT = new("LEGACY_BEST_EFFORT", 2).freeze
+        UNKNOWN = register("JSON_FORMAT_UNKNOWN", 0)
+        ALLOW = register("ALLOW", 1)
+        LEGACY_BEST_EFFORT = register("LEGACY_BEST_EFFORT", 2)
       end
 
       optional(
@@ -1749,17 +1740,17 @@ module Google
         optional(4, "end", type: :int32)
         # Represents the identified object's effect on the element in the original
         # .proto file.
-        class Semantic
+        module Semantic
           extend Protobug::Enum
 
           self.full_name = "google.protobuf.GeneratedCodeInfo.Annotation.Semantic"
 
           # There is no effect or the effect is indescribable.
-          NONE = new("NONE", 0).freeze
+          NONE = register("NONE", 0)
           # The element is set or otherwise mutated.
-          SET = new("SET", 1).freeze
+          SET = register("SET", 1)
           # An alias to the element is returned.
-          ALIAS = new("ALIAS", 2).freeze
+          ALIAS = register("ALIAS", 2)
         end
 
         optional(

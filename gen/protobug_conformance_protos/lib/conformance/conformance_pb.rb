@@ -38,44 +38,44 @@ module Conformance
   #   - running as a sub-process may be more tricky in unusual environments like
   #     iOS apps, where fork/stdin/stdout are not available.
 
-  class WireFormat
+  module WireFormat
     extend Protobug::Enum
 
     self.full_name = "conformance.WireFormat"
 
-    UNSPECIFIED = new("UNSPECIFIED", 0).freeze
-    PROTOBUF = new("PROTOBUF", 1).freeze
-    JSON = new("JSON", 2).freeze
-    JSPB = new(
+    UNSPECIFIED = register("UNSPECIFIED", 0)
+    PROTOBUF = register("PROTOBUF", 1)
+    JSON = register("JSON", 2)
+    JSPB = register(
       "JSPB",
       3
-    ).freeze # Only used inside Google. Opensource testees just skip it.
-    TEXT_FORMAT = new("TEXT_FORMAT", 4).freeze
+    ) # Only used inside Google. Opensource testees just skip it.
+    TEXT_FORMAT = register("TEXT_FORMAT", 4)
   end
 
-  class TestCategory
+  module TestCategory
     extend Protobug::Enum
 
     self.full_name = "conformance.TestCategory"
 
-    UNSPECIFIED_TEST = new("UNSPECIFIED_TEST", 0).freeze
-    BINARY_TEST = new("BINARY_TEST", 1).freeze # Test binary wire format.
-    JSON_TEST = new("JSON_TEST", 2).freeze # Test json wire format.
+    UNSPECIFIED_TEST = register("UNSPECIFIED_TEST", 0)
+    BINARY_TEST = register("BINARY_TEST", 1) # Test binary wire format.
+    JSON_TEST = register("JSON_TEST", 2) # Test json wire format.
     # Similar to JSON_TEST. However, during parsing json, testee should ignore
     # unknown fields. This feature is optional. Each implementation can decide
     # whether to support it.  See
     # https://developers.google.com/protocol-buffers/docs/proto3#json_options
     # for more detail.
-    JSON_IGNORE_UNKNOWN_PARSING_TEST = new(
+    JSON_IGNORE_UNKNOWN_PARSING_TEST = register(
       "JSON_IGNORE_UNKNOWN_PARSING_TEST",
       3
-    ).freeze
+    )
     # Test jspb wire format. Only used inside Google. Opensource testees just
     # skip it.
-    JSPB_TEST = new("JSPB_TEST", 4).freeze
+    JSPB_TEST = register("JSPB_TEST", 4)
     # Test text format. For cpp, java and python, testees can already deal with
     # this type. Testees of other languages can simply skip it.
-    TEXT_FORMAT_TEST = new("TEXT_FORMAT_TEST", 5).freeze
+    TEXT_FORMAT_TEST = register("TEXT_FORMAT_TEST", 5)
   end
 
   # The conformance runner will request a list of failures as the first request.

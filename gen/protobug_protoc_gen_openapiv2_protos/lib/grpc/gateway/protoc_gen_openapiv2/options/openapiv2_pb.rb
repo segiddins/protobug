@@ -18,16 +18,16 @@ module Grpc
       module Options
         # Scheme describes the schemes supported by the OpenAPI Swagger
         # and Operation objects.
-        class Scheme
+        module Scheme
           extend Protobug::Enum
 
           self.full_name = "grpc.gateway.protoc_gen_openapiv2.options.Scheme"
 
-          UNKNOWN = new("UNKNOWN", 0).freeze
-          HTTP = new("HTTP", 1).freeze
-          HTTPS = new("HTTPS", 2).freeze
-          WS = new("WS", 3).freeze
-          WSS = new("WSS", 4).freeze
+          UNKNOWN = register("UNKNOWN", 0)
+          HTTP = register("HTTP", 1)
+          HTTPS = register("HTTPS", 2)
+          WS = register("WS", 3)
+          WSS = register("WSS", 4)
         end
 
         # `Swagger` is a representation of OpenAPI v2 specification's Swagger object.
@@ -336,16 +336,16 @@ module Grpc
 
           # `Type` is a supported HTTP header type.
           # See https://swagger.io/specification/v2/#parameterType.
-          class Type
+          module Type
             extend Protobug::Enum
 
             self.full_name = "grpc.gateway.protoc_gen_openapiv2.options.HeaderParameter.Type"
 
-            UNKNOWN = new("UNKNOWN", 0).freeze
-            STRING = new("STRING", 1).freeze
-            NUMBER = new("NUMBER", 2).freeze
-            INTEGER = new("INTEGER", 3).freeze
-            BOOLEAN = new("BOOLEAN", 4).freeze
+            UNKNOWN = register("UNKNOWN", 0)
+            STRING = register("STRING", 1)
+            NUMBER = register("NUMBER", 2)
+            INTEGER = register("INTEGER", 3)
+            BOOLEAN = register("BOOLEAN", 4)
           end
 
           # `Name` is the header name.
@@ -805,19 +805,19 @@ module Grpc
           repeated(26, "required", type: :string)
           # Items in 'array' must be unique.
           repeated(34, "array", type: :string)
-          class JSONSchemaSimpleTypes
+          module JSONSchemaSimpleTypes
             extend Protobug::Enum
 
             self.full_name = "grpc.gateway.protoc_gen_openapiv2.options.JSONSchema.JSONSchemaSimpleTypes"
 
-            UNKNOWN = new("UNKNOWN", 0).freeze
-            ARRAY = new("ARRAY", 1).freeze
-            BOOLEAN = new("BOOLEAN", 2).freeze
-            INTEGER = new("INTEGER", 3).freeze
-            NULL = new("NULL", 4).freeze
-            NUMBER = new("NUMBER", 5).freeze
-            OBJECT = new("OBJECT", 6).freeze
-            STRING = new("STRING", 7).freeze
+            UNKNOWN = register("UNKNOWN", 0)
+            ARRAY = register("ARRAY", 1)
+            BOOLEAN = register("BOOLEAN", 2)
+            INTEGER = register("INTEGER", 3)
+            NULL = register("NULL", 4)
+            NUMBER = register("NUMBER", 5)
+            OBJECT = register("OBJECT", 6)
+            STRING = register("STRING", 7)
           end
 
           repeated(
@@ -967,40 +967,40 @@ module Grpc
 
           # The type of the security scheme. Valid values are "basic",
           # "apiKey" or "oauth2".
-          class Type
+          module Type
             extend Protobug::Enum
 
             self.full_name = "grpc.gateway.protoc_gen_openapiv2.options.SecurityScheme.Type"
 
-            TYPE_INVALID = new("TYPE_INVALID", 0).freeze
-            TYPE_BASIC = new("TYPE_BASIC", 1).freeze
-            TYPE_API_KEY = new("TYPE_API_KEY", 2).freeze
-            TYPE_OAUTH2 = new("TYPE_OAUTH2", 3).freeze
+            INVALID = register("TYPE_INVALID", 0)
+            BASIC = register("TYPE_BASIC", 1)
+            API_KEY = register("TYPE_API_KEY", 2)
+            OAUTH2 = register("TYPE_OAUTH2", 3)
           end
 
           # The location of the API key. Valid values are "query" or "header".
-          class In
+          module In
             extend Protobug::Enum
 
             self.full_name = "grpc.gateway.protoc_gen_openapiv2.options.SecurityScheme.In"
 
-            IN_INVALID = new("IN_INVALID", 0).freeze
-            IN_QUERY = new("IN_QUERY", 1).freeze
-            IN_HEADER = new("IN_HEADER", 2).freeze
+            INVALID = register("IN_INVALID", 0)
+            QUERY = register("IN_QUERY", 1)
+            HEADER = register("IN_HEADER", 2)
           end
 
           # The flow used by the OAuth2 security scheme. Valid values are
           # "implicit", "password", "application" or "accessCode".
-          class Flow
+          module Flow
             extend Protobug::Enum
 
             self.full_name = "grpc.gateway.protoc_gen_openapiv2.options.SecurityScheme.Flow"
 
-            FLOW_INVALID = new("FLOW_INVALID", 0).freeze
-            FLOW_IMPLICIT = new("FLOW_IMPLICIT", 1).freeze
-            FLOW_PASSWORD = new("FLOW_PASSWORD", 2).freeze
-            FLOW_APPLICATION = new("FLOW_APPLICATION", 3).freeze
-            FLOW_ACCESS_CODE = new("FLOW_ACCESS_CODE", 4).freeze
+            INVALID = register("FLOW_INVALID", 0)
+            IMPLICIT = register("FLOW_IMPLICIT", 1)
+            PASSWORD = register("FLOW_PASSWORD", 2)
+            APPLICATION = register("FLOW_APPLICATION", 3)
+            ACCESS_CODE = register("FLOW_ACCESS_CODE", 4)
           end
 
           # The type of the security scheme. Valid values are "basic",

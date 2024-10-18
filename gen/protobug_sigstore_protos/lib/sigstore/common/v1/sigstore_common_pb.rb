@@ -44,17 +44,17 @@ module Sigstore
       # any proto JSON serialization to emit the used hash algorithm, as default
       # option is to *omit* the default value of an enum (which is the first
       # value, represented by '0'.
-      class HashAlgorithm
+      module HashAlgorithm
         extend Protobug::Enum
 
         self.full_name = "dev.sigstore.common.v1.HashAlgorithm"
 
-        HASH_ALGORITHM_UNSPECIFIED = new("HASH_ALGORITHM_UNSPECIFIED", 0).freeze
-        SHA2_256 = new("SHA2_256", 1).freeze
-        SHA2_384 = new("SHA2_384", 2).freeze
-        SHA2_512 = new("SHA2_512", 3).freeze
-        SHA3_256 = new("SHA3_256", 4).freeze
-        SHA3_384 = new("SHA3_384", 5).freeze
+        UNSPECIFIED = register("HASH_ALGORITHM_UNSPECIFIED", 0)
+        SHA2_256 = register("SHA2_256", 1)
+        SHA2_384 = register("SHA2_384", 2)
+        SHA2_512 = register("SHA2_512", 3)
+        SHA3_256 = register("SHA3_256", 4)
+        SHA3_384 = register("SHA3_384", 5)
       end
 
       # Details of a specific public key, capturing the the key encoding method,
@@ -73,54 +73,51 @@ module Sigstore
       # ED25519 the valid permutations are listed as a linear set instead of a
       # cartesian set (i.e one combined variable instead of two, one for encoding
       # and one for the signature algorithm).
-      class PublicKeyDetails
+      module PublicKeyDetails
         extend Protobug::Enum
 
         self.full_name = "dev.sigstore.common.v1.PublicKeyDetails"
 
-        PUBLIC_KEY_DETAILS_UNSPECIFIED = new(
-          "PUBLIC_KEY_DETAILS_UNSPECIFIED",
-          0
-        ).freeze
+        UNSPECIFIED = register("PUBLIC_KEY_DETAILS_UNSPECIFIED", 0)
         # RSA
-        PKCS1_RSA_PKCS1V5 = new("PKCS1_RSA_PKCS1V5", 1).freeze # See RFC8017
-        PKCS1_RSA_PSS = new("PKCS1_RSA_PSS", 2).freeze # See RFC8017
-        PKIX_RSA_PKCS1V5 = new("PKIX_RSA_PKCS1V5", 3).freeze
-        PKIX_RSA_PSS = new("PKIX_RSA_PSS", 4).freeze
+        PKCS1_RSA_PKCS1V5 = register("PKCS1_RSA_PKCS1V5", 1) # See RFC8017
+        PKCS1_RSA_PSS = register("PKCS1_RSA_PSS", 2) # See RFC8017
+        PKIX_RSA_PKCS1V5 = register("PKIX_RSA_PKCS1V5", 3)
+        PKIX_RSA_PSS = register("PKIX_RSA_PSS", 4)
         # RSA public key in PKIX format, PKCS#1v1.5 signature
-        PKIX_RSA_PKCS1V15_2048_SHA256 = new(
+        PKIX_RSA_PKCS1V15_2048_SHA256 = register(
           "PKIX_RSA_PKCS1V15_2048_SHA256",
           9
-        ).freeze
-        PKIX_RSA_PKCS1V15_3072_SHA256 = new(
+        )
+        PKIX_RSA_PKCS1V15_3072_SHA256 = register(
           "PKIX_RSA_PKCS1V15_3072_SHA256",
           10
-        ).freeze
-        PKIX_RSA_PKCS1V15_4096_SHA256 = new(
+        )
+        PKIX_RSA_PKCS1V15_4096_SHA256 = register(
           "PKIX_RSA_PKCS1V15_4096_SHA256",
           11
-        ).freeze
+        )
         # RSA public key in PKIX format, RSASSA-PSS signature
-        PKIX_RSA_PSS_2048_SHA256 = new(
+        PKIX_RSA_PSS_2048_SHA256 = register(
           "PKIX_RSA_PSS_2048_SHA256",
           16
-        ).freeze # See RFC4055
-        PKIX_RSA_PSS_3072_SHA256 = new("PKIX_RSA_PSS_3072_SHA256", 17).freeze
-        PKIX_RSA_PSS_4096_SHA256 = new("PKIX_RSA_PSS_4096_SHA256", 18).freeze
+        ) # See RFC4055
+        PKIX_RSA_PSS_3072_SHA256 = register("PKIX_RSA_PSS_3072_SHA256", 17)
+        PKIX_RSA_PSS_4096_SHA256 = register("PKIX_RSA_PSS_4096_SHA256", 18)
         # ECDSA
-        PKIX_ECDSA_P256_HMAC_SHA_256 = new(
+        PKIX_ECDSA_P256_HMAC_SHA_256 = register(
           "PKIX_ECDSA_P256_HMAC_SHA_256",
           6
-        ).freeze # See RFC6979
-        PKIX_ECDSA_P256_SHA_256 = new(
+        ) # See RFC6979
+        PKIX_ECDSA_P256_SHA_256 = register(
           "PKIX_ECDSA_P256_SHA_256",
           5
-        ).freeze # See NIST FIPS 186-4
-        PKIX_ECDSA_P384_SHA_384 = new("PKIX_ECDSA_P384_SHA_384", 12).freeze
-        PKIX_ECDSA_P521_SHA_512 = new("PKIX_ECDSA_P521_SHA_512", 13).freeze
+        ) # See NIST FIPS 186-4
+        PKIX_ECDSA_P384_SHA_384 = register("PKIX_ECDSA_P384_SHA_384", 12)
+        PKIX_ECDSA_P521_SHA_512 = register("PKIX_ECDSA_P521_SHA_512", 13)
         # Ed 25519
-        PKIX_ED25519 = new("PKIX_ED25519", 7).freeze # See RFC8032
-        PKIX_ED25519_PH = new("PKIX_ED25519_PH", 8).freeze
+        PKIX_ED25519 = register("PKIX_ED25519", 7) # See RFC8032
+        PKIX_ED25519_PH = register("PKIX_ED25519_PH", 8)
         # LMS and LM-OTS
         #
         # These keys and signatures may be used by private Sigstore
@@ -134,8 +131,8 @@ module Sigstore
         # MUST NOT be used for more than one signature per LM-OTS key.
         # If you cannot maintain these invariants, you MUST NOT use these
         # schemes.
-        LMS_SHA256 = new("LMS_SHA256", 14).freeze
-        LMOTS_SHA256 = new("LMOTS_SHA256", 15).freeze
+        LMS_SHA256 = register("LMS_SHA256", 14)
+        LMOTS_SHA256 = register("LMOTS_SHA256", 15)
 
         reserved_range(19..49)
       end
@@ -321,21 +318,18 @@ module Sigstore
         )
       end
 
-      class SubjectAlternativeNameType
+      module SubjectAlternativeNameType
         extend Protobug::Enum
 
         self.full_name = "dev.sigstore.common.v1.SubjectAlternativeNameType"
 
-        SUBJECT_ALTERNATIVE_NAME_TYPE_UNSPECIFIED = new(
-          "SUBJECT_ALTERNATIVE_NAME_TYPE_UNSPECIFIED",
-          0
-        ).freeze
-        EMAIL = new("EMAIL", 1).freeze
-        URI = new("URI", 2).freeze
+        UNSPECIFIED = register("SUBJECT_ALTERNATIVE_NAME_TYPE_UNSPECIFIED", 0)
+        EMAIL = register("EMAIL", 1)
+        URI = register("URI", 2)
         # OID 1.3.6.1.4.1.57264.1.7
         # See https://github.com/sigstore/fulcio/blob/main/docs/oid-info.md#1361415726417--othername-san
         # for more details.
-        OTHER_NAME = new("OTHER_NAME", 3).freeze
+        OTHER_NAME = register("OTHER_NAME", 3)
       end
 
       class SubjectAlternativeName

@@ -139,14 +139,14 @@ module Google
           json_name: "supportedFeatures"
         )
         # Sync with code_generator.h.
-        class Feature
+        module Feature
           extend Protobug::Enum
 
           self.full_name = "google.protobuf.compiler.CodeGeneratorResponse.Feature"
 
-          FEATURE_NONE = new("FEATURE_NONE", 0).freeze
-          FEATURE_PROTO3_OPTIONAL = new("FEATURE_PROTO3_OPTIONAL", 1).freeze
-          FEATURE_SUPPORTS_EDITIONS = new("FEATURE_SUPPORTS_EDITIONS", 2).freeze
+          NONE = register("FEATURE_NONE", 0)
+          PROTO3_OPTIONAL = register("FEATURE_PROTO3_OPTIONAL", 1)
+          SUPPORTS_EDITIONS = register("FEATURE_SUPPORTS_EDITIONS", 2)
         end
 
         # The minimum edition this plugin supports.  This will be treated as an

@@ -191,6 +191,20 @@ module Protobug
 
     class EnumValueDescriptorProto < DelegateClass(Google::Protobuf::EnumValueDescriptorProto)
       include Descriptor
+
+      def to_constant
+        const_name = name.start_with?("k") ? "K_#{name[1..]}" : name
+
+        prefix = parent.name.gsub(/(?:(?<=([A-Za-z\d]))|\b)(?=\b|[^a-z])/) do
+          "#{::Regexp.last_match(1) && "_"}#{::Regexp.last_match(2)}"
+        end
+        prefix.gsub!(/(?<=[A-Z])(?=[A-Z][a-z])|(?<=[a-z\d])(?=[A-Z])/, "_")
+        prefix.upcase!
+
+        const_name = const_name.delete_prefix(prefix) if const_name.match?(/\A#{Regexp.escape(prefix)}[A-Z]/)
+        const_name = "K_#{const_name}" unless const_name.match?(/\A[A-Z]/)
+        const_name
+      end
     end
 
     class ServiceDescriptorProto < DelegateClass(Google::Protobuf::ServiceDescriptorProto)
@@ -219,8 +233,7 @@ module Protobug
     end
 
     def compile!
-      response.supported_features |=
-        Google::Protobuf::Compiler::CodeGeneratorResponse::Feature::FEATURE_PROTO3_OPTIONAL.value
+      response.supported_features |= Google::Protobuf::Compiler::CodeGeneratorResponse::Feature::PROTO3_OPTIONAL
       @files = Files.new
 
       request.proto_file.each do |file|
@@ -289,7 +302,7 @@ module Protobug
           end
         end
       when EnumDescriptorProto
-        group._class.identifier(descriptor.name).block do |g|
+        group._module.identifier(descriptor.name).block do |g|
           g.identifier("extend").identifier("Protobug::Enum")
           g.empty
           g.identifier("self").dot("full_name").op("=")
@@ -315,12 +328,10 @@ module Protobug
           end
         end
       when EnumValueDescriptorProto
-        const_name = descriptor.name.start_with?("k") ? "K_#{descriptor.name[1..]}" : descriptor.name
-        const_name = "K_#{const_name}" unless const_name.match?(/\A[A-Z]/)
-        group.identifier(const_name).op("=").identifier("new").call do |c|
+        group.identifier(descriptor.to_constant).op("=").identifier("register").call do |c|
           c.literal(descriptor.name)
           c.literal(descriptor.number)
-        end.dot("freeze")
+        end
       when FieldDescriptorProto
         if descriptor.extendee?
           containing_type = files.fetch_type(
@@ -334,7 +345,7 @@ module Protobug
           return # rubocop:disable Lint/NonLocalExitFromIterator
         end
 
-        type = descriptor.type.name.downcase.delete_prefix("type_").to_sym
+        type = descriptor.type_case_name.downcase.delete_prefix!("type_").to_sym
 
         if descriptor.type_name?
           referenced_type = files.fetch_type(descriptor.type_name.delete_prefix("."))
@@ -343,15 +354,15 @@ module Protobug
 
         group.identifier(
           case descriptor.label
-          when Google::Protobuf::FieldDescriptorProto::Label::LABEL_OPTIONAL
+          when Google::Protobuf::FieldDescriptorProto::Label::OPTIONAL
             "optional"
-          when Google::Protobuf::FieldDescriptorProto::Label::LABEL_REPEATED
+          when Google::Protobuf::FieldDescriptorProto::Label::REPEATED
             if type == :map
               "map"
             else
               "repeated"
             end
-          when Google::Protobuf::FieldDescriptorProto::Label::LABEL_REQUIRED
+          when Google::Protobuf::FieldDescriptorProto::Label::REQUIRED
             "required"
           else
             raise "Unknown label: #{descriptor.label}"
@@ -365,8 +376,8 @@ module Protobug
             raise unless referenced_type.field.count == 2
 
             c.identifier("key_type:")
-             .literal(referenced_type.field[0].type.name.downcase.delete_prefix("type_").to_sym)
-            value_type = referenced_type.field[1].type.name.downcase.delete_prefix("type_").to_sym
+             .literal(referenced_type.field[0].type_case_name.downcase.delete_prefix("type_").to_sym)
+            value_type = referenced_type.field[1].type_case_name.downcase.delete_prefix("type_").to_sym
             c.identifier("value_type:")
              .literal(value_type)
             if referenced_type.field[1].type_name?
@@ -381,7 +392,7 @@ module Protobug
           packed = descriptor.options&.packed
           # TODO: exclude other types that cannot be packed
           if !descriptor.options&.packed? && !%i[message bytes string map].include?(type)
-            packed = descriptor.label == Google::Protobuf::FieldDescriptorProto::Label::LABEL_REPEATED &&
+            packed = descriptor.label == Google::Protobuf::FieldDescriptorProto::Label::REPEATED &&
                      descriptor.file.syntax == "proto3"
           end
           c.identifier("packed:").literal(packed) if packed
@@ -395,7 +406,7 @@ module Protobug
             end == 1)
             c.identifier("oneof:").literal(oneof.name.to_sym) unless synthetic
           end
-          if descriptor.label == Google::Protobuf::FieldDescriptorProto::Label::LABEL_OPTIONAL &&
+          if descriptor.label == Google::Protobuf::FieldDescriptorProto::Label::OPTIONAL &&
              descriptor.file.syntax == "proto3" && !descriptor.proto3_optional
             c.identifier("proto3_optional:").literal(false)
           end
@@ -438,17 +449,17 @@ module Protobug
         f.comment "package: #{file.package}"
         f.comment "options:"
         if file.options
-          file.options.class.fields_by_name.each_key do |name|
+          file.options.class.fields_by_name.each do |name, field|
             next unless file.options.send(:"#{name}?")
 
-            value = case value = file.options.send(name)
-                    when Enum::InstanceMethods
-                      value.name
-                    when Symbol
-                      raise "Unknown symbol: #{value} for #{name} in #{file.options.inspect}"
-                    else
-                      value.inspect
-                    end
+            value = file.options.send(name)
+            if value.is_a?(Symbol)
+              raise "Unknown symbol: #{value} for #{name} in #{file.options.inspect}"
+            elsif field.is_a?(Field::EnumField)
+              value = file.options.send(:"#{name}_case_name")
+            else
+              value = value.inspect
+            end
 
             f.comment "   #{name}: #{value}"
           end

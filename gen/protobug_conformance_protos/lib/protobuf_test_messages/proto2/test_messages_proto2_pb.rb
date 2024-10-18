@@ -54,15 +54,15 @@ module ProtobufTestMessages
         )
       end
 
-      class NestedEnum
+      module NestedEnum
         extend Protobug::Enum
 
         self.full_name = "protobuf_test_messages.proto2.TestAllTypesProto2.NestedEnum"
 
-        FOO = new("FOO", 0).freeze
-        BAR = new("BAR", 1).freeze
-        BAZ = new("BAZ", 2).freeze
-        NEG = new("NEG", -1).freeze # Intentionally negative.
+        FOO = register("FOO", 0)
+        BAR = register("BAR", 1)
+        BAZ = register("BAZ", 2)
+        NEG = register("NEG", -1) # Intentionally negative.
       end
 
       # Singular
@@ -739,14 +739,14 @@ module ProtobufTestMessages
       optional(1, "c", type: :int32)
     end
 
-    class ForeignEnumProto2
+    module ForeignEnumProto2
       extend Protobug::Enum
 
       self.full_name = "protobuf_test_messages.proto2.ForeignEnumProto2"
 
-      FOREIGN_FOO = new("FOREIGN_FOO", 0).freeze
-      FOREIGN_BAR = new("FOREIGN_BAR", 1).freeze
-      FOREIGN_BAZ = new("FOREIGN_BAZ", 2).freeze
+      FOREIGN_FOO = register("FOREIGN_FOO", 0)
+      FOREIGN_BAR = register("FOREIGN_BAR", 1)
+      FOREIGN_BAZ = register("FOREIGN_BAZ", 2)
     end
 
     # extension: protobuf_test_messages.proto2.TestAllTypesProto2
@@ -805,13 +805,13 @@ module ProtobufTestMessages
 
       self.full_name = "protobuf_test_messages.proto2.EnumOnlyProto2"
 
-      class Bool
+      module Bool
         extend Protobug::Enum
 
         self.full_name = "protobuf_test_messages.proto2.EnumOnlyProto2.Bool"
 
-        K_False = new("kFalse", 0).freeze
-        K_True = new("kTrue", 1).freeze
+        K_False = register("kFalse", 0)
+        K_True = register("kTrue", 1)
       end
     end
 
@@ -861,15 +861,15 @@ module ProtobufTestMessages
         )
       end
 
-      class NestedEnum
+      module NestedEnum
         extend Protobug::Enum
 
         self.full_name = "protobuf_test_messages.proto2.TestAllRequiredTypesProto2.NestedEnum"
 
-        FOO = new("FOO", 0).freeze
-        BAR = new("BAR", 1).freeze
-        BAZ = new("BAZ", 2).freeze
-        NEG = new("NEG", -1).freeze # Intentionally negative.
+        FOO = register("FOO", 0)
+        BAR = register("BAR", 1)
+        BAZ = register("BAZ", 2)
+        NEG = register("NEG", -1) # Intentionally negative.
       end
 
       # Singular
