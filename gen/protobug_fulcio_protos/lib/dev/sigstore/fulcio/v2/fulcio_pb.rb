@@ -73,7 +73,7 @@ module Dev
             1,
             "credentials",
             type: :message,
-            message_type: "dev.sigstore.fulcio.v2.Credentials",
+            message_class: "Dev::Sigstore::Fulcio::V2::Credentials",
             proto3_optional: false
           )
           #
@@ -83,7 +83,7 @@ module Dev
             2,
             "public_key_request",
             type: :message,
-            message_type: "dev.sigstore.fulcio.v2.PublicKeyRequest",
+            message_class: "Dev::Sigstore::Fulcio::V2::PublicKeyRequest",
             json_name: "publicKeyRequest",
             oneof: :key,
             proto3_optional: false
@@ -135,7 +135,7 @@ module Dev
             1,
             "public_key",
             type: :message,
-            message_type: "dev.sigstore.fulcio.v2.PublicKey",
+            message_class: "Dev::Sigstore::Fulcio::V2::PublicKey",
             json_name: "publicKey",
             proto3_optional: false
           )
@@ -163,7 +163,7 @@ module Dev
             1,
             "algorithm",
             type: :enum,
-            enum_type: "dev.sigstore.fulcio.v2.PublicKeyAlgorithm",
+            enum_class: "Dev::Sigstore::Fulcio::V2::PublicKeyAlgorithm",
             proto3_optional: false
           )
           #
@@ -181,8 +181,8 @@ module Dev
             1,
             "signed_certificate_detached_sct",
             type: :message,
-            message_type:
-            "dev.sigstore.fulcio.v2.SigningCertificateDetachedSCT",
+            message_class:
+            "Dev::Sigstore::Fulcio::V2::SigningCertificateDetachedSCT",
             json_name: "signedCertificateDetachedSct",
             oneof: :certificate,
             proto3_optional: false
@@ -191,8 +191,8 @@ module Dev
             2,
             "signed_certificate_embedded_sct",
             type: :message,
-            message_type:
-            "dev.sigstore.fulcio.v2.SigningCertificateEmbeddedSCT",
+            message_class:
+            "Dev::Sigstore::Fulcio::V2::SigningCertificateEmbeddedSCT",
             json_name: "signedCertificateEmbeddedSct",
             oneof: :certificate,
             proto3_optional: false
@@ -215,7 +215,7 @@ module Dev
             1,
             "chain",
             type: :message,
-            message_type: "dev.sigstore.fulcio.v2.CertificateChain",
+            message_class: "Dev::Sigstore::Fulcio::V2::CertificateChain",
             proto3_optional: false
           )
           #
@@ -252,7 +252,7 @@ module Dev
             1,
             "chain",
             type: :message,
-            message_type: "dev.sigstore.fulcio.v2.CertificateChain",
+            message_class: "Dev::Sigstore::Fulcio::V2::CertificateChain",
             proto3_optional: false
           )
         end
@@ -276,7 +276,7 @@ module Dev
             1,
             "chains",
             type: :message,
-            message_type: "dev.sigstore.fulcio.v2.CertificateChain"
+            message_class: "Dev::Sigstore::Fulcio::V2::CertificateChain"
           )
         end
 
@@ -322,7 +322,7 @@ module Dev
             1,
             "issuers",
             type: :message,
-            message_type: "dev.sigstore.fulcio.v2.OIDCIssuer"
+            message_class: "Dev::Sigstore::Fulcio::V2::OIDCIssuer"
           )
         end
 
@@ -369,34 +369,6 @@ module Dev
             json_name: "spiffeTrustDomain",
             proto3_optional: false
           )
-        end
-
-        def self.register_fulcio_protos(registry)
-          Google::Api.register_annotations_protos(registry)
-          Google::Api.register_field_behavior_protos(registry)
-          Grpc::Gateway::ProtocGenOpenapiv2::Options.register_annotations_protos(
-            registry
-          )
-          registry.register(
-            Dev::Sigstore::Fulcio::V2::CreateSigningCertificateRequest
-          )
-          registry.register(Dev::Sigstore::Fulcio::V2::Credentials)
-          registry.register(Dev::Sigstore::Fulcio::V2::PublicKeyRequest)
-          registry.register(Dev::Sigstore::Fulcio::V2::PublicKey)
-          registry.register(Dev::Sigstore::Fulcio::V2::SigningCertificate)
-          registry.register(
-            Dev::Sigstore::Fulcio::V2::SigningCertificateDetachedSCT
-          )
-          registry.register(
-            Dev::Sigstore::Fulcio::V2::SigningCertificateEmbeddedSCT
-          )
-          registry.register(Dev::Sigstore::Fulcio::V2::GetTrustBundleRequest)
-          registry.register(Dev::Sigstore::Fulcio::V2::TrustBundle)
-          registry.register(Dev::Sigstore::Fulcio::V2::CertificateChain)
-          registry.register(Dev::Sigstore::Fulcio::V2::PublicKeyAlgorithm)
-          registry.register(Dev::Sigstore::Fulcio::V2::GetConfigurationRequest)
-          registry.register(Dev::Sigstore::Fulcio::V2::Configuration)
-          registry.register(Dev::Sigstore::Fulcio::V2::OIDCIssuer)
         end
       end
     end

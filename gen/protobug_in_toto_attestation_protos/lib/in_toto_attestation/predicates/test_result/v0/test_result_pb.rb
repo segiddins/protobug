@@ -27,19 +27,12 @@ module InTotoAttestation
             2,
             "configuration",
             type: :message,
-            message_type: "in_toto_attestation.v1.ResourceDescriptor"
+            message_class: "InTotoAttestation::V1::ResourceDescriptor"
           )
           optional(3, "url", type: :string, proto3_optional: false)
           repeated(4, "passed_tests", type: :string, json_name: "passedTests")
           repeated(5, "warned_tests", type: :string, json_name: "warnedTests")
           repeated(6, "failed_tests", type: :string, json_name: "failedTests")
-        end
-
-        def self.register_test_result_protos(registry)
-          InTotoAttestation::V1.register_resource_descriptor_protos(registry)
-          registry.register(
-            InTotoAttestation::Predicates::TestResult::V0::TestResult
-          )
         end
       end
     end

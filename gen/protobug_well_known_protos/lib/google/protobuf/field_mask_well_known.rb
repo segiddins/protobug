@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Google::Protobuf::FieldMask.class_eval do
-  def self.decode_json_hash(json, registry:, ignore_unknown_fields: false)
+  def self.decode_json_hash(json, ignore_unknown_fields: false)
     raise DecodeError, "expected string for #{full_name}, got #{json.inspect}" unless json.is_a? String
 
     paths = json.split(",").each do |field|

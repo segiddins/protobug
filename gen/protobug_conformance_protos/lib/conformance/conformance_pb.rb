@@ -141,7 +141,7 @@ module Conformance
       3,
       "requested_output_format",
       type: :enum,
-      enum_type: "conformance.WireFormat",
+      enum_class: "Conformance::WireFormat",
       json_name: "requestedOutputFormat",
       proto3_optional: false
     )
@@ -162,7 +162,7 @@ module Conformance
       5,
       "test_category",
       type: :enum,
-      enum_type: "conformance.TestCategory",
+      enum_class: "Conformance::TestCategory",
       json_name: "testCategory",
       proto3_optional: false
     )
@@ -171,7 +171,7 @@ module Conformance
       6,
       "jspb_encoding_options",
       type: :message,
-      message_type: "conformance.JspbEncodingConfig",
+      message_class: "Conformance::JspbEncodingConfig",
       json_name: "jspbEncodingOptions",
       proto3_optional: false
     )
@@ -304,14 +304,5 @@ module Conformance
       json_name: "useJspbArrayAnyFormat",
       proto3_optional: false
     )
-  end
-
-  def self.register_conformance_protos(registry)
-    registry.register(Conformance::WireFormat)
-    registry.register(Conformance::TestCategory)
-    registry.register(Conformance::FailureSet)
-    registry.register(Conformance::ConformanceRequest)
-    registry.register(Conformance::ConformanceResponse)
-    registry.register(Conformance::JspbEncodingConfig)
   end
 end
