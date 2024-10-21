@@ -81,7 +81,7 @@ Google::Protobuf::Value.class_eval do
     super
   end
 
-  def as_json(print_unknown_fields: false)
+  def as_json
     case kind
     when :null_value
       nil
@@ -92,9 +92,9 @@ Google::Protobuf::Value.class_eval do
     when :bool_value
       bool_value
     when :struct_value
-      struct_value.as_json(print_unknown_fields: print_unknown_fields)
+      struct_value.as_json
     when :list_value
-      list_value.values.map! { _1.as_json(print_unknown_fields: print_unknown_fields) }
+      list_value.values.map(&:as_json)
     else
       raise Protobug::EncodeError, "unknown kind: #{kind.inspect}"
     end
@@ -130,8 +130,8 @@ Google::Protobuf::Struct.class_eval do
     super
   end
 
-  def as_json(print_unknown_fields: false)
-    fields.transform_values { _1&.as_json(print_unknown_fields: print_unknown_fields) }
+  def as_json
+    fields.transform_values(&:as_json)
   end
 end
 
@@ -173,8 +173,8 @@ Google::Protobuf::ListValue.class_eval do
     super
   end
 
-  def as_json(print_unknown_fields: false)
-    values.map { _1.as_json(print_unknown_fields: print_unknown_fields) }
+  def as_json
+    values.map(&:as_json)
   end
 end
 
@@ -185,7 +185,7 @@ Google::Protobuf::NullValue.class_eval do
     super
   end
 
-  def self.as_json(value, print_unknown_fields: false)
+  def self.as_json(value)
     return if value == 0
 
     super

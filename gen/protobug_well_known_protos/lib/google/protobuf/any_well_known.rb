@@ -39,8 +39,8 @@ Google::Protobuf::Any.class_eval do
     super
   end
 
-  def as_json(print_unknown_fields: false)
-    json = unpack.as_json(print_unknown_fields: print_unknown_fields)
+  def as_json
+    json = unpack.as_json
     if json.is_a?(Hash) &&
        !%w[type.googleapis.com/google.protobuf.Any
            type.googleapis.com/google.protobuf.Value

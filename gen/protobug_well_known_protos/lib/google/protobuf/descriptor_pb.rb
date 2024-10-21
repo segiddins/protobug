@@ -79,6 +79,9 @@ module Google
 
       # A placeholder for an unknown edition value.
       UNKNOWN = register("EDITION_UNKNOWN", 0)
+      # A placeholder edition for specifying default behaviors *before* a feature
+      # was first introduced.  This is effectively an "infinite past".
+      LEGACY = register("EDITION_LEGACY", 900)
       # Legacy syntax "editions".  These pre-date editions, but behave much like
       # distinct editions.  These can't be used to specify the edition of proto
       # files, but feature definitions must supply proto2/proto3 defaults for
@@ -675,12 +678,16 @@ module Google
         type: :bool,
         json_name: "javaGenerateEqualsAndHash"
       )
-      # If set true, then the Java2 code generator will generate code that
-      # throws an exception whenever an attempt is made to assign a non-UTF-8
-      # byte sequence to a string field.
-      # Message reflection will do the same.
-      # However, an extension field still accepts non-UTF-8 byte sequences.
-      # This option has no effect on when used with the lite runtime.
+      # A proto2 file can set this to true to opt in to UTF-8 checking for Java,
+      # which will throw an exception if invalid UTF-8 is parsed from the wire or
+      # assigned to a string field.
+      #
+      # TODO: clarify exactly what kinds of field types this option
+      # applies to, and update these docs accordingly.
+      #
+      # Proto3 files already perform these checks. Setting the option explicitly to
+      # false has no effect: it cannot be used to opt proto3 files out of UTF-8
+      # checks.
       optional(
         27,
         "java_string_check_utf8",
@@ -821,6 +828,7 @@ module Google
 
       reserved_range(42...43)
       reserved_range(38...39)
+      reserved_name("php_generic_services")
     end
 
     class MessageOptions
@@ -932,12 +940,13 @@ module Google
 
       self.full_name = "google.protobuf.FieldOptions"
 
+      # NOTE: ctype is deprecated. Use `features.(pb.cpp).string_type` instead.
       # The ctype option instructs the C++ code generator to use a different
       # representation of the field than it normally would.  See the specific
       # options below.  This option is only implemented to support use of
       # [ctype=CORD] and [ctype=STRING] (the default) on non-repeated fields of
-      # type "bytes" in the open source release -- sorry, we'll try to include
-      # other types in a future version!
+      # type "bytes" in the open source release.
+      # TODO: make ctype actually deprecated.
       optional(
         1,
         "ctype",
@@ -1110,6 +1119,58 @@ module Google
         type: :message,
         message_class: "Google::Protobuf::FeatureSet"
       )
+      # Information about the support window of a feature.
+      class FeatureSupport
+        extend Protobug::Message
+
+        self.full_name = "google.protobuf.FieldOptions.FeatureSupport"
+
+        # The edition that this feature was first available in.  In editions
+        # earlier than this one, the default assigned to EDITION_LEGACY will be
+        # used, and proto files will not be able to override it.
+        optional(
+          1,
+          "edition_introduced",
+          type: :enum,
+          enum_class: "Google::Protobuf::Edition",
+          json_name: "editionIntroduced"
+        )
+        # The edition this feature becomes deprecated in.  Using this after this
+        # edition may trigger warnings.
+        optional(
+          2,
+          "edition_deprecated",
+          type: :enum,
+          enum_class: "Google::Protobuf::Edition",
+          json_name: "editionDeprecated"
+        )
+        # The deprecation warning text if this feature is used after the edition it
+        # was marked deprecated in.
+        optional(
+          3,
+          "deprecation_warning",
+          type: :string,
+          json_name: "deprecationWarning"
+        )
+        # The edition this feature is no longer available in.  In editions after
+        # this one, the last default assigned will be used, and proto files will
+        # not be able to override it.
+        optional(
+          4,
+          "edition_removed",
+          type: :enum,
+          enum_class: "Google::Protobuf::Edition",
+          json_name: "editionRemoved"
+        )
+      end
+
+      optional(
+        22,
+        "feature_support",
+        type: :message,
+        message_class: "Google::Protobuf::FieldOptions::FeatureSupport",
+        json_name: "featureSupport"
+      )
       # The parser stores options it doesn't recognize here. See above.
       repeated(
         999,
@@ -1210,6 +1271,14 @@ module Google
       # out when using debug formats, e.g. when the field contains sensitive
       # credentials.
       optional(3, "debug_redact", type: :bool, json_name: "debugRedact")
+      # Information about the support window of a feature value.
+      optional(
+        4,
+        "feature_support",
+        type: :message,
+        message_class: "Google::Protobuf::FieldOptions::FeatureSupport",
+        json_name: "featureSupport"
+      )
       # The parser stores options it doesn't recognize here. See above.
       repeated(
         999,
@@ -1437,6 +1506,8 @@ module Google
         UTF8_VALIDATION_UNKNOWN = register("UTF8_VALIDATION_UNKNOWN", 0)
         VERIFY = register("VERIFY", 2)
         NONE = register("NONE", 3)
+
+        reserved_range(1..0)
       end
 
       optional(
@@ -1508,12 +1579,26 @@ module Google
           type: :enum,
           enum_class: "Google::Protobuf::Edition"
         )
+        # Defaults of features that can be overridden in this edition.
         optional(
-          2,
-          "features",
+          4,
+          "overridable_features",
           type: :message,
-          message_class: "Google::Protobuf::FeatureSet"
+          message_class: "Google::Protobuf::FeatureSet",
+          json_name: "overridableFeatures"
         )
+        # Defaults of features that can't be overridden in this edition.
+        optional(
+          5,
+          "fixed_features",
+          type: :message,
+          message_class: "Google::Protobuf::FeatureSet",
+          json_name: "fixedFeatures"
+        )
+
+        reserved_range(1...2)
+        reserved_range(2...3)
+        reserved_name("features")
       end
 
       repeated(

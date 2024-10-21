@@ -48,7 +48,7 @@ Google::Protobuf::Timestamp.class_eval do
     super
   end
 
-  def as_json(print_unknown_fields: false) # rubocop:disable Lint/UnusedMethodArgument
+  def as_json
     time = Time.at(seconds, nanos, :nanosecond, in: 0)
     self.class.validate_json_range(Protobug::EncodeError, time)
 

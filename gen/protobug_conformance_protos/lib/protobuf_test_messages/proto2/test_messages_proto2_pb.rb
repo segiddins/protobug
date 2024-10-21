@@ -633,7 +633,6 @@ module ProtobufTestMessages
         json_name: "oneofEnum",
         oneof: :oneof_field
       )
-      optional(201, "data", type: :group)
       # groups
       class Data
         extend Protobug::Message
@@ -642,6 +641,17 @@ module ProtobufTestMessages
 
         optional(202, "group_int32", type: :int32, json_name: "groupInt32")
         optional(203, "group_uint32", type: :uint32, json_name: "groupUint32")
+      end
+
+      optional(201, "data", type: :group)
+      optional(204, "multiwordgroupfield", type: :group)
+      class MultiWordGroupField
+        extend Protobug::Message
+
+        self.full_name = "protobuf_test_messages.proto2.TestAllTypesProto2.MultiWordGroupField"
+
+        optional(205, "group_int32", type: :int32, json_name: "groupInt32")
+        optional(206, "group_uint32", type: :uint32, json_name: "groupUint32")
       end
 
       # default values
@@ -751,6 +761,18 @@ module ProtobufTestMessages
 
     # extension: protobuf_test_messages.proto2.TestAllTypesProto2
     #   extension_int32 120
+
+    # extension: protobuf_test_messages.proto2.TestAllTypesProto2
+    #   groupfield 121
+
+    class GroupField
+      extend Protobug::Message
+
+      self.full_name = "protobuf_test_messages.proto2.GroupField"
+
+      optional(122, "group_int32", type: :int32, json_name: "groupInt32")
+      optional(123, "group_uint32", type: :uint32, json_name: "groupUint32")
+    end
 
     class UnknownToTestAllTypes
       extend Protobug::Message

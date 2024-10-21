@@ -205,8 +205,9 @@ end
 
 task default: %i[spec verify_proto_gems example conformance rubocop]
 
-git_repo :protobuf, "tmp/protobuf", "https://github.com/protocolbuffers/protobuf", commit: "refs/tags/v26.1"
-file "tmp/protobuf/.build/conformance_test_runner" => "protobuf" do
+git_repo :protobuf, "tmp/protobuf", "https://github.com/protocolbuffers/protobuf",
+         commit: "9fff46d7327c699ef970769d5c9fd0e44df08fc7"
+file "tmp/protobuf/.build/bin/conformance_test_runner" => "protobuf" do
   mkdir_p "tmp/protobuf/.build"
   sh "cmake", "..", "-DCMAKE_CXX_STANDARD=14", "-Dprotobuf_BUILD_CONFORMANCE=ON", "-Dprotobuf_BUILD_TESTS=OFF",
      "-Dprotobuf_BUILD_EXAMPLES=OFF", chdir: "tmp/protobuf/.build"
@@ -298,6 +299,7 @@ proto_gem :well_known_protos, :protobuf, deps: [] do |task|
     .include("google/protobuf/*.proto")
     .exclude("google/protobuf/*test*")
     .exclude("google/protobuf/cpp_features.proto")
+    .exclude("google/protobuf/sample_messages_edition.proto")
 
   task.outputs.each do |pb|
     well_known = pb.pathmap("%{_pb.rb$,_well_known.rb}p")
@@ -359,9 +361,9 @@ proto_gem :in_toto_attestation_protos, :in_toto_attestation,
       .include("in_toto_attestation/**/*.proto")
 end
 
-multitask conformance: %w[conformance_protos tmp/protobuf/.build/conformance_test_runner] do
+multitask conformance: %w[conformance_protos tmp/protobuf/.build/bin/conformance_test_runner] do
   sh(
-    "tmp/protobuf/.build/conformance_test_runner",
+    "tmp/protobuf/.build/bin/conformance_test_runner",
     "--enforce_recommended",
     "--failure_list", "conformance/failure_list.txt",
     "--output_dir", "conformance",

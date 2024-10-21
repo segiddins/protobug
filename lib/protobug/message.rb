@@ -26,6 +26,7 @@ module Protobug
         @fields_by_json_name = {}
         @fields_by_name = {}
         @reserved_ranges = []
+        @reserved_names = []
         @oneofs = {}
         extend BaseDescriptor
         include Protobug::Message::InstanceMethods
@@ -34,7 +35,8 @@ module Protobug
       end
     end
 
-    attr_reader :declared_fields, :fields_by_number, :fields_by_name, :fields_by_json_name, :reserved_ranges, :oneofs
+    attr_reader :declared_fields, :fields_by_number, :fields_by_name, :fields_by_json_name, :reserved_ranges,
+                :reserved_names, :oneofs
 
     def freeze
       declared_fields.freeze
@@ -43,6 +45,7 @@ module Protobug
       fields_by_json_name.freeze
       full_name.freeze
       reserved_ranges.freeze
+      reserved_names.freeze
       oneofs.each_value(&:freeze)
       oneofs.freeze
       super
@@ -84,6 +87,10 @@ module Protobug
       raise DefinitionError, "expected Range, got #{range.inspect}" unless range.is_a? Range
 
       reserved_ranges << range
+    end
+
+    def reserved_name(name)
+      reserved_names << name
     end
 
     def decode_json(json, ignore_unknown_fields: false)
@@ -227,8 +234,13 @@ module Protobug
 
       raise DefinitionError, "too many optional fields" if declared_fields.count(&:proto3_optional?) > 64
 
-      __protobug_module__.module_eval(__protobug_instance_method_definitions__,
-                                      "(instance method definitions for #{self})")
+      begin
+        __protobug_module__.module_eval(__protobug_instance_method_definitions__,
+                                        "(instance method definitions for #{self})")
+      rescue SyntaxError
+        warn __protobug_instance_method_definitions__
+        raise
+      end
       __protobug_module__.module_eval(field.method_definitions, "(field #{field} for #{self})")
 
       return unless field.oneof
@@ -494,6 +506,25 @@ module Protobug
 
       str << "  self\n" \
              "end\n"
+
+      str << "def as_json"
+      str << "  json = {}\n"
+      declared_fields.each do |field|
+        str << "  json[#{field.json_name.inspect}] = " << field.as_json_code
+        if field.repeated?
+          str << " unless #{field.ivar}.empty?"
+        elsif field.oneof
+          str << " if @#{field.oneof} == #{field.name.inspect}"
+        elsif field.optional?
+          str << " if #{field.haser}"
+        end
+        str << "\n"
+      end
+      str << <<~RUBY
+        @unknown_fields&.each { |(number, wire_type, value)| json[number] = [value].pack("m0") } if false
+      RUBY
+      str << "  json\n" \
+             "end"
     end
 
     module InstanceMethods
@@ -501,8 +532,12 @@ module Protobug
         return false unless other.is_a? Protobug::Message::InstanceMethods
 
         self.class.full_name == other.class.full_name &&
-          self.class.fields_by_name.all? do |name, _|
-            send(name) == other.send(name)
+          self.class.fields_by_name.all? do |_, field|
+            has = send(field.haser)
+            return false unless has == other.send(field.haser)
+            return true if has && instance_variable_get(field.ivar) == other.instance_variable_get(field.ivar)
+
+            true
           end
       end
       alias eql? ==
@@ -552,21 +587,9 @@ module Protobug
         self.class.encode(self)
       end
 
-      def as_json(print_unknown_fields: false)
-        fields_with_values = self.class.fields_by_name.select do |_name, field|
-          send(field.haser)
-        end
-
-        fields_with_values.to_h do |_name, field|
-          value = send(field.name)
-
-          [field.json_name, field.json_encode(value, print_unknown_fields: print_unknown_fields)]
-        end
-      end
-
-      def to_json(print_unknown_fields: false)
+      def to_json(*_args)
         require "json"
-        JSON.generate(as_json(print_unknown_fields: print_unknown_fields), allow_infinity: true)
+        JSON.generate(as_json, allow_infinity: true)
       rescue JSON::GeneratorError => e
         raise EncodeError, "failed to generate JSON: #{e}"
       end

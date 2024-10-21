@@ -25,7 +25,7 @@ Google::Protobuf::Duration.class_eval do
     super
   end
 
-  def as_json(print_unknown_fields: false) # rubocop:disable Lint/UnusedMethodArgument
+  def as_json
     seconds = self.seconds
     nanos = self.nanos
 

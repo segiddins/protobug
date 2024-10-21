@@ -16,9 +16,8 @@ Google::Protobuf.module_eval do
         super
       end
 
-      def as_json(print_unknown_fields: false)
-        field = self.class.fields_by_name.fetch("value")
-        field.send(:json_encode_one, value, print_unknown_fields: print_unknown_fields)
+      def as_json
+        super["value"] || self.class.fields_by_number.fetch(1).default
       end
     end
   end

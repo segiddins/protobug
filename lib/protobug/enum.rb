@@ -7,11 +7,12 @@ module Protobug
         @values = {}
         @names = {}
         @reserved_ranges = []
+        @reserved_names = []
         extend BaseDescriptor
       end
     end
 
-    attr_reader :values, :names, :reserved_ranges
+    attr_reader :values, :names, :reserved_ranges, :reserved_names
 
     def new(name, value)
       @names[value] = name
@@ -32,9 +33,14 @@ module Protobug
       reserved_ranges << range
     end
 
+    def reserved_name(name)
+      reserved_names << name
+    end
+
     def freeze
       @values.freeze
       @reserved_ranges.freeze
+      @reserved_names.freeze
       @names.freeze
       full_name.freeze
       super
@@ -60,8 +66,7 @@ module Protobug
       values.values.first
     end
 
-    def as_json(value, print_unknown_fields: false)
-      _ = print_unknown_fields
+    def as_json(value)
       names.fetch(value) { value }
     end
   end

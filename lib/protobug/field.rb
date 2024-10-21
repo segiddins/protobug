@@ -145,9 +145,13 @@ module Protobug
       end
 
       if is_a?(EnumField)
-        str << "def #{name}_case_name\n" \
-               "  #{enum_class}.names.fetch(#{ivar})\n" \
-               "end\n"
+        str << "def #{name}_case_name\n"
+        str << if repeated?
+                 "  #{ivar}.map { #{enum_class}.names.fetch(_1) }\n"
+               else
+                 "  #{enum_class}.names.fetch(#{ivar})\n"
+               end
+        str << "end\n"
       end
 
       str
@@ -184,14 +188,12 @@ module Protobug
       end
     end
 
-    def json_encode(value, print_unknown_fields:)
-      if repeated?
-        value.map { |v| json_encode_one(v, print_unknown_fields: print_unknown_fields) }
-      elsif (!optional? || !proto3_optional?) && !oneof && default == value
-        # omit
-      else
-        json_encode_one(value, print_unknown_fields: print_unknown_fields)
-      end
+    def as_json_code
+      ivar.name
+    end
+
+    def default_code
+      default.inspect
     end
 
     def json_key_encode(value)
@@ -268,12 +270,6 @@ module Protobug
         Object.const_get(message_class).decode_json_hash(value, ignore_unknown_fields: ignore_unknown_fields)
       end
 
-      def json_encode_one(value, print_unknown_fields:)
-        return nil if value.nil?
-
-        value.as_json(print_unknown_fields: print_unknown_fields)
-      end
-
       def default
         return [] if repeated?
 
@@ -298,6 +294,14 @@ module Protobug
 
       def expected_class
         message_class
+      end
+
+      def as_json_code
+        repeated? ? %(#{ivar}.map(&:as_json)) : %(#{ivar}.as_json)
+      end
+
+      def default_code
+        "#{message_class}.allocate.__protobug_initialize_defaults"
       end
     end
 
@@ -352,13 +356,6 @@ module Protobug
         end
       end
 
-      def json_encode(value, print_unknown_fields:)
-        value.to_h do |k, v|
-          value = @map_class.fields_by_name["value"].json_encode(v, print_unknown_fields: print_unknown_fields)
-          [json_key_encode(k), value]
-        end
-      end
-
       def json_decode(value, message, ignore_unknown_fields)
         return if value.nil?
 
@@ -396,15 +393,29 @@ module Protobug
             when #{0b1000 | key_field.wire_type}
               #{key_field.binary_decode_code(protobug_read_varint).gsub("@key", "kv_key")}
             when #{0b10000 | value_field.wire_type}
-              # doesn't work for maps
               #{value_field.binary_decode_code(protobug_read_varint).gsub("@value", "kv_value")}
             else
               raise "unknown map field \#{kv_header} \#{kv_length}"
             end
           end
           raise EOFError unless index == kv_max
-          #{@ivar}[kv_key] = kv_value
+          #{@ivar}[kv_key] = kv_value || #{value_field.default_code}
         RUBY
+      end
+
+      def as_json_code
+        _key_field, value_field = @map_class.fields_by_number.values_at(1, 2)
+        if value_field.is_a?(MessageField)
+          "#{ivar}.transform_values(&:as_json)"
+        elsif value_field.is_a?(EnumField)
+          "#{ivar}.transform_values { |value| #{value_field.enum_class}.as_json(value) }"
+        else
+          "#{ivar}.transform_values { #{value_field.as_json_code.gsub("@value", "_1")}}"
+        end
+      end
+
+      def default_code
+        "{}"
       end
 
       def expected_class
@@ -441,8 +452,12 @@ module Protobug
         value
       end
 
-      def json_encode_one(value, print_unknown_fields:) # rubocop:disable Lint/UnusedMethodArgument
-        [value].pack("m0")
+      def as_json_code
+        if repeated?
+          %(#{ivar}.map { [_1].pack("m0") })
+        else
+          "[#{ivar}].pack(\"m0\")"
+        end
       end
 
       def default
@@ -495,10 +510,6 @@ module Protobug
         value
       end
 
-      def json_encode_one(value, print_unknown_fields:) # rubocop:disable Lint/UnusedMethodArgument
-        value.encode("utf-8")
-      end
-
       def default
         return [] if repeated?
 
@@ -513,6 +524,10 @@ module Protobug
           #{ivar} #{adder ? :<< : :"="} value
           index += length
         RUBY
+      end
+
+      def as_json_code
+        ivar.name
       end
     end
 
@@ -586,14 +601,6 @@ module Protobug
         value
       end
 
-      def json_encode_one(value, print_unknown_fields:) # rubocop:disable Lint/UnusedMethodArgument
-        if bit_length >= 64
-          value.to_s
-        else
-          value
-        end
-      end
-
       def maximum
         if signed
           (2**(bit_length - 1)) - 1
@@ -629,6 +636,16 @@ module Protobug
 
       def expected_class
         Integer
+      end
+
+      def as_json_code
+        if bit_length < 64
+          super
+        elsif repeated?
+          "#{ivar}.map(&:to_s)"
+        else
+          "#{ivar}.to_s"
+        end
       end
     end
 
@@ -916,16 +933,19 @@ module Protobug
         Object.const_get(enum_class).decode_json_hash(value, ignore_unknown_fields: ignore_unknown_fields)
       end
 
-      def json_encode_one(value, print_unknown_fields:)
-        _ = print_unknown_fields
-        Object.const_get(enum_class).as_json(value, print_unknown_fields: print_unknown_fields)
-      end
-
       def default
         return [] if repeated?
 
         # TODO: enum_type.default
         0
+      end
+
+      def as_json_code
+        if repeated?
+          "#{ivar}.map { |value| #{enum_class}.as_json(value) }"
+        else
+          "#{enum_class}.as_json(#{ivar})"
+        end
       end
     end
 
@@ -974,18 +994,25 @@ module Protobug
         end
       end
 
-      def json_encode_one(value, print_unknown_fields:) # rubocop:disable Lint/UnusedMethodArgument
-        if value.nan?
-          "NaN"
-        elsif (sign = value.infinite?)
-          if sign == -1
-            "-Infinity"
+      def as_json_code
+        code = <<~RUBY
+          if #{repeated? ? "value" : "(value = #{ivar.name})"}.nan?
+            "NaN"
+          elsif (sign = value.infinite?)
+            sign == -1 ? "-Infinity" : "Infinity"
           else
-            "Infinity"
+            value
           end
+        RUBY
+        if repeated?
+          <<~RUBY
+            #{ivar}.map do |value|
+              #{code}
+            end
+          RUBY
         else
-          value
-        end
+          code
+        end.chomp
       end
 
       def default
