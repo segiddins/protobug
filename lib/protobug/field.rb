@@ -15,7 +15,8 @@ module Protobug
                   :adder, :haser, :clearer, :escaped_name
 
     def initialize(number, name, json_name: nil, cardinality: :optional, oneof: nil, packed: false,
-                   proto3_optional: cardinality == :optional, proto3_optional_count: nil)
+                   proto3_optional: cardinality == :optional, proto3_optional_count: nil,
+                   default: nil)
       raise DefinitionError, "packed is only valid for repeated fields" if packed && cardinality != :repeated
 
       if proto3_optional && cardinality != :optional
@@ -23,9 +24,11 @@ module Protobug
               "proto3_optional is only valid for optional fields"
       end
 
+      raise DefinitionError, "default is only valid for singular scalar fields" if repeated? && default
+
       @number = number
       @name = name.to_sym
-      @json_name = json_name || name.to_s
+      @json_name = -(json_name || name.to_s)
       @cardinality = cardinality || raise(ArgumentError, "cardinality is required")
       @oneof = oneof
       @setter = :"#{name}="
@@ -38,10 +41,11 @@ module Protobug
       @escaped_name = RUBY_KEYWORDS.fetch(@name, @name)
       @escaped_name = :"__#{escaped_name}__" if @escaped_name.match?(/\A[A-Z]/)
       @proto3_optional_index = proto3_optional ? proto3_optional_count : nil
+      @default = default
     end
 
     def to_s
-      "#{cardinality}(#{number}, #{name.inspect}, type: #{self.class})"
+      "#{map? ? :map : cardinality}(#{number}, #{name.inspect}, type: #{self.class.type.inspect})"
     end
 
     def pretty_print(pp)
@@ -255,10 +259,8 @@ module Protobug
     class MessageField < Field
       attr_reader :message_class
 
-      def initialize(number, name, cardinality:, message_class: nil, json_name: name, oneof: nil,
-                     proto3_optional: cardinality == :optional, proto3_optional_count: nil)
-        super(number, name, json_name: json_name, cardinality: cardinality, oneof: oneof,
-                            proto3_optional: proto3_optional, proto3_optional_count: proto3_optional_count)
+      def initialize(number, name, message_class: nil, **kwargs)
+        super(number, name, **kwargs)
         @message_class = message_class
       end
 
@@ -307,15 +309,13 @@ module Protobug
 
     class MapField < MessageField
       SUPER_INITIALIZE = instance_method(:initialize).super_method
-      def initialize(number, name, key_type:, value_type:, json_name: name, oneof: nil, # rubocop:disable Lint/MissingSuper,
-                     enum_class: nil, message_class: nil,
-                     proto3_optional_count: nil)
+      def initialize(number, name, key_type:, value_type:, # rubocop:disable Lint/MissingSuper,
+                     enum_class: nil, message_class: nil, **kwargs)
+
         SUPER_INITIALIZE.bind_call(
           self, number, name,
-          cardinality: :repeated,
-          json_name: json_name,
-          oneof: oneof,
-          proto3_optional_count: proto3_optional_count
+          **kwargs,
+          cardinality: :repeated
         )
 
         @map_class = Class.new do
@@ -428,12 +428,6 @@ module Protobug
         :bytes
       end
 
-      def initialize(number, name, cardinality:, json_name: name, oneof: nil,
-                     proto3_optional: cardinality == :optional, proto3_optional_count: nil)
-        super(number, name, json_name: json_name, cardinality: cardinality, oneof: oneof,
-                            proto3_optional: proto3_optional, proto3_optional_count: proto3_optional_count)
-      end
-
       def binary_encode_one(value, outbuf)
         BinaryEncoding.encode_length value.b, outbuf
       end
@@ -463,7 +457,7 @@ module Protobug
       def default
         return [] if repeated?
 
-        "".b
+        @default || "".b
       end
 
       def wire_type
@@ -489,12 +483,6 @@ module Protobug
         :string
       end
 
-      def initialize(number, name, cardinality:, json_name: name, oneof: nil,
-                     proto3_optional: cardinality == :optional, proto3_optional_count: nil)
-        super(number, name, json_name: json_name, cardinality: cardinality, oneof: oneof,
-                            proto3_optional: proto3_optional, proto3_optional_count: proto3_optional_count)
-      end
-
       def binary_encode_one(value, outbuf)
         value = value.encode("utf-8") if value.encoding != Encoding::UTF_8
         super
@@ -513,7 +501,7 @@ module Protobug
       def default
         return [] if repeated?
 
-        +""
+        @default || +""
       end
 
       def binary_decode_code(protobug_read_varint)
@@ -535,7 +523,7 @@ module Protobug
       def default
         return [] if repeated?
 
-        0
+        @default || 0
       end
 
       def binary_decode_code(protobug_read_varint)
@@ -884,7 +872,7 @@ module Protobug
       def default
         return [] if repeated?
 
-        false
+        @default || false
       end
 
       def binary_decode_code(protobug_read_varint)
@@ -898,11 +886,8 @@ module Protobug
     class EnumField < Int32Field
       attr_reader :enum_class
 
-      def initialize(number, name, cardinality:, enum_class: nil, json_name: name, oneof: nil,
-                     packed: false, proto3_optional: cardinality == :optional, proto3_optional_count: nil)
-        super(number, name, json_name: json_name, cardinality: cardinality, oneof: oneof,
-                            proto3_optional: proto3_optional, packed: packed,
-                            proto3_optional_count: proto3_optional_count)
+      def initialize(number, name, enum_class: nil, **kwargs)
+        super(number, name, **kwargs)
         @enum_class = enum_class
       end
 
@@ -937,7 +922,7 @@ module Protobug
         return [] if repeated?
 
         # TODO: enum_type.default
-        0
+        @default || 0
       end
 
       def as_json_code
@@ -960,13 +945,6 @@ module Protobug
 
       def wire_type
         1
-      end
-
-      def initialize(number, name, cardinality:, json_name: name, oneof: nil, packed: false,
-                     proto3_optional: cardinality == :optional, proto3_optional_count: nil)
-        super(number, name, json_name: json_name, cardinality: cardinality, oneof: oneof,
-                            proto3_optional: proto3_optional, packed: packed,
-                            proto3_optional_count: proto3_optional_count)
       end
 
       def binary_encode_one(value, outbuf)
@@ -1018,7 +996,7 @@ module Protobug
       def default
         return [] if repeated?
 
-        0.0
+        @default || 0.0
       end
 
       def binary_decode_code(_)

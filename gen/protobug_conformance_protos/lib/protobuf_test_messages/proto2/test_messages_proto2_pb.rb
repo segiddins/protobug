@@ -655,41 +655,111 @@ module ProtobufTestMessages
       end
 
       # default values
-      optional(241, "default_int32", type: :int32, json_name: "defaultInt32")
-      optional(242, "default_int64", type: :int64, json_name: "defaultInt64")
-      optional(243, "default_uint32", type: :uint32, json_name: "defaultUint32")
-      optional(244, "default_uint64", type: :uint64, json_name: "defaultUint64")
-      optional(245, "default_sint32", type: :sint32, json_name: "defaultSint32")
-      optional(246, "default_sint64", type: :sint64, json_name: "defaultSint64")
+      optional(
+        241,
+        "default_int32",
+        type: :int32,
+        json_name: "defaultInt32",
+        default: "-123456789"
+      )
+      optional(
+        242,
+        "default_int64",
+        type: :int64,
+        json_name: "defaultInt64",
+        default: "-9123456789123456789"
+      )
+      optional(
+        243,
+        "default_uint32",
+        type: :uint32,
+        json_name: "defaultUint32",
+        default: "2123456789"
+      )
+      optional(
+        244,
+        "default_uint64",
+        type: :uint64,
+        json_name: "defaultUint64",
+        default: "10123456789123456789"
+      )
+      optional(
+        245,
+        "default_sint32",
+        type: :sint32,
+        json_name: "defaultSint32",
+        default: "-123456789"
+      )
+      optional(
+        246,
+        "default_sint64",
+        type: :sint64,
+        json_name: "defaultSint64",
+        default: "-9123456789123456789"
+      )
       optional(
         247,
         "default_fixed32",
         type: :fixed32,
-        json_name: "defaultFixed32"
+        json_name: "defaultFixed32",
+        default: "2123456789"
       )
       optional(
         248,
         "default_fixed64",
         type: :fixed64,
-        json_name: "defaultFixed64"
+        json_name: "defaultFixed64",
+        default: "10123456789123456789"
       )
       optional(
         249,
         "default_sfixed32",
         type: :sfixed32,
-        json_name: "defaultSfixed32"
+        json_name: "defaultSfixed32",
+        default: "-123456789"
       )
       optional(
         250,
         "default_sfixed64",
         type: :sfixed64,
-        json_name: "defaultSfixed64"
+        json_name: "defaultSfixed64",
+        default: "-9123456789123456789"
       )
-      optional(251, "default_float", type: :float, json_name: "defaultFloat")
-      optional(252, "default_double", type: :double, json_name: "defaultDouble")
-      optional(253, "default_bool", type: :bool, json_name: "defaultBool")
-      optional(254, "default_string", type: :string, json_name: "defaultString")
-      optional(255, "default_bytes", type: :bytes, json_name: "defaultBytes")
+      optional(
+        251,
+        "default_float",
+        type: :float,
+        json_name: "defaultFloat",
+        default: "9e+09"
+      )
+      optional(
+        252,
+        "default_double",
+        type: :double,
+        json_name: "defaultDouble",
+        default: "7e+22"
+      )
+      optional(
+        253,
+        "default_bool",
+        type: :bool,
+        json_name: "defaultBool",
+        default: "true"
+      )
+      optional(
+        254,
+        "default_string",
+        type: :string,
+        json_name: "defaultString",
+        default: "Rosebud"
+      )
+      optional(
+        255,
+        "default_bytes",
+        type: :bytes,
+        json_name: "defaultBytes",
+        default: "joshua"
+      )
       # Test field-name-to-JSON-name convention.
       # (protobuf says names can be any valid C/C++ identifier.)
       optional(401, "fieldname1", type: :int32)
@@ -1005,41 +1075,111 @@ module ProtobufTestMessages
       end
 
       # default values
-      required(241, "default_int32", type: :int32, json_name: "defaultInt32")
-      required(242, "default_int64", type: :int64, json_name: "defaultInt64")
-      required(243, "default_uint32", type: :uint32, json_name: "defaultUint32")
-      required(244, "default_uint64", type: :uint64, json_name: "defaultUint64")
-      required(245, "default_sint32", type: :sint32, json_name: "defaultSint32")
-      required(246, "default_sint64", type: :sint64, json_name: "defaultSint64")
+      required(
+        241,
+        "default_int32",
+        type: :int32,
+        json_name: "defaultInt32",
+        default: "-123456789"
+      )
+      required(
+        242,
+        "default_int64",
+        type: :int64,
+        json_name: "defaultInt64",
+        default: "-9123456789123456789"
+      )
+      required(
+        243,
+        "default_uint32",
+        type: :uint32,
+        json_name: "defaultUint32",
+        default: "2123456789"
+      )
+      required(
+        244,
+        "default_uint64",
+        type: :uint64,
+        json_name: "defaultUint64",
+        default: "10123456789123456789"
+      )
+      required(
+        245,
+        "default_sint32",
+        type: :sint32,
+        json_name: "defaultSint32",
+        default: "-123456789"
+      )
+      required(
+        246,
+        "default_sint64",
+        type: :sint64,
+        json_name: "defaultSint64",
+        default: "-9123456789123456789"
+      )
       required(
         247,
         "default_fixed32",
         type: :fixed32,
-        json_name: "defaultFixed32"
+        json_name: "defaultFixed32",
+        default: "2123456789"
       )
       required(
         248,
         "default_fixed64",
         type: :fixed64,
-        json_name: "defaultFixed64"
+        json_name: "defaultFixed64",
+        default: "10123456789123456789"
       )
       required(
         249,
         "default_sfixed32",
         type: :sfixed32,
-        json_name: "defaultSfixed32"
+        json_name: "defaultSfixed32",
+        default: "-123456789"
       )
       required(
         250,
         "default_sfixed64",
         type: :sfixed64,
-        json_name: "defaultSfixed64"
+        json_name: "defaultSfixed64",
+        default: "-9123456789123456789"
       )
-      required(251, "default_float", type: :float, json_name: "defaultFloat")
-      required(252, "default_double", type: :double, json_name: "defaultDouble")
-      required(253, "default_bool", type: :bool, json_name: "defaultBool")
-      required(254, "default_string", type: :string, json_name: "defaultString")
-      required(255, "default_bytes", type: :bytes, json_name: "defaultBytes")
+      required(
+        251,
+        "default_float",
+        type: :float,
+        json_name: "defaultFloat",
+        default: "9e+09"
+      )
+      required(
+        252,
+        "default_double",
+        type: :double,
+        json_name: "defaultDouble",
+        default: "7e+22"
+      )
+      required(
+        253,
+        "default_bool",
+        type: :bool,
+        json_name: "defaultBool",
+        default: "true"
+      )
+      required(
+        254,
+        "default_string",
+        type: :string,
+        json_name: "defaultString",
+        default: "Rosebud"
+      )
+      required(
+        255,
+        "default_bytes",
+        type: :bytes,
+        json_name: "defaultBytes",
+        default: "joshua"
+      )
       # message_set test case.
       class MessageSetCorrect
         extend Protobug::Message

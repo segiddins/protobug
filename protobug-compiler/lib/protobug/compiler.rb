@@ -410,6 +410,7 @@ module Protobug
              descriptor.file.syntax == "proto3" && !descriptor.proto3_optional
             c.identifier("proto3_optional:").literal(false)
           end
+          c.identifier("default:").literal(descriptor.default_value) if descriptor.default_value?
         end
       when OneofDescriptorProto
         group.empty if source_loc.leading_comments?

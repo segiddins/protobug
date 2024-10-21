@@ -352,7 +352,9 @@ module Google
         3,
         "verification",
         type: :enum,
-        enum_class: "Google::Protobuf::ExtensionRangeOptions::VerificationState"
+        enum_class:
+        "Google::Protobuf::ExtensionRangeOptions::VerificationState",
+        default: "UNVERIFIED"
       )
     end
 
@@ -601,9 +603,21 @@ module Google
         message_class: "Google::Protobuf::MethodOptions"
       )
       # Identifies if client streams multiple client messages
-      optional(5, "client_streaming", type: :bool, json_name: "clientStreaming")
+      optional(
+        5,
+        "client_streaming",
+        type: :bool,
+        json_name: "clientStreaming",
+        default: "false"
+      )
       # Identifies if server streams multiple server messages
-      optional(6, "server_streaming", type: :bool, json_name: "serverStreaming")
+      optional(
+        6,
+        "server_streaming",
+        type: :bool,
+        json_name: "serverStreaming",
+        default: "false"
+      )
     end
 
     # ===================================================================
@@ -669,7 +683,8 @@ module Google
         10,
         "java_multiple_files",
         type: :bool,
-        json_name: "javaMultipleFiles"
+        json_name: "javaMultipleFiles",
+        default: "false"
       )
       # This option does nothing.
       optional(
@@ -692,7 +707,8 @@ module Google
         27,
         "java_string_check_utf8",
         type: :bool,
-        json_name: "javaStringCheckUtf8"
+        json_name: "javaStringCheckUtf8",
+        default: "false"
       )
       # Generated classes can be optimized for speed or code size.
       module OptimizeMode
@@ -720,7 +736,8 @@ module Google
         "optimize_for",
         type: :enum,
         enum_class: "Google::Protobuf::FileOptions::OptimizeMode",
-        json_name: "optimizeFor"
+        json_name: "optimizeFor",
+        default: "SPEED"
       )
       # Sets the Go package where structs generated from this .proto will be
       # placed. If omitted, the Go package will be derived from the following:
@@ -742,28 +759,37 @@ module Google
         16,
         "cc_generic_services",
         type: :bool,
-        json_name: "ccGenericServices"
+        json_name: "ccGenericServices",
+        default: "false"
       )
       optional(
         17,
         "java_generic_services",
         type: :bool,
-        json_name: "javaGenericServices"
+        json_name: "javaGenericServices",
+        default: "false"
       )
       optional(
         18,
         "py_generic_services",
         type: :bool,
-        json_name: "pyGenericServices"
+        json_name: "pyGenericServices",
+        default: "false"
       )
       # Is this file deprecated?
       # Depending on the target platform, this can emit Deprecated annotations
       # for everything in the file, or it will be completely ignored; in the very
       # least, this is a formalization for deprecating files.
-      optional(23, "deprecated", type: :bool)
+      optional(23, "deprecated", type: :bool, default: "false")
       # Enables the use of arenas for the proto messages in this file. This applies
       # only to generated classes for C++.
-      optional(31, "cc_enable_arenas", type: :bool, json_name: "ccEnableArenas")
+      optional(
+        31,
+        "cc_enable_arenas",
+        type: :bool,
+        json_name: "ccEnableArenas",
+        default: "true"
+      )
       # Sets the objective c class prefix which is prepended to all objective c
       # generated classes from this .proto. There is no default.
       optional(
@@ -858,7 +884,8 @@ module Google
         1,
         "message_set_wire_format",
         type: :bool,
-        json_name: "messageSetWireFormat"
+        json_name: "messageSetWireFormat",
+        default: "false"
       )
       # Disables the generation of the standard "descriptor()" accessor, which can
       # conflict with a field of the same name.  This is meant to make migration
@@ -867,13 +894,14 @@ module Google
         2,
         "no_standard_descriptor_accessor",
         type: :bool,
-        json_name: "noStandardDescriptorAccessor"
+        json_name: "noStandardDescriptorAccessor",
+        default: "false"
       )
       # Is this message deprecated?
       # Depending on the target platform, this can emit Deprecated annotations
       # for the message, or it will be completely ignored; in the very least,
       # this is a formalization for deprecating messages.
-      optional(3, "deprecated", type: :bool)
+      optional(3, "deprecated", type: :bool, default: "false")
       # Whether the message is an automatically generated map entry type for the
       # maps field.
       #
@@ -951,7 +979,8 @@ module Google
         1,
         "ctype",
         type: :enum,
-        enum_class: "Google::Protobuf::FieldOptions::CType"
+        enum_class: "Google::Protobuf::FieldOptions::CType",
+        default: "STRING"
       )
       module CType
         extend Protobug::Enum
@@ -993,7 +1022,8 @@ module Google
         6,
         "jstype",
         type: :enum,
-        enum_class: "Google::Protobuf::FieldOptions::JSType"
+        enum_class: "Google::Protobuf::FieldOptions::JSType",
+        default: "JS_NORMAL"
       )
       module JSType
         extend Protobug::Enum
@@ -1030,21 +1060,33 @@ module Google
       # on the outer message would fail if the inner message has missing required
       # fields. Failed verification would result in parsing failure (except when
       # uninitialized messages are acceptable).
-      optional(5, "lazy", type: :bool)
+      optional(5, "lazy", type: :bool, default: "false")
       # unverified_lazy does no correctness checks on the byte stream. This should
       # only be used where lazy with verification is prohibitive for performance
       # reasons.
-      optional(15, "unverified_lazy", type: :bool, json_name: "unverifiedLazy")
+      optional(
+        15,
+        "unverified_lazy",
+        type: :bool,
+        json_name: "unverifiedLazy",
+        default: "false"
+      )
       # Is this field deprecated?
       # Depending on the target platform, this can emit Deprecated annotations
       # for accessors, or it will be completely ignored; in the very least, this
       # is a formalization for deprecating fields.
-      optional(3, "deprecated", type: :bool)
+      optional(3, "deprecated", type: :bool, default: "false")
       # For Google-internal migration only. Do not use.
-      optional(10, "weak", type: :bool)
+      optional(10, "weak", type: :bool, default: "false")
       # Indicate that the field value should not be printed out when using debug
       # formats, e.g. when the field contains sensitive credentials.
-      optional(16, "debug_redact", type: :bool, json_name: "debugRedact")
+      optional(
+        16,
+        "debug_redact",
+        type: :bool,
+        json_name: "debugRedact",
+        default: "false"
+      )
       # If set to RETENTION_SOURCE, the option will be omitted from the binary.
       # Note: as of January 2023, support for this is in progress and does not yet
       # have an effect (b/264593489).
@@ -1218,7 +1260,7 @@ module Google
       # Depending on the target platform, this can emit Deprecated annotations
       # for the enum, or it will be completely ignored; in the very least, this
       # is a formalization for deprecating enums.
-      optional(3, "deprecated", type: :bool)
+      optional(3, "deprecated", type: :bool, default: "false")
       # Enable the legacy handling of JSON field name conflicts.  This lowercases
       # and strips underscored from the fields before comparison in proto3 only.
       # The new behavior takes `json_name` into account and applies to proto2 as
@@ -1259,7 +1301,7 @@ module Google
       # Depending on the target platform, this can emit Deprecated annotations
       # for the enum value, or it will be completely ignored; in the very least,
       # this is a formalization for deprecating enum values.
-      optional(1, "deprecated", type: :bool)
+      optional(1, "deprecated", type: :bool, default: "false")
       # Any features defined in the specific edition.
       optional(
         2,
@@ -1270,7 +1312,13 @@ module Google
       # Indicate that fields annotated with this enum value should not be printed
       # out when using debug formats, e.g. when the field contains sensitive
       # credentials.
-      optional(3, "debug_redact", type: :bool, json_name: "debugRedact")
+      optional(
+        3,
+        "debug_redact",
+        type: :bool,
+        json_name: "debugRedact",
+        default: "false"
+      )
       # Information about the support window of a feature value.
       optional(
         4,
@@ -1310,7 +1358,7 @@ module Google
       # Depending on the target platform, this can emit Deprecated annotations
       # for the service, or it will be completely ignored; in the very least,
       # this is a formalization for deprecating services.
-      optional(33, "deprecated", type: :bool)
+      optional(33, "deprecated", type: :bool, default: "false")
       # The parser stores options it doesn't recognize here. See above.
       repeated(
         999,
@@ -1335,7 +1383,7 @@ module Google
       # Depending on the target platform, this can emit Deprecated annotations
       # for the method, or it will be completely ignored; in the very least,
       # this is a formalization for deprecating methods.
-      optional(33, "deprecated", type: :bool)
+      optional(33, "deprecated", type: :bool, default: "false")
       # Is this method side-effect-free (or safe in HTTP parlance), or idempotent,
       # or neither? HTTP based RPC implementation may choose GET verb for safe
       # methods, and PUT verb for idempotent methods instead of the default POST.
@@ -1357,7 +1405,8 @@ module Google
         "idempotency_level",
         type: :enum,
         enum_class: "Google::Protobuf::MethodOptions::IdempotencyLevel",
-        json_name: "idempotencyLevel"
+        json_name: "idempotencyLevel",
+        default: "IDEMPOTENCY_UNKNOWN"
       )
       # Any features defined in the specific edition.
       optional(

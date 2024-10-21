@@ -154,7 +154,7 @@ module Protobug
     end
 
     def decode(binary)
-      new.__protobug_binary_decode(binary, 0, binary.bytesize)
+      allocate.__protobug_initialize_defaults.__protobug_binary_decode(binary, 0, binary.bytesize)
     rescue NoMethodError => e
       raise EOFError if e.receiver.nil? && e.name == :<
 
