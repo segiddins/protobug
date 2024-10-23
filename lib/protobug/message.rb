@@ -173,50 +173,9 @@ module Protobug
         raise ArgumentError, "expected String or Symbol for name, got #{name.inspect}"
       end
 
-      field =
-        case type
-        when :message
-          Field::MessageField
-        when :enum
-          Field::EnumField
-        when :bytes
-          Field::BytesField
-        when :string
-          Field::StringField
-        when :map
-          kwargs.delete(:cardinality) if kwargs[:cardinality] == :repeated
-          Field::MapField
-        when :int64
-          Field::Int64Field
-        when :uint64
-          Field::UInt64Field
-        when :sint64
-          Field::SInt64Field
-        when :fixed64
-          Field::Fixed64Field
-        when :sfixed64
-          Field::SFixed64Field
-        when :int32
-          Field::Int32Field
-        when :uint32
-          Field::UInt32Field
-        when :sint32
-          Field::SInt32Field
-        when :fixed32
-          Field::Fixed32Field
-        when :sfixed32
-          Field::SFixed32Field
-        when :bool
-          Field::BoolField
-        when :float
-          Field::FloatField
-        when :double
-          Field::DoubleField
-        when :group
-          Field::GroupField
-        else
-          raise ArgumentError, "Unknown field type #{type.inspect}"
-        end.new(number, name, **kwargs, proto3_optional_count: declared_fields.count(&:proto3_optional?)).freeze
+      field = Field::BY_TYPE
+              .fetch(type)
+              .new(number, name, **kwargs, proto3_optional_count: declared_fields.count(&:proto3_optional?)).freeze
 
       raise DefinitionError, "duplicate field number #{number}" if fields_by_number[number]
       raise DefinitionError, "duplicate field name #{name}" if fields_by_name[name]

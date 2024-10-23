@@ -389,7 +389,7 @@ module Protobug
             c.identifier("#{type}_class:").literal(files.fetch_type(nested_name).to_constant)
           end
 
-          packed = descriptor.options&.packed
+          packed = descriptor.options&.packed if descriptor.options&.packed?
           # TODO: exclude other types that cannot be packed
           if !descriptor.options&.packed? && !%i[message bytes string map].include?(type)
             packed = descriptor.label == Google::Protobuf::FieldDescriptorProto::Label::REPEATED &&

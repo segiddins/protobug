@@ -45,7 +45,7 @@ module Protobug
     end
 
     def to_s
-      "#{map? ? :map : cardinality}(#{number}, #{name.inspect}, type: #{self.class.type.inspect})"
+      "#{map? ? :map : cardinality}(#{number}, #{name.inspect}, type: #{BY_TYPE.key(self.class).inspect})"
     end
 
     def pretty_print(pp)
@@ -112,7 +112,7 @@ module Protobug
         str << "  value = nil if @#{oneof} != #{name.inspect}\n" if oneof
         str << "  return value unless value.nil?\n"
         str << "  @#{oneof} = #{name.inspect}\n" if oneof
-        str << "  #{ivar} = #{default.inspect}\n" \
+        str << "  #{ivar} = #{default_code}\n" \
                "end\n"
       end
 
@@ -120,7 +120,9 @@ module Protobug
       str << "  return false unless @#{oneof} == #{name.inspect}\n" if oneof
       str << "  value = #{ivar}\n" \
              "  return false if value.nil?"
-      str << " || #{default.inspect} == value" if (!optional? || !proto3_optional?) && !oneof && !repeated?
+      if (!optional? || !proto3_optional?) && !oneof && !repeated? && !is_a?(MessageField)
+        str << " || #{default_code} == value"
+      end
       str << "\n"
       str << if repeated?
                "  !value.empty?\n"
@@ -197,6 +199,8 @@ module Protobug
     end
 
     def default_code
+      return "[]" if repeated?
+
       default.inspect
     end
 
@@ -424,10 +428,6 @@ module Protobug
     end
 
     class BytesField < Field
-      def self.type
-        :bytes
-      end
-
       def binary_encode_one(value, outbuf)
         BinaryEncoding.encode_length value.b, outbuf
       end
@@ -479,10 +479,6 @@ module Protobug
     end
 
     class StringField < BytesField
-      def self.type
-        :string
-      end
-
       def binary_encode_one(value, outbuf)
         value = value.encode("utf-8") if value.encoding != Encoding::UTF_8
         super
@@ -935,10 +931,6 @@ module Protobug
     end
 
     class DoubleField < Field
-      def type
-        :double
-      end
-
       def binary_pack
         "E"
       end
@@ -1012,10 +1004,6 @@ module Protobug
     end
 
     class FloatField < DoubleField
-      def type
-        :float
-      end
-
       def binary_pack
         "e"
       end
@@ -1048,5 +1036,27 @@ module Protobug
         "raise UnsupportedFeatureError.new(:group, \"setting group\")\n"
       end
     end
+
+    BY_TYPE = {
+      message: Field::MessageField,
+      enum: Field::EnumField,
+      bytes: Field::BytesField,
+      string: Field::StringField,
+      map: Field::MapField,
+      int64: Field::Int64Field,
+      uint64: Field::UInt64Field,
+      sint64: Field::SInt64Field,
+      fixed64: Field::Fixed64Field,
+      sfixed64: Field::SFixed64Field,
+      int32: Field::Int32Field,
+      uint32: Field::UInt32Field,
+      sint32: Field::SInt32Field,
+      fixed32: Field::Fixed32Field,
+      sfixed32: Field::SFixed32Field,
+      bool: Field::BoolField,
+      float: Field::FloatField,
+      double: Field::DoubleField,
+      group: Field::GroupField
+    }.freeze
   end
 end

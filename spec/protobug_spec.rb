@@ -263,4 +263,29 @@ RSpec.describe Protobug do
 
     expect(decoded.m1).to eq(0 => 0, 1 => 1, -4 => -2)
   end
+
+  it "allows modifying defaults" do
+    c = Class.new do
+      extend Protobug::Message
+      optional 1, :optional, type: :int32
+      repeated 2, :repeated, type: :int32
+      optional 3, :message, type: :message, message_class: "self.class"
+      map 4, :map, key_type: :string, value_type: :int32
+    end
+
+    msg = c.new
+    expect(msg).not_to be_optional
+    expect(msg).not_to be_repeated
+    expect(msg).not_to be_message
+    expect(msg).not_to be_map
+    expect(msg.as_json).to eq({})
+
+    msg.optional += 1
+    msg.repeated << 1
+    msg.message.optional = 1
+    msg.map["foo"] = 1
+
+    expect(msg.as_json).to eq("optional" => 1, "repeated" => [1], "message" => { "optional" => 1 },
+                              "map" => { "foo" => 1 })
+  end
 end

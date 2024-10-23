@@ -269,7 +269,7 @@ module Sigstore
 
         self.full_name = "dev.sigstore.common.v1.ObjectIdentifier"
 
-        repeated(1, "id", type: :int32)
+        repeated(1, "id", type: :int32, packed: true)
       end
 
       # An OID and the corresponding (byte) value.

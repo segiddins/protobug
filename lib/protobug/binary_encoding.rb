@@ -11,20 +11,18 @@ module Protobug
       raise RangeError, "expected 64-bit integer" if value > (2**64) - 1 || value < -2**63
 
       value += 2**64 if value < 0
-      out = []
       loop do
         if value.bit_length > 7
-          out << (0b1000_0000 | (value & 0b0111_1111))
+          outbuf << (0b1000_0000 | (value & 0b0111_1111))
           value >>= 7
         else
-          out << (value & 0b0111_1111)
+          outbuf << (value & 0b0111_1111)
           break
         end
       end
-      pack(out, "c*", buffer: outbuf)
     end
 
-    if RUBY_ENGINE == "truffleruby"
+    if RUBY_ENGINE == "truffleruby" && RUBY_ENGINE_VERSION < "24.1.0"
       # see https://github.com/oracle/truffleruby/issues/3559
       def pack(ary, format, buffer:)
         buffer.concat ary.pack(format)

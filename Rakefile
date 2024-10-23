@@ -174,6 +174,10 @@ class ProtoGem < Rake::FileTask
     "gen/protobug_#{name}/lib"
   end
 
+  def sig
+    "gen/protobug_#{name}/sig"
+  end
+
   def includes
     @patterns.map { |_, v| "-I#{v.base}" }
   end
@@ -304,6 +308,7 @@ proto_gem :well_known_protos, :protobuf, deps: [] do |task|
   task.outputs.each do |pb|
     well_known = pb.pathmap("%{_pb.rb$,_well_known.rb}p")
     next unless File.file?(well_known)
+    next if pb.end_with?(".rbs")
 
     task.gemspec.files += [well_known.delete_prefix("gen/protobug_#{task.name}/")]
 
