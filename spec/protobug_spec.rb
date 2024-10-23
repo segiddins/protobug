@@ -126,8 +126,8 @@ RSpec.describe Protobug do
     expect(msg.a).to eq("")
     expect(msg.b).to eq(0)
     expect(msg.x).to eq(:b)
-    expect(msg.a?).to be_falsy # rubocop:disable RSpec/PredicateMatcher
-    expect(msg).to be_b
+    expect(msg).not_to have_a
+    expect(msg).to have_b
 
     msg.a = "test"
 
@@ -274,10 +274,10 @@ RSpec.describe Protobug do
     end
 
     msg = c.new
-    expect(msg).not_to be_optional
-    expect(msg).not_to be_repeated
-    expect(msg).not_to be_message
-    expect(msg).not_to be_map
+    expect(msg).not_to have_optional
+    expect(msg).not_to have_repeated
+    expect(msg).not_to have_message
+    expect(msg).not_to have_map
     expect(msg.as_json).to eq({})
 
     msg.optional += 1

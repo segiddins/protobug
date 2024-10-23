@@ -35,7 +35,7 @@ module Protobug
       @adder = repeated? && !map? ? :"add_#{name}" : nil
       @ivar = :"@#{name}"
       @clearer = :"clear_#{name}"
-      @haser = :"#{name}?"
+      @haser = :"has_#{name}?"
       @packed = packed
       @proto3_optional = proto3_optional
       @escaped_name = RUBY_KEYWORDS.fetch(@name, @name)

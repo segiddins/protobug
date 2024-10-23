@@ -97,7 +97,7 @@ module Protobug
         if parent
           "#{parent.to_constant}::#{name}"
         else
-          return file.options.ruby_package if file.options&.ruby_package?
+          return file.options.ruby_package if file.options&.has_ruby_package?
 
           parts = descriptor.package.split(".")
           parts.map! do |part|
@@ -161,7 +161,7 @@ module Protobug
       include Descriptor
 
       def file_name
-        ruby_package = options.ruby_package if options&.ruby_package?
+        ruby_package = options.ruby_package if options&.has_ruby_package?
         prefix = if ruby_package
                    ruby_package.split("::").map!(&:downcase).join("/")
                  else
@@ -262,7 +262,7 @@ module Protobug
         group.empty
       end
 
-      group.comment(source_loc.leading_comments) if source_loc.leading_comments?
+      group.comment(source_loc.leading_comments) if source_loc.has_leading_comments?
 
       case descriptor
       when DescriptorProto
@@ -282,13 +282,13 @@ module Protobug
             g.empty
             descriptor.file.loc_by_path(descriptor.source_loc.path +
                                         [DescriptorProto.fields_by_name.fetch("reserved_range").number])&.tap do |loc|
-              g.comment(loc.leading_comments) if loc.leading_comments?
+              g.comment(loc.leading_comments) if loc.has_leading_comments?
             end
             descriptor.reserved_range.each_with_index do |range, idx|
               descriptor.file.loc_by_path(descriptor.source_loc.path + [
                 DescriptorProto.fields_by_name.fetch("reserved_range").number, idx
               ]).tap do |loc|
-                g.comment(loc.leading_comments) if loc.leading_comments?
+                g.comment(loc.leading_comments) if loc.has_leading_comments?
               end
               g.identifier("reserved_range").call do |c|
                 c.literal(range.start).op("...").literal(range.end)
@@ -333,7 +333,7 @@ module Protobug
           c.literal(descriptor.number)
         end
       when FieldDescriptorProto
-        if descriptor.extendee?
+        if descriptor.has_extendee?
           containing_type = files.fetch_type(
             if descriptor.extendee.start_with?(".")
               descriptor.extendee[1..]
@@ -347,7 +347,7 @@ module Protobug
 
         type = descriptor.type_case_name.downcase.delete_prefix!("type_").to_sym
 
-        if descriptor.type_name?
+        if descriptor.has_type_name?
           referenced_type = files.fetch_type(descriptor.type_name.delete_prefix("."))
           type = :map unless referenced_type.source_loc
         end
@@ -380,29 +380,29 @@ module Protobug
             value_type = referenced_type.field[1].type_case_name.downcase.delete_prefix("type_").to_sym
             c.identifier("value_type:")
              .literal(value_type)
-            if referenced_type.field[1].type_name?
+            if referenced_type.field[1].has_type_name?
               nested_name = referenced_type.field[1].type_name.delete_prefix(".")
               c.identifier("#{value_type}_class:").literal(files.fetch_type(nested_name).to_constant)
             end
-          elsif descriptor.type_name? && type != :group
+          elsif descriptor.has_type_name? && type != :group
             nested_name = descriptor.type_name.delete_prefix(".")
             c.identifier("#{type}_class:").literal(files.fetch_type(nested_name).to_constant)
           end
 
-          packed = descriptor.options&.packed if descriptor.options&.packed?
+          packed = descriptor.options&.packed if descriptor.options&.has_packed?
           # TODO: exclude other types that cannot be packed
-          if !descriptor.options&.packed? && !%i[message bytes string map].include?(type)
+          if !descriptor.options&.has_packed? && !%i[message bytes string map].include?(type)
             packed = descriptor.label == Google::Protobuf::FieldDescriptorProto::Label::REPEATED &&
                      descriptor.file.syntax == "proto3"
           end
           c.identifier("packed:").literal(packed) if packed
-          if descriptor.json_name? && descriptor.json_name != descriptor.name
+          if descriptor.has_json_name? && descriptor.json_name != descriptor.name
             c.identifier("json_name:").literal(descriptor.json_name)
           end
-          if descriptor.oneof_index?
+          if descriptor.has_oneof_index?
             oneof = descriptor.parent.oneof_decl[descriptor.oneof_index]
             synthetic = descriptor.proto3_optional && (descriptor.parent.field.count do |f|
-              f.oneof_index? && f.oneof_index == descriptor.oneof_index
+              f.has_oneof_index? && f.oneof_index == descriptor.oneof_index
             end == 1)
             c.identifier("oneof:").literal(oneof.name.to_sym) unless synthetic
           end
@@ -410,10 +410,10 @@ module Protobug
              descriptor.file.syntax == "proto3" && !descriptor.proto3_optional
             c.identifier("proto3_optional:").literal(false)
           end
-          c.identifier("default:").literal(descriptor.default_value) if descriptor.default_value?
+          c.identifier("default:").literal(descriptor.default_value) if descriptor.has_default_value?
         end
       when OneofDescriptorProto
-        group.empty if source_loc.leading_comments?
+        group.empty if source_loc.has_leading_comments?
         # no-op
       when ServiceDescriptorProto
         group._class.identifier(descriptor.name).block do |g|
@@ -436,7 +436,7 @@ module Protobug
       else
         raise "Unknown descriptor type: #{descriptor.class}"
       end.tap do |s|
-        s.comment(source_loc.trailing_comments) if source_loc.trailing_comments?
+        s.comment(source_loc.trailing_comments) if source_loc.has_trailing_comments?
       end
     end
 
@@ -446,12 +446,12 @@ module Protobug
         f.header_comment "Code generated by protoc-gen-protobug. DO NOT EDIT."
 
         f.comment "source: #{file.name}"
-        f.comment "syntax: #{file.syntax? ? file.syntax : "proto2"}"
+        f.comment "syntax: #{file.has_syntax? ? file.syntax : "proto2"}"
         f.comment "package: #{file.package}"
         f.comment "options:"
         if file.options
           file.options.class.fields_by_name.each do |name, field|
-            next unless file.options.send(:"#{name}?")
+            next unless file.options.send(field.haser)
 
             value = file.options.send(name)
             if value.is_a?(Symbol)
