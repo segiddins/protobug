@@ -22,17 +22,6 @@ module Protobug
       end
     end
 
-    if RUBY_ENGINE == "truffleruby" && RUBY_ENGINE_VERSION < "24.1.0"
-      # see https://github.com/oracle/truffleruby/issues/3559
-      def pack(ary, format, buffer:)
-        buffer.concat ary.pack(format)
-      end
-    else
-      def pack(ary, format, buffer:)
-        ary.pack(format, buffer: buffer)
-      end
-    end
-
     def encode_zigzag(size, value, outbuf)
       raise EncodeError, "expected integer, got #{value.inspect}" unless value.is_a? Integer
 

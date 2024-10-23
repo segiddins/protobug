@@ -14,12 +14,6 @@ module Protobug
 
     attr_reader :values, :names, :reserved_ranges, :reserved_names
 
-    def new(name, value)
-      @names[value] = name
-      @values[name] = value
-      value
-    end
-
     def register(name, value)
       name = -name
       @names[value] = name

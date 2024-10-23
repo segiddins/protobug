@@ -313,8 +313,8 @@ module Protobug
         end
       end
 
-      def repeated
-        true
+      def default_code
+        "{}"
       end
 
       def default
@@ -399,10 +399,6 @@ module Protobug
         end
       end
 
-      def default_code
-        "{}"
-      end
-
       def expected_class
         Hash
       end
@@ -439,6 +435,10 @@ module Protobug
         return [] if repeated?
 
         @default || "".b
+      end
+
+      def default_code
+        '"".b'
       end
 
       def wire_type
@@ -479,6 +479,10 @@ module Protobug
         return [] if repeated?
 
         @default || +""
+      end
+
+      def default_code
+        '+""'
       end
 
       def binary_decode_code(protobug_read_varint)
@@ -543,7 +547,7 @@ module Protobug
         when :varint
           BinaryEncoding.encode_varint value, outbuf
         when :fixed
-          BinaryEncoding.pack([value], binary_pack, buffer: outbuf)
+          [value].pack(binary_pack, buffer: outbuf)
         end
       end
 
@@ -921,7 +925,7 @@ module Protobug
       end
 
       def binary_encode_one(value, outbuf)
-        BinaryEncoding.pack([value], binary_pack, buffer: outbuf)
+        [value].pack(binary_pack, buffer: outbuf)
       end
 
       def json_decode_one(value, _ignore_unknown_fields)

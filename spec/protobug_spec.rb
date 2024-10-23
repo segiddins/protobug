@@ -271,6 +271,7 @@ RSpec.describe Protobug do
       repeated 2, :repeated, type: :int32
       optional 3, :message, type: :message, message_class: "self.class"
       map 4, :map, key_type: :string, value_type: :int32
+      optional 5, :string, type: :string
     end
 
     msg = c.new
@@ -278,14 +279,16 @@ RSpec.describe Protobug do
     expect(msg).not_to have_repeated
     expect(msg).not_to have_message
     expect(msg).not_to have_map
+    expect(msg).not_to have_string
     expect(msg.as_json).to eq({})
 
     msg.optional += 1
     msg.repeated << 1
     msg.message.optional = 1
     msg.map["foo"] = 1
+    msg.string << "test"
 
     expect(msg.as_json).to eq("optional" => 1, "repeated" => [1], "message" => { "optional" => 1 },
-                              "map" => { "foo" => 1 })
+                              "map" => { "foo" => 1 }, "string" => "test")
   end
 end

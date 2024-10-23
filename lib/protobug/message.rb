@@ -193,13 +193,8 @@ module Protobug
 
       raise DefinitionError, "too many optional fields" if declared_fields.count(&:proto3_optional?) > 64
 
-      begin
-        __protobug_module__.module_eval(__protobug_instance_method_definitions__,
-                                        "(instance method definitions for #{self})")
-      rescue SyntaxError
-        warn __protobug_instance_method_definitions__
-        raise
-      end
+      __protobug_module__.module_eval(__protobug_instance_method_definitions__,
+                                      "(instance method definitions for #{self})")
       __protobug_module__.module_eval(field.method_definitions, "(field #{field} for #{self})")
 
       return unless field.oneof
