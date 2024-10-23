@@ -97,14 +97,16 @@ module Protobug
     def method_definitions
       str = +"# frozen_string_literal: true\n"
 
-      str << "def #{setter}(value)\n"
-      str << "  return #{ivar}#{oneof && " = @#{oneof}"} = nil if value.nil?\n" if proto3_optional?
-      str << validate_code
-      str << "  @#{oneof} = #{name.inspect}\n" if oneof
-      str << "  #{ivar} = value\n" \
-             "end\n"
+      unless repeated?
+        str << "def #{setter}(value)\n"
+        str << "  return #{ivar}#{oneof && " = @#{oneof}"} = nil if value.nil?\n" if proto3_optional?
+        str << validate_code
+        str << "  @#{oneof} = #{name.inspect}\n" if oneof
+        str << "  #{ivar} = value\n" \
+               "end\n"
+      end
 
-      if !optional? && !oneof
+      if !oneof && (!optional? || repeated?)
         str << "attr_reader #{name.inspect}\n"
       else
         str << "def #{name}\n" \
@@ -133,10 +135,8 @@ module Protobug
 
       str << "def #{clearer}\n"
       str << "  @#{oneof} = nil\n" if oneof
-      str << if map?
-               "  #{ivar} = {}\n"
-             elsif repeated?
-               "  #{ivar} = []\n"
+      str << if repeated?
+               "  #{ivar}.clear\n"
              else
                "  #{ivar} = nil\n"
              end
@@ -150,13 +150,9 @@ module Protobug
                "end\n"
       end
 
-      if is_a?(EnumField)
+      if is_a?(EnumField) && !repeated?
         str << "def #{name}_case_name\n"
-        str << if repeated?
-                 "  #{ivar}.map { #{enum_class}.names.fetch(_1) }\n"
-               else
-                 "  #{enum_class}.names.fetch(#{ivar})\n"
-               end
+        str << "  #{enum_class}.names.fetch(#{ivar})\n"
         str << "end\n"
       end
 
@@ -202,21 +198,6 @@ module Protobug
       return "[]" if repeated?
 
       default.inspect
-    end
-
-    def json_key_encode(value)
-      case value
-      when String
-        value
-      when Integer, Float
-        value.to_s
-      when TrueClass
-        "true"
-      when FalseClass
-        "false"
-      else
-        raise EncodeError, "unexpected type for map key: #{value.inspect}"
-      end
     end
 
     def json_decode(value, message, ignore_unknown_fields)
