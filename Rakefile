@@ -119,7 +119,7 @@ class ProtoGem < Rake::FileTask
       spec.licenses = ["Unlicense"]
       spec.homepage = "https://github.com/segiddins/protobug/blob/v#{spec.version}/gen/protobug_#{name}"
 
-      spec.required_ruby_version = ">= 3.0.0"
+      spec.required_ruby_version = ">= 3.1.0"
       spec.metadata["rubygems_mfa_required"] = "true"
       spec.files += ["lib/protobug_#{name}.rb"]
       spec.require_paths = ["lib"]
@@ -174,6 +174,10 @@ class ProtoGem < Rake::FileTask
     "gen/protobug_#{name}/lib"
   end
 
+  def sig
+    "gen/protobug_#{name}/sig"
+  end
+
   def includes
     @patterns.map { |_, v| "-I#{v.base}" }
   end
@@ -205,7 +209,8 @@ end
 
 task default: %i[spec verify_proto_gems example conformance rubocop]
 
-git_repo :protobuf, "tmp/protobuf", "https://github.com/protocolbuffers/protobuf", commit: "refs/tags/v26.1"
+git_repo :protobuf, "tmp/protobuf", "https://github.com/protocolbuffers/protobuf",
+         commit: "9fff46d7327c699ef970769d5c9fd0e44df08fc7"
 file "tmp/protobuf/.build/conformance_test_runner" => "protobuf" do
   mkdir_p "tmp/protobuf/.build"
   sh "cmake", "..", "-DCMAKE_CXX_STANDARD=14", "-Dprotobuf_BUILD_CONFORMANCE=ON", "-Dprotobuf_BUILD_TESTS=OFF",
@@ -240,10 +245,12 @@ def proto_gem(name, source_repo, deps: [])
   desc "Build protobug_#{name}"
   task = ProtoGem.define_task(name)
   directory task.lib
+  directory task.sig
   task.source_repo = Rake.application.lookup(source_repo)
   yield task
   task.gemspec.summary = "Compiled protos for protobug from #{task.source_repo&.url} (#{name})"
   task.gemspec.files += task.outputs.map { _1.sub(%r{^#{task.lib}/}, "lib/") }
+  task.gemspec.files += task.outputs.map { _1.sub(%r{^#{task.lib}/}, "sig/") << "s" }
   rb = File.join(task.lib, "protobug_#{name}.rb")
   file rb do |t|
     File.write(t.name, <<~RB)
@@ -269,16 +276,66 @@ def proto_gem(name, source_repo, deps: [])
   multitask name => [*PROTOBUG_FILES, *PROTOBUG_COMPILER_FILES, source_repo, task.lib, rb, gemspec, *task.inputs, *deps]
   namespace name do
     desc "Verify that #{name} has dependencies properly specified & is requireable"
-    task verify: name do
+    task verify: [name, task.sig] do
       Bundler.with_unbundled_env do
         ruby "-e", <<~RB, verbose: false
           require "bundler/inline"
           gemfile do
+            gem "fileutils"
             path ".", glob: "{,*,*/*,gen/*/*}.gemspec" do
             end
             gemspec path: "gen/protobug_#{name}"
           end
           require "protobug_#{name}"
+
+          prefix = File.expand_path("gen/protobug_#{name}/")
+          files = Hash.new { |h, k| h[k] = [] }
+          #{task.outputs}.each { files[_1] }
+
+          ObjectSpace.each_object(Module) do |mod|
+            next unless mod.is_a?(Protobug::BaseDescriptor)
+            next unless mod.name # map class
+            file, line = Object.const_source_location(mod.name)
+            next unless file.start_with?(prefix)
+            files[file] << [mod, line]
+          end
+
+          files.each do |file, mods|
+            fname = file.delete_suffix(".rb") << ".generated.rb"
+            sig = file.gsub("/lib/", "/sig/") << "s"
+            FileUtils.mkdir_p(File.dirname(sig))
+            File.open(fname, "w") do |f|
+              File.open(sig, "w") do |s|
+                mods.sort_by(&:last).each do |mod, line|
+                  kw = mod.is_a?(Class) ? "class" : "module"
+                  f.puts "\#{kw} \#{mod.name} # \#{file.delete_prefix(prefix)}:\#{line}\\n"
+                  s.puts "\#{kw} \#{mod.name} # \#{file.delete_prefix(prefix)}:\#{line}\\n"
+                  if mod.is_a?(Protobug::Message)
+                    s.puts "  def self.decode: (String string) -> \#{mod.name}\\n"
+                    f.write "  "
+                    f.puts mod.send(:__protobug_instance_method_definitions__).lines[1..].join("  ")
+                    f.puts
+                    mod.declared_fields.each do |field|
+                      f.puts "  # \#{field}\\n"
+                      f.write "  "
+                      f.puts field.method_definitions.lines[1..].join("  ")
+
+                      s.puts "  # \#{field}\\n"
+                      s.puts "  def \#{field.name}: () -> \#{field.expected_class}\\n"
+                      s.puts "  def \#{field.haser}: () -> bool\\n"
+                      s.puts "  \#{field.ivar}: \#{field.expected_class}?\\n"
+                    end
+                  elsif mod.is_a?(Protobug::Enum)
+                    mod.values.each do |name, value|
+                      s.puts "  \#{name}: Integer\\n"
+                    end
+                  end
+                  f.puts "end\\n"
+                  s.puts "end\\n"
+                end
+              end
+            end
+          end
         RB
         ruby "-S", "gem", "build", "--strict", File.basename(gemspec), chdir: "gen/protobug_#{name}"
         rm FileList["gen/protobug_#{name}/protobug_#{name}*.gem"]
@@ -298,10 +355,12 @@ proto_gem :well_known_protos, :protobuf, deps: [] do |task|
     .include("google/protobuf/*.proto")
     .exclude("google/protobuf/*test*")
     .exclude("google/protobuf/cpp_features.proto")
+    .exclude("google/protobuf/sample_messages_edition.proto")
 
   task.outputs.each do |pb|
     well_known = pb.pathmap("%{_pb.rb$,_well_known.rb}p")
     next unless File.file?(well_known)
+    next if pb.end_with?(".rbs")
 
     task.gemspec.files += [well_known.delete_prefix("gen/protobug_#{task.name}/")]
 

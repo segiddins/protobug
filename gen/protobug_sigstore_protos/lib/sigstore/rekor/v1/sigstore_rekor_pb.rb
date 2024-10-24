@@ -110,7 +110,7 @@ module Sigstore
           5,
           "checkpoint",
           type: :message,
-          message_type: "dev.sigstore.rekor.v1.Checkpoint",
+          message_class: "Sigstore::Rekor::V1::Checkpoint",
           proto3_optional: false
         )
       end
@@ -165,7 +165,7 @@ module Sigstore
           2,
           "log_id",
           type: :message,
-          message_type: "dev.sigstore.common.v1.LogId",
+          message_class: "Sigstore::Common::V1::LogId",
           json_name: "logId",
           proto3_optional: false
         )
@@ -176,7 +176,7 @@ module Sigstore
           3,
           "kind_version",
           type: :message,
-          message_type: "dev.sigstore.rekor.v1.KindVersion",
+          message_class: "Sigstore::Rekor::V1::KindVersion",
           json_name: "kindVersion",
           proto3_optional: false
         )
@@ -199,7 +199,7 @@ module Sigstore
           5,
           "inclusion_promise",
           type: :message,
-          message_type: "dev.sigstore.rekor.v1.InclusionPromise",
+          message_class: "Sigstore::Rekor::V1::InclusionPromise",
           json_name: "inclusionPromise",
           proto3_optional: false
         )
@@ -210,7 +210,7 @@ module Sigstore
           6,
           "inclusion_proof",
           type: :message,
-          message_type: "dev.sigstore.rekor.v1.InclusionProof",
+          message_class: "Sigstore::Rekor::V1::InclusionProof",
           json_name: "inclusionProof",
           proto3_optional: false
         )
@@ -239,16 +239,6 @@ module Sigstore
           json_name: "canonicalizedBody",
           proto3_optional: false
         )
-      end
-
-      def self.register_sigstore_rekor_protos(registry)
-        Google::Api.register_field_behavior_protos(registry)
-        Sigstore::Common::V1.register_sigstore_common_protos(registry)
-        registry.register(Sigstore::Rekor::V1::KindVersion)
-        registry.register(Sigstore::Rekor::V1::Checkpoint)
-        registry.register(Sigstore::Rekor::V1::InclusionProof)
-        registry.register(Sigstore::Rekor::V1::InclusionPromise)
-        registry.register(Sigstore::Rekor::V1::TransparencyLogEntry)
       end
     end
   end

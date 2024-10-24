@@ -60,9 +60,5 @@ module Google
 
       self.full_name = "google.protobuf.Empty"
     end
-
-    def self.register_empty_protos(registry)
-      registry.register(Google::Protobuf::Empty)
-    end
   end
 end

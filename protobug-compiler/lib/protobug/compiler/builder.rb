@@ -37,13 +37,13 @@ module Protobug
         end
 
         def literal(content)
-          append Token.new(type: :literal, content: content)
+          append Token.new(type: :literal, content:)
         end
 
-        def block(&blk)
+        def block(&)
           append Group.new(
             name: "block", items: [], close: "end", multi: true, indent: 2
-          ).tap(&blk)
+          ).tap(&)
         end
 
         def dot(name)
