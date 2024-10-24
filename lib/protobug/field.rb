@@ -258,7 +258,7 @@ module Protobug
       end
 
       def json_decode_one(value, ignore_unknown_fields)
-        Object.const_get(message_class).decode_json_hash(value, ignore_unknown_fields: ignore_unknown_fields)
+        Object.const_get(message_class).decode_json_hash(value, ignore_unknown_fields:)
       end
 
       def default
@@ -311,7 +311,7 @@ module Protobug
           extend Protobug::Message
 
           optional(1, "key", type: key_type, proto3_optional: false)
-          value_type_kwargs = { enum_class: enum_class, message_class: message_class }
+          value_type_kwargs = { enum_class:, message_class: }
           value_type_kwargs.compact!
           optional(2, "value", type: value_type, **value_type_kwargs, proto3_optional: false)
         end
@@ -356,7 +356,7 @@ module Protobug
         value.each do |k, v|
           entry = @map_class.decode_json_hash(
             { "key" => k, "value" => v },
-            ignore_unknown_fields: ignore_unknown_fields
+            ignore_unknown_fields:
           )
           # can't use haser because default values should also be counted...
           if entry.instance_variable_get(:@value).nil?
@@ -900,7 +900,7 @@ module Protobug
       end
 
       def json_decode_one(value, ignore_unknown_fields)
-        Object.const_get(enum_class).decode_json_hash(value, ignore_unknown_fields: ignore_unknown_fields)
+        Object.const_get(enum_class).decode_json_hash(value, ignore_unknown_fields:)
       end
 
       def default

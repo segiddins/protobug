@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.files = ["lib/grpc/gateway/protoc_gen_openapiv2/options/annotations_pb.rb".freeze, "lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb".freeze, "lib/protobug_protoc_gen_openapiv2_protos.rb".freeze, "sig/grpc/gateway/protoc_gen_openapiv2/options/annotations_pb.rbs".freeze, "sig/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rbs".freeze]
   s.homepage = "https://github.com/segiddins/protobug/blob/v0.1.1/gen/protobug_protoc_gen_openapiv2_protos".freeze
   s.licenses = ["Unlicense".freeze]
-  s.required_ruby_version = Gem::Requirement.new(">= 3.0.0".freeze)
+  s.required_ruby_version = Gem::Requirement.new(">= 3.1.0".freeze)
 
   s.summary = "Compiled protos for protobug from https://github.com/grpc-ecosystem/grpc-gateway (protoc_gen_openapiv2_protos)".freeze
 

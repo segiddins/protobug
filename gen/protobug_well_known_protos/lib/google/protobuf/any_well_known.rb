@@ -31,7 +31,7 @@ Google::Protobuf::Any.class_eval do
     json = json["value"] if json.key?("value") && json.size == 1
 
     type = Protobug.resolve_known_type(type_url.delete_prefix("type.googleapis.com/"))
-    v = type.decode_json_hash(json, ignore_unknown_fields: ignore_unknown_fields)
+    v = type.decode_json_hash(json, ignore_unknown_fields:)
     json = {
       "type_url" => type_url,
       "value" => [type.encode(v)].pack("m0")

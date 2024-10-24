@@ -102,7 +102,7 @@ module Protobug
       end
       raise DecodeError, "expected hash, got #{hash.inspect}" unless hash.is_a? Hash
 
-      decode_json_hash(hash, ignore_unknown_fields: ignore_unknown_fields)
+      decode_json_hash(hash, ignore_unknown_fields:)
     end
 
     def decode_json_hash(json, ignore_unknown_fields: false)

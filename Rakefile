@@ -119,7 +119,7 @@ class ProtoGem < Rake::FileTask
       spec.licenses = ["Unlicense"]
       spec.homepage = "https://github.com/segiddins/protobug/blob/v#{spec.version}/gen/protobug_#{name}"
 
-      spec.required_ruby_version = ">= 3.0.0"
+      spec.required_ruby_version = ">= 3.1.0"
       spec.metadata["rubygems_mfa_required"] = "true"
       spec.files += ["lib/protobug_#{name}.rb"]
       spec.require_paths = ["lib"]
@@ -281,6 +281,7 @@ def proto_gem(name, source_repo, deps: [])
         ruby "-e", <<~RB, verbose: false
           require "bundler/inline"
           gemfile do
+            gem "fileutils"
             path ".", glob: "{,*,*/*,gen/*/*}.gemspec" do
             end
             gemspec path: "gen/protobug_#{name}"

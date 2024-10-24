@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.files = ["lib/conformance/conformance_pb.rb".freeze, "lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb".freeze, "lib/protobuf_test_messages/proto3/test_messages_proto3_pb.rb".freeze, "lib/protobug_conformance_protos.rb".freeze, "sig/conformance/conformance_pb.rbs".freeze, "sig/protobuf_test_messages/proto2/test_messages_proto2_pb.rbs".freeze, "sig/protobuf_test_messages/proto3/test_messages_proto3_pb.rbs".freeze]
   s.homepage = "https://github.com/segiddins/protobug/blob/v0.1.1/gen/protobug_conformance_protos".freeze
   s.licenses = ["Unlicense".freeze]
-  s.required_ruby_version = Gem::Requirement.new(">= 3.0.0".freeze)
+  s.required_ruby_version = Gem::Requirement.new(">= 3.1.0".freeze)
 
   s.summary = "Compiled protos for protobug from https://github.com/protocolbuffers/protobuf (conformance_protos)".freeze
 

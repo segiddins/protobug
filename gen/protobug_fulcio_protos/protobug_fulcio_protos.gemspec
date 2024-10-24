@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.files = ["lib/dev/sigstore/fulcio/v2/fulcio_pb.rb".freeze, "lib/protobug_fulcio_protos.rb".freeze, "sig/dev/sigstore/fulcio/v2/fulcio_pb.rbs".freeze]
   s.homepage = "https://github.com/segiddins/protobug/blob/v0.1.1/gen/protobug_fulcio_protos".freeze
   s.licenses = ["Unlicense".freeze]
-  s.required_ruby_version = Gem::Requirement.new(">= 3.0.0".freeze)
+  s.required_ruby_version = Gem::Requirement.new(">= 3.1.0".freeze)
 
   s.summary = "Compiled protos for protobug from https://github.com/sigstore/fulcio (fulcio_protos)".freeze
 

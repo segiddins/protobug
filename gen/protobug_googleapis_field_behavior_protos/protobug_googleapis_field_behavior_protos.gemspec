@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.files = ["lib/google/api/field_behavior_pb.rb".freeze, "lib/protobug_googleapis_field_behavior_protos.rb".freeze, "sig/google/api/field_behavior_pb.rbs".freeze]
   s.homepage = "https://github.com/segiddins/protobug/blob/v0.1.1/gen/protobug_googleapis_field_behavior_protos".freeze
   s.licenses = ["Unlicense".freeze]
-  s.required_ruby_version = Gem::Requirement.new(">= 3.0.0".freeze)
+  s.required_ruby_version = Gem::Requirement.new(">= 3.1.0".freeze)
 
   s.summary = "Compiled protos for protobug from https://github.com/googleapis/googleapis (googleapis_field_behavior_protos)".freeze
 
