@@ -1,0 +1,159 @@
+class Google::Protobuf::Type # /lib/google/protobuf/type_pb.rb:55
+  def self.decode: (String string) -> Google::Protobuf::Type
+  # optional(1, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # repeated(2, :fields, type: :message)
+  def fields: () -> Google::Protobuf::Field
+  def has_fields?: () -> bool
+  @fields: Google::Protobuf::Field?
+  # repeated(3, :oneofs, type: :string)
+  def oneofs: () -> String
+  def has_oneofs?: () -> bool
+  @oneofs: String?
+  # repeated(4, :options, type: :message)
+  def options: () -> Google::Protobuf::Option
+  def has_options?: () -> bool
+  @options: Google::Protobuf::Option?
+  # optional(5, :source_context, type: :message)
+  def source_context: () -> Google::Protobuf::SourceContext
+  def has_source_context?: () -> bool
+  @source_context: Google::Protobuf::SourceContext?
+  # optional(6, :syntax, type: :enum)
+  def syntax: () -> Integer
+  def has_syntax?: () -> bool
+  @syntax: Integer?
+  # optional(7, :edition, type: :string)
+  def edition: () -> String
+  def has_edition?: () -> bool
+  @edition: String?
+end
+class Google::Protobuf::Field # /lib/google/protobuf/type_pb.rb:100
+  def self.decode: (String string) -> Google::Protobuf::Field
+  # optional(1, :kind, type: :enum)
+  def kind: () -> Integer
+  def has_kind?: () -> bool
+  @kind: Integer?
+  # optional(2, :cardinality, type: :enum)
+  def cardinality: () -> Integer
+  def has_cardinality?: () -> bool
+  @cardinality: Integer?
+  # optional(3, :number, type: :int32)
+  def number: () -> Integer
+  def has_number?: () -> bool
+  @number: Integer?
+  # optional(4, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # optional(6, :type_url, type: :string)
+  def type_url: () -> String
+  def has_type_url?: () -> bool
+  @type_url: String?
+  # optional(7, :oneof_index, type: :int32)
+  def oneof_index: () -> Integer
+  def has_oneof_index?: () -> bool
+  @oneof_index: Integer?
+  # optional(8, :packed, type: :bool)
+  def packed: () -> Integer
+  def has_packed?: () -> bool
+  @packed: Integer?
+  # repeated(9, :options, type: :message)
+  def options: () -> Google::Protobuf::Option
+  def has_options?: () -> bool
+  @options: Google::Protobuf::Option?
+  # optional(10, :json_name, type: :string)
+  def json_name: () -> String
+  def has_json_name?: () -> bool
+  @json_name: String?
+  # optional(11, :default_value, type: :string)
+  def default_value: () -> String
+  def has_default_value?: () -> bool
+  @default_value: String?
+end
+module Google::Protobuf::Field::Kind # /lib/google/protobuf/type_pb.rb:106
+  TYPE_UNKNOWN: Integer
+  TYPE_DOUBLE: Integer
+  TYPE_FLOAT: Integer
+  TYPE_INT64: Integer
+  TYPE_UINT64: Integer
+  TYPE_INT32: Integer
+  TYPE_FIXED64: Integer
+  TYPE_FIXED32: Integer
+  TYPE_BOOL: Integer
+  TYPE_STRING: Integer
+  TYPE_GROUP: Integer
+  TYPE_MESSAGE: Integer
+  TYPE_BYTES: Integer
+  TYPE_UINT32: Integer
+  TYPE_ENUM: Integer
+  TYPE_SFIXED32: Integer
+  TYPE_SFIXED64: Integer
+  TYPE_SINT32: Integer
+  TYPE_SINT64: Integer
+end
+module Google::Protobuf::Field::Cardinality # /lib/google/protobuf/type_pb.rb:152
+  CARDINALITY_UNKNOWN: Integer
+  CARDINALITY_OPTIONAL: Integer
+  CARDINALITY_REQUIRED: Integer
+  CARDINALITY_REPEATED: Integer
+end
+class Google::Protobuf::Enum # /lib/google/protobuf/type_pb.rb:233
+  def self.decode: (String string) -> Google::Protobuf::Enum
+  # optional(1, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # repeated(2, :enumvalue, type: :message)
+  def enumvalue: () -> Google::Protobuf::EnumValue
+  def has_enumvalue?: () -> bool
+  @enumvalue: Google::Protobuf::EnumValue?
+  # repeated(3, :options, type: :message)
+  def options: () -> Google::Protobuf::Option
+  def has_options?: () -> bool
+  @options: Google::Protobuf::Option?
+  # optional(4, :source_context, type: :message)
+  def source_context: () -> Google::Protobuf::SourceContext
+  def has_source_context?: () -> bool
+  @source_context: Google::Protobuf::SourceContext?
+  # optional(5, :syntax, type: :enum)
+  def syntax: () -> Integer
+  def has_syntax?: () -> bool
+  @syntax: Integer?
+  # optional(6, :edition, type: :string)
+  def edition: () -> String
+  def has_edition?: () -> bool
+  @edition: String?
+end
+class Google::Protobuf::EnumValue # /lib/google/protobuf/type_pb.rb:276
+  def self.decode: (String string) -> Google::Protobuf::EnumValue
+  # optional(1, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # optional(2, :number, type: :int32)
+  def number: () -> Integer
+  def has_number?: () -> bool
+  @number: Integer?
+  # repeated(3, :options, type: :message)
+  def options: () -> Google::Protobuf::Option
+  def has_options?: () -> bool
+  @options: Google::Protobuf::Option?
+end
+class Google::Protobuf::Option # /lib/google/protobuf/type_pb.rb:296
+  def self.decode: (String string) -> Google::Protobuf::Option
+  # optional(1, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # optional(2, :value, type: :message)
+  def value: () -> Google::Protobuf::Any
+  def has_value?: () -> bool
+  @value: Google::Protobuf::Any?
+end
+module Google::Protobuf::Syntax # /lib/google/protobuf/type_pb.rb:320
+  SYNTAX_PROTO2: Integer
+  SYNTAX_PROTO3: Integer
+  SYNTAX_EDITIONS: Integer
+end

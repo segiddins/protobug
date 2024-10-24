@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.authors = ["Samuel Giddins".freeze]
 
   s.email = ["segiddins@segiddins.me".freeze]
-  s.files = ["lib/protobug_sigstore_protos.rb".freeze, "lib/sigstore/bundle/v1/sigstore_bundle_pb.rb".freeze, "lib/sigstore/common/v1/sigstore_common_pb.rb".freeze, "lib/sigstore/dsse/envelope_pb.rb".freeze, "lib/sigstore/events/events_pb.rb".freeze, "lib/sigstore/rekor/v1/sigstore_rekor_pb.rb".freeze, "lib/sigstore/trustroot/v1/sigstore_trustroot_pb.rb".freeze, "lib/sigstore/verification/v1/sigstore_verification_pb.rb".freeze]
+  s.files = ["lib/protobug_sigstore_protos.rb".freeze, "lib/sigstore/bundle/v1/sigstore_bundle_pb.rb".freeze, "lib/sigstore/common/v1/sigstore_common_pb.rb".freeze, "lib/sigstore/dsse/envelope_pb.rb".freeze, "lib/sigstore/events/events_pb.rb".freeze, "lib/sigstore/rekor/v1/sigstore_rekor_pb.rb".freeze, "lib/sigstore/trustroot/v1/sigstore_trustroot_pb.rb".freeze, "lib/sigstore/verification/v1/sigstore_verification_pb.rb".freeze, "sig/sigstore/bundle/v1/sigstore_bundle_pb.rbs".freeze, "sig/sigstore/common/v1/sigstore_common_pb.rbs".freeze, "sig/sigstore/dsse/envelope_pb.rbs".freeze, "sig/sigstore/events/events_pb.rbs".freeze, "sig/sigstore/rekor/v1/sigstore_rekor_pb.rbs".freeze, "sig/sigstore/trustroot/v1/sigstore_trustroot_pb.rbs".freeze, "sig/sigstore/verification/v1/sigstore_verification_pb.rbs".freeze]
   s.homepage = "https://github.com/segiddins/protobug/blob/v0.1.1/gen/protobug_sigstore_protos".freeze
   s.licenses = ["Unlicense".freeze]
   s.required_ruby_version = Gem::Requirement.new(">= 3.0.0".freeze)

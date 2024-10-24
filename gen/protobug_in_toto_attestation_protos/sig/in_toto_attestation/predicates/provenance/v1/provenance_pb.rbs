@@ -1,0 +1,75 @@
+class InTotoAttestation::Predicates::Provenance::V1::Provenance # /lib/in_toto_attestation/predicates/provenance/v1/provenance_pb.rb:25
+  def self.decode: (String string) -> InTotoAttestation::Predicates::Provenance::V1::Provenance
+  # optional(1, :build_definition, type: :message)
+  def build_definition: () -> InTotoAttestation::Predicates::Provenance::V1::BuildDefinition
+  def has_build_definition?: () -> bool
+  @build_definition: InTotoAttestation::Predicates::Provenance::V1::BuildDefinition?
+  # optional(2, :run_details, type: :message)
+  def run_details: () -> InTotoAttestation::Predicates::Provenance::V1::RunDetails
+  def has_run_details?: () -> bool
+  @run_details: InTotoAttestation::Predicates::Provenance::V1::RunDetails?
+end
+class InTotoAttestation::Predicates::Provenance::V1::BuildDefinition # /lib/in_toto_attestation/predicates/provenance/v1/provenance_pb.rb:50
+  def self.decode: (String string) -> InTotoAttestation::Predicates::Provenance::V1::BuildDefinition
+  # optional(1, :build_type, type: :string)
+  def build_type: () -> String
+  def has_build_type?: () -> bool
+  @build_type: String?
+  # optional(2, :external_parameters, type: :message)
+  def external_parameters: () -> Google::Protobuf::Struct
+  def has_external_parameters?: () -> bool
+  @external_parameters: Google::Protobuf::Struct?
+  # optional(3, :internal_parameters, type: :message)
+  def internal_parameters: () -> Google::Protobuf::Struct
+  def has_internal_parameters?: () -> bool
+  @internal_parameters: Google::Protobuf::Struct?
+  # repeated(4, :resolved_dependencies, type: :message)
+  def resolved_dependencies: () -> InTotoAttestation::V1::ResourceDescriptor
+  def has_resolved_dependencies?: () -> bool
+  @resolved_dependencies: InTotoAttestation::V1::ResourceDescriptor?
+end
+class InTotoAttestation::Predicates::Provenance::V1::RunDetails # /lib/in_toto_attestation/predicates/provenance/v1/provenance_pb.rb:87
+  def self.decode: (String string) -> InTotoAttestation::Predicates::Provenance::V1::RunDetails
+  # optional(1, :builder, type: :message)
+  def builder: () -> InTotoAttestation::Predicates::Provenance::V1::Builder
+  def has_builder?: () -> bool
+  @builder: InTotoAttestation::Predicates::Provenance::V1::Builder?
+  # optional(2, :metadata, type: :message)
+  def metadata: () -> InTotoAttestation::Predicates::Provenance::V1::BuildMetadata
+  def has_metadata?: () -> bool
+  @metadata: InTotoAttestation::Predicates::Provenance::V1::BuildMetadata?
+  # repeated(3, :byproducts, type: :message)
+  def byproducts: () -> InTotoAttestation::V1::ResourceDescriptor
+  def has_byproducts?: () -> bool
+  @byproducts: InTotoAttestation::V1::ResourceDescriptor?
+end
+class InTotoAttestation::Predicates::Provenance::V1::Builder # /lib/in_toto_attestation/predicates/provenance/v1/provenance_pb.rb:116
+  def self.decode: (String string) -> InTotoAttestation::Predicates::Provenance::V1::Builder
+  # optional(1, :id, type: :string)
+  def id: () -> String
+  def has_id?: () -> bool
+  @id: String?
+  # map(2, :version, type: :map)
+  def version: () -> Hash
+  def has_version?: () -> bool
+  @version: Hash?
+  # repeated(3, :builder_dependencies, type: :message)
+  def builder_dependencies: () -> InTotoAttestation::V1::ResourceDescriptor
+  def has_builder_dependencies?: () -> bool
+  @builder_dependencies: InTotoAttestation::V1::ResourceDescriptor?
+end
+class InTotoAttestation::Predicates::Provenance::V1::BuildMetadata # /lib/in_toto_attestation/predicates/provenance/v1/provenance_pb.rb:132
+  def self.decode: (String string) -> InTotoAttestation::Predicates::Provenance::V1::BuildMetadata
+  # optional(1, :invocation_id, type: :string)
+  def invocation_id: () -> String
+  def has_invocation_id?: () -> bool
+  @invocation_id: String?
+  # optional(2, :started_on, type: :message)
+  def started_on: () -> Google::Protobuf::Timestamp
+  def has_started_on?: () -> bool
+  @started_on: Google::Protobuf::Timestamp?
+  # optional(3, :finished_on, type: :message)
+  def finished_on: () -> Google::Protobuf::Timestamp
+  def has_finished_on?: () -> bool
+  @finished_on: Google::Protobuf::Timestamp?
+end

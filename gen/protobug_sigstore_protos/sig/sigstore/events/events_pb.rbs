@@ -1,0 +1,73 @@
+class Sigstore::Events::CloudEvent # /lib/sigstore/events/events_pb.rb:42
+  def self.decode: (String string) -> Sigstore::Events::CloudEvent
+  # optional(1, :id, type: :string)
+  def id: () -> String
+  def has_id?: () -> bool
+  @id: String?
+  # optional(2, :source, type: :string)
+  def source: () -> String
+  def has_source?: () -> bool
+  @source: String?
+  # optional(3, :spec_version, type: :string)
+  def spec_version: () -> String
+  def has_spec_version?: () -> bool
+  @spec_version: String?
+  # optional(4, :type, type: :string)
+  def type: () -> String
+  def has_type?: () -> bool
+  @type: String?
+  # map(5, :attributes, type: :map)
+  def attributes: () -> Hash
+  def has_attributes?: () -> bool
+  @attributes: Hash?
+  # optional(6, :binary_data, type: :bytes)
+  def binary_data: () -> String
+  def has_binary_data?: () -> bool
+  @binary_data: String?
+  # optional(7, :text_data, type: :string)
+  def text_data: () -> String
+  def has_text_data?: () -> bool
+  @text_data: String?
+  # optional(8, :proto_data, type: :message)
+  def proto_data: () -> Google::Protobuf::Any
+  def has_proto_data?: () -> bool
+  @proto_data: Google::Protobuf::Any?
+end
+class Sigstore::Events::CloudEvent::CloudEventAttributeValue # /lib/sigstore/events/events_pb.rb:104
+  def self.decode: (String string) -> Sigstore::Events::CloudEvent::CloudEventAttributeValue
+  # optional(1, :ce_boolean, type: :bool)
+  def ce_boolean: () -> Integer
+  def has_ce_boolean?: () -> bool
+  @ce_boolean: Integer?
+  # optional(2, :ce_integer, type: :int32)
+  def ce_integer: () -> Integer
+  def has_ce_integer?: () -> bool
+  @ce_integer: Integer?
+  # optional(3, :ce_string, type: :string)
+  def ce_string: () -> String
+  def has_ce_string?: () -> bool
+  @ce_string: String?
+  # optional(4, :ce_bytes, type: :bytes)
+  def ce_bytes: () -> String
+  def has_ce_bytes?: () -> bool
+  @ce_bytes: String?
+  # optional(5, :ce_uri, type: :string)
+  def ce_uri: () -> String
+  def has_ce_uri?: () -> bool
+  @ce_uri: String?
+  # optional(6, :ce_uri_ref, type: :string)
+  def ce_uri_ref: () -> String
+  def has_ce_uri_ref?: () -> bool
+  @ce_uri_ref: String?
+  # optional(7, :ce_timestamp, type: :message)
+  def ce_timestamp: () -> Google::Protobuf::Timestamp
+  def has_ce_timestamp?: () -> bool
+  @ce_timestamp: Google::Protobuf::Timestamp?
+end
+class Sigstore::Events::CloudEventBatch # /lib/sigstore/events/events_pb.rb:172
+  def self.decode: (String string) -> Sigstore::Events::CloudEventBatch
+  # repeated(1, :events, type: :message)
+  def events: () -> Sigstore::Events::CloudEvent
+  def has_events?: () -> bool
+  @events: Sigstore::Events::CloudEvent?
+end

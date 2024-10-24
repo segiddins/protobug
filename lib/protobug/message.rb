@@ -290,6 +290,14 @@ module Protobug
             (byte0 & 0x7F)
         end
       RUBY
+        .lines.map! do |line|
+        case line
+        when /(els)?if (.+)/
+          "#{" " if Regexp.last_match(1)}#{::Regexp.last_match(1)}if #{::Regexp.last_match(2)} then "
+        when /\+=/ then "#{line.strip};"
+        else " #{line.strip}"
+        end
+      end.join
     end
 
     def __protobug_instance_method_definitions__
@@ -307,7 +315,7 @@ module Protobug
       str.delete_suffix!(",\n")
       str << "\n)\n" \
              "  @unknown_fields = nil\n"
-      str << "  @__proto3_optional = 0,\n" if declared_fields.any?(&:proto3_optional?)
+      str << "  @__proto3_optional = 0\n" if declared_fields.any?(&:proto3_optional?)
       oneofs.each do |name, fields|
         next unless fields.size > 1
 
@@ -358,7 +366,6 @@ module Protobug
             binary.byteslice(index - 8, 8)
           when 2
             length = #{__protobug_read_varint__}
-
             index += length
             binary.byteslice(index - length , length)
           when 3, 4
@@ -381,8 +388,8 @@ module Protobug
         number = field.number
         header = (number << 3) | field.wire_type
         case_s = "# #{field}\n" <<
-                 field.binary_decode_code(__protobug_read_varint__)
-        case_s << "  @#{field.oneof} = #{field.name.inspect}\n" if field.oneof
+                 field.binary_decode_code(__protobug_read_varint__).chomp
+        case_s << "\n  @#{field.oneof} = #{field.name.inspect}\n" if field.oneof
 
         cases[header] = [field.repeated? && field, case_s]
 
@@ -407,18 +414,17 @@ module Protobug
           if repeated
             s.gsub!(/^/m, "    ")
             s.gsub!(repeated.ivar.name, "list")
+            s.chomp!
             <<~RUBY
               if header == 0x#{header.to_s(16)}
                 found = true
                 list = #{repeated.ivar}
                 while true
-                  #{s}
+              #{s}
                   return self if index == max
                   header = #{__protobug_read_varint__}
                   break unless header == 0x#{header.to_s(16)}
                 end
-
-                return self if index == max
               end
             RUBY
           else
@@ -426,7 +432,7 @@ module Protobug
             <<~RUBY
               if header == 0x#{header.to_s(16)}
                 found = true
-                #{s}
+              #{s}
                 return self if index == max
                 header = #{__protobug_read_varint__}
               end
@@ -461,7 +467,7 @@ module Protobug
       str << "  self\n" \
              "end\n"
 
-      str << "def as_json"
+      str << "def as_json\n"
       str << "  json = {}\n"
       declared_fields.each do |field|
         str << "  json[#{field.json_name.inspect}] = " << field.as_json_code
@@ -474,9 +480,6 @@ module Protobug
         end
         str << "\n"
       end
-      str << <<~RUBY
-        @unknown_fields&.each { |(number, wire_type, value)| json[number] = [value].pack("m0") } if false
-      RUBY
       str << "  json\n" \
              "end"
     end

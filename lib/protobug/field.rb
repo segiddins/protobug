@@ -120,10 +120,14 @@ module Protobug
 
       str << "def #{haser}\n"
       str << "  return false unless @#{oneof} == #{name.inspect}\n" if oneof
-      str << "  value = #{ivar}\n" \
-             "  return false if value.nil?"
+      str << "  value = #{ivar}\n"
+      str << "  return false if value.nil?" unless repeated?
       if (!optional? || !proto3_optional?) && !oneof && !repeated? && !is_a?(MessageField)
-        str << " || #{default_code} == value"
+        str << if default == ""
+                 " || value.empty?"
+               else
+                 " || #{default_code} == value"
+               end
       end
       str << "\n"
       str << if repeated?
@@ -226,8 +230,8 @@ module Protobug
     end
 
     def validate_code
-      <<~RUBY
-        raise Protobug::InvalidValueError.new(self, #{name.name.dump}, value) unless value.is_a?(#{expected_class})
+      <<-RUBY
+  raise Protobug::InvalidValueError.new(self, #{name.name.dump}, value) unless value.is_a?(#{expected_class})
       RUBY
     end
 
@@ -446,7 +450,7 @@ module Protobug
       end
 
       def binary_decode_code(protobug_read_varint)
-        <<~RUBY
+        <<~RUBY.chomp
           length = #{protobug_read_varint}
           value = binary.byteslice(index, length)
           #{ivar} #{adder ? :<< : :"="} value
@@ -486,7 +490,7 @@ module Protobug
       end
 
       def binary_decode_code(protobug_read_varint)
-        <<~RUBY
+        <<~RUBY.chomp
           length = #{protobug_read_varint}
           value = binary.byteslice(index, length).force_encoding(Encoding::UTF_8)
           raise Protobug::DecodeError, "invalid UTF-8 in string \#{value.inspect}" unless value.valid_encoding?
@@ -598,8 +602,8 @@ module Protobug
 
       def validate_code
         super +
-          <<~RUBY
-            raise Protobug::InvalidValueError.new(self, #{name.name.dump}, value, "does not fit into [#{minimum}, #{maximum}]") unless value <= #{maximum} && value >= #{minimum}
+          <<-RUBY
+  raise Protobug::InvalidValueError.new(self, #{name.name.dump}, value, "does not fit into [#{minimum}, #{maximum}]") unless value <= #{maximum} && value >= #{minimum}
           RUBY
       end
 

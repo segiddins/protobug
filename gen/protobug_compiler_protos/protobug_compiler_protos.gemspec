@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.authors = ["Samuel Giddins".freeze]
 
   s.email = ["segiddins@segiddins.me".freeze]
-  s.files = ["lib/google/protobuf/compiler/plugin_pb.rb".freeze, "lib/protobug_compiler_protos.rb".freeze]
+  s.files = ["lib/google/protobuf/compiler/plugin_pb.rb".freeze, "lib/protobug_compiler_protos.rb".freeze, "sig/google/protobuf/compiler/plugin_pb.rbs".freeze]
   s.homepage = "https://github.com/segiddins/protobug/blob/v0.1.1/gen/protobug_compiler_protos".freeze
   s.licenses = ["Unlicense".freeze]
   s.required_ruby_version = Gem::Requirement.new(">= 3.0.0".freeze)

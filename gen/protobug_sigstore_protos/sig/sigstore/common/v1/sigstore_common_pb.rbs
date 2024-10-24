@@ -1,0 +1,162 @@
+module Sigstore::Common::V1::HashAlgorithm # /lib/sigstore/common/v1/sigstore_common_pb.rb:47
+  HASH_ALGORITHM_UNSPECIFIED: Integer
+  SHA2_256: Integer
+  SHA2_384: Integer
+  SHA2_512: Integer
+  SHA3_256: Integer
+  SHA3_384: Integer
+end
+module Sigstore::Common::V1::PublicKeyDetails # /lib/sigstore/common/v1/sigstore_common_pb.rb:76
+  PUBLIC_KEY_DETAILS_UNSPECIFIED: Integer
+  PKCS1_RSA_PKCS1V5: Integer
+  PKCS1_RSA_PSS: Integer
+  PKIX_RSA_PKCS1V5: Integer
+  PKIX_RSA_PSS: Integer
+  PKIX_RSA_PKCS1V15_2048_SHA256: Integer
+  PKIX_RSA_PKCS1V15_3072_SHA256: Integer
+  PKIX_RSA_PKCS1V15_4096_SHA256: Integer
+  PKIX_RSA_PSS_2048_SHA256: Integer
+  PKIX_RSA_PSS_3072_SHA256: Integer
+  PKIX_RSA_PSS_4096_SHA256: Integer
+  PKIX_ECDSA_P256_HMAC_SHA_256: Integer
+  PKIX_ECDSA_P256_SHA_256: Integer
+  PKIX_ECDSA_P384_SHA_384: Integer
+  PKIX_ECDSA_P521_SHA_512: Integer
+  PKIX_ED25519: Integer
+  PKIX_ED25519_PH: Integer
+  LMS_SHA256: Integer
+  LMOTS_SHA256: Integer
+end
+class Sigstore::Common::V1::HashOutput # /lib/sigstore/common/v1/sigstore_common_pb.rb:142
+  def self.decode: (String string) -> Sigstore::Common::V1::HashOutput
+  # optional(1, :algorithm, type: :enum)
+  def algorithm: () -> Integer
+  def has_algorithm?: () -> bool
+  @algorithm: Integer?
+  # optional(2, :digest, type: :bytes)
+  def digest: () -> String
+  def has_digest?: () -> bool
+  @digest: String?
+end
+class Sigstore::Common::V1::MessageSignature # /lib/sigstore/common/v1/sigstore_common_pb.rb:160
+  def self.decode: (String string) -> Sigstore::Common::V1::MessageSignature
+  # optional(1, :message_digest, type: :message)
+  def message_digest: () -> Sigstore::Common::V1::HashOutput
+  def has_message_digest?: () -> bool
+  @message_digest: Sigstore::Common::V1::HashOutput?
+  # optional(2, :signature, type: :bytes)
+  def signature: () -> String
+  def has_signature?: () -> bool
+  @signature: String?
+end
+class Sigstore::Common::V1::LogId # /lib/sigstore/common/v1/sigstore_common_pb.rb:188
+  def self.decode: (String string) -> Sigstore::Common::V1::LogId
+  # optional(1, :key_id, type: :bytes)
+  def key_id: () -> String
+  def has_key_id?: () -> bool
+  @key_id: String?
+end
+class Sigstore::Common::V1::RFC3161SignedTimestamp # /lib/sigstore/common/v1/sigstore_common_pb.rb:204
+  def self.decode: (String string) -> Sigstore::Common::V1::RFC3161SignedTimestamp
+  # optional(1, :signed_timestamp, type: :bytes)
+  def signed_timestamp: () -> String
+  def has_signed_timestamp?: () -> bool
+  @signed_timestamp: String?
+end
+class Sigstore::Common::V1::PublicKey # /lib/sigstore/common/v1/sigstore_common_pb.rb:220
+  def self.decode: (String string) -> Sigstore::Common::V1::PublicKey
+  # optional(1, :raw_bytes, type: :bytes)
+  def raw_bytes: () -> String
+  def has_raw_bytes?: () -> bool
+  @raw_bytes: String?
+  # optional(2, :key_details, type: :enum)
+  def key_details: () -> Integer
+  def has_key_details?: () -> bool
+  @key_details: Integer?
+  # optional(3, :valid_for, type: :message)
+  def valid_for: () -> Sigstore::Common::V1::TimeRange
+  def has_valid_for?: () -> bool
+  @valid_for: Sigstore::Common::V1::TimeRange?
+end
+class Sigstore::Common::V1::PublicKeyIdentifier # /lib/sigstore/common/v1/sigstore_common_pb.rb:249
+  def self.decode: (String string) -> Sigstore::Common::V1::PublicKeyIdentifier
+  # optional(1, :hint, type: :string)
+  def hint: () -> String
+  def has_hint?: () -> bool
+  @hint: String?
+end
+class Sigstore::Common::V1::ObjectIdentifier # /lib/sigstore/common/v1/sigstore_common_pb.rb:267
+  def self.decode: (String string) -> Sigstore::Common::V1::ObjectIdentifier
+  # repeated(1, :id, type: :int32)
+  def id: () -> Integer
+  def has_id?: () -> bool
+  @id: Integer?
+end
+class Sigstore::Common::V1::ObjectIdentifierValuePair # /lib/sigstore/common/v1/sigstore_common_pb.rb:276
+  def self.decode: (String string) -> Sigstore::Common::V1::ObjectIdentifierValuePair
+  # optional(1, :oid, type: :message)
+  def oid: () -> Sigstore::Common::V1::ObjectIdentifier
+  def has_oid?: () -> bool
+  @oid: Sigstore::Common::V1::ObjectIdentifier?
+  # optional(2, :value, type: :bytes)
+  def value: () -> String
+  def has_value?: () -> bool
+  @value: String?
+end
+class Sigstore::Common::V1::DistinguishedName # /lib/sigstore/common/v1/sigstore_common_pb.rb:291
+  def self.decode: (String string) -> Sigstore::Common::V1::DistinguishedName
+  # optional(1, :organization, type: :string)
+  def organization: () -> String
+  def has_organization?: () -> bool
+  @organization: String?
+  # optional(2, :common_name, type: :string)
+  def common_name: () -> String
+  def has_common_name?: () -> bool
+  @common_name: String?
+end
+class Sigstore::Common::V1::X509Certificate # /lib/sigstore/common/v1/sigstore_common_pb.rb:306
+  def self.decode: (String string) -> Sigstore::Common::V1::X509Certificate
+  # optional(1, :raw_bytes, type: :bytes)
+  def raw_bytes: () -> String
+  def has_raw_bytes?: () -> bool
+  @raw_bytes: String?
+end
+module Sigstore::Common::V1::SubjectAlternativeNameType # /lib/sigstore/common/v1/sigstore_common_pb.rb:321
+  SUBJECT_ALTERNATIVE_NAME_TYPE_UNSPECIFIED: Integer
+  EMAIL: Integer
+  URI: Integer
+  OTHER_NAME: Integer
+end
+class Sigstore::Common::V1::SubjectAlternativeName # /lib/sigstore/common/v1/sigstore_common_pb.rb:335
+  def self.decode: (String string) -> Sigstore::Common::V1::SubjectAlternativeName
+  # optional(1, :type, type: :enum)
+  def type: () -> Integer
+  def has_type?: () -> bool
+  @type: Integer?
+  # optional(2, :regexp, type: :string)
+  def regexp: () -> String
+  def has_regexp?: () -> bool
+  @regexp: String?
+  # optional(3, :value, type: :string)
+  def value: () -> String
+  def has_value?: () -> bool
+  @value: String?
+end
+class Sigstore::Common::V1::X509CertificateChain # /lib/sigstore/common/v1/sigstore_common_pb.rb:371
+  def self.decode: (String string) -> Sigstore::Common::V1::X509CertificateChain
+  # repeated(1, :certificates, type: :message)
+  def certificates: () -> Sigstore::Common::V1::X509Certificate
+  def has_certificates?: () -> bool
+  @certificates: Sigstore::Common::V1::X509Certificate?
+end
+class Sigstore::Common::V1::TimeRange # /lib/sigstore/common/v1/sigstore_common_pb.rb:393
+  def self.decode: (String string) -> Sigstore::Common::V1::TimeRange
+  # optional(1, :start, type: :message)
+  def start: () -> Google::Protobuf::Timestamp
+  def has_start?: () -> bool
+  @start: Google::Protobuf::Timestamp?
+  # optional(2, :end, type: :message)
+  def end: () -> Google::Protobuf::Timestamp
+  def has_end?: () -> bool
+  @end: Google::Protobuf::Timestamp?
+end

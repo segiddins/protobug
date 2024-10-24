@@ -1,0 +1,31 @@
+class InTotoAttestation::V1::ResourceDescriptor # /lib/in_toto_attestation/v1/resource_descriptor_pb.rb:21
+  def self.decode: (String string) -> InTotoAttestation::V1::ResourceDescriptor
+  # optional(1, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # optional(2, :uri, type: :string)
+  def uri: () -> String
+  def has_uri?: () -> bool
+  @uri: String?
+  # map(3, :digest, type: :map)
+  def digest: () -> Hash
+  def has_digest?: () -> bool
+  @digest: Hash?
+  # optional(4, :content, type: :bytes)
+  def content: () -> String
+  def has_content?: () -> bool
+  @content: String?
+  # optional(5, :download_location, type: :string)
+  def download_location: () -> String
+  def has_download_location?: () -> bool
+  @download_location: String?
+  # optional(6, :media_type, type: :string)
+  def media_type: () -> String
+  def has_media_type?: () -> bool
+  @media_type: String?
+  # optional(7, :annotations, type: :message)
+  def annotations: () -> Google::Protobuf::Struct
+  def has_annotations?: () -> bool
+  @annotations: Google::Protobuf::Struct?
+end

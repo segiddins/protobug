@@ -1,0 +1,27 @@
+class InTotoAttestation::Predicates::TestResult::V0::TestResult # /lib/in_toto_attestation/predicates/test_result/v0/test_result_pb.rb:20
+  def self.decode: (String string) -> InTotoAttestation::Predicates::TestResult::V0::TestResult
+  # optional(1, :result, type: :string)
+  def result: () -> String
+  def has_result?: () -> bool
+  @result: String?
+  # repeated(2, :configuration, type: :message)
+  def configuration: () -> InTotoAttestation::V1::ResourceDescriptor
+  def has_configuration?: () -> bool
+  @configuration: InTotoAttestation::V1::ResourceDescriptor?
+  # optional(3, :url, type: :string)
+  def url: () -> String
+  def has_url?: () -> bool
+  @url: String?
+  # repeated(4, :passed_tests, type: :string)
+  def passed_tests: () -> String
+  def has_passed_tests?: () -> bool
+  @passed_tests: String?
+  # repeated(5, :warned_tests, type: :string)
+  def warned_tests: () -> String
+  def has_warned_tests?: () -> bool
+  @warned_tests: String?
+  # repeated(6, :failed_tests, type: :string)
+  def failed_tests: () -> String
+  def has_failed_tests?: () -> bool
+  @failed_tests: String?
+end

@@ -1,0 +1,9 @@
+module Protobug
+  module BinaryEncoding
+    def self?.encode_varint: (String value, String outbuf) -> void
+
+    def self?.encode_zigzag: (Integer size, String value, String outbuf) -> void
+
+    def self?.encode_length: (String contents, String outbuf) -> void
+  end
+end

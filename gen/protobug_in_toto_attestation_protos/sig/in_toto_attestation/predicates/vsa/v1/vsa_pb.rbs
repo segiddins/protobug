@@ -1,0 +1,68 @@
+class InTotoAttestation::Predicates::Vsa::V1::VerificationSummary # /lib/in_toto_attestation/predicates/vsa/v1/vsa_pb.rb:22
+  def self.decode: (String string) -> InTotoAttestation::Predicates::Vsa::V1::VerificationSummary
+  # optional(1, :verifier, type: :message)
+  def verifier: () -> InTotoAttestation::Predicates::Vsa::V1::VerificationSummary::Verifier
+  def has_verifier?: () -> bool
+  @verifier: InTotoAttestation::Predicates::Vsa::V1::VerificationSummary::Verifier?
+  # optional(2, :time_verified, type: :message)
+  def time_verified: () -> Google::Protobuf::Timestamp
+  def has_time_verified?: () -> bool
+  @time_verified: Google::Protobuf::Timestamp?
+  # optional(3, :resource_uri, type: :string)
+  def resource_uri: () -> String
+  def has_resource_uri?: () -> bool
+  @resource_uri: String?
+  # optional(4, :policy, type: :message)
+  def policy: () -> InTotoAttestation::Predicates::Vsa::V1::VerificationSummary::Policy
+  def has_policy?: () -> bool
+  @policy: InTotoAttestation::Predicates::Vsa::V1::VerificationSummary::Policy?
+  # repeated(5, :input_attestations, type: :message)
+  def input_attestations: () -> InTotoAttestation::Predicates::Vsa::V1::VerificationSummary::InputAttestation
+  def has_input_attestations?: () -> bool
+  @input_attestations: InTotoAttestation::Predicates::Vsa::V1::VerificationSummary::InputAttestation?
+  # optional(6, :verification_result, type: :string)
+  def verification_result: () -> String
+  def has_verification_result?: () -> bool
+  @verification_result: String?
+  # optional(7, :verified_levels, type: :string)
+  def verified_levels: () -> String
+  def has_verified_levels?: () -> bool
+  @verified_levels: String?
+  # map(8, :dependency_levels, type: :map)
+  def dependency_levels: () -> Hash
+  def has_dependency_levels?: () -> bool
+  @dependency_levels: Hash?
+  # optional(9, :slsa_version, type: :string)
+  def slsa_version: () -> String
+  def has_slsa_version?: () -> bool
+  @slsa_version: String?
+end
+class InTotoAttestation::Predicates::Vsa::V1::VerificationSummary::Verifier # /lib/in_toto_attestation/predicates/vsa/v1/vsa_pb.rb:27
+  def self.decode: (String string) -> InTotoAttestation::Predicates::Vsa::V1::VerificationSummary::Verifier
+  # optional(1, :id, type: :string)
+  def id: () -> String
+  def has_id?: () -> bool
+  @id: String?
+end
+class InTotoAttestation::Predicates::Vsa::V1::VerificationSummary::Policy # /lib/in_toto_attestation/predicates/vsa/v1/vsa_pb.rb:58
+  def self.decode: (String string) -> InTotoAttestation::Predicates::Vsa::V1::VerificationSummary::Policy
+  # optional(1, :uri, type: :string)
+  def uri: () -> String
+  def has_uri?: () -> bool
+  @uri: String?
+  # map(2, :digest, type: :map)
+  def digest: () -> Hash
+  def has_digest?: () -> bool
+  @digest: Hash?
+end
+class InTotoAttestation::Predicates::Vsa::V1::VerificationSummary::InputAttestation # /lib/in_toto_attestation/predicates/vsa/v1/vsa_pb.rb:75
+  def self.decode: (String string) -> InTotoAttestation::Predicates::Vsa::V1::VerificationSummary::InputAttestation
+  # optional(1, :uri, type: :string)
+  def uri: () -> String
+  def has_uri?: () -> bool
+  @uri: String?
+  # map(2, :digest, type: :map)
+  def digest: () -> Hash
+  def has_digest?: () -> bool
+  @digest: Hash?
+end

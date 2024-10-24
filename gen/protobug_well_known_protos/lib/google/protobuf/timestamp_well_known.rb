@@ -49,7 +49,7 @@ Google::Protobuf::Timestamp.class_eval do
   end
 
   def as_json
-    time = Time.at(seconds, nanos, :nanosecond, in: 0)
+    time = to_time
     self.class.validate_json_range(Protobug::EncodeError, time)
 
     nanosecs = time.nsec
