@@ -12,11 +12,11 @@ module Protobug
     private_constant :RUBY_KEYWORDS
 
     attr_accessor :number, :name, :json_name, :cardinality, :oneof, :ivar, :setter,
-                  :adder, :haser, :clearer, :escaped_name
+                  :adder, :haser, :clearer, :escaped_name, :extension
 
     def initialize(number, name, json_name: nil, cardinality: :optional, oneof: nil, packed: false,
                    proto3_optional: cardinality == :optional, proto3_optional_count: nil,
-                   default: nil)
+                   default: nil, extension: nil, **kwargs)
       raise DefinitionError, "packed is only valid for repeated fields" if packed && cardinality != :repeated
 
       if proto3_optional && cardinality != :optional
@@ -25,6 +25,16 @@ module Protobug
       end
 
       raise DefinitionError, "default is only valid for singular scalar fields" if repeated? && default
+      raise DefinitionError, "oneof is not valid for extension fields" if oneof && extension
+
+      options = {}
+      kwargs.each do |kw, v|
+        unless kw.is_a?(Protobug::Extension)
+          raise DefinitionError, "unknown keyword argument #{kw.inspect} => #{v.inspect}"
+        end
+
+        options[kw] = v
+      end
 
       @number = number
       @name = name.to_sym
@@ -34,6 +44,7 @@ module Protobug
       @setter = :"#{name}="
       @adder = repeated? && !map? ? :"add_#{name}" : nil
       @ivar = :"@#{name}"
+      @ivar = :"@extensions[#{number}]" if extension
       @clearer = :"clear_#{name}"
       @haser = :"has_#{name}?"
       @packed = packed
@@ -42,6 +53,7 @@ module Protobug
       @escaped_name = :"__#{escaped_name}__" if @escaped_name.match?(/\A[A-Z]/)
       @proto3_optional_index = proto3_optional ? proto3_optional_count : nil
       @default = default
+      @options = options
     end
 
     def to_s
@@ -161,19 +173,6 @@ module Protobug
       end
 
       str
-    end
-
-    def to_text(value)
-      case [cardinality, json_scalar?]
-      when [:repeated, true]
-        Array(value).map { |v| "#{name}: #{scalar_to_text(v)}" }.join("\n")
-      when [:repeated, false]
-        Array(value).map { |v| "#{name} {\n#{v.to_text.gsub(/^/, "  ")}\n}" }.join("\n")
-      when [:optional, true]
-        "#{name}: #{scalar_to_text(value)}"
-      when [:optional, false]
-        "#{name} {\n#{value.to_text.gsub(/^/, "  ")}\n}"
-      end
     end
 
     def binary_encode(value, outbuf)

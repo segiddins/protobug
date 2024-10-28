@@ -252,7 +252,7 @@ class Sigstore::Common::V1::MessageSignature # /lib/sigstore/common/v1/sigstore_
     @signature = nil
   end
 end
-class Sigstore::Common::V1::LogId # /lib/sigstore/common/v1/sigstore_common_pb.rb:188
+class Sigstore::Common::V1::LogId # /lib/sigstore/common/v1/sigstore_common_pb.rb:194
   def initialize(
     key_id: nil
   )
@@ -343,7 +343,7 @@ class Sigstore::Common::V1::LogId # /lib/sigstore/common/v1/sigstore_common_pb.r
     @key_id = nil
   end
 end
-class Sigstore::Common::V1::RFC3161SignedTimestamp # /lib/sigstore/common/v1/sigstore_common_pb.rb:204
+class Sigstore::Common::V1::RFC3161SignedTimestamp # /lib/sigstore/common/v1/sigstore_common_pb.rb:211
   def initialize(
     signed_timestamp: nil
   )
@@ -434,7 +434,7 @@ class Sigstore::Common::V1::RFC3161SignedTimestamp # /lib/sigstore/common/v1/sig
     @signed_timestamp = nil
   end
 end
-class Sigstore::Common::V1::PublicKey # /lib/sigstore/common/v1/sigstore_common_pb.rb:220
+class Sigstore::Common::V1::PublicKey # /lib/sigstore/common/v1/sigstore_common_pb.rb:228
   def initialize(
     raw_bytes: nil,
     key_details: nil,
@@ -597,7 +597,7 @@ class Sigstore::Common::V1::PublicKey # /lib/sigstore/common/v1/sigstore_common_
     @valid_for = nil
   end
 end
-class Sigstore::Common::V1::PublicKeyIdentifier # /lib/sigstore/common/v1/sigstore_common_pb.rb:249
+class Sigstore::Common::V1::PublicKeyIdentifier # /lib/sigstore/common/v1/sigstore_common_pb.rb:257
   def initialize(
     hint: nil
   )
@@ -689,7 +689,7 @@ class Sigstore::Common::V1::PublicKeyIdentifier # /lib/sigstore/common/v1/sigsto
     @hint = nil
   end
 end
-class Sigstore::Common::V1::ObjectIdentifier # /lib/sigstore/common/v1/sigstore_common_pb.rb:267
+class Sigstore::Common::V1::ObjectIdentifier # /lib/sigstore/common/v1/sigstore_common_pb.rb:275
   def initialize(
     id: []
   )
@@ -803,7 +803,7 @@ class Sigstore::Common::V1::ObjectIdentifier # /lib/sigstore/common/v1/sigstore_
     existing << value
   end
 end
-class Sigstore::Common::V1::ObjectIdentifierValuePair # /lib/sigstore/common/v1/sigstore_common_pb.rb:276
+class Sigstore::Common::V1::ObjectIdentifierValuePair # /lib/sigstore/common/v1/sigstore_common_pb.rb:290
   def initialize(
     oid: nil,
     value: nil
@@ -924,7 +924,7 @@ class Sigstore::Common::V1::ObjectIdentifierValuePair # /lib/sigstore/common/v1/
     @value = nil
   end
 end
-class Sigstore::Common::V1::DistinguishedName # /lib/sigstore/common/v1/sigstore_common_pb.rb:291
+class Sigstore::Common::V1::DistinguishedName # /lib/sigstore/common/v1/sigstore_common_pb.rb:305
   def initialize(
     organization: nil,
     common_name: nil
@@ -1049,7 +1049,7 @@ class Sigstore::Common::V1::DistinguishedName # /lib/sigstore/common/v1/sigstore
     @common_name = nil
   end
 end
-class Sigstore::Common::V1::X509Certificate # /lib/sigstore/common/v1/sigstore_common_pb.rb:306
+class Sigstore::Common::V1::X509Certificate # /lib/sigstore/common/v1/sigstore_common_pb.rb:320
   def initialize(
     raw_bytes: nil
   )
@@ -1140,9 +1140,9 @@ class Sigstore::Common::V1::X509Certificate # /lib/sigstore/common/v1/sigstore_c
     @raw_bytes = nil
   end
 end
-module Sigstore::Common::V1::SubjectAlternativeNameType # /lib/sigstore/common/v1/sigstore_common_pb.rb:321
+module Sigstore::Common::V1::SubjectAlternativeNameType # /lib/sigstore/common/v1/sigstore_common_pb.rb:336
 end
-class Sigstore::Common::V1::SubjectAlternativeName # /lib/sigstore/common/v1/sigstore_common_pb.rb:335
+class Sigstore::Common::V1::SubjectAlternativeName # /lib/sigstore/common/v1/sigstore_common_pb.rb:350
   def initialize(
     type: nil,
     regexp: nil,
@@ -1326,7 +1326,7 @@ class Sigstore::Common::V1::SubjectAlternativeName # /lib/sigstore/common/v1/sig
     @value = nil
   end
 end
-class Sigstore::Common::V1::X509CertificateChain # /lib/sigstore/common/v1/sigstore_common_pb.rb:371
+class Sigstore::Common::V1::X509CertificateChain # /lib/sigstore/common/v1/sigstore_common_pb.rb:386
   def initialize(
     certificates: []
   )
@@ -1416,7 +1416,7 @@ class Sigstore::Common::V1::X509CertificateChain # /lib/sigstore/common/v1/sigst
     existing << value
   end
 end
-class Sigstore::Common::V1::TimeRange # /lib/sigstore/common/v1/sigstore_common_pb.rb:393
+class Sigstore::Common::V1::TimeRange # /lib/sigstore/common/v1/sigstore_common_pb.rb:408
   def initialize(
     start: nil,
     __end__: nil

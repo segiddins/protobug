@@ -170,7 +170,7 @@ class Dev::Sigstore::Fulcio::V2::CreateSigningCertificateRequest # /lib/dev/sigs
     @certificate_signing_request = nil
   end
 end
-class Dev::Sigstore::Fulcio::V2::Credentials # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:110
+class Dev::Sigstore::Fulcio::V2::Credentials # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:113
   def initialize(
     oidc_identity_token: nil
   )
@@ -270,7 +270,7 @@ class Dev::Sigstore::Fulcio::V2::Credentials # /lib/dev/sigstore/fulcio/v2/fulci
     @oidc_identity_token = nil
   end
 end
-class Dev::Sigstore::Fulcio::V2::PublicKeyRequest # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:127
+class Dev::Sigstore::Fulcio::V2::PublicKeyRequest # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:130
   def initialize(
     public_key: nil,
     proof_of_possession: nil
@@ -391,7 +391,7 @@ class Dev::Sigstore::Fulcio::V2::PublicKeyRequest # /lib/dev/sigstore/fulcio/v2/
     @proof_of_possession = nil
   end
 end
-class Dev::Sigstore::Fulcio::V2::PublicKey # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:155
+class Dev::Sigstore::Fulcio::V2::PublicKey # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:160
   def initialize(
     algorithm: nil,
     content: nil
@@ -521,7 +521,7 @@ class Dev::Sigstore::Fulcio::V2::PublicKey # /lib/dev/sigstore/fulcio/v2/fulcio_
     @content = nil
   end
 end
-class Dev::Sigstore::Fulcio::V2::SigningCertificate # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:175
+class Dev::Sigstore::Fulcio::V2::SigningCertificate # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:186
   def initialize(
     signed_certificate_detached_sct: nil,
     signed_certificate_embedded_sct: nil
@@ -661,7 +661,7 @@ class Dev::Sigstore::Fulcio::V2::SigningCertificate # /lib/dev/sigstore/fulcio/v
     @signed_certificate_embedded_sct = nil
   end
 end
-class Dev::Sigstore::Fulcio::V2::SigningCertificateDetachedSCT # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:204
+class Dev::Sigstore::Fulcio::V2::SigningCertificateDetachedSCT # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:215
   def initialize(
     chain: nil,
     signed_certificate_timestamp: nil
@@ -782,7 +782,7 @@ class Dev::Sigstore::Fulcio::V2::SigningCertificateDetachedSCT # /lib/dev/sigsto
     @signed_certificate_timestamp = nil
   end
 end
-class Dev::Sigstore::Fulcio::V2::SigningCertificateEmbeddedSCT # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:237
+class Dev::Sigstore::Fulcio::V2::SigningCertificateEmbeddedSCT # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:248
   def initialize(
     chain: nil
   )
@@ -871,7 +871,7 @@ class Dev::Sigstore::Fulcio::V2::SigningCertificateEmbeddedSCT # /lib/dev/sigsto
     @chain = nil
   end
 end
-class Dev::Sigstore::Fulcio::V2::GetTrustBundleRequest # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:261
+class Dev::Sigstore::Fulcio::V2::GetTrustBundleRequest # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:272
   def initialize(
   
   )
@@ -931,7 +931,7 @@ class Dev::Sigstore::Fulcio::V2::GetTrustBundleRequest # /lib/dev/sigstore/fulci
   end
 
 end
-class Dev::Sigstore::Fulcio::V2::TrustBundle # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:267
+class Dev::Sigstore::Fulcio::V2::TrustBundle # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:278
   def initialize(
     chains: []
   )
@@ -1021,7 +1021,7 @@ class Dev::Sigstore::Fulcio::V2::TrustBundle # /lib/dev/sigstore/fulcio/v2/fulci
     existing << value
   end
 end
-class Dev::Sigstore::Fulcio::V2::CertificateChain # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:283
+class Dev::Sigstore::Fulcio::V2::CertificateChain # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:294
   def initialize(
     certificates: []
   )
@@ -1114,9 +1114,9 @@ class Dev::Sigstore::Fulcio::V2::CertificateChain # /lib/dev/sigstore/fulcio/v2/
     existing << value
   end
 end
-module Dev::Sigstore::Fulcio::V2::PublicKeyAlgorithm # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:293
+module Dev::Sigstore::Fulcio::V2::PublicKeyAlgorithm # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:304
 end
-class Dev::Sigstore::Fulcio::V2::GetConfigurationRequest # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:305
+class Dev::Sigstore::Fulcio::V2::GetConfigurationRequest # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:316
   def initialize(
   
   )
@@ -1176,7 +1176,7 @@ class Dev::Sigstore::Fulcio::V2::GetConfigurationRequest # /lib/dev/sigstore/ful
   end
 
 end
-class Dev::Sigstore::Fulcio::V2::Configuration # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:312
+class Dev::Sigstore::Fulcio::V2::Configuration # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:323
   def initialize(
     issuers: []
   )
@@ -1266,7 +1266,7 @@ class Dev::Sigstore::Fulcio::V2::Configuration # /lib/dev/sigstore/fulcio/v2/ful
     existing << value
   end
 end
-class Dev::Sigstore::Fulcio::V2::OIDCIssuer # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:327
+class Dev::Sigstore::Fulcio::V2::OIDCIssuer # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:338
   def initialize(
     issuer_url: nil,
     wildcard_issuer_url: nil,

@@ -121,7 +121,8 @@ module Sigstore
           message_class: "Sigstore::Common::V1::PublicKeyIdentifier",
           json_name: "publicKey",
           oneof: :content,
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
         optional(
           2,
@@ -130,7 +131,8 @@ module Sigstore
           message_class: "Sigstore::Common::V1::X509CertificateChain",
           json_name: "x509CertificateChain",
           oneof: :content,
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
         optional(
           5,
@@ -138,7 +140,8 @@ module Sigstore
           type: :message,
           message_class: "Sigstore::Common::V1::X509Certificate",
           oneof: :content,
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
         # An inclusion proof and an optional signed timestamp from the log.
         # Client verification libraries MAY provide an option to support v0.1
@@ -200,7 +203,8 @@ module Sigstore
           type: :message,
           message_class: "Sigstore::Bundle::V1::VerificationMaterial",
           json_name: "verificationMaterial",
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
         optional(
           3,
@@ -209,7 +213,8 @@ module Sigstore
           message_class: "Sigstore::Common::V1::MessageSignature",
           json_name: "messageSignature",
           oneof: :content,
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
         # A DSSE envelope can contain arbitrary payloads.
         # Verifiers must verify that the payload type is a
@@ -231,7 +236,8 @@ module Sigstore
           message_class: "Sigstore::DSSE::Envelope",
           json_name: "dsseEnvelope",
           oneof: :content,
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
 
         # Reserved for future additions of artifact types.

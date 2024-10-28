@@ -27,6 +27,7 @@ module Protobug
       def initialize
         @descs_by_name = {}
         @files_by_path = {}
+        @extensions_by_extendee = Hash.new { |h, k| h[k] = {} }
         @num_files = 0
       end
 
@@ -52,9 +53,14 @@ module Protobug
         end
 
         decl.each_declaration do |d|
+          @extensions_by_extendee[d.extendee][d.number] = d if d.is_a?(FieldDescriptorProto) && d.has_extendee?
           register_decl(d)
         end
         decl
+      end
+
+      def fetch_extension(extendee, number)
+        @extensions_by_extendee.fetch(extendee).fetch(number)
       end
     end
 
@@ -183,6 +189,10 @@ module Protobug
 
     class FieldDescriptorProto < DelegateClass(Google::Protobuf::FieldDescriptorProto)
       include Descriptor
+
+      def to_constant
+        "#{parent.to_constant}::#{name.upcase}"
+      end
     end
 
     class EnumDescriptorProto < DelegateClass(Google::Protobuf::EnumDescriptorProto)
@@ -253,9 +263,13 @@ module Protobug
       end
     end
 
-    def emit_decls(descriptor, group)
+    def emit_decls(descriptor, group, inside_extension: false)
       source_loc = descriptor.source_loc
       return unless source_loc
+
+      if !inside_extension && descriptor.is_a?(FieldDescriptorProto) && descriptor.has_extendee?
+        return emit_extension(descriptor, group)
+      end
 
       source_loc.leading_detached_comments&.each do |c|
         group.comment(c)
@@ -333,18 +347,6 @@ module Protobug
           c.literal(descriptor.number)
         end
       when FieldDescriptorProto
-        if descriptor.has_extendee?
-          containing_type = files.fetch_type(
-            if descriptor.extendee.start_with?(".")
-              descriptor.extendee[1..]
-            else
-              "#{descriptor.parent.full_name}.#{descriptor.extendee}"
-            end
-          )
-          group.comment("extension: #{containing_type.full_name}\n  #{descriptor.name} #{descriptor.number}")
-          return # rubocop:disable Lint/NonLocalExitFromIterator
-        end
-
         type = descriptor.type_case_name.downcase.delete_prefix!("type_").to_sym
 
         if descriptor.has_type_name?
@@ -411,6 +413,22 @@ module Protobug
             c.identifier("proto3_optional:").literal(false)
           end
           c.identifier("default:").literal(descriptor.default_value) if descriptor.has_default_value?
+          descriptor.options.unknown_fields&.each do |(number, _, value)|
+            extension = files.fetch_extension(".#{descriptor.options.class.full_name}", number)
+            extension_type = files.fetch_type(extension.type_name.delete_prefix("."))
+
+            case extension_type
+            when EnumDescriptorProto
+              value = extension_type.value.find do |v|
+                v.number == value
+              end
+
+              c.identifier(extension.to_constant).op("=>")
+               .identifier("#{extension_type.to_constant}::#{value.to_constant}")
+            else
+              raise "Unknown extension type: #{extension_type}"
+            end
+          end
         end
       when OneofDescriptorProto
         group.empty if source_loc.has_leading_comments?
@@ -437,6 +455,21 @@ module Protobug
         raise "Unknown descriptor type: #{descriptor.class}"
       end.tap do |s|
         s.comment(source_loc.trailing_comments) if source_loc.has_trailing_comments?
+      end
+    end
+
+    def emit_extension(descriptor, group)
+      containing_type = files.fetch_type(
+        if descriptor.extendee.start_with?(".")
+          descriptor.extendee[1..]
+        else
+          "#{descriptor.parent.full_name}.#{descriptor.extendee}"
+        end
+      )
+      group.identifier(descriptor.name.upcase).op("=").identifier("Protobug::Extension").call do |c|
+        c.identifier("::#{containing_type.to_constant}")
+      end._do.block do |c|
+        emit_decls(descriptor, c, inside_extension: true)
       end
     end
 

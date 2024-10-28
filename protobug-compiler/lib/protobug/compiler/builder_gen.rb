@@ -12,6 +12,10 @@ module Protobug
           append Token.new(type: :keyword, content: "def")
         end
 
+        def _do
+          append Token.new(type: :keyword, content: "do")
+        end
+
         def _module
           append Token.new(type: :keyword, content: "module")
         end
@@ -64,6 +68,10 @@ module Protobug
 
         def _def
           append Statement.new._def
+        end
+
+        def _do
+          append Statement.new._do
         end
 
         def _module

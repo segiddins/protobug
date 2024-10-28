@@ -123,7 +123,7 @@ class Sigstore::Rekor::V1::KindVersion # /lib/sigstore/rekor/v1/sigstore_rekor_p
     @version = nil
   end
 end
-class Sigstore::Rekor::V1::Checkpoint # /lib/sigstore/rekor/v1/sigstore_rekor_pb.rb:61
+class Sigstore::Rekor::V1::Checkpoint # /lib/sigstore/rekor/v1/sigstore_rekor_pb.rb:73
   def initialize(
     envelope: nil
   )
@@ -215,7 +215,7 @@ class Sigstore::Rekor::V1::Checkpoint # /lib/sigstore/rekor/v1/sigstore_rekor_pb
     @envelope = nil
   end
 end
-class Sigstore::Rekor::V1::InclusionProof # /lib/sigstore/rekor/v1/sigstore_rekor_pb.rb:71
+class Sigstore::Rekor::V1::InclusionProof # /lib/sigstore/rekor/v1/sigstore_rekor_pb.rb:89
   def initialize(
     log_index: nil,
     root_hash: nil,
@@ -439,7 +439,7 @@ class Sigstore::Rekor::V1::InclusionProof # /lib/sigstore/rekor/v1/sigstore_reko
     @checkpoint = nil
   end
 end
-class Sigstore::Rekor::V1::InclusionPromise # /lib/sigstore/rekor/v1/sigstore_rekor_pb.rb:128
+class Sigstore::Rekor::V1::InclusionPromise # /lib/sigstore/rekor/v1/sigstore_rekor_pb.rb:155
   def initialize(
     signed_entry_timestamp: nil
   )
@@ -530,7 +530,7 @@ class Sigstore::Rekor::V1::InclusionPromise # /lib/sigstore/rekor/v1/sigstore_re
     @signed_entry_timestamp = nil
   end
 end
-class Sigstore::Rekor::V1::TransparencyLogEntry # /lib/sigstore/rekor/v1/sigstore_rekor_pb.rb:150
+class Sigstore::Rekor::V1::TransparencyLogEntry # /lib/sigstore/rekor/v1/sigstore_rekor_pb.rb:178
   def initialize(
     log_index: nil,
     log_id: nil,

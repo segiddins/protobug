@@ -74,7 +74,8 @@ module Dev
             "credentials",
             type: :message,
             message_class: "Dev::Sigstore::Fulcio::V2::Credentials",
-            proto3_optional: false
+            proto3_optional: false,
+            Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
           )
           #
           #  The public key to be stored in the requested certificate along with a signed
@@ -86,7 +87,8 @@ module Dev
             message_class: "Dev::Sigstore::Fulcio::V2::PublicKeyRequest",
             json_name: "publicKeyRequest",
             oneof: :key,
-            proto3_optional: false
+            proto3_optional: false,
+            Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
           )
           #
           #  PKCS#10 PEM-encoded certificate signing request
@@ -103,7 +105,8 @@ module Dev
             type: :bytes,
             json_name: "certificateSigningRequest",
             oneof: :key,
-            proto3_optional: false
+            proto3_optional: false,
+            Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
           )
         end
 
@@ -137,7 +140,8 @@ module Dev
             type: :message,
             message_class: "Dev::Sigstore::Fulcio::V2::PublicKey",
             json_name: "publicKey",
-            proto3_optional: false
+            proto3_optional: false,
+            Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
           )
           #
           #  Proof that the client possesses the private key; must be verifiable by provided public key
@@ -148,7 +152,8 @@ module Dev
             "proof_of_possession",
             type: :bytes,
             json_name: "proofOfPossession",
-            proto3_optional: false
+            proto3_optional: false,
+            Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
           )
         end
 
@@ -169,7 +174,13 @@ module Dev
           #
           #  PKIX, ASN.1 DER or PEM-encoded public key. PEM is typically
           #  of type PUBLIC KEY.
-          optional(2, "content", type: :string, proto3_optional: false)
+          optional(
+            2,
+            "content",
+            type: :string,
+            proto3_optional: false,
+            Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
+          )
         end
 
         class SigningCertificate

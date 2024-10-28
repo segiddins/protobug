@@ -6206,7 +6206,7 @@ class ProtobufTestMessages::Proto2::TestAllTypesProto2::MessageSetCorrectExtensi
     @str = nil
   end
 end
-class ProtobufTestMessages::Proto2::TestAllTypesProto2::MessageSetCorrectExtension2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:800
+class ProtobufTestMessages::Proto2::TestAllTypesProto2::MessageSetCorrectExtension2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:810
   def initialize(
     i: nil
   )
@@ -6303,7 +6303,7 @@ class ProtobufTestMessages::Proto2::TestAllTypesProto2::MessageSetCorrectExtensi
     @i = nil
   end
 end
-class ProtobufTestMessages::Proto2::ForeignMessageProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:814
+class ProtobufTestMessages::Proto2::ForeignMessageProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:834
   def initialize(
     c: nil
   )
@@ -6400,9 +6400,9 @@ class ProtobufTestMessages::Proto2::ForeignMessageProto2 # /lib/protobuf_test_me
     @c = nil
   end
 end
-module ProtobufTestMessages::Proto2::ForeignEnumProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:822
+module ProtobufTestMessages::Proto2::ForeignEnumProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:842
 end
-class ProtobufTestMessages::Proto2::GroupField # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:838
+class ProtobufTestMessages::Proto2::GroupField # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:869
   def initialize(
     group_int32: nil,
     group_uint32: nil
@@ -6530,7 +6530,7 @@ class ProtobufTestMessages::Proto2::GroupField # /lib/protobuf_test_messages/pro
     @group_uint32 = nil
   end
 end
-class ProtobufTestMessages::Proto2::UnknownToTestAllTypes # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:847
+class ProtobufTestMessages::Proto2::UnknownToTestAllTypes # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:878
   def initialize(
     optional_int32: nil,
     optional_string: nil,
@@ -6778,7 +6778,7 @@ class ProtobufTestMessages::Proto2::UnknownToTestAllTypes # /lib/protobuf_test_m
     existing << value
   end
 end
-class ProtobufTestMessages::Proto2::UnknownToTestAllTypes::OptionalGroup # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:872
+class ProtobufTestMessages::Proto2::UnknownToTestAllTypes::OptionalGroup # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:903
   def initialize(
     a: nil
   )
@@ -6875,7 +6875,7 @@ class ProtobufTestMessages::Proto2::UnknownToTestAllTypes::OptionalGroup # /lib/
     @a = nil
   end
 end
-class ProtobufTestMessages::Proto2::NullHypothesisProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:889
+class ProtobufTestMessages::Proto2::NullHypothesisProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:920
   def initialize(
   
   )
@@ -6935,7 +6935,7 @@ class ProtobufTestMessages::Proto2::NullHypothesisProto2 # /lib/protobuf_test_me
   end
 
 end
-class ProtobufTestMessages::Proto2::EnumOnlyProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:895
+class ProtobufTestMessages::Proto2::EnumOnlyProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:926
   def initialize(
   
   )
@@ -6995,9 +6995,9 @@ class ProtobufTestMessages::Proto2::EnumOnlyProto2 # /lib/protobuf_test_messages
   end
 
 end
-module ProtobufTestMessages::Proto2::EnumOnlyProto2::Bool # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:900
+module ProtobufTestMessages::Proto2::EnumOnlyProto2::Bool # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:931
 end
-class ProtobufTestMessages::Proto2::OneStringProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:910
+class ProtobufTestMessages::Proto2::OneStringProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:941
   def initialize(
     data: nil
   )
@@ -7092,7 +7092,7 @@ class ProtobufTestMessages::Proto2::OneStringProto2 # /lib/protobuf_test_message
     @data = nil
   end
 end
-class ProtobufTestMessages::Proto2::ProtoWithKeywords # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:918
+class ProtobufTestMessages::Proto2::ProtoWithKeywords # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:949
   def initialize(
     inline: nil,
     concept: nil,
@@ -7257,7 +7257,7 @@ class ProtobufTestMessages::Proto2::ProtoWithKeywords # /lib/protobuf_test_messa
     existing << value
   end
 end
-class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:928
+class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:959
   def initialize(
     required_int32: 0,
     required_int64: 0,
@@ -8415,7 +8415,7 @@ class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2 # /lib/protobuf_t
     @default_bytes = nil
   end
 end
-class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::NestedMessage # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:933
+class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::NestedMessage # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:964
   def initialize(
     a: 0,
     corecursive: nil,
@@ -8564,9 +8564,9 @@ class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::NestedMessage # 
     @optional_corecursive = nil
   end
 end
-module ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::NestedEnum # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:956
+module ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::NestedEnum # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:987
 end
-class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::Data # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:1068
+class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::Data # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:1099
   def initialize(
     group_int32: 0,
     group_uint32: 0
@@ -8682,7 +8682,7 @@ class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::Data # /lib/prot
     @group_uint32 = nil
   end
 end
-class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrect # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:1184
+class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrect # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:1215
   def initialize(
   
   )
@@ -8742,7 +8742,7 @@ class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrec
   end
 
 end
-class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrectExtension1 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:1190
+class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrectExtension1 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:1221
   def initialize(
     str: ""
   )
@@ -8830,7 +8830,7 @@ class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrec
     @str = nil
   end
 end
-class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrectExtension2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:1200
+class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrectExtension2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:1241
   def initialize(
     i: 0
   )

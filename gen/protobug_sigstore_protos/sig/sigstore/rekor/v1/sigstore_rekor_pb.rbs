@@ -9,14 +9,14 @@ class Sigstore::Rekor::V1::KindVersion # /lib/sigstore/rekor/v1/sigstore_rekor_p
   def has_version?: () -> bool
   @version: String?
 end
-class Sigstore::Rekor::V1::Checkpoint # /lib/sigstore/rekor/v1/sigstore_rekor_pb.rb:61
+class Sigstore::Rekor::V1::Checkpoint # /lib/sigstore/rekor/v1/sigstore_rekor_pb.rb:73
   def self.decode: (String string) -> Sigstore::Rekor::V1::Checkpoint
   # optional(1, :envelope, type: :string)
   def envelope: () -> String
   def has_envelope?: () -> bool
   @envelope: String?
 end
-class Sigstore::Rekor::V1::InclusionProof # /lib/sigstore/rekor/v1/sigstore_rekor_pb.rb:71
+class Sigstore::Rekor::V1::InclusionProof # /lib/sigstore/rekor/v1/sigstore_rekor_pb.rb:89
   def self.decode: (String string) -> Sigstore::Rekor::V1::InclusionProof
   # optional(1, :log_index, type: :int64)
   def log_index: () -> Integer
@@ -39,14 +39,14 @@ class Sigstore::Rekor::V1::InclusionProof # /lib/sigstore/rekor/v1/sigstore_reko
   def has_checkpoint?: () -> bool
   @checkpoint: Sigstore::Rekor::V1::Checkpoint?
 end
-class Sigstore::Rekor::V1::InclusionPromise # /lib/sigstore/rekor/v1/sigstore_rekor_pb.rb:128
+class Sigstore::Rekor::V1::InclusionPromise # /lib/sigstore/rekor/v1/sigstore_rekor_pb.rb:155
   def self.decode: (String string) -> Sigstore::Rekor::V1::InclusionPromise
   # optional(1, :signed_entry_timestamp, type: :bytes)
   def signed_entry_timestamp: () -> String
   def has_signed_entry_timestamp?: () -> bool
   @signed_entry_timestamp: String?
 end
-class Sigstore::Rekor::V1::TransparencyLogEntry # /lib/sigstore/rekor/v1/sigstore_rekor_pb.rb:150
+class Sigstore::Rekor::V1::TransparencyLogEntry # /lib/sigstore/rekor/v1/sigstore_rekor_pb.rb:178
   def self.decode: (String string) -> Sigstore::Rekor::V1::TransparencyLogEntry
   # optional(1, :log_index, type: :int64)
   def log_index: () -> Integer

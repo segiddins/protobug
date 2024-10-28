@@ -181,7 +181,13 @@ module Sigstore
         # algorithm.
         # When using a key pair, the algorithm MUST be part of the public
         # key, which MUST be communicated out-of-band.
-        optional(2, "signature", type: :bytes, proto3_optional: false)
+        optional(
+          2,
+          "signature",
+          type: :bytes,
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
+        )
       end
 
       # LogId captures the identity of a transparency log.
@@ -196,7 +202,8 @@ module Sigstore
           "key_id",
           type: :bytes,
           json_name: "keyId",
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
       end
 
@@ -213,7 +220,8 @@ module Sigstore
           "signed_timestamp",
           type: :bytes,
           json_name: "signedTimestamp",
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
       end
 
@@ -269,7 +277,13 @@ module Sigstore
 
         self.full_name = "dev.sigstore.common.v1.ObjectIdentifier"
 
-        repeated(1, "id", type: :int32, packed: true)
+        repeated(
+          1,
+          "id",
+          type: :int32,
+          packed: true,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
+        )
       end
 
       # An OID and the corresponding (byte) value.
@@ -314,7 +328,8 @@ module Sigstore
           "raw_bytes",
           type: :bytes,
           json_name: "rawBytes",
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
       end
 

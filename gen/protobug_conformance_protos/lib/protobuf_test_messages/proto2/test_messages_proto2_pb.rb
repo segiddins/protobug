@@ -792,8 +792,18 @@ module ProtobufTestMessages
 
         self.full_name = "protobuf_test_messages.proto2.TestAllTypesProto2.MessageSetCorrectExtension1"
 
-        # extension: protobuf_test_messages.proto2.TestAllTypesProto2.MessageSetCorrect
-        #   message_set_extension 1547769
+        MESSAGE_SET_EXTENSION = Protobug::Extension(
+          ::ProtobufTestMessages::Proto2::TestAllTypesProto2::MessageSetCorrect
+        ) do
+          optional(
+            1_547_769,
+            "message_set_extension",
+            type: :message,
+            message_class:
+            "ProtobufTestMessages::Proto2::TestAllTypesProto2::MessageSetCorrectExtension1",
+            json_name: "messageSetExtension"
+          )
+        end
         optional(25, "str", type: :string)
       end
 
@@ -802,8 +812,18 @@ module ProtobufTestMessages
 
         self.full_name = "protobuf_test_messages.proto2.TestAllTypesProto2.MessageSetCorrectExtension2"
 
-        # extension: protobuf_test_messages.proto2.TestAllTypesProto2.MessageSetCorrect
-        #   message_set_extension 4135312
+        MESSAGE_SET_EXTENSION = Protobug::Extension(
+          ::ProtobufTestMessages::Proto2::TestAllTypesProto2::MessageSetCorrect
+        ) do
+          optional(
+            4_135_312,
+            "message_set_extension",
+            type: :message,
+            message_class:
+            "ProtobufTestMessages::Proto2::TestAllTypesProto2::MessageSetCorrectExtension2",
+            json_name: "messageSetExtension"
+          )
+        end
         optional(9, "i", type: :int32)
       end
 
@@ -829,11 +849,22 @@ module ProtobufTestMessages
       FOREIGN_BAZ = register("FOREIGN_BAZ", 2)
     end
 
-    # extension: protobuf_test_messages.proto2.TestAllTypesProto2
-    #   extension_int32 120
+    EXTENSION_INT32 = Protobug::Extension(
+      ::ProtobufTestMessages::Proto2::TestAllTypesProto2
+    ) do
+      optional(
+        120,
+        "extension_int32",
+        type: :int32,
+        json_name: "extensionInt32"
+      )
+    end
 
-    # extension: protobuf_test_messages.proto2.TestAllTypesProto2
-    #   groupfield 121
+    GROUPFIELD = Protobug::Extension(
+      ::ProtobufTestMessages::Proto2::TestAllTypesProto2
+    ) do
+      optional(121, "groupfield", type: :group)
+    end
 
     class GroupField
       extend Protobug::Message
@@ -1192,8 +1223,18 @@ module ProtobufTestMessages
 
         self.full_name = "protobuf_test_messages.proto2.TestAllRequiredTypesProto2.MessageSetCorrectExtension1"
 
-        # extension: protobuf_test_messages.proto2.TestAllRequiredTypesProto2.MessageSetCorrect
-        #   message_set_extension 1547769
+        MESSAGE_SET_EXTENSION = Protobug::Extension(
+          ::ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrect
+        ) do
+          optional(
+            1_547_769,
+            "message_set_extension",
+            type: :message,
+            message_class:
+            "ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrectExtension1",
+            json_name: "messageSetExtension"
+          )
+        end
         required(25, "str", type: :string)
       end
 
@@ -1202,8 +1243,18 @@ module ProtobufTestMessages
 
         self.full_name = "protobuf_test_messages.proto2.TestAllRequiredTypesProto2.MessageSetCorrectExtension2"
 
-        # extension: protobuf_test_messages.proto2.TestAllRequiredTypesProto2.MessageSetCorrect
-        #   message_set_extension 4135312
+        MESSAGE_SET_EXTENSION = Protobug::Extension(
+          ::ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrect
+        ) do
+          optional(
+            4_135_312,
+            "message_set_extension",
+            type: :message,
+            message_class:
+            "ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrectExtension2",
+            json_name: "messageSetExtension"
+          )
+        end
         required(9, "i", type: :int32)
       end
 

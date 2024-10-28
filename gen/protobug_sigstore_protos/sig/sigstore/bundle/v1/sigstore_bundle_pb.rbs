@@ -28,7 +28,7 @@ class Sigstore::Bundle::V1::VerificationMaterial # /lib/sigstore/bundle/v1/sigst
   def has_timestamp_verification_data?: () -> bool
   @timestamp_verification_data: Sigstore::Bundle::V1::TimestampVerificationData?
 end
-class Sigstore::Bundle::V1::Bundle # /lib/sigstore/bundle/v1/sigstore_bundle_pb.rb:169
+class Sigstore::Bundle::V1::Bundle # /lib/sigstore/bundle/v1/sigstore_bundle_pb.rb:172
   def self.decode: (String string) -> Sigstore::Bundle::V1::Bundle
   # optional(1, :media_type, type: :string)
   def media_type: () -> String

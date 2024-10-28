@@ -578,26 +578,26 @@ class ProtobufTestMessages::Proto2::TestAllTypesProto2::MessageSetCorrectExtensi
   def has_str?: () -> bool
   @str: String?
 end
-class ProtobufTestMessages::Proto2::TestAllTypesProto2::MessageSetCorrectExtension2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:800
+class ProtobufTestMessages::Proto2::TestAllTypesProto2::MessageSetCorrectExtension2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:810
   def self.decode: (String string) -> ProtobufTestMessages::Proto2::TestAllTypesProto2::MessageSetCorrectExtension2
   # optional(9, :i, type: :int32)
   def i: () -> Integer
   def has_i?: () -> bool
   @i: Integer?
 end
-class ProtobufTestMessages::Proto2::ForeignMessageProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:814
+class ProtobufTestMessages::Proto2::ForeignMessageProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:834
   def self.decode: (String string) -> ProtobufTestMessages::Proto2::ForeignMessageProto2
   # optional(1, :c, type: :int32)
   def c: () -> Integer
   def has_c?: () -> bool
   @c: Integer?
 end
-module ProtobufTestMessages::Proto2::ForeignEnumProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:822
+module ProtobufTestMessages::Proto2::ForeignEnumProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:842
   FOREIGN_FOO: Integer
   FOREIGN_BAR: Integer
   FOREIGN_BAZ: Integer
 end
-class ProtobufTestMessages::Proto2::GroupField # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:838
+class ProtobufTestMessages::Proto2::GroupField # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:869
   def self.decode: (String string) -> ProtobufTestMessages::Proto2::GroupField
   # optional(122, :group_int32, type: :int32)
   def group_int32: () -> Integer
@@ -608,7 +608,7 @@ class ProtobufTestMessages::Proto2::GroupField # /lib/protobuf_test_messages/pro
   def has_group_uint32?: () -> bool
   @group_uint32: Integer?
 end
-class ProtobufTestMessages::Proto2::UnknownToTestAllTypes # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:847
+class ProtobufTestMessages::Proto2::UnknownToTestAllTypes # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:878
   def self.decode: (String string) -> ProtobufTestMessages::Proto2::UnknownToTestAllTypes
   # optional(1001, :optional_int32, type: :int32)
   def optional_int32: () -> Integer
@@ -631,31 +631,31 @@ class ProtobufTestMessages::Proto2::UnknownToTestAllTypes # /lib/protobuf_test_m
   def has_repeated_int32?: () -> bool
   @repeated_int32: Integer?
 end
-class ProtobufTestMessages::Proto2::UnknownToTestAllTypes::OptionalGroup # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:872
+class ProtobufTestMessages::Proto2::UnknownToTestAllTypes::OptionalGroup # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:903
   def self.decode: (String string) -> ProtobufTestMessages::Proto2::UnknownToTestAllTypes::OptionalGroup
   # optional(1, :a, type: :int32)
   def a: () -> Integer
   def has_a?: () -> bool
   @a: Integer?
 end
-class ProtobufTestMessages::Proto2::NullHypothesisProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:889
+class ProtobufTestMessages::Proto2::NullHypothesisProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:920
   def self.decode: (String string) -> ProtobufTestMessages::Proto2::NullHypothesisProto2
 end
-class ProtobufTestMessages::Proto2::EnumOnlyProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:895
+class ProtobufTestMessages::Proto2::EnumOnlyProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:926
   def self.decode: (String string) -> ProtobufTestMessages::Proto2::EnumOnlyProto2
 end
-module ProtobufTestMessages::Proto2::EnumOnlyProto2::Bool # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:900
+module ProtobufTestMessages::Proto2::EnumOnlyProto2::Bool # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:931
   kFalse: Integer
   kTrue: Integer
 end
-class ProtobufTestMessages::Proto2::OneStringProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:910
+class ProtobufTestMessages::Proto2::OneStringProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:941
   def self.decode: (String string) -> ProtobufTestMessages::Proto2::OneStringProto2
   # optional(1, :data, type: :string)
   def data: () -> String
   def has_data?: () -> bool
   @data: String?
 end
-class ProtobufTestMessages::Proto2::ProtoWithKeywords # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:918
+class ProtobufTestMessages::Proto2::ProtoWithKeywords # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:949
   def self.decode: (String string) -> ProtobufTestMessages::Proto2::ProtoWithKeywords
   # optional(1, :inline, type: :int32)
   def inline: () -> Integer
@@ -670,7 +670,7 @@ class ProtobufTestMessages::Proto2::ProtoWithKeywords # /lib/protobuf_test_messa
   def has_requires?: () -> bool
   @requires: String?
 end
-class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:928
+class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:959
   def self.decode: (String string) -> ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2
   # required(1, :required_int32, type: :int32)
   def required_int32: () -> Integer
@@ -825,7 +825,7 @@ class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2 # /lib/protobuf_t
   def has_default_bytes?: () -> bool
   @default_bytes: String?
 end
-class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::NestedMessage # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:933
+class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::NestedMessage # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:964
   def self.decode: (String string) -> ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::NestedMessage
   # required(1, :a, type: :int32)
   def a: () -> Integer
@@ -840,13 +840,13 @@ class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::NestedMessage # 
   def has_optional_corecursive?: () -> bool
   @optional_corecursive: ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2?
 end
-module ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::NestedEnum # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:956
+module ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::NestedEnum # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:987
   FOO: Integer
   BAR: Integer
   BAZ: Integer
   NEG: Integer
 end
-class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::Data # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:1068
+class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::Data # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:1099
   def self.decode: (String string) -> ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::Data
   # required(202, :group_int32, type: :int32)
   def group_int32: () -> Integer
@@ -857,17 +857,17 @@ class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::Data # /lib/prot
   def has_group_uint32?: () -> bool
   @group_uint32: Integer?
 end
-class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrect # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:1184
+class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrect # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:1215
   def self.decode: (String string) -> ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrect
 end
-class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrectExtension1 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:1190
+class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrectExtension1 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:1221
   def self.decode: (String string) -> ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrectExtension1
   # required(25, :str, type: :string)
   def str: () -> String
   def has_str?: () -> bool
   @str: String?
 end
-class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrectExtension2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:1200
+class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrectExtension2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:1241
   def self.decode: (String string) -> ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrectExtension2
   # required(9, :i, type: :int32)
   def i: () -> Integer

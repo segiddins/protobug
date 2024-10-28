@@ -32,20 +32,27 @@ require "google/protobuf/descriptor_pb"
 
 module Google
   module Api
-    # A designation of a specific field behavior (required, output only, etc.)
-    # in protobuf messages.
-    #
-    # Examples:
-    #
-    #   string name = 1 [(google.api.field_behavior) = REQUIRED];
-    #   State state = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
-    #   google.protobuf.Duration ttl = 1
-    #     [(google.api.field_behavior) = INPUT_ONLY];
-    #   google.protobuf.Timestamp expire_time = 1
-    #     [(google.api.field_behavior) = OUTPUT_ONLY,
-    #      (google.api.field_behavior) = IMMUTABLE];
-    # extension: google.protobuf.FieldOptions
-    #   field_behavior 1052
+    FIELD_BEHAVIOR = Protobug::Extension(::Google::Protobuf::FieldOptions) do
+      # A designation of a specific field behavior (required, output only, etc.)
+      # in protobuf messages.
+      #
+      # Examples:
+      #
+      #   string name = 1 [(google.api.field_behavior) = REQUIRED];
+      #   State state = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
+      #   google.protobuf.Duration ttl = 1
+      #     [(google.api.field_behavior) = INPUT_ONLY];
+      #   google.protobuf.Timestamp expire_time = 1
+      #     [(google.api.field_behavior) = OUTPUT_ONLY,
+      #      (google.api.field_behavior) = IMMUTABLE];
+      repeated(
+        1_052,
+        "field_behavior",
+        type: :enum,
+        enum_class: "Google::Api::FieldBehavior",
+        json_name: "fieldBehavior"
+      )
+    end
 
     # An indicator of the behavior of a given field (for example, that a field
     # is required in requests, or given as output but ignored as input).

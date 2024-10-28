@@ -63,7 +63,8 @@ module Protobug
 
               if !first && !item.compact? && !prev&.compact?
                 if (item.is_a?(Token) && item.type == :operator) || (prev.is_a?(Token) && prev.type == :operator) ||
-                   item.is_a?(Comment)
+                   item.is_a?(Comment) || (item.is_a?(Token) && item.type == :keyword) ||
+                   (prev.is_a?(Token) && prev.type == :keyword)
                   q.text " "
                 elsif !(item.is_a?(Group) && item.name == :call) && !(item.is_a?(Group) && item.multi)
                   q.fill_breakable " "

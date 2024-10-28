@@ -330,7 +330,7 @@ class Sigstore::Bundle::V1::VerificationMaterial # /lib/sigstore/bundle/v1/sigst
     @timestamp_verification_data = nil
   end
 end
-class Sigstore::Bundle::V1::Bundle # /lib/sigstore/bundle/v1/sigstore_bundle_pb.rb:169
+class Sigstore::Bundle::V1::Bundle # /lib/sigstore/bundle/v1/sigstore_bundle_pb.rb:172
   def initialize(
     media_type: nil,
     verification_material: nil,

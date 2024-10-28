@@ -327,7 +327,8 @@ module Sigstore
           type: :message,
           message_class: "Sigstore::TrustRoot::V1::TrustedRoot",
           json_name: "trustedRoot",
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
         # Configuration for signing clients, which MUST be present.
         optional(
@@ -336,7 +337,8 @@ module Sigstore
           type: :message,
           message_class: "Sigstore::TrustRoot::V1::SigningConfig",
           json_name: "signingConfig",
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
       end
     end

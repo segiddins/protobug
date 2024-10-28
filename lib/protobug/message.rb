@@ -22,6 +22,7 @@ module Protobug
       base.class_eval do
         @full_name = nil
         @declared_fields = []
+        @extensions = {}
         @fields_by_number = {}
         @fields_by_json_name = {}
         @fields_by_name = {}
@@ -36,10 +37,11 @@ module Protobug
     end
 
     attr_reader :declared_fields, :fields_by_number, :fields_by_name, :fields_by_json_name, :reserved_ranges,
-                :reserved_names, :oneofs
+                :reserved_names, :oneofs, :extensions
 
     def freeze
       declared_fields.freeze
+      extensions.freeze
       fields_by_number.freeze
       fields_by_name.freeze
       fields_by_json_name.freeze
@@ -161,7 +163,7 @@ module Protobug
       raise
     end
 
-    def field(number, name, type:, **kwargs)
+    def field(number, name, type:, extension: nil, **kwargs)
       raise ArgumentError unless number.is_a? Integer
 
       case name
@@ -175,34 +177,43 @@ module Protobug
 
       field = Field::BY_TYPE
               .fetch(type)
-              .new(number, name, **kwargs, proto3_optional_count: declared_fields.count(&:proto3_optional?)).freeze
+              .new(number, name, extension:, **kwargs,
+                                 proto3_optional_count: declared_fields.count(&:proto3_optional?))
+              .freeze
 
       raise DefinitionError, "duplicate field number #{number}" if fields_by_number[number]
-      raise DefinitionError, "duplicate field name #{name}" if fields_by_name[name]
 
-      declared_fields << field unless field.group?
       fields_by_number[number] = field
-      fields_by_name[name] = field
 
-      fields_by_json_name[name] = field
-      fields_by_json_name[field.json_name] = field
+      if extension
+        @extensions[field.number] = field
+      else
+        raise DefinitionError, "duplicate field name #{name}" if fields_by_name[name]
 
-      raise DefinitionError, "field number #{number} is reserved" if reserved_ranges.any? do |range|
-                                                                       range.cover? number
-                                                                     end
+        fields_by_name[name] = field
+        declared_fields << field unless field.group?
+        fields_by_json_name[name] = field
+        fields_by_json_name[field.json_name] = field
 
-      raise DefinitionError, "too many optional fields" if declared_fields.count(&:proto3_optional?) > 64
+        raise DefinitionError, "field number #{number} is reserved" if reserved_ranges.any? do |range|
+                                                                         range.cover? number
+                                                                       end
 
-      __protobug_module__.module_eval(__protobug_instance_method_definitions__,
-                                      "(instance method definitions for #{self})")
+        raise DefinitionError, "too many optional fields" if declared_fields.count(&:proto3_optional?) > 64
+
+        __protobug_module__.module_eval(__protobug_instance_method_definitions__,
+                                        "(instance method definitions for #{self})")
+      end
       __protobug_module__.module_eval(field.method_definitions, "(field #{field} for #{self})")
 
-      return unless field.oneof
-
-      unless (oneof = oneofs[field.oneof])
-        oneofs[field.oneof] = oneof = []
+      if field.oneof
+        unless (oneof = oneofs[field.oneof])
+          oneofs[field.oneof] = oneof = []
+        end
+        oneof << field
       end
-      oneof << field
+
+      field
     end
 
     def __protobug_module__
