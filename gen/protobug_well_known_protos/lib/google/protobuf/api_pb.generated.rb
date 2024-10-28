@@ -18,7 +18,7 @@ class Google::Protobuf::Api # /lib/google/protobuf/api_pb.rb:62
     @syntax = syntax
   end
   def hash
-    ["google.protobuf.Api", @name, @methods, @options, @version, @source_context, @mixins, @syntax].hash
+    ["google.protobuf.Api", @unknown_fields, @name, @methods, @options, @version, @source_context, @mixins, @syntax].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -304,7 +304,7 @@ class Google::Protobuf::Method # /lib/google/protobuf/api_pb.rb:132
     @syntax = syntax
   end
   def hash
-    ["google.protobuf.Method", @name, @request_type_url, @request_streaming, @response_type_url, @response_streaming, @options, @syntax].hash
+    ["google.protobuf.Method", @unknown_fields, @name, @request_type_url, @request_streaming, @response_type_url, @response_streaming, @options, @syntax].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -581,7 +581,7 @@ class Google::Protobuf::Mixin # /lib/google/protobuf/api_pb.rb:266
     @root = root
   end
   def hash
-    ["google.protobuf.Mixin", @name, @root].hash
+    ["google.protobuf.Mixin", @unknown_fields, @name, @root].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

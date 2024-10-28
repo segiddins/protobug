@@ -9,7 +9,7 @@ class InTotoAttestation::Predicates::Release::V0::Release # /lib/in_toto_attesta
     @release_id = release_id
   end
   def hash
-    ["in_toto_attestation.predicates.release.v0.Release", @purl, @release_id].hash
+    ["in_toto_attestation.predicates.release.v0.Release", @unknown_fields, @purl, @release_id].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

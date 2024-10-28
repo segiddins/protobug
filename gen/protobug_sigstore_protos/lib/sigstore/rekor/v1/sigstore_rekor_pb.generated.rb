@@ -8,7 +8,7 @@ class Sigstore::Rekor::V1::KindVersion # /lib/sigstore/rekor/v1/sigstore_rekor_p
     @version = version
   end
   def hash
-    ["dev.sigstore.rekor.v1.KindVersion", @kind, @version].hash
+    ["dev.sigstore.rekor.v1.KindVersion", @unknown_fields, @kind, @version].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -131,7 +131,7 @@ class Sigstore::Rekor::V1::Checkpoint # /lib/sigstore/rekor/v1/sigstore_rekor_pb
     @envelope = envelope
   end
   def hash
-    ["dev.sigstore.rekor.v1.Checkpoint", @envelope].hash
+    ["dev.sigstore.rekor.v1.Checkpoint", @unknown_fields, @envelope].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -231,7 +231,7 @@ class Sigstore::Rekor::V1::InclusionProof # /lib/sigstore/rekor/v1/sigstore_reko
     @checkpoint = checkpoint
   end
   def hash
-    ["dev.sigstore.rekor.v1.InclusionProof", @log_index, @root_hash, @tree_size, @hashes, @checkpoint].hash
+    ["dev.sigstore.rekor.v1.InclusionProof", @unknown_fields, @log_index, @root_hash, @tree_size, @hashes, @checkpoint].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -447,7 +447,7 @@ class Sigstore::Rekor::V1::InclusionPromise # /lib/sigstore/rekor/v1/sigstore_re
     @signed_entry_timestamp = signed_entry_timestamp
   end
   def hash
-    ["dev.sigstore.rekor.v1.InclusionPromise", @signed_entry_timestamp].hash
+    ["dev.sigstore.rekor.v1.InclusionPromise", @unknown_fields, @signed_entry_timestamp].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -550,7 +550,7 @@ class Sigstore::Rekor::V1::TransparencyLogEntry # /lib/sigstore/rekor/v1/sigstor
     @canonicalized_body = canonicalized_body
   end
   def hash
-    ["dev.sigstore.rekor.v1.TransparencyLogEntry", @log_index, @log_id, @kind_version, @integrated_time, @inclusion_promise, @inclusion_proof, @canonicalized_body].hash
+    ["dev.sigstore.rekor.v1.TransparencyLogEntry", @unknown_fields, @log_index, @log_id, @kind_version, @integrated_time, @inclusion_promise, @inclusion_proof, @canonicalized_body].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

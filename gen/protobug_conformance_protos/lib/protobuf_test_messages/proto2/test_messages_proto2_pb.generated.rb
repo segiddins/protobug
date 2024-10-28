@@ -303,7 +303,7 @@ class ProtobufTestMessages::Proto2::TestAllTypesProto2 # /lib/protobuf_test_mess
   end
   attr_reader :oneof_field
   def hash
-    ["protobuf_test_messages.proto2.TestAllTypesProto2", @optional_int32, @optional_int64, @optional_uint32, @optional_uint64, @optional_sint32, @optional_sint64, @optional_fixed32, @optional_fixed64, @optional_sfixed32, @optional_sfixed64, @optional_float, @optional_double, @optional_bool, @optional_string, @optional_bytes, @optional_nested_message, @optional_foreign_message, @optional_nested_enum, @optional_foreign_enum, @optional_string_piece, @optional_cord, @recursive_message, @repeated_int32, @repeated_int64, @repeated_uint32, @repeated_uint64, @repeated_sint32, @repeated_sint64, @repeated_fixed32, @repeated_fixed64, @repeated_sfixed32, @repeated_sfixed64, @repeated_float, @repeated_double, @repeated_bool, @repeated_string, @repeated_bytes, @repeated_nested_message, @repeated_foreign_message, @repeated_nested_enum, @repeated_foreign_enum, @repeated_string_piece, @repeated_cord, @packed_int32, @packed_int64, @packed_uint32, @packed_uint64, @packed_sint32, @packed_sint64, @packed_fixed32, @packed_fixed64, @packed_sfixed32, @packed_sfixed64, @packed_float, @packed_double, @packed_bool, @packed_nested_enum, @unpacked_int32, @unpacked_int64, @unpacked_uint32, @unpacked_uint64, @unpacked_sint32, @unpacked_sint64, @unpacked_fixed32, @unpacked_fixed64, @unpacked_sfixed32, @unpacked_sfixed64, @unpacked_float, @unpacked_double, @unpacked_bool, @unpacked_nested_enum, @map_int32_int32, @map_int64_int64, @map_uint32_uint32, @map_uint64_uint64, @map_sint32_sint32, @map_sint64_sint64, @map_fixed32_fixed32, @map_fixed64_fixed64, @map_sfixed32_sfixed32, @map_sfixed64_sfixed64, @map_int32_float, @map_int32_double, @map_bool_bool, @map_string_string, @map_string_bytes, @map_string_nested_message, @map_string_foreign_message, @map_string_nested_enum, @map_string_foreign_enum, @oneof_uint32, @oneof_nested_message, @oneof_string, @oneof_bytes, @oneof_bool, @oneof_uint64, @oneof_float, @oneof_double, @oneof_enum, @default_int32, @default_int64, @default_uint32, @default_uint64, @default_sint32, @default_sint64, @default_fixed32, @default_fixed64, @default_sfixed32, @default_sfixed64, @default_float, @default_double, @default_bool, @default_string, @default_bytes, @fieldname1, @field_name2, @_field_name3, @field__name4_, @field0name5, @field_0_name6, @fieldName7, @FieldName8, @field_Name9, @Field_Name10, @FIELD_NAME11, @FIELD_name12, @__field_name13, @__Field_name14, @field__name15, @field__Name16, @field_name17__, @Field_name18__].hash
+    ["protobuf_test_messages.proto2.TestAllTypesProto2", @unknown_fields, @optional_int32, @optional_int64, @optional_uint32, @optional_uint64, @optional_sint32, @optional_sint64, @optional_fixed32, @optional_fixed64, @optional_sfixed32, @optional_sfixed64, @optional_float, @optional_double, @optional_bool, @optional_string, @optional_bytes, @optional_nested_message, @optional_foreign_message, @optional_nested_enum, @optional_foreign_enum, @optional_string_piece, @optional_cord, @recursive_message, @repeated_int32, @repeated_int64, @repeated_uint32, @repeated_uint64, @repeated_sint32, @repeated_sint64, @repeated_fixed32, @repeated_fixed64, @repeated_sfixed32, @repeated_sfixed64, @repeated_float, @repeated_double, @repeated_bool, @repeated_string, @repeated_bytes, @repeated_nested_message, @repeated_foreign_message, @repeated_nested_enum, @repeated_foreign_enum, @repeated_string_piece, @repeated_cord, @packed_int32, @packed_int64, @packed_uint32, @packed_uint64, @packed_sint32, @packed_sint64, @packed_fixed32, @packed_fixed64, @packed_sfixed32, @packed_sfixed64, @packed_float, @packed_double, @packed_bool, @packed_nested_enum, @unpacked_int32, @unpacked_int64, @unpacked_uint32, @unpacked_uint64, @unpacked_sint32, @unpacked_sint64, @unpacked_fixed32, @unpacked_fixed64, @unpacked_sfixed32, @unpacked_sfixed64, @unpacked_float, @unpacked_double, @unpacked_bool, @unpacked_nested_enum, @map_int32_int32, @map_int64_int64, @map_uint32_uint32, @map_uint64_uint64, @map_sint32_sint32, @map_sint64_sint64, @map_fixed32_fixed32, @map_fixed64_fixed64, @map_sfixed32_sfixed32, @map_sfixed64_sfixed64, @map_int32_float, @map_int32_double, @map_bool_bool, @map_string_string, @map_string_bytes, @map_string_nested_message, @map_string_foreign_message, @map_string_nested_enum, @map_string_foreign_enum, @oneof_uint32, @oneof_nested_message, @oneof_string, @oneof_bytes, @oneof_bool, @oneof_uint64, @oneof_float, @oneof_double, @oneof_enum, @default_int32, @default_int64, @default_uint32, @default_uint64, @default_sint32, @default_sint64, @default_fixed32, @default_fixed64, @default_sfixed32, @default_sfixed64, @default_float, @default_double, @default_bool, @default_string, @default_bytes, @fieldname1, @field_name2, @_field_name3, @field__name4_, @field0name5, @field_0_name6, @fieldName7, @FieldName8, @field_Name9, @Field_Name10, @FIELD_NAME11, @FIELD_name12, @__field_name13, @__Field_name14, @field__name15, @field__Name16, @field_name17__, @Field_name18__].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -5676,7 +5676,7 @@ class ProtobufTestMessages::Proto2::TestAllTypesProto2::NestedMessage # /lib/pro
     @corecursive = corecursive
   end
   def hash
-    ["protobuf_test_messages.proto2.TestAllTypesProto2.NestedMessage", @a, @corecursive].hash
+    ["protobuf_test_messages.proto2.TestAllTypesProto2.NestedMessage", @unknown_fields, @a, @corecursive].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -5806,7 +5806,7 @@ class ProtobufTestMessages::Proto2::TestAllTypesProto2::Data # /lib/protobuf_tes
     @group_uint32 = group_uint32
   end
   def hash
-    ["protobuf_test_messages.proto2.TestAllTypesProto2.Data", @group_int32, @group_uint32].hash
+    ["protobuf_test_messages.proto2.TestAllTypesProto2.Data", @unknown_fields, @group_int32, @group_uint32].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -5934,7 +5934,7 @@ class ProtobufTestMessages::Proto2::TestAllTypesProto2::MultiWordGroupField # /l
     @group_uint32 = group_uint32
   end
   def hash
-    ["protobuf_test_messages.proto2.TestAllTypesProto2.MultiWordGroupField", @group_int32, @group_uint32].hash
+    ["protobuf_test_messages.proto2.TestAllTypesProto2.MultiWordGroupField", @unknown_fields, @group_int32, @group_uint32].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -6058,7 +6058,7 @@ class ProtobufTestMessages::Proto2::TestAllTypesProto2::MessageSetCorrect # /lib
     @unknown_fields = nil
   end
   def hash
-    ["protobuf_test_messages.proto2.TestAllTypesProto2.MessageSetCorrect", ].hash
+    ["protobuf_test_messages.proto2.TestAllTypesProto2.MessageSetCorrect", @unknown_fields, ].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -6120,7 +6120,7 @@ class ProtobufTestMessages::Proto2::TestAllTypesProto2::MessageSetCorrectExtensi
     @str = str
   end
   def hash
-    ["protobuf_test_messages.proto2.TestAllTypesProto2.MessageSetCorrectExtension1", @str].hash
+    ["protobuf_test_messages.proto2.TestAllTypesProto2.MessageSetCorrectExtension1", @unknown_fields, @str].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -6215,7 +6215,7 @@ class ProtobufTestMessages::Proto2::TestAllTypesProto2::MessageSetCorrectExtensi
     @i = i
   end
   def hash
-    ["protobuf_test_messages.proto2.TestAllTypesProto2.MessageSetCorrectExtension2", @i].hash
+    ["protobuf_test_messages.proto2.TestAllTypesProto2.MessageSetCorrectExtension2", @unknown_fields, @i].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -6312,7 +6312,7 @@ class ProtobufTestMessages::Proto2::ForeignMessageProto2 # /lib/protobuf_test_me
     @c = c
   end
   def hash
-    ["protobuf_test_messages.proto2.ForeignMessageProto2", @c].hash
+    ["protobuf_test_messages.proto2.ForeignMessageProto2", @unknown_fields, @c].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -6413,7 +6413,7 @@ class ProtobufTestMessages::Proto2::GroupField # /lib/protobuf_test_messages/pro
     @group_uint32 = group_uint32
   end
   def hash
-    ["protobuf_test_messages.proto2.GroupField", @group_int32, @group_uint32].hash
+    ["protobuf_test_messages.proto2.GroupField", @unknown_fields, @group_int32, @group_uint32].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -6547,7 +6547,7 @@ class ProtobufTestMessages::Proto2::UnknownToTestAllTypes # /lib/protobuf_test_m
     @repeated_int32 = repeated_int32
   end
   def hash
-    ["protobuf_test_messages.proto2.UnknownToTestAllTypes", @optional_int32, @optional_string, @nested_message, @optional_bool, @repeated_int32].hash
+    ["protobuf_test_messages.proto2.UnknownToTestAllTypes", @unknown_fields, @optional_int32, @optional_string, @nested_message, @optional_bool, @repeated_int32].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -6787,7 +6787,7 @@ class ProtobufTestMessages::Proto2::UnknownToTestAllTypes::OptionalGroup # /lib/
     @a = a
   end
   def hash
-    ["protobuf_test_messages.proto2.UnknownToTestAllTypes.OptionalGroup", @a].hash
+    ["protobuf_test_messages.proto2.UnknownToTestAllTypes.OptionalGroup", @unknown_fields, @a].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -6882,7 +6882,7 @@ class ProtobufTestMessages::Proto2::NullHypothesisProto2 # /lib/protobuf_test_me
     @unknown_fields = nil
   end
   def hash
-    ["protobuf_test_messages.proto2.NullHypothesisProto2", ].hash
+    ["protobuf_test_messages.proto2.NullHypothesisProto2", @unknown_fields, ].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -6942,7 +6942,7 @@ class ProtobufTestMessages::Proto2::EnumOnlyProto2 # /lib/protobuf_test_messages
     @unknown_fields = nil
   end
   def hash
-    ["protobuf_test_messages.proto2.EnumOnlyProto2", ].hash
+    ["protobuf_test_messages.proto2.EnumOnlyProto2", @unknown_fields, ].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -7006,7 +7006,7 @@ class ProtobufTestMessages::Proto2::OneStringProto2 # /lib/protobuf_test_message
     @data = data
   end
   def hash
-    ["protobuf_test_messages.proto2.OneStringProto2", @data].hash
+    ["protobuf_test_messages.proto2.OneStringProto2", @unknown_fields, @data].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -7105,7 +7105,7 @@ class ProtobufTestMessages::Proto2::ProtoWithKeywords # /lib/protobuf_test_messa
     @requires = requires
   end
   def hash
-    ["protobuf_test_messages.proto2.ProtoWithKeywords", @inline, @concept, @requires].hash
+    ["protobuf_test_messages.proto2.ProtoWithKeywords", @unknown_fields, @inline, @concept, @requires].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -7340,7 +7340,7 @@ class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2 # /lib/protobuf_t
     @default_bytes = default_bytes
   end
   def hash
-    ["protobuf_test_messages.proto2.TestAllRequiredTypesProto2", @required_int32, @required_int64, @required_uint32, @required_uint64, @required_sint32, @required_sint64, @required_fixed32, @required_fixed64, @required_sfixed32, @required_sfixed64, @required_float, @required_double, @required_bool, @required_string, @required_bytes, @required_nested_message, @required_foreign_message, @required_nested_enum, @required_foreign_enum, @required_string_piece, @required_cord, @recursive_message, @optional_recursive_message, @default_int32, @default_int64, @default_uint32, @default_uint64, @default_sint32, @default_sint64, @default_fixed32, @default_fixed64, @default_sfixed32, @default_sfixed64, @default_float, @default_double, @default_bool, @default_string, @default_bytes].hash
+    ["protobuf_test_messages.proto2.TestAllRequiredTypesProto2", @unknown_fields, @required_int32, @required_int64, @required_uint32, @required_uint64, @required_sint32, @required_sint64, @required_fixed32, @required_fixed64, @required_sfixed32, @required_sfixed64, @required_float, @required_double, @required_bool, @required_string, @required_bytes, @required_nested_message, @required_foreign_message, @required_nested_enum, @required_foreign_enum, @required_string_piece, @required_cord, @recursive_message, @optional_recursive_message, @default_int32, @default_int64, @default_uint32, @default_uint64, @default_sint32, @default_sint64, @default_fixed32, @default_fixed64, @default_sfixed32, @default_sfixed64, @default_float, @default_double, @default_bool, @default_string, @default_bytes].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -8428,7 +8428,7 @@ class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::NestedMessage # 
     @optional_corecursive = optional_corecursive
   end
   def hash
-    ["protobuf_test_messages.proto2.TestAllRequiredTypesProto2.NestedMessage", @a, @corecursive, @optional_corecursive].hash
+    ["protobuf_test_messages.proto2.TestAllRequiredTypesProto2.NestedMessage", @unknown_fields, @a, @corecursive, @optional_corecursive].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -8576,7 +8576,7 @@ class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::Data # /lib/prot
     @group_uint32 = group_uint32
   end
   def hash
-    ["protobuf_test_messages.proto2.TestAllRequiredTypesProto2.Data", @group_int32, @group_uint32].hash
+    ["protobuf_test_messages.proto2.TestAllRequiredTypesProto2.Data", @unknown_fields, @group_int32, @group_uint32].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -8689,7 +8689,7 @@ class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrec
     @unknown_fields = nil
   end
   def hash
-    ["protobuf_test_messages.proto2.TestAllRequiredTypesProto2.MessageSetCorrect", ].hash
+    ["protobuf_test_messages.proto2.TestAllRequiredTypesProto2.MessageSetCorrect", @unknown_fields, ].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -8750,7 +8750,7 @@ class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrec
     @str = str
   end
   def hash
-    ["protobuf_test_messages.proto2.TestAllRequiredTypesProto2.MessageSetCorrectExtension1", @str].hash
+    ["protobuf_test_messages.proto2.TestAllRequiredTypesProto2.MessageSetCorrectExtension1", @unknown_fields, @str].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -8838,7 +8838,7 @@ class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::MessageSetCorrec
     @i = i
   end
   def hash
-    ["protobuf_test_messages.proto2.TestAllRequiredTypesProto2.MessageSetCorrectExtension2", @i].hash
+    ["protobuf_test_messages.proto2.TestAllRequiredTypesProto2.MessageSetCorrectExtension2", @unknown_fields, @i].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

@@ -18,7 +18,7 @@ class Google::Protobuf::Type # /lib/google/protobuf/type_pb.rb:55
     @edition = edition
   end
   def hash
-    ["google.protobuf.Type", @name, @fields, @oneofs, @options, @source_context, @syntax, @edition].hash
+    ["google.protobuf.Type", @unknown_fields, @name, @fields, @oneofs, @options, @source_context, @syntax, @edition].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -313,7 +313,7 @@ class Google::Protobuf::Field # /lib/google/protobuf/type_pb.rb:100
     @default_value = default_value
   end
   def hash
-    ["google.protobuf.Field", @kind, @cardinality, @number, @name, @type_url, @oneof_index, @packed, @options, @json_name, @default_value].hash
+    ["google.protobuf.Field", @unknown_fields, @kind, @cardinality, @number, @name, @type_url, @oneof_index, @packed, @options, @json_name, @default_value].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -707,7 +707,7 @@ class Google::Protobuf::Enum # /lib/google/protobuf/type_pb.rb:233
     @edition = edition
   end
   def hash
-    ["google.protobuf.Enum", @name, @enumvalue, @options, @source_context, @syntax, @edition].hash
+    ["google.protobuf.Enum", @unknown_fields, @name, @enumvalue, @options, @source_context, @syntax, @edition].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -956,7 +956,7 @@ class Google::Protobuf::EnumValue # /lib/google/protobuf/type_pb.rb:276
     @options = options
   end
   def hash
-    ["google.protobuf.EnumValue", @name, @number, @options].hash
+    ["google.protobuf.EnumValue", @unknown_fields, @name, @number, @options].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1112,7 +1112,7 @@ class Google::Protobuf::Option # /lib/google/protobuf/type_pb.rb:296
     @value = value
   end
   def hash
-    ["google.protobuf.Option", @name, @value].hash
+    ["google.protobuf.Option", @unknown_fields, @name, @value].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

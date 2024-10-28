@@ -12,7 +12,7 @@ class InTotoAttestation::Predicates::Scai::V0::AttributeAssertion # /lib/in_toto
     @evidence = evidence
   end
   def hash
-    ["in_toto_attestation.predicates.scai.v0.AttributeAssertion", @attribute, @target, @conditions, @evidence].hash
+    ["in_toto_attestation.predicates.scai.v0.AttributeAssertion", @unknown_fields, @attribute, @target, @conditions, @evidence].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -190,7 +190,7 @@ class InTotoAttestation::Predicates::Scai::V0::AttributeReport # /lib/in_toto_at
     @producer = producer
   end
   def hash
-    ["in_toto_attestation.predicates.scai.v0.AttributeReport", @attributes, @producer].hash
+    ["in_toto_attestation.predicates.scai.v0.AttributeReport", @unknown_fields, @attributes, @producer].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

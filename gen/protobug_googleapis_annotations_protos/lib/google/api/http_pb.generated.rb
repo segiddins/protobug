@@ -8,7 +8,7 @@ class Google::Api::Http # /lib/google/api/http_pb.rb:37
     @fully_decode_reserved_expansion = fully_decode_reserved_expansion
   end
   def hash
-    ["google.api.Http", @rules, @fully_decode_reserved_expansion].hash
+    ["google.api.Http", @unknown_fields, @rules, @fully_decode_reserved_expansion].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -166,7 +166,7 @@ class Google::Api::HttpRule # /lib/google/api/http_pb.rb:338
   end
   attr_reader :pattern
   def hash
-    ["google.api.HttpRule", @selector, @get, @put, @post, @delete, @patch, @custom, @body, @response_body, @additional_bindings].hash
+    ["google.api.HttpRule", @unknown_fields, @selector, @get, @put, @post, @delete, @patch, @custom, @body, @response_body, @additional_bindings].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -577,7 +577,7 @@ class Google::Api::CustomHttpPattern # /lib/google/api/http_pb.rb:426
     @path = path
   end
   def hash
-    ["google.api.CustomHttpPattern", @kind, @path].hash
+    ["google.api.CustomHttpPattern", @unknown_fields, @kind, @path].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

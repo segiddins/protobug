@@ -16,7 +16,7 @@ class Dev::Sigstore::Fulcio::V2::CreateSigningCertificateRequest # /lib/dev/sigs
   end
   attr_reader :key
   def hash
-    ["dev.sigstore.fulcio.v2.CreateSigningCertificateRequest", @credentials, @public_key_request, @certificate_signing_request].hash
+    ["dev.sigstore.fulcio.v2.CreateSigningCertificateRequest", @unknown_fields, @credentials, @public_key_request, @certificate_signing_request].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -179,7 +179,7 @@ class Dev::Sigstore::Fulcio::V2::Credentials # /lib/dev/sigstore/fulcio/v2/fulci
   end
   attr_reader :credentials
   def hash
-    ["dev.sigstore.fulcio.v2.Credentials", @oidc_identity_token].hash
+    ["dev.sigstore.fulcio.v2.Credentials", @unknown_fields, @oidc_identity_token].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -280,7 +280,7 @@ class Dev::Sigstore::Fulcio::V2::PublicKeyRequest # /lib/dev/sigstore/fulcio/v2/
     @proof_of_possession = proof_of_possession
   end
   def hash
-    ["dev.sigstore.fulcio.v2.PublicKeyRequest", @public_key, @proof_of_possession].hash
+    ["dev.sigstore.fulcio.v2.PublicKeyRequest", @unknown_fields, @public_key, @proof_of_possession].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -401,7 +401,7 @@ class Dev::Sigstore::Fulcio::V2::PublicKey # /lib/dev/sigstore/fulcio/v2/fulcio_
     @content = content
   end
   def hash
-    ["dev.sigstore.fulcio.v2.PublicKey", @algorithm, @content].hash
+    ["dev.sigstore.fulcio.v2.PublicKey", @unknown_fields, @algorithm, @content].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -537,7 +537,7 @@ class Dev::Sigstore::Fulcio::V2::SigningCertificate # /lib/dev/sigstore/fulcio/v
   end
   attr_reader :certificate
   def hash
-    ["dev.sigstore.fulcio.v2.SigningCertificate", @signed_certificate_detached_sct, @signed_certificate_embedded_sct].hash
+    ["dev.sigstore.fulcio.v2.SigningCertificate", @unknown_fields, @signed_certificate_detached_sct, @signed_certificate_embedded_sct].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -671,7 +671,7 @@ class Dev::Sigstore::Fulcio::V2::SigningCertificateDetachedSCT # /lib/dev/sigsto
     @signed_certificate_timestamp = signed_certificate_timestamp
   end
   def hash
-    ["dev.sigstore.fulcio.v2.SigningCertificateDetachedSCT", @chain, @signed_certificate_timestamp].hash
+    ["dev.sigstore.fulcio.v2.SigningCertificateDetachedSCT", @unknown_fields, @chain, @signed_certificate_timestamp].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -790,7 +790,7 @@ class Dev::Sigstore::Fulcio::V2::SigningCertificateEmbeddedSCT # /lib/dev/sigsto
     @chain = chain
   end
   def hash
-    ["dev.sigstore.fulcio.v2.SigningCertificateEmbeddedSCT", @chain].hash
+    ["dev.sigstore.fulcio.v2.SigningCertificateEmbeddedSCT", @unknown_fields, @chain].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -878,7 +878,7 @@ class Dev::Sigstore::Fulcio::V2::GetTrustBundleRequest # /lib/dev/sigstore/fulci
     @unknown_fields = nil
   end
   def hash
-    ["dev.sigstore.fulcio.v2.GetTrustBundleRequest", ].hash
+    ["dev.sigstore.fulcio.v2.GetTrustBundleRequest", @unknown_fields, ].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -939,7 +939,7 @@ class Dev::Sigstore::Fulcio::V2::TrustBundle # /lib/dev/sigstore/fulcio/v2/fulci
     @chains = chains
   end
   def hash
-    ["dev.sigstore.fulcio.v2.TrustBundle", @chains].hash
+    ["dev.sigstore.fulcio.v2.TrustBundle", @unknown_fields, @chains].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1029,7 +1029,7 @@ class Dev::Sigstore::Fulcio::V2::CertificateChain # /lib/dev/sigstore/fulcio/v2/
     @certificates = certificates
   end
   def hash
-    ["dev.sigstore.fulcio.v2.CertificateChain", @certificates].hash
+    ["dev.sigstore.fulcio.v2.CertificateChain", @unknown_fields, @certificates].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1123,7 +1123,7 @@ class Dev::Sigstore::Fulcio::V2::GetConfigurationRequest # /lib/dev/sigstore/ful
     @unknown_fields = nil
   end
   def hash
-    ["dev.sigstore.fulcio.v2.GetConfigurationRequest", ].hash
+    ["dev.sigstore.fulcio.v2.GetConfigurationRequest", @unknown_fields, ].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1184,7 +1184,7 @@ class Dev::Sigstore::Fulcio::V2::Configuration # /lib/dev/sigstore/fulcio/v2/ful
     @issuers = issuers
   end
   def hash
-    ["dev.sigstore.fulcio.v2.Configuration", @issuers].hash
+    ["dev.sigstore.fulcio.v2.Configuration", @unknown_fields, @issuers].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1288,7 +1288,7 @@ class Dev::Sigstore::Fulcio::V2::OIDCIssuer # /lib/dev/sigstore/fulcio/v2/fulcio
   end
   attr_reader :issuer
   def hash
-    ["dev.sigstore.fulcio.v2.OIDCIssuer", @issuer_url, @wildcard_issuer_url, @audience, @challenge_claim, @spiffe_trust_domain].hash
+    ["dev.sigstore.fulcio.v2.OIDCIssuer", @unknown_fields, @issuer_url, @wildcard_issuer_url, @audience, @challenge_claim, @spiffe_trust_domain].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

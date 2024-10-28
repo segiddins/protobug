@@ -348,7 +348,7 @@ module Protobug
         str << "attr_reader :#{name}\n"
       end
       str << "def hash\n" \
-             "  [#{full_name&.dump || :nil}, #{declared_fields.map(&:ivar).join(", ")}].hash\n" \
+             "  [#{full_name&.dump || :nil}, @unknown_fields, #{declared_fields.map(&:ivar).join(", ")}].hash\n" \
              "end\n"
 
       str << "def __protobug_binary_decode(binary, index, max)\n" \
@@ -537,7 +537,7 @@ module Protobug
       end
 
       def hash
-        self.class.full_name.hash
+        [self.class.full_name, @unknown_fields].hash
       end
 
       def to_text

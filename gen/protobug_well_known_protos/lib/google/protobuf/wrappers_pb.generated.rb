@@ -6,7 +6,7 @@ class Google::Protobuf::DoubleValue # /lib/google/protobuf/wrappers_pb.rb:64
     @value = value
   end
   def hash
-    ["google.protobuf.DoubleValue", @value].hash
+    ["google.protobuf.DoubleValue", @unknown_fields, @value].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -101,7 +101,7 @@ class Google::Protobuf::FloatValue # /lib/google/protobuf/wrappers_pb.rb:76
     @value = value
   end
   def hash
-    ["google.protobuf.FloatValue", @value].hash
+    ["google.protobuf.FloatValue", @unknown_fields, @value].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -196,7 +196,7 @@ class Google::Protobuf::Int64Value # /lib/google/protobuf/wrappers_pb.rb:88
     @value = value
   end
   def hash
-    ["google.protobuf.Int64Value", @value].hash
+    ["google.protobuf.Int64Value", @unknown_fields, @value].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -290,7 +290,7 @@ class Google::Protobuf::UInt64Value # /lib/google/protobuf/wrappers_pb.rb:100
     @value = value
   end
   def hash
-    ["google.protobuf.UInt64Value", @value].hash
+    ["google.protobuf.UInt64Value", @unknown_fields, @value].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -379,7 +379,7 @@ class Google::Protobuf::Int32Value # /lib/google/protobuf/wrappers_pb.rb:112
     @value = value
   end
   def hash
-    ["google.protobuf.Int32Value", @value].hash
+    ["google.protobuf.Int32Value", @unknown_fields, @value].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -473,7 +473,7 @@ class Google::Protobuf::UInt32Value # /lib/google/protobuf/wrappers_pb.rb:124
     @value = value
   end
   def hash
-    ["google.protobuf.UInt32Value", @value].hash
+    ["google.protobuf.UInt32Value", @unknown_fields, @value].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -562,7 +562,7 @@ class Google::Protobuf::BoolValue # /lib/google/protobuf/wrappers_pb.rb:136
     @value = value
   end
   def hash
-    ["google.protobuf.BoolValue", @value].hash
+    ["google.protobuf.BoolValue", @unknown_fields, @value].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -651,7 +651,7 @@ class Google::Protobuf::StringValue # /lib/google/protobuf/wrappers_pb.rb:148
     @value = value
   end
   def hash
-    ["google.protobuf.StringValue", @value].hash
+    ["google.protobuf.StringValue", @unknown_fields, @value].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -743,7 +743,7 @@ class Google::Protobuf::BytesValue # /lib/google/protobuf/wrappers_pb.rb:160
     @value = value
   end
   def hash
-    ["google.protobuf.BytesValue", @value].hash
+    ["google.protobuf.BytesValue", @unknown_fields, @value].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

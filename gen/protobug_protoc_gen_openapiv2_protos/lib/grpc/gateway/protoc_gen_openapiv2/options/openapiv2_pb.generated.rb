@@ -32,7 +32,7 @@ class Grpc::Gateway::ProtocGenOpenapiv2::Options::Swagger # /lib/grpc/gateway/pr
     @extensions = extensions
   end
   def hash
-    ["grpc.gateway.protoc_gen_openapiv2.options.Swagger", @swagger, @info, @host, @base_path, @schemes, @consumes, @produces, @responses, @security_definitions, @security, @tags, @external_docs, @extensions].hash
+    ["grpc.gateway.protoc_gen_openapiv2.options.Swagger", @unknown_fields, @swagger, @info, @host, @base_path, @schemes, @consumes, @produces, @responses, @security_definitions, @security, @tags, @external_docs, @extensions].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -559,7 +559,7 @@ class Grpc::Gateway::ProtocGenOpenapiv2::Options::Operation # /lib/grpc/gateway/
     @parameters = parameters
   end
   def hash
-    ["grpc.gateway.protoc_gen_openapiv2.options.Operation", @tags, @summary, @description, @external_docs, @operation_id, @consumes, @produces, @responses, @schemes, @deprecated, @security, @extensions, @parameters].hash
+    ["grpc.gateway.protoc_gen_openapiv2.options.Operation", @unknown_fields, @tags, @summary, @description, @external_docs, @operation_id, @consumes, @produces, @responses, @schemes, @deprecated, @security, @extensions, @parameters].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1065,7 +1065,7 @@ class Grpc::Gateway::ProtocGenOpenapiv2::Options::Parameters # /lib/grpc/gateway
     @headers = headers
   end
   def hash
-    ["grpc.gateway.protoc_gen_openapiv2.options.Parameters", @headers].hash
+    ["grpc.gateway.protoc_gen_openapiv2.options.Parameters", @unknown_fields, @headers].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1163,7 +1163,7 @@ class Grpc::Gateway::ProtocGenOpenapiv2::Options::HeaderParameter # /lib/grpc/ga
     @required = required
   end
   def hash
-    ["grpc.gateway.protoc_gen_openapiv2.options.HeaderParameter", @name, @description, @type, @format, @required].hash
+    ["grpc.gateway.protoc_gen_openapiv2.options.HeaderParameter", @unknown_fields, @name, @description, @type, @format, @required].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1391,7 +1391,7 @@ class Grpc::Gateway::ProtocGenOpenapiv2::Options::Header # /lib/grpc/gateway/pro
     @pattern = pattern
   end
   def hash
-    ["grpc.gateway.protoc_gen_openapiv2.options.Header", @description, @type, @format, @default, @pattern].hash
+    ["grpc.gateway.protoc_gen_openapiv2.options.Header", @unknown_fields, @description, @type, @format, @default, @pattern].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1615,7 +1615,7 @@ class Grpc::Gateway::ProtocGenOpenapiv2::Options::Response # /lib/grpc/gateway/p
     @extensions = extensions
   end
   def hash
-    ["grpc.gateway.protoc_gen_openapiv2.options.Response", @description, @schema, @headers, @examples, @extensions].hash
+    ["grpc.gateway.protoc_gen_openapiv2.options.Response", @unknown_fields, @description, @schema, @headers, @examples, @extensions].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1884,7 +1884,7 @@ class Grpc::Gateway::ProtocGenOpenapiv2::Options::Info # /lib/grpc/gateway/proto
     @extensions = extensions
   end
   def hash
-    ["grpc.gateway.protoc_gen_openapiv2.options.Info", @title, @description, @terms_of_service, @contact, @license, @version, @extensions].hash
+    ["grpc.gateway.protoc_gen_openapiv2.options.Info", @unknown_fields, @title, @description, @terms_of_service, @contact, @license, @version, @extensions].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -2174,7 +2174,7 @@ class Grpc::Gateway::ProtocGenOpenapiv2::Options::Contact # /lib/grpc/gateway/pr
     @email = email
   end
   def hash
-    ["grpc.gateway.protoc_gen_openapiv2.options.Contact", @name, @url, @email].hash
+    ["grpc.gateway.protoc_gen_openapiv2.options.Contact", @unknown_fields, @name, @url, @email].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -2330,7 +2330,7 @@ class Grpc::Gateway::ProtocGenOpenapiv2::Options::License # /lib/grpc/gateway/pr
     @url = url
   end
   def hash
-    ["grpc.gateway.protoc_gen_openapiv2.options.License", @name, @url].hash
+    ["grpc.gateway.protoc_gen_openapiv2.options.License", @unknown_fields, @name, @url].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -2455,7 +2455,7 @@ class Grpc::Gateway::ProtocGenOpenapiv2::Options::ExternalDocumentation # /lib/g
     @url = url
   end
   def hash
-    ["grpc.gateway.protoc_gen_openapiv2.options.ExternalDocumentation", @description, @url].hash
+    ["grpc.gateway.protoc_gen_openapiv2.options.ExternalDocumentation", @unknown_fields, @description, @url].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -2586,7 +2586,7 @@ class Grpc::Gateway::ProtocGenOpenapiv2::Options::Schema # /lib/grpc/gateway/pro
     @example = example
   end
   def hash
-    ["grpc.gateway.protoc_gen_openapiv2.options.Schema", @json_schema, @discriminator, @read_only, @external_docs, @example].hash
+    ["grpc.gateway.protoc_gen_openapiv2.options.Schema", @unknown_fields, @json_schema, @discriminator, @read_only, @external_docs, @example].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -2843,7 +2843,7 @@ class Grpc::Gateway::ProtocGenOpenapiv2::Options::JSONSchema # /lib/grpc/gateway
     @extensions = extensions
   end
   def hash
-    ["grpc.gateway.protoc_gen_openapiv2.options.JSONSchema", @ref, @title, @description, @default, @read_only, @example, @multiple_of, @maximum, @exclusive_maximum, @minimum, @exclusive_minimum, @max_length, @min_length, @pattern, @max_items, @min_items, @unique_items, @max_properties, @min_properties, @required, @array, @type, @format, @enum, @field_configuration, @extensions].hash
+    ["grpc.gateway.protoc_gen_openapiv2.options.JSONSchema", @unknown_fields, @ref, @title, @description, @default, @read_only, @example, @multiple_of, @maximum, @exclusive_maximum, @minimum, @exclusive_minimum, @max_length, @min_length, @pattern, @max_items, @min_items, @unique_items, @max_properties, @min_properties, @required, @array, @type, @format, @enum, @field_configuration, @extensions].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -3727,7 +3727,7 @@ class Grpc::Gateway::ProtocGenOpenapiv2::Options::JSONSchema::FieldConfiguration
     @path_param_name = path_param_name
   end
   def hash
-    ["grpc.gateway.protoc_gen_openapiv2.options.JSONSchema.FieldConfiguration", @path_param_name].hash
+    ["grpc.gateway.protoc_gen_openapiv2.options.JSONSchema.FieldConfiguration", @unknown_fields, @path_param_name].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -3825,7 +3825,7 @@ class Grpc::Gateway::ProtocGenOpenapiv2::Options::Tag # /lib/grpc/gateway/protoc
     @extensions = extensions
   end
   def hash
-    ["grpc.gateway.protoc_gen_openapiv2.options.Tag", @name, @description, @external_docs, @extensions].hash
+    ["grpc.gateway.protoc_gen_openapiv2.options.Tag", @unknown_fields, @name, @description, @external_docs, @extensions].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -4021,7 +4021,7 @@ class Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityDefinitions # /lib/grp
     @security = security
   end
   def hash
-    ["grpc.gateway.protoc_gen_openapiv2.options.SecurityDefinitions", @security].hash
+    ["grpc.gateway.protoc_gen_openapiv2.options.SecurityDefinitions", @unknown_fields, @security].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -4143,7 +4143,7 @@ class Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityScheme # /lib/grpc/gat
     @extensions = extensions
   end
   def hash
-    ["grpc.gateway.protoc_gen_openapiv2.options.SecurityScheme", @type, @description, @name, @in, @flow, @authorization_url, @token_url, @scopes, @extensions].hash
+    ["grpc.gateway.protoc_gen_openapiv2.options.SecurityScheme", @unknown_fields, @type, @description, @name, @in, @flow, @authorization_url, @token_url, @scopes, @extensions].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -4515,7 +4515,7 @@ class Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityRequirement # /lib/grp
     @security_requirement = security_requirement
   end
   def hash
-    ["grpc.gateway.protoc_gen_openapiv2.options.SecurityRequirement", @security_requirement].hash
+    ["grpc.gateway.protoc_gen_openapiv2.options.SecurityRequirement", @unknown_fields, @security_requirement].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -4621,7 +4621,7 @@ class Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityRequirement::SecurityR
     @scope = scope
   end
   def hash
-    ["grpc.gateway.protoc_gen_openapiv2.options.SecurityRequirement.SecurityRequirementValue", @scope].hash
+    ["grpc.gateway.protoc_gen_openapiv2.options.SecurityRequirement.SecurityRequirementValue", @unknown_fields, @scope].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -4714,7 +4714,7 @@ class Grpc::Gateway::ProtocGenOpenapiv2::Options::Scopes # /lib/grpc/gateway/pro
     @scope = scope
   end
   def hash
-    ["grpc.gateway.protoc_gen_openapiv2.options.Scopes", @scope].hash
+    ["grpc.gateway.protoc_gen_openapiv2.options.Scopes", @unknown_fields, @scope].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

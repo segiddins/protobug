@@ -30,7 +30,7 @@ class Sigstore::Events::CloudEvent # /lib/sigstore/events/events_pb.rb:42
   end
   attr_reader :data
   def hash
-    ["dev.sigstore.events.v1.CloudEvent", @id, @source, @spec_version, @type, @attributes, @binary_data, @text_data, @proto_data].hash
+    ["dev.sigstore.events.v1.CloudEvent", @unknown_fields, @id, @source, @spec_version, @type, @attributes, @binary_data, @text_data, @proto_data].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -409,7 +409,7 @@ class Sigstore::Events::CloudEvent::CloudEventAttributeValue # /lib/sigstore/eve
   end
   attr_reader :attr
   def hash
-    ["dev.sigstore.events.v1.CloudEvent.CloudEventAttributeValue", @ce_boolean, @ce_integer, @ce_string, @ce_bytes, @ce_uri, @ce_uri_ref, @ce_timestamp].hash
+    ["dev.sigstore.events.v1.CloudEvent.CloudEventAttributeValue", @unknown_fields, @ce_boolean, @ce_integer, @ce_string, @ce_bytes, @ce_uri, @ce_uri_ref, @ce_timestamp].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -732,7 +732,7 @@ class Sigstore::Events::CloudEventBatch # /lib/sigstore/events/events_pb.rb:172
     @events = events
   end
   def hash
-    ["dev.sigstore.events.v1.CloudEventBatch", @events].hash
+    ["dev.sigstore.events.v1.CloudEventBatch", @unknown_fields, @events].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

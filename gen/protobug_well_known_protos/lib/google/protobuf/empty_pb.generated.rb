@@ -5,7 +5,7 @@ class Google::Protobuf::Empty # /lib/google/protobuf/empty_pb.rb:58
     @unknown_fields = nil
   end
   def hash
-    ["google.protobuf.Empty", ].hash
+    ["google.protobuf.Empty", @unknown_fields, ].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

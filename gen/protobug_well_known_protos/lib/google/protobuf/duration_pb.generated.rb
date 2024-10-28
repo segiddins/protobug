@@ -8,7 +8,7 @@ class Google::Protobuf::Duration # /lib/google/protobuf/duration_pb.rb:109
     @nanos = nanos
   end
   def hash
-    ["google.protobuf.Duration", @seconds, @nanos].hash
+    ["google.protobuf.Duration", @unknown_fields, @seconds, @nanos].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

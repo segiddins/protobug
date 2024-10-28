@@ -6,7 +6,7 @@ class Google::Protobuf::Struct # /lib/google/protobuf/struct_pb.rb:59
     @fields = fields
   end
   def hash
-    ["google.protobuf.Struct", @fields].hash
+    ["google.protobuf.Struct", @unknown_fields, @fields].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -144,7 +144,7 @@ class Google::Protobuf::Value # /lib/google/protobuf/struct_pb.rb:80
   end
   attr_reader :kind
   def hash
-    ["google.protobuf.Value", @null_value, @number_value, @string_value, @bool_value, @struct_value, @list_value].hash
+    ["google.protobuf.Value", @unknown_fields, @null_value, @number_value, @string_value, @bool_value, @struct_value, @list_value].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -435,7 +435,7 @@ class Google::Protobuf::ListValue # /lib/google/protobuf/struct_pb.rb:162
     @values = values
   end
   def hash
-    ["google.protobuf.ListValue", @values].hash
+    ["google.protobuf.ListValue", @unknown_fields, @values].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

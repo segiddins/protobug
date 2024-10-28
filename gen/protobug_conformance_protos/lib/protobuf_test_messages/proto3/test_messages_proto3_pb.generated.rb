@@ -344,7 +344,7 @@ class ProtobufTestMessages::Proto3::TestAllTypesProto3 # /lib/protobuf_test_mess
   end
   attr_reader :oneof_field
   def hash
-    ["protobuf_test_messages.proto3.TestAllTypesProto3", @optional_int32, @optional_int64, @optional_uint32, @optional_uint64, @optional_sint32, @optional_sint64, @optional_fixed32, @optional_fixed64, @optional_sfixed32, @optional_sfixed64, @optional_float, @optional_double, @optional_bool, @optional_string, @optional_bytes, @optional_nested_message, @optional_foreign_message, @optional_nested_enum, @optional_foreign_enum, @optional_aliased_enum, @optional_string_piece, @optional_cord, @recursive_message, @repeated_int32, @repeated_int64, @repeated_uint32, @repeated_uint64, @repeated_sint32, @repeated_sint64, @repeated_fixed32, @repeated_fixed64, @repeated_sfixed32, @repeated_sfixed64, @repeated_float, @repeated_double, @repeated_bool, @repeated_string, @repeated_bytes, @repeated_nested_message, @repeated_foreign_message, @repeated_nested_enum, @repeated_foreign_enum, @repeated_string_piece, @repeated_cord, @packed_int32, @packed_int64, @packed_uint32, @packed_uint64, @packed_sint32, @packed_sint64, @packed_fixed32, @packed_fixed64, @packed_sfixed32, @packed_sfixed64, @packed_float, @packed_double, @packed_bool, @packed_nested_enum, @unpacked_int32, @unpacked_int64, @unpacked_uint32, @unpacked_uint64, @unpacked_sint32, @unpacked_sint64, @unpacked_fixed32, @unpacked_fixed64, @unpacked_sfixed32, @unpacked_sfixed64, @unpacked_float, @unpacked_double, @unpacked_bool, @unpacked_nested_enum, @map_int32_int32, @map_int64_int64, @map_uint32_uint32, @map_uint64_uint64, @map_sint32_sint32, @map_sint64_sint64, @map_fixed32_fixed32, @map_fixed64_fixed64, @map_sfixed32_sfixed32, @map_sfixed64_sfixed64, @map_int32_float, @map_int32_double, @map_bool_bool, @map_string_string, @map_string_bytes, @map_string_nested_message, @map_string_foreign_message, @map_string_nested_enum, @map_string_foreign_enum, @oneof_uint32, @oneof_nested_message, @oneof_string, @oneof_bytes, @oneof_bool, @oneof_uint64, @oneof_float, @oneof_double, @oneof_enum, @oneof_null_value, @optional_bool_wrapper, @optional_int32_wrapper, @optional_int64_wrapper, @optional_uint32_wrapper, @optional_uint64_wrapper, @optional_float_wrapper, @optional_double_wrapper, @optional_string_wrapper, @optional_bytes_wrapper, @repeated_bool_wrapper, @repeated_int32_wrapper, @repeated_int64_wrapper, @repeated_uint32_wrapper, @repeated_uint64_wrapper, @repeated_float_wrapper, @repeated_double_wrapper, @repeated_string_wrapper, @repeated_bytes_wrapper, @optional_duration, @optional_timestamp, @optional_field_mask, @optional_struct, @optional_any, @optional_value, @optional_null_value, @repeated_duration, @repeated_timestamp, @repeated_fieldmask, @repeated_struct, @repeated_any, @repeated_value, @repeated_list_value, @fieldname1, @field_name2, @_field_name3, @field__name4_, @field0name5, @field_0_name6, @fieldName7, @FieldName8, @field_Name9, @Field_Name10, @FIELD_NAME11, @FIELD_name12, @__field_name13, @__Field_name14, @field__name15, @field__Name16, @field_name17__, @Field_name18__].hash
+    ["protobuf_test_messages.proto3.TestAllTypesProto3", @unknown_fields, @optional_int32, @optional_int64, @optional_uint32, @optional_uint64, @optional_sint32, @optional_sint64, @optional_fixed32, @optional_fixed64, @optional_sfixed32, @optional_sfixed64, @optional_float, @optional_double, @optional_bool, @optional_string, @optional_bytes, @optional_nested_message, @optional_foreign_message, @optional_nested_enum, @optional_foreign_enum, @optional_aliased_enum, @optional_string_piece, @optional_cord, @recursive_message, @repeated_int32, @repeated_int64, @repeated_uint32, @repeated_uint64, @repeated_sint32, @repeated_sint64, @repeated_fixed32, @repeated_fixed64, @repeated_sfixed32, @repeated_sfixed64, @repeated_float, @repeated_double, @repeated_bool, @repeated_string, @repeated_bytes, @repeated_nested_message, @repeated_foreign_message, @repeated_nested_enum, @repeated_foreign_enum, @repeated_string_piece, @repeated_cord, @packed_int32, @packed_int64, @packed_uint32, @packed_uint64, @packed_sint32, @packed_sint64, @packed_fixed32, @packed_fixed64, @packed_sfixed32, @packed_sfixed64, @packed_float, @packed_double, @packed_bool, @packed_nested_enum, @unpacked_int32, @unpacked_int64, @unpacked_uint32, @unpacked_uint64, @unpacked_sint32, @unpacked_sint64, @unpacked_fixed32, @unpacked_fixed64, @unpacked_sfixed32, @unpacked_sfixed64, @unpacked_float, @unpacked_double, @unpacked_bool, @unpacked_nested_enum, @map_int32_int32, @map_int64_int64, @map_uint32_uint32, @map_uint64_uint64, @map_sint32_sint32, @map_sint64_sint64, @map_fixed32_fixed32, @map_fixed64_fixed64, @map_sfixed32_sfixed32, @map_sfixed64_sfixed64, @map_int32_float, @map_int32_double, @map_bool_bool, @map_string_string, @map_string_bytes, @map_string_nested_message, @map_string_foreign_message, @map_string_nested_enum, @map_string_foreign_enum, @oneof_uint32, @oneof_nested_message, @oneof_string, @oneof_bytes, @oneof_bool, @oneof_uint64, @oneof_float, @oneof_double, @oneof_enum, @oneof_null_value, @optional_bool_wrapper, @optional_int32_wrapper, @optional_int64_wrapper, @optional_uint32_wrapper, @optional_uint64_wrapper, @optional_float_wrapper, @optional_double_wrapper, @optional_string_wrapper, @optional_bytes_wrapper, @repeated_bool_wrapper, @repeated_int32_wrapper, @repeated_int64_wrapper, @repeated_uint32_wrapper, @repeated_uint64_wrapper, @repeated_float_wrapper, @repeated_double_wrapper, @repeated_string_wrapper, @repeated_bytes_wrapper, @optional_duration, @optional_timestamp, @optional_field_mask, @optional_struct, @optional_any, @optional_value, @optional_null_value, @repeated_duration, @repeated_timestamp, @repeated_fieldmask, @repeated_struct, @repeated_any, @repeated_value, @repeated_list_value, @fieldname1, @field_name2, @_field_name3, @field__name4_, @field0name5, @field_0_name6, @fieldName7, @FieldName8, @field_Name9, @Field_Name10, @FIELD_NAME11, @FIELD_name12, @__field_name13, @__Field_name14, @field__name15, @field__Name16, @field_name17__, @Field_name18__].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -6189,7 +6189,7 @@ class ProtobufTestMessages::Proto3::TestAllTypesProto3::NestedMessage # /lib/pro
     @corecursive = corecursive
   end
   def hash
-    ["protobuf_test_messages.proto3.TestAllTypesProto3.NestedMessage", @a, @corecursive].hash
+    ["protobuf_test_messages.proto3.TestAllTypesProto3.NestedMessage", @unknown_fields, @a, @corecursive].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -6315,7 +6315,7 @@ class ProtobufTestMessages::Proto3::ForeignMessage # /lib/protobuf_test_messages
     @c = c
   end
   def hash
-    ["protobuf_test_messages.proto3.ForeignMessage", @c].hash
+    ["protobuf_test_messages.proto3.ForeignMessage", @unknown_fields, @c].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -6410,7 +6410,7 @@ class ProtobufTestMessages::Proto3::NullHypothesisProto3 # /lib/protobuf_test_me
     @unknown_fields = nil
   end
   def hash
-    ["protobuf_test_messages.proto3.NullHypothesisProto3", ].hash
+    ["protobuf_test_messages.proto3.NullHypothesisProto3", @unknown_fields, ].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -6470,7 +6470,7 @@ class ProtobufTestMessages::Proto3::EnumOnlyProto3 # /lib/protobuf_test_messages
     @unknown_fields = nil
   end
   def hash
-    ["protobuf_test_messages.proto3.EnumOnlyProto3", ].hash
+    ["protobuf_test_messages.proto3.EnumOnlyProto3", @unknown_fields, ].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

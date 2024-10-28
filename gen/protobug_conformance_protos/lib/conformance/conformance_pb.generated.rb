@@ -10,7 +10,7 @@ class Conformance::FailureSet # /lib/conformance/conformance_pb.rb:84
     @failure = failure
   end
   def hash
-    ["conformance.FailureSet", @failure].hash
+    ["conformance.FailureSet", @unknown_fields, @failure].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -133,7 +133,7 @@ class Conformance::ConformanceRequest # /lib/conformance/conformance_pb.rb:97
   end
   attr_reader :payload
   def hash
-    ["conformance.ConformanceRequest", @protobuf_payload, @json_payload, @jspb_payload, @text_payload, @requested_output_format, @message_type, @test_category, @jspb_encoding_options, @print_unknown_fields].hash
+    ["conformance.ConformanceRequest", @unknown_fields, @protobuf_payload, @json_payload, @jspb_payload, @text_payload, @requested_output_format, @message_type, @test_category, @jspb_encoding_options, @print_unknown_fields].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -555,7 +555,7 @@ class Conformance::ConformanceResponse # /lib/conformance/conformance_pb.rb:193
   end
   attr_reader :result
   def hash
-    ["conformance.ConformanceResponse", @parse_error, @serialize_error, @timeout_error, @runtime_error, @protobuf_payload, @json_payload, @skipped, @jspb_payload, @text_payload].hash
+    ["conformance.ConformanceResponse", @unknown_fields, @parse_error, @serialize_error, @timeout_error, @runtime_error, @protobuf_payload, @json_payload, @skipped, @jspb_payload, @text_payload].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -958,7 +958,7 @@ class Conformance::JspbEncodingConfig # /lib/conformance/conformance_pb.rb:297
     @use_jspb_array_any_format = use_jspb_array_any_format
   end
   def hash
-    ["conformance.JspbEncodingConfig", @use_jspb_array_any_format].hash
+    ["conformance.JspbEncodingConfig", @unknown_fields, @use_jspb_array_any_format].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

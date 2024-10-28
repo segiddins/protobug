@@ -6,7 +6,7 @@ class Sigstore::Bundle::V1::TimestampVerificationData # /lib/sigstore/bundle/v1/
     @rfc3161_timestamps = rfc3161_timestamps
   end
   def hash
-    ["dev.sigstore.bundle.v1.TimestampVerificationData", @rfc3161_timestamps].hash
+    ["dev.sigstore.bundle.v1.TimestampVerificationData", @unknown_fields, @rfc3161_timestamps].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -114,7 +114,7 @@ class Sigstore::Bundle::V1::VerificationMaterial # /lib/sigstore/bundle/v1/sigst
   end
   attr_reader :content
   def hash
-    ["dev.sigstore.bundle.v1.VerificationMaterial", @public_key, @x509_certificate_chain, @certificate, @tlog_entries, @timestamp_verification_data].hash
+    ["dev.sigstore.bundle.v1.VerificationMaterial", @unknown_fields, @public_key, @x509_certificate_chain, @certificate, @tlog_entries, @timestamp_verification_data].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -350,7 +350,7 @@ class Sigstore::Bundle::V1::Bundle # /lib/sigstore/bundle/v1/sigstore_bundle_pb.
   end
   attr_reader :content
   def hash
-    ["dev.sigstore.bundle.v1.Bundle", @media_type, @verification_material, @message_signature, @dsse_envelope].hash
+    ["dev.sigstore.bundle.v1.Bundle", @unknown_fields, @media_type, @verification_material, @message_signature, @dsse_envelope].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

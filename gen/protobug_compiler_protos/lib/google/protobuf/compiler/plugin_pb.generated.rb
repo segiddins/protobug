@@ -13,7 +13,7 @@ class Google::Protobuf::Compiler::Version # /lib/google/protobuf/compiler/plugin
     @suffix = suffix
   end
   def hash
-    ["google.protobuf.compiler.Version", @major, @minor, @patch, @suffix].hash
+    ["google.protobuf.compiler.Version", @unknown_fields, @major, @minor, @patch, @suffix].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -218,7 +218,7 @@ class Google::Protobuf::Compiler::CodeGeneratorRequest # /lib/google/protobuf/co
     @compiler_version = compiler_version
   end
   def hash
-    ["google.protobuf.compiler.CodeGeneratorRequest", @file_to_generate, @parameter, @proto_file, @source_file_descriptors, @compiler_version].hash
+    ["google.protobuf.compiler.CodeGeneratorRequest", @unknown_fields, @file_to_generate, @parameter, @proto_file, @source_file_descriptors, @compiler_version].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -440,7 +440,7 @@ class Google::Protobuf::Compiler::CodeGeneratorResponse # /lib/google/protobuf/c
     @file = file
   end
   def hash
-    ["google.protobuf.compiler.CodeGeneratorResponse", @error, @supported_features, @minimum_edition, @maximum_edition, @file].hash
+    ["google.protobuf.compiler.CodeGeneratorResponse", @unknown_fields, @error, @supported_features, @minimum_edition, @maximum_edition, @file].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -669,7 +669,7 @@ class Google::Protobuf::Compiler::CodeGeneratorResponse::File # /lib/google/prot
     @generated_code_info = generated_code_info
   end
   def hash
-    ["google.protobuf.compiler.CodeGeneratorResponse.File", @name, @insertion_point, @content, @generated_code_info].hash
+    ["google.protobuf.compiler.CodeGeneratorResponse.File", @unknown_fields, @name, @insertion_point, @content, @generated_code_info].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

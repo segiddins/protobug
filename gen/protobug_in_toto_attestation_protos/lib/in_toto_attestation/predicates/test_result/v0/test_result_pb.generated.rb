@@ -16,7 +16,7 @@ class InTotoAttestation::Predicates::TestResult::V0::TestResult # /lib/in_toto_a
     @failed_tests = failed_tests
   end
   def hash
-    ["in_toto_attestation.predicates.test_result.v0.TestResult", @result, @configuration, @url, @passed_tests, @warned_tests, @failed_tests].hash
+    ["in_toto_attestation.predicates.test_result.v0.TestResult", @unknown_fields, @result, @configuration, @url, @passed_tests, @warned_tests, @failed_tests].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

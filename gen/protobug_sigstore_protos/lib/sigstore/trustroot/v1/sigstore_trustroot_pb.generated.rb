@@ -14,7 +14,7 @@ class Sigstore::TrustRoot::V1::TransparencyLogInstance # /lib/sigstore/trustroot
     @checkpoint_key_id = checkpoint_key_id
   end
   def hash
-    ["dev.sigstore.trustroot.v1.TransparencyLogInstance", @base_url, @hash_algorithm, @public_key, @log_id, @checkpoint_key_id].hash
+    ["dev.sigstore.trustroot.v1.TransparencyLogInstance", @unknown_fields, @base_url, @hash_algorithm, @public_key, @log_id, @checkpoint_key_id].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -232,7 +232,7 @@ class Sigstore::TrustRoot::V1::CertificateAuthority # /lib/sigstore/trustroot/v1
     @valid_for = valid_for
   end
   def hash
-    ["dev.sigstore.trustroot.v1.CertificateAuthority", @subject, @uri, @cert_chain, @valid_for].hash
+    ["dev.sigstore.trustroot.v1.CertificateAuthority", @unknown_fields, @subject, @uri, @cert_chain, @valid_for].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -416,7 +416,7 @@ class Sigstore::TrustRoot::V1::TrustedRoot # /lib/sigstore/trustroot/v1/sigstore
     @timestamp_authorities = timestamp_authorities
   end
   def hash
-    ["dev.sigstore.trustroot.v1.TrustedRoot", @media_type, @tlogs, @certificate_authorities, @ctlogs, @timestamp_authorities].hash
+    ["dev.sigstore.trustroot.v1.TrustedRoot", @unknown_fields, @media_type, @tlogs, @certificate_authorities, @ctlogs, @timestamp_authorities].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -632,7 +632,7 @@ class Sigstore::TrustRoot::V1::SigningConfig # /lib/sigstore/trustroot/v1/sigsto
     @tsa_urls = tsa_urls
   end
   def hash
-    ["dev.sigstore.trustroot.v1.SigningConfig", @media_type, @ca_url, @oidc_url, @tlog_urls, @tsa_urls].hash
+    ["dev.sigstore.trustroot.v1.SigningConfig", @unknown_fields, @media_type, @ca_url, @oidc_url, @tlog_urls, @tsa_urls].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -854,7 +854,7 @@ class Sigstore::TrustRoot::V1::ClientTrustConfig # /lib/sigstore/trustroot/v1/si
     @signing_config = signing_config
   end
   def hash
-    ["dev.sigstore.trustroot.v1.ClientTrustConfig", @media_type, @trusted_root, @signing_config].hash
+    ["dev.sigstore.trustroot.v1.ClientTrustConfig", @unknown_fields, @media_type, @trusted_root, @signing_config].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

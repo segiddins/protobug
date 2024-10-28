@@ -8,7 +8,7 @@ class Google::Protobuf::Timestamp # /lib/google/protobuf/timestamp_pb.rb:140
     @nanos = nanos
   end
   def hash
-    ["google.protobuf.Timestamp", @seconds, @nanos].hash
+    ["google.protobuf.Timestamp", @unknown_fields, @seconds, @nanos].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

@@ -6,7 +6,7 @@ class Google::Protobuf::SourceContext # /lib/google/protobuf/source_context_pb.r
     @file_name = file_name
   end
   def hash
-    ["google.protobuf.SourceContext", @file_name].hash
+    ["google.protobuf.SourceContext", @unknown_fields, @file_name].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

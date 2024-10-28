@@ -12,7 +12,7 @@ class Sigstore::Common::V1::HashOutput # /lib/sigstore/common/v1/sigstore_common
     @digest = digest
   end
   def hash
-    ["dev.sigstore.common.v1.HashOutput", @algorithm, @digest].hash
+    ["dev.sigstore.common.v1.HashOutput", @unknown_fields, @algorithm, @digest].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -141,7 +141,7 @@ class Sigstore::Common::V1::MessageSignature # /lib/sigstore/common/v1/sigstore_
     @signature = signature
   end
   def hash
-    ["dev.sigstore.common.v1.MessageSignature", @message_digest, @signature].hash
+    ["dev.sigstore.common.v1.MessageSignature", @unknown_fields, @message_digest, @signature].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -260,7 +260,7 @@ class Sigstore::Common::V1::LogId # /lib/sigstore/common/v1/sigstore_common_pb.r
     @key_id = key_id
   end
   def hash
-    ["dev.sigstore.common.v1.LogId", @key_id].hash
+    ["dev.sigstore.common.v1.LogId", @unknown_fields, @key_id].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -351,7 +351,7 @@ class Sigstore::Common::V1::RFC3161SignedTimestamp # /lib/sigstore/common/v1/sig
     @signed_timestamp = signed_timestamp
   end
   def hash
-    ["dev.sigstore.common.v1.RFC3161SignedTimestamp", @signed_timestamp].hash
+    ["dev.sigstore.common.v1.RFC3161SignedTimestamp", @unknown_fields, @signed_timestamp].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -447,7 +447,7 @@ class Sigstore::Common::V1::PublicKey # /lib/sigstore/common/v1/sigstore_common_
     @valid_for = valid_for
   end
   def hash
-    ["dev.sigstore.common.v1.PublicKey", @raw_bytes, @key_details, @valid_for].hash
+    ["dev.sigstore.common.v1.PublicKey", @unknown_fields, @raw_bytes, @key_details, @valid_for].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -605,7 +605,7 @@ class Sigstore::Common::V1::PublicKeyIdentifier # /lib/sigstore/common/v1/sigsto
     @hint = hint
   end
   def hash
-    ["dev.sigstore.common.v1.PublicKeyIdentifier", @hint].hash
+    ["dev.sigstore.common.v1.PublicKeyIdentifier", @unknown_fields, @hint].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -697,7 +697,7 @@ class Sigstore::Common::V1::ObjectIdentifier # /lib/sigstore/common/v1/sigstore_
     @id = id
   end
   def hash
-    ["dev.sigstore.common.v1.ObjectIdentifier", @id].hash
+    ["dev.sigstore.common.v1.ObjectIdentifier", @unknown_fields, @id].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -813,7 +813,7 @@ class Sigstore::Common::V1::ObjectIdentifierValuePair # /lib/sigstore/common/v1/
     @value = value
   end
   def hash
-    ["dev.sigstore.common.v1.ObjectIdentifierValuePair", @oid, @value].hash
+    ["dev.sigstore.common.v1.ObjectIdentifierValuePair", @unknown_fields, @oid, @value].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -934,7 +934,7 @@ class Sigstore::Common::V1::DistinguishedName # /lib/sigstore/common/v1/sigstore
     @common_name = common_name
   end
   def hash
-    ["dev.sigstore.common.v1.DistinguishedName", @organization, @common_name].hash
+    ["dev.sigstore.common.v1.DistinguishedName", @unknown_fields, @organization, @common_name].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1057,7 +1057,7 @@ class Sigstore::Common::V1::X509Certificate # /lib/sigstore/common/v1/sigstore_c
     @raw_bytes = raw_bytes
   end
   def hash
-    ["dev.sigstore.common.v1.X509Certificate", @raw_bytes].hash
+    ["dev.sigstore.common.v1.X509Certificate", @unknown_fields, @raw_bytes].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1160,7 +1160,7 @@ class Sigstore::Common::V1::SubjectAlternativeName # /lib/sigstore/common/v1/sig
   end
   attr_reader :identity
   def hash
-    ["dev.sigstore.common.v1.SubjectAlternativeName", @type, @regexp, @value].hash
+    ["dev.sigstore.common.v1.SubjectAlternativeName", @unknown_fields, @type, @regexp, @value].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1334,7 +1334,7 @@ class Sigstore::Common::V1::X509CertificateChain # /lib/sigstore/common/v1/sigst
     @certificates = certificates
   end
   def hash
-    ["dev.sigstore.common.v1.X509CertificateChain", @certificates].hash
+    ["dev.sigstore.common.v1.X509CertificateChain", @unknown_fields, @certificates].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1427,7 +1427,7 @@ class Sigstore::Common::V1::TimeRange # /lib/sigstore/common/v1/sigstore_common_
     @end = __end__
   end
   def hash
-    ["dev.sigstore.common.v1.TimeRange", @start, @end].hash
+    ["dev.sigstore.common.v1.TimeRange", @unknown_fields, @start, @end].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

@@ -18,7 +18,7 @@ class InTotoAttestation::V1::ResourceDescriptor # /lib/in_toto_attestation/v1/re
     @annotations = annotations
   end
   def hash
-    ["in_toto_attestation.v1.ResourceDescriptor", @name, @uri, @digest, @content, @download_location, @media_type, @annotations].hash
+    ["in_toto_attestation.v1.ResourceDescriptor", @unknown_fields, @name, @uri, @digest, @content, @download_location, @media_type, @annotations].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

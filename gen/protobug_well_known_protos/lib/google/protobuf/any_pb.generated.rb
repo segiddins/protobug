@@ -8,7 +8,7 @@ class Google::Protobuf::Any # /lib/google/protobuf/any_pb.rb:135
     @value = value
   end
   def hash
-    ["google.protobuf.Any", @type_url, @value].hash
+    ["google.protobuf.Any", @unknown_fields, @type_url, @value].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

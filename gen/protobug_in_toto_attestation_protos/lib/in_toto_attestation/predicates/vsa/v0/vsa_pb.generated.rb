@@ -20,7 +20,7 @@ class InTotoAttestation::Predicates::Vsa::V0::VerificationSummary # /lib/in_toto
     @dependency_levels = dependency_levels
   end
   def hash
-    ["in_toto_attestation.predicates.vsa.v0.VerificationSummary", @verifier, @time_verified, @resource_uri, @policy, @input_attestations, @verification_result, @policy_level, @dependency_levels].hash
+    ["in_toto_attestation.predicates.vsa.v0.VerificationSummary", @unknown_fields, @verifier, @time_verified, @resource_uri, @policy, @input_attestations, @verification_result, @policy_level, @dependency_levels].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -331,7 +331,7 @@ class InTotoAttestation::Predicates::Vsa::V0::VerificationSummary::Verifier # /l
     @id = id
   end
   def hash
-    ["in_toto_attestation.predicates.vsa.v0.VerificationSummary.Verifier", @id].hash
+    ["in_toto_attestation.predicates.vsa.v0.VerificationSummary.Verifier", @unknown_fields, @id].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -425,7 +425,7 @@ class InTotoAttestation::Predicates::Vsa::V0::VerificationSummary::Policy # /lib
     @digest = digest
   end
   def hash
-    ["in_toto_attestation.predicates.vsa.v0.VerificationSummary.Policy", @uri, @digest].hash
+    ["in_toto_attestation.predicates.vsa.v0.VerificationSummary.Policy", @unknown_fields, @uri, @digest].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -566,7 +566,7 @@ class InTotoAttestation::Predicates::Vsa::V0::VerificationSummary::InputAttestat
     @digest = digest
   end
   def hash
-    ["in_toto_attestation.predicates.vsa.v0.VerificationSummary.InputAttestation", @uri, @digest].hash
+    ["in_toto_attestation.predicates.vsa.v0.VerificationSummary.InputAttestation", @unknown_fields, @uri, @digest].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

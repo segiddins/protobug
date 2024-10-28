@@ -10,7 +10,7 @@ class Sigstore::DSSE::Envelope # /lib/sigstore/dsse/envelope_pb.rb:31
     @signatures = signatures
   end
   def hash
-    ["io.intoto.Envelope", @payload, @payloadType, @signatures].hash
+    ["io.intoto.Envelope", @unknown_fields, @payload, @payloadType, @signatures].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -163,7 +163,7 @@ class Sigstore::DSSE::Signature # /lib/sigstore/dsse/envelope_pb.rb:59
     @keyid = keyid
   end
   def hash
-    ["io.intoto.Signature", @sig, @keyid].hash
+    ["io.intoto.Signature", @unknown_fields, @sig, @keyid].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

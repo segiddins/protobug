@@ -14,7 +14,7 @@ class InTotoAttestation::Predicates::Link::V0::Link # /lib/in_toto_attestation/p
     @environment = environment
   end
   def hash
-    ["in_toto_attestation.predicates.link.v0.Link", @name, @command, @materials, @byproducts, @environment].hash
+    ["in_toto_attestation.predicates.link.v0.Link", @unknown_fields, @name, @command, @materials, @byproducts, @environment].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

@@ -8,7 +8,7 @@ class InTotoAttestation::Predicates::Provenance::V1::Provenance # /lib/in_toto_a
     @run_details = run_details
   end
   def hash
-    ["in_toto_attestation.predicates.provenance.v1.Provenance", @build_definition, @run_details].hash
+    ["in_toto_attestation.predicates.provenance.v1.Provenance", @unknown_fields, @build_definition, @run_details].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -131,7 +131,7 @@ class InTotoAttestation::Predicates::Provenance::V1::BuildDefinition # /lib/in_t
     @resolved_dependencies = resolved_dependencies
   end
   def hash
-    ["in_toto_attestation.predicates.provenance.v1.BuildDefinition", @build_type, @external_parameters, @internal_parameters, @resolved_dependencies].hash
+    ["in_toto_attestation.predicates.provenance.v1.BuildDefinition", @unknown_fields, @build_type, @external_parameters, @internal_parameters, @resolved_dependencies].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -312,7 +312,7 @@ class InTotoAttestation::Predicates::Provenance::V1::RunDetails # /lib/in_toto_a
     @byproducts = byproducts
   end
   def hash
-    ["in_toto_attestation.predicates.provenance.v1.RunDetails", @builder, @metadata, @byproducts].hash
+    ["in_toto_attestation.predicates.provenance.v1.RunDetails", @unknown_fields, @builder, @metadata, @byproducts].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -462,7 +462,7 @@ class InTotoAttestation::Predicates::Provenance::V1::Builder # /lib/in_toto_atte
     @builder_dependencies = builder_dependencies
   end
   def hash
-    ["in_toto_attestation.predicates.provenance.v1.Builder", @id, @version, @builder_dependencies].hash
+    ["in_toto_attestation.predicates.provenance.v1.Builder", @unknown_fields, @id, @version, @builder_dependencies].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -634,7 +634,7 @@ class InTotoAttestation::Predicates::Provenance::V1::BuildMetadata # /lib/in_tot
     @finished_on = finished_on
   end
   def hash
-    ["in_toto_attestation.predicates.provenance.v1.BuildMetadata", @invocation_id, @started_on, @finished_on].hash
+    ["in_toto_attestation.predicates.provenance.v1.BuildMetadata", @unknown_fields, @invocation_id, @started_on, @finished_on].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

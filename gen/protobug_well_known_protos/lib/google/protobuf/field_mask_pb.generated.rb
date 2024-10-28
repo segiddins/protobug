@@ -6,7 +6,7 @@ class Google::Protobuf::FieldMask # /lib/google/protobuf/field_mask_pb.rb:250
     @paths = paths
   end
   def hash
-    ["google.protobuf.FieldMask", @paths].hash
+    ["google.protobuf.FieldMask", @unknown_fields, @paths].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

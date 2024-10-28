@@ -12,7 +12,7 @@ class InTotoAttestation::V1::Statement # /lib/in_toto_attestation/v1/statement_p
     @predicate = predicate
   end
   def hash
-    ["in_toto_attestation.v1.Statement", @type, @subject, @predicate_type, @predicate].hash
+    ["in_toto_attestation.v1.Statement", @unknown_fields, @type, @subject, @predicate_type, @predicate].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

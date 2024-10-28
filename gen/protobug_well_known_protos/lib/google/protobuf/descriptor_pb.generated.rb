@@ -6,7 +6,7 @@ class Google::Protobuf::FileDescriptorSet # /lib/google/protobuf/descriptor_pb.r
     @file = file
   end
   def hash
-    ["google.protobuf.FileDescriptorSet", @file].hash
+    ["google.protobuf.FileDescriptorSet", @unknown_fields, @file].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -123,7 +123,7 @@ class Google::Protobuf::FileDescriptorProto # /lib/google/protobuf/descriptor_pb
     @edition = edition
   end
   def hash
-    ["google.protobuf.FileDescriptorProto", @name, @package, @dependency, @public_dependency, @weak_dependency, @message_type, @enum_type, @service, @extension, @options, @source_code_info, @syntax, @edition].hash
+    ["google.protobuf.FileDescriptorProto", @unknown_fields, @name, @package, @dependency, @public_dependency, @weak_dependency, @message_type, @enum_type, @service, @extension, @options, @source_code_info, @syntax, @edition].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -649,7 +649,7 @@ class Google::Protobuf::DescriptorProto # /lib/google/protobuf/descriptor_pb.rb:
     @reserved_name = reserved_name
   end
   def hash
-    ["google.protobuf.DescriptorProto", @name, @field, @extension, @nested_type, @enum_type, @extension_range, @oneof_decl, @options, @reserved_range, @reserved_name].hash
+    ["google.protobuf.DescriptorProto", @unknown_fields, @name, @field, @extension, @nested_type, @enum_type, @extension_range, @oneof_decl, @options, @reserved_range, @reserved_name].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1012,7 +1012,7 @@ class Google::Protobuf::DescriptorProto::ExtensionRange # /lib/google/protobuf/d
     @options = options
   end
   def hash
-    ["google.protobuf.DescriptorProto.ExtensionRange", @start, @end, @options].hash
+    ["google.protobuf.DescriptorProto.ExtensionRange", @unknown_fields, @start, @end, @options].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1174,7 +1174,7 @@ class Google::Protobuf::DescriptorProto::ReservedRange # /lib/google/protobuf/de
     @end = __end__
   end
   def hash
-    ["google.protobuf.DescriptorProto.ReservedRange", @start, @end].hash
+    ["google.protobuf.DescriptorProto.ReservedRange", @unknown_fields, @start, @end].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1311,7 +1311,7 @@ class Google::Protobuf::ExtensionRangeOptions # /lib/google/protobuf/descriptor_
     @verification = verification
   end
   def hash
-    ["google.protobuf.ExtensionRangeOptions", @uninterpreted_option, @declaration, @features, @verification].hash
+    ["google.protobuf.ExtensionRangeOptions", @unknown_fields, @uninterpreted_option, @declaration, @features, @verification].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1506,7 +1506,7 @@ class Google::Protobuf::ExtensionRangeOptions::Declaration # /lib/google/protobu
     @repeated = repeated
   end
   def hash
-    ["google.protobuf.ExtensionRangeOptions.Declaration", @number, @full_name, @type, @reserved, @repeated].hash
+    ["google.protobuf.ExtensionRangeOptions.Declaration", @unknown_fields, @number, @full_name, @type, @reserved, @repeated].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1747,7 +1747,7 @@ class Google::Protobuf::FieldDescriptorProto # /lib/google/protobuf/descriptor_p
     @proto3_optional = proto3_optional
   end
   def hash
-    ["google.protobuf.FieldDescriptorProto", @name, @number, @label, @type, @type_name, @extendee, @default_value, @oneof_index, @json_name, @options, @proto3_optional].hash
+    ["google.protobuf.FieldDescriptorProto", @unknown_fields, @name, @number, @label, @type, @type_name, @extendee, @default_value, @oneof_index, @json_name, @options, @proto3_optional].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -2176,7 +2176,7 @@ class Google::Protobuf::OneofDescriptorProto # /lib/google/protobuf/descriptor_p
     @options = options
   end
   def hash
-    ["google.protobuf.OneofDescriptorProto", @name, @options].hash
+    ["google.protobuf.OneofDescriptorProto", @unknown_fields, @name, @options].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -2308,7 +2308,7 @@ class Google::Protobuf::EnumDescriptorProto # /lib/google/protobuf/descriptor_pb
     @reserved_name = reserved_name
   end
   def hash
-    ["google.protobuf.EnumDescriptorProto", @name, @value, @options, @reserved_range, @reserved_name].hash
+    ["google.protobuf.EnumDescriptorProto", @unknown_fields, @name, @value, @options, @reserved_range, @reserved_name].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -2524,7 +2524,7 @@ class Google::Protobuf::EnumDescriptorProto::EnumReservedRange # /lib/google/pro
     @end = __end__
   end
   def hash
-    ["google.protobuf.EnumDescriptorProto.EnumReservedRange", @start, @end].hash
+    ["google.protobuf.EnumDescriptorProto.EnumReservedRange", @unknown_fields, @start, @end].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -2659,7 +2659,7 @@ class Google::Protobuf::EnumValueDescriptorProto # /lib/google/protobuf/descript
     @options = options
   end
   def hash
-    ["google.protobuf.EnumValueDescriptorProto", @name, @number, @options].hash
+    ["google.protobuf.EnumValueDescriptorProto", @unknown_fields, @name, @number, @options].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -2821,7 +2821,7 @@ class Google::Protobuf::ServiceDescriptorProto # /lib/google/protobuf/descriptor
     @options = options
   end
   def hash
-    ["google.protobuf.ServiceDescriptorProto", @name, @method, @options].hash
+    ["google.protobuf.ServiceDescriptorProto", @unknown_fields, @name, @method, @options].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -2984,7 +2984,7 @@ class Google::Protobuf::MethodDescriptorProto # /lib/google/protobuf/descriptor_
     @server_streaming = server_streaming
   end
   def hash
-    ["google.protobuf.MethodDescriptorProto", @name, @input_type, @output_type, @options, @client_streaming, @server_streaming].hash
+    ["google.protobuf.MethodDescriptorProto", @unknown_fields, @name, @input_type, @output_type, @options, @client_streaming, @server_streaming].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -3270,7 +3270,7 @@ class Google::Protobuf::FileOptions # /lib/google/protobuf/descriptor_pb.rb:655
     @uninterpreted_option = uninterpreted_option
   end
   def hash
-    ["google.protobuf.FileOptions", @java_package, @java_outer_classname, @java_multiple_files, @java_generate_equals_and_hash, @java_string_check_utf8, @optimize_for, @go_package, @cc_generic_services, @java_generic_services, @py_generic_services, @deprecated, @cc_enable_arenas, @objc_class_prefix, @csharp_namespace, @swift_prefix, @php_class_prefix, @php_namespace, @php_metadata_namespace, @ruby_package, @features, @uninterpreted_option].hash
+    ["google.protobuf.FileOptions", @unknown_fields, @java_package, @java_outer_classname, @java_multiple_files, @java_generate_equals_and_hash, @java_string_check_utf8, @optimize_for, @go_package, @cc_generic_services, @java_generic_services, @py_generic_services, @deprecated, @cc_enable_arenas, @objc_class_prefix, @csharp_namespace, @swift_prefix, @php_class_prefix, @php_namespace, @php_metadata_namespace, @ruby_package, @features, @uninterpreted_option].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -3994,7 +3994,7 @@ class Google::Protobuf::MessageOptions # /lib/google/protobuf/descriptor_pb.rb:8
     @uninterpreted_option = uninterpreted_option
   end
   def hash
-    ["google.protobuf.MessageOptions", @message_set_wire_format, @no_standard_descriptor_accessor, @deprecated, @map_entry, @deprecated_legacy_json_field_conflicts, @features, @uninterpreted_option].hash
+    ["google.protobuf.MessageOptions", @unknown_fields, @message_set_wire_format, @no_standard_descriptor_accessor, @deprecated, @map_entry, @deprecated_legacy_json_field_conflicts, @features, @uninterpreted_option].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -4286,7 +4286,7 @@ class Google::Protobuf::FieldOptions # /lib/google/protobuf/descriptor_pb.rb:966
     @uninterpreted_option = uninterpreted_option
   end
   def hash
-    ["google.protobuf.FieldOptions", @ctype, @packed, @jstype, @lazy, @unverified_lazy, @deprecated, @weak, @debug_redact, @retention, @targets, @edition_defaults, @features, @feature_support, @uninterpreted_option].hash
+    ["google.protobuf.FieldOptions", @unknown_fields, @ctype, @packed, @jstype, @lazy, @unverified_lazy, @deprecated, @weak, @debug_redact, @retention, @targets, @edition_defaults, @features, @feature_support, @uninterpreted_option].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -4813,7 +4813,7 @@ class Google::Protobuf::FieldOptions::EditionDefault # /lib/google/protobuf/desc
     @value = value
   end
   def hash
-    ["google.protobuf.FieldOptions.EditionDefault", @edition, @value].hash
+    ["google.protobuf.FieldOptions.EditionDefault", @unknown_fields, @edition, @value].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -4951,7 +4951,7 @@ class Google::Protobuf::FieldOptions::FeatureSupport # /lib/google/protobuf/desc
     @edition_removed = edition_removed
   end
   def hash
-    ["google.protobuf.FieldOptions.FeatureSupport", @edition_introduced, @edition_deprecated, @deprecation_warning, @edition_removed].hash
+    ["google.protobuf.FieldOptions.FeatureSupport", @unknown_fields, @edition_introduced, @edition_deprecated, @deprecation_warning, @edition_removed].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -5159,7 +5159,7 @@ class Google::Protobuf::OneofOptions # /lib/google/protobuf/descriptor_pb.rb:122
     @uninterpreted_option = uninterpreted_option
   end
   def hash
-    ["google.protobuf.OneofOptions", @features, @uninterpreted_option].hash
+    ["google.protobuf.OneofOptions", @unknown_fields, @features, @uninterpreted_option].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -5288,7 +5288,7 @@ class Google::Protobuf::EnumOptions # /lib/google/protobuf/descriptor_pb.rb:1251
     @uninterpreted_option = uninterpreted_option
   end
   def hash
-    ["google.protobuf.EnumOptions", @allow_alias, @deprecated, @deprecated_legacy_json_field_conflicts, @features, @uninterpreted_option].hash
+    ["google.protobuf.EnumOptions", @unknown_fields, @allow_alias, @deprecated, @deprecated_legacy_json_field_conflicts, @features, @uninterpreted_option].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -5504,7 +5504,7 @@ class Google::Protobuf::EnumValueOptions # /lib/google/protobuf/descriptor_pb.rb
     @uninterpreted_option = uninterpreted_option
   end
   def hash
-    ["google.protobuf.EnumValueOptions", @deprecated, @features, @debug_redact, @feature_support, @uninterpreted_option].hash
+    ["google.protobuf.EnumValueOptions", @unknown_fields, @deprecated, @features, @debug_redact, @feature_support, @uninterpreted_option].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -5716,7 +5716,7 @@ class Google::Protobuf::ServiceOptions # /lib/google/protobuf/descriptor_pb.rb:1
     @uninterpreted_option = uninterpreted_option
   end
   def hash
-    ["google.protobuf.ServiceOptions", @features, @deprecated, @uninterpreted_option].hash
+    ["google.protobuf.ServiceOptions", @unknown_fields, @features, @deprecated, @uninterpreted_option].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -5872,7 +5872,7 @@ class Google::Protobuf::MethodOptions # /lib/google/protobuf/descriptor_pb.rb:13
     @uninterpreted_option = uninterpreted_option
   end
   def hash
-    ["google.protobuf.MethodOptions", @deprecated, @idempotency_level, @features, @uninterpreted_option].hash
+    ["google.protobuf.MethodOptions", @unknown_fields, @deprecated, @idempotency_level, @features, @uninterpreted_option].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -6073,7 +6073,7 @@ class Google::Protobuf::UninterpretedOption # /lib/google/protobuf/descriptor_pb
     @aggregate_value = aggregate_value
   end
   def hash
-    ["google.protobuf.UninterpretedOption", @name, @identifier_value, @positive_int_value, @negative_int_value, @double_value, @string_value, @aggregate_value].hash
+    ["google.protobuf.UninterpretedOption", @unknown_fields, @name, @identifier_value, @positive_int_value, @negative_int_value, @double_value, @string_value, @aggregate_value].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -6359,7 +6359,7 @@ class Google::Protobuf::UninterpretedOption::NamePart # /lib/google/protobuf/des
     @is_extension = is_extension
   end
   def hash
-    ["google.protobuf.UninterpretedOption.NamePart", @name_part, @is_extension].hash
+    ["google.protobuf.UninterpretedOption.NamePart", @unknown_fields, @name_part, @is_extension].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -6482,7 +6482,7 @@ class Google::Protobuf::FeatureSet # /lib/google/protobuf/descriptor_pb.rb:1493
     @json_format = json_format
   end
   def hash
-    ["google.protobuf.FeatureSet", @field_presence, @enum_type, @repeated_field_encoding, @utf8_validation, @message_encoding, @json_format].hash
+    ["google.protobuf.FeatureSet", @unknown_fields, @field_presence, @enum_type, @repeated_field_encoding, @utf8_validation, @message_encoding, @json_format].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -6783,7 +6783,7 @@ class Google::Protobuf::FeatureSetDefaults # /lib/google/protobuf/descriptor_pb.
     @maximum_edition = maximum_edition
   end
   def hash
-    ["google.protobuf.FeatureSetDefaults", @defaults, @minimum_edition, @maximum_edition].hash
+    ["google.protobuf.FeatureSetDefaults", @unknown_fields, @defaults, @minimum_edition, @maximum_edition].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -6953,7 +6953,7 @@ class Google::Protobuf::FeatureSetDefaults::FeatureSetEditionDefault # /lib/goog
     @fixed_features = fixed_features
   end
   def hash
-    ["google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault", @edition, @overridable_features, @fixed_features].hash
+    ["google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault", @unknown_fields, @edition, @overridable_features, @fixed_features].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -7110,7 +7110,7 @@ class Google::Protobuf::SourceCodeInfo # /lib/google/protobuf/descriptor_pb.rb:1
     @location = location
   end
   def hash
-    ["google.protobuf.SourceCodeInfo", @location].hash
+    ["google.protobuf.SourceCodeInfo", @unknown_fields, @location].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -7209,7 +7209,7 @@ class Google::Protobuf::SourceCodeInfo::Location # /lib/google/protobuf/descript
     @leading_detached_comments = leading_detached_comments
   end
   def hash
-    ["google.protobuf.SourceCodeInfo.Location", @path, @span, @leading_comments, @trailing_comments, @leading_detached_comments].hash
+    ["google.protobuf.SourceCodeInfo.Location", @unknown_fields, @path, @span, @leading_comments, @trailing_comments, @leading_detached_comments].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -7473,7 +7473,7 @@ class Google::Protobuf::GeneratedCodeInfo # /lib/google/protobuf/descriptor_pb.r
     @annotation = annotation
   end
   def hash
-    ["google.protobuf.GeneratedCodeInfo", @annotation].hash
+    ["google.protobuf.GeneratedCodeInfo", @unknown_fields, @annotation].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -7572,7 +7572,7 @@ class Google::Protobuf::GeneratedCodeInfo::Annotation # /lib/google/protobuf/des
     @semantic = semantic
   end
   def hash
-    ["google.protobuf.GeneratedCodeInfo.Annotation", @path, @source_file, @begin, @end, @semantic].hash
+    ["google.protobuf.GeneratedCodeInfo.Annotation", @unknown_fields, @path, @source_file, @begin, @end, @semantic].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max

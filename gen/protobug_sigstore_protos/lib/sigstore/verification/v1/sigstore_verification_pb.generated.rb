@@ -10,7 +10,7 @@ class Sigstore::Verification::V1::CertificateIdentity # /lib/sigstore/verificati
     @oids = oids
   end
   def hash
-    ["dev.sigstore.verification.v1.CertificateIdentity", @issuer, @san, @oids].hash
+    ["dev.sigstore.verification.v1.CertificateIdentity", @unknown_fields, @issuer, @san, @oids].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -159,7 +159,7 @@ class Sigstore::Verification::V1::CertificateIdentities # /lib/sigstore/verifica
     @identities = identities
   end
   def hash
-    ["dev.sigstore.verification.v1.CertificateIdentities", @identities].hash
+    ["dev.sigstore.verification.v1.CertificateIdentities", @unknown_fields, @identities].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -249,7 +249,7 @@ class Sigstore::Verification::V1::PublicKeyIdentities # /lib/sigstore/verificati
     @public_keys = public_keys
   end
   def hash
-    ["dev.sigstore.verification.v1.PublicKeyIdentities", @public_keys].hash
+    ["dev.sigstore.verification.v1.PublicKeyIdentities", @unknown_fields, @public_keys].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -358,7 +358,7 @@ class Sigstore::Verification::V1::ArtifactVerificationOptions # /lib/sigstore/ve
   end
   attr_reader :signers
   def hash
-    ["dev.sigstore.verification.v1.ArtifactVerificationOptions", @certificate_identities, @public_keys, @tlog_options, @ctlog_options, @tsa_options, @integrated_ts_options, @observer_options].hash
+    ["dev.sigstore.verification.v1.ArtifactVerificationOptions", @unknown_fields, @certificate_identities, @public_keys, @tlog_options, @ctlog_options, @tsa_options, @integrated_ts_options, @observer_options].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -640,7 +640,7 @@ class Sigstore::Verification::V1::ArtifactVerificationOptions::TlogOptions # /li
     @disable = disable
   end
   def hash
-    ["dev.sigstore.verification.v1.ArtifactVerificationOptions.TlogOptions", @threshold, @perform_online_verification, @disable].hash
+    ["dev.sigstore.verification.v1.ArtifactVerificationOptions.TlogOptions", @unknown_fields, @threshold, @perform_online_verification, @disable].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -792,7 +792,7 @@ class Sigstore::Verification::V1::ArtifactVerificationOptions::CtlogOptions # /l
     @disable = disable
   end
   def hash
-    ["dev.sigstore.verification.v1.ArtifactVerificationOptions.CtlogOptions", @threshold, @disable].hash
+    ["dev.sigstore.verification.v1.ArtifactVerificationOptions.CtlogOptions", @unknown_fields, @threshold, @disable].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -916,7 +916,7 @@ class Sigstore::Verification::V1::ArtifactVerificationOptions::TimestampAuthorit
     @disable = disable
   end
   def hash
-    ["dev.sigstore.verification.v1.ArtifactVerificationOptions.TimestampAuthorityOptions", @threshold, @disable].hash
+    ["dev.sigstore.verification.v1.ArtifactVerificationOptions.TimestampAuthorityOptions", @unknown_fields, @threshold, @disable].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1040,7 +1040,7 @@ class Sigstore::Verification::V1::ArtifactVerificationOptions::TlogIntegratedTim
     @disable = disable
   end
   def hash
-    ["dev.sigstore.verification.v1.ArtifactVerificationOptions.TlogIntegratedTimestampOptions", @threshold, @disable].hash
+    ["dev.sigstore.verification.v1.ArtifactVerificationOptions.TlogIntegratedTimestampOptions", @unknown_fields, @threshold, @disable].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1164,7 +1164,7 @@ class Sigstore::Verification::V1::ArtifactVerificationOptions::ObserverTimestamp
     @disable = disable
   end
   def hash
-    ["dev.sigstore.verification.v1.ArtifactVerificationOptions.ObserverTimestampOptions", @threshold, @disable].hash
+    ["dev.sigstore.verification.v1.ArtifactVerificationOptions.ObserverTimestampOptions", @unknown_fields, @threshold, @disable].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1300,7 +1300,7 @@ class Sigstore::Verification::V1::Artifact # /lib/sigstore/verification/v1/sigst
   end
   attr_reader :data
   def hash
-    ["dev.sigstore.verification.v1.Artifact", @artifact_uri, @artifact, @artifact_digest].hash
+    ["dev.sigstore.verification.v1.Artifact", @unknown_fields, @artifact_uri, @artifact, @artifact_digest].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
@@ -1479,7 +1479,7 @@ class Sigstore::Verification::V1::Input # /lib/sigstore/verification/v1/sigstore
     @artifact = artifact
   end
   def hash
-    ["dev.sigstore.verification.v1.Input", @artifact_trust_root, @artifact_verification_options, @bundle, @artifact].hash
+    ["dev.sigstore.verification.v1.Input", @unknown_fields, @artifact_trust_root, @artifact_verification_options, @bundle, @artifact].hash
   end
   def __protobug_binary_decode(binary, index, max)
     return self if index == max
