@@ -31,12 +31,9 @@ module Protobug
         end
 
         def list(*items, &)
-          append Group.new(
-            name: :list,
-            items:,
-            separator: ",",
-            indent: 2
-          ).tap(&)
+          append Group.new(name: :list, items:, separator: ",", indent: 2).tap(
+            &
+          )
         end
 
         def index(*items, &)

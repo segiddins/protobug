@@ -644,7 +644,6 @@ module ProtobufTestMessages
       end
 
       optional(201, "data", type: :group)
-      optional(204, "multiwordgroupfield", type: :group)
       class MultiWordGroupField
         extend Protobug::Message
 
@@ -654,6 +653,7 @@ module ProtobufTestMessages
         optional(206, "group_uint32", type: :uint32, json_name: "groupUint32")
       end
 
+      optional(204, "multiwordgroupfield", type: :group)
       # default values
       optional(
         241,
@@ -860,12 +860,6 @@ module ProtobufTestMessages
       )
     end
 
-    GROUPFIELD = Protobug::Extension(
-      ::ProtobufTestMessages::Proto2::TestAllTypesProto2
-    ) do
-      optional(121, "groupfield", type: :group)
-    end
-
     class GroupField
       extend Protobug::Message
 
@@ -873,6 +867,12 @@ module ProtobufTestMessages
 
       optional(122, "group_int32", type: :int32, json_name: "groupInt32")
       optional(123, "group_uint32", type: :uint32, json_name: "groupUint32")
+    end
+
+    GROUPFIELD = Protobug::Extension(
+      ::ProtobufTestMessages::Proto2::TestAllTypesProto2
+    ) do
+      optional(121, "groupfield", type: :group)
     end
 
     class UnknownToTestAllTypes
@@ -899,7 +899,6 @@ module ProtobufTestMessages
         message_class: "ProtobufTestMessages::Proto2::ForeignMessageProto2",
         json_name: "nestedMessage"
       )
-      optional(1_004, "optionalgroup", type: :group)
       class OptionalGroup
         extend Protobug::Message
 
@@ -908,6 +907,7 @@ module ProtobufTestMessages
         optional(1, "a", type: :int32)
       end
 
+      optional(1_004, "optionalgroup", type: :group)
       optional(1_006, "optional_bool", type: :bool, json_name: "optionalBool")
       repeated(
         1_011,
@@ -1094,7 +1094,6 @@ module ProtobufTestMessages
         "ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2",
         json_name: "optionalRecursiveMessage"
       )
-      required(201, "data", type: :group)
       # groups
       class Data
         extend Protobug::Message
@@ -1105,6 +1104,7 @@ module ProtobufTestMessages
         required(203, "group_uint32", type: :uint32, json_name: "groupUint32")
       end
 
+      required(201, "data", type: :group)
       # default values
       required(
         241,

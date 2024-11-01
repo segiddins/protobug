@@ -109,7 +109,7 @@ namespace :compiler do
                       if parameters.empty?
                         items.literal([])
                       elsif group[:variadic]
-                        items.identifier(parameters.first)
+                        items.identifier(parameters.first) unless parameters.first == "items"
                       else
                         items.index do |index|
                           parameters.each do |param|

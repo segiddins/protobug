@@ -5923,7 +5923,7 @@ class ProtobufTestMessages::Proto2::TestAllTypesProto2::Data # /lib/protobuf_tes
     @group_uint32 = nil
   end
 end
-class ProtobufTestMessages::Proto2::TestAllTypesProto2::MultiWordGroupField # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:648
+class ProtobufTestMessages::Proto2::TestAllTypesProto2::MultiWordGroupField # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:647
   def initialize(
     group_int32: nil,
     group_uint32: nil
@@ -6402,7 +6402,7 @@ class ProtobufTestMessages::Proto2::ForeignMessageProto2 # /lib/protobuf_test_me
 end
 module ProtobufTestMessages::Proto2::ForeignEnumProto2 # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:842
 end
-class ProtobufTestMessages::Proto2::GroupField # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:869
+class ProtobufTestMessages::Proto2::GroupField # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:863
   def initialize(
     group_int32: nil,
     group_uint32: nil
@@ -6778,7 +6778,7 @@ class ProtobufTestMessages::Proto2::UnknownToTestAllTypes # /lib/protobuf_test_m
     existing << value
   end
 end
-class ProtobufTestMessages::Proto2::UnknownToTestAllTypes::OptionalGroup # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:903
+class ProtobufTestMessages::Proto2::UnknownToTestAllTypes::OptionalGroup # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:902
   def initialize(
     a: nil
   )
@@ -8566,7 +8566,7 @@ class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::NestedMessage # 
 end
 module ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::NestedEnum # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:987
 end
-class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::Data # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:1099
+class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::Data # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:1098
   def initialize(
     group_int32: 0,
     group_uint32: 0

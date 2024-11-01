@@ -141,7 +141,7 @@ module Protobug
             return enum_for(__method__) unless blk # rubocop:disable Lint/ToEnumArguments
 
             decls = methods.flat_map { send(_1) }
-            decls.sort_by! { |d| d.source_loc&.span || [] }
+            decls.sort_by! { |d| [d.source_loc&.span || [], d.class.name] }
             decls.each(&blk)
             nil
           end

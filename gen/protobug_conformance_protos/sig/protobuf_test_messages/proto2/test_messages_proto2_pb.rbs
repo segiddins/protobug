@@ -557,7 +557,7 @@ class ProtobufTestMessages::Proto2::TestAllTypesProto2::Data # /lib/protobuf_tes
   def has_group_uint32?: () -> bool
   @group_uint32: Integer?
 end
-class ProtobufTestMessages::Proto2::TestAllTypesProto2::MultiWordGroupField # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:648
+class ProtobufTestMessages::Proto2::TestAllTypesProto2::MultiWordGroupField # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:647
   def self.decode: (String string) -> ProtobufTestMessages::Proto2::TestAllTypesProto2::MultiWordGroupField
   # optional(205, :group_int32, type: :int32)
   def group_int32: () -> Integer
@@ -597,7 +597,7 @@ module ProtobufTestMessages::Proto2::ForeignEnumProto2 # /lib/protobuf_test_mess
   FOREIGN_BAR: Integer
   FOREIGN_BAZ: Integer
 end
-class ProtobufTestMessages::Proto2::GroupField # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:869
+class ProtobufTestMessages::Proto2::GroupField # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:863
   def self.decode: (String string) -> ProtobufTestMessages::Proto2::GroupField
   # optional(122, :group_int32, type: :int32)
   def group_int32: () -> Integer
@@ -631,7 +631,7 @@ class ProtobufTestMessages::Proto2::UnknownToTestAllTypes # /lib/protobuf_test_m
   def has_repeated_int32?: () -> bool
   @repeated_int32: Integer?
 end
-class ProtobufTestMessages::Proto2::UnknownToTestAllTypes::OptionalGroup # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:903
+class ProtobufTestMessages::Proto2::UnknownToTestAllTypes::OptionalGroup # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:902
   def self.decode: (String string) -> ProtobufTestMessages::Proto2::UnknownToTestAllTypes::OptionalGroup
   # optional(1, :a, type: :int32)
   def a: () -> Integer
@@ -846,7 +846,7 @@ module ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::NestedEnum # /l
   BAZ: Integer
   NEG: Integer
 end
-class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::Data # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:1099
+class ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::Data # /lib/protobuf_test_messages/proto2/test_messages_proto2_pb.rb:1098
   def self.decode: (String string) -> ProtobufTestMessages::Proto2::TestAllRequiredTypesProto2::Data
   # required(202, :group_int32, type: :int32)
   def group_int32: () -> Integer
