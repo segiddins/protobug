@@ -1,0 +1,7 @@
+class Google::Protobuf::FieldMask # /lib/google/protobuf/field_mask_pb.rb:250
+  def self.decode: (String string) -> Google::Protobuf::FieldMask
+  # repeated(1, :paths, type: :string)
+  def paths: () -> String
+  def has_paths?: () -> bool
+  @paths: String?
+end

@@ -1,0 +1,63 @@
+class Google::Protobuf::DoubleValue # /lib/google/protobuf/wrappers_pb.rb:64
+  def self.decode: (String string) -> Google::Protobuf::DoubleValue
+  # optional(1, :value, type: :double)
+  def value: () -> Float
+  def has_value?: () -> bool
+  @value: Float?
+end
+class Google::Protobuf::FloatValue # /lib/google/protobuf/wrappers_pb.rb:76
+  def self.decode: (String string) -> Google::Protobuf::FloatValue
+  # optional(1, :value, type: :float)
+  def value: () -> Float
+  def has_value?: () -> bool
+  @value: Float?
+end
+class Google::Protobuf::Int64Value # /lib/google/protobuf/wrappers_pb.rb:88
+  def self.decode: (String string) -> Google::Protobuf::Int64Value
+  # optional(1, :value, type: :int64)
+  def value: () -> Integer
+  def has_value?: () -> bool
+  @value: Integer?
+end
+class Google::Protobuf::UInt64Value # /lib/google/protobuf/wrappers_pb.rb:100
+  def self.decode: (String string) -> Google::Protobuf::UInt64Value
+  # optional(1, :value, type: :uint64)
+  def value: () -> Integer
+  def has_value?: () -> bool
+  @value: Integer?
+end
+class Google::Protobuf::Int32Value # /lib/google/protobuf/wrappers_pb.rb:112
+  def self.decode: (String string) -> Google::Protobuf::Int32Value
+  # optional(1, :value, type: :int32)
+  def value: () -> Integer
+  def has_value?: () -> bool
+  @value: Integer?
+end
+class Google::Protobuf::UInt32Value # /lib/google/protobuf/wrappers_pb.rb:124
+  def self.decode: (String string) -> Google::Protobuf::UInt32Value
+  # optional(1, :value, type: :uint32)
+  def value: () -> Integer
+  def has_value?: () -> bool
+  @value: Integer?
+end
+class Google::Protobuf::BoolValue # /lib/google/protobuf/wrappers_pb.rb:136
+  def self.decode: (String string) -> Google::Protobuf::BoolValue
+  # optional(1, :value, type: :bool)
+  def value: () -> Integer
+  def has_value?: () -> bool
+  @value: Integer?
+end
+class Google::Protobuf::StringValue # /lib/google/protobuf/wrappers_pb.rb:148
+  def self.decode: (String string) -> Google::Protobuf::StringValue
+  # optional(1, :value, type: :string)
+  def value: () -> String
+  def has_value?: () -> bool
+  @value: String?
+end
+class Google::Protobuf::BytesValue # /lib/google/protobuf/wrappers_pb.rb:160
+  def self.decode: (String string) -> Google::Protobuf::BytesValue
+  # optional(1, :value, type: :bytes)
+  def value: () -> String
+  def has_value?: () -> bool
+  @value: String?
+end

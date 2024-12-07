@@ -1,0 +1,23 @@
+module Protobug
+  module Enum
+    attr_reader values: Hash[String, Integer]
+
+    attr_reader names: Hash[Integer, String]
+
+    attr_reader reserved_ranges: Array[Range[Integer]]
+
+    attr_reader reserved_names: Array[String]
+
+    def register: (String name, Integer value) -> Integer
+
+    def reserved_range: (Range[Integer] range) -> void
+
+    def reserved_name: (String name) -> void
+
+    def decode_json_hash: (Hash json, ?ignore_unknown_fields: bool) -> Integer?
+
+    def default: () -> Integer
+
+    def as_json: (Integer value) -> String
+  end
+end
