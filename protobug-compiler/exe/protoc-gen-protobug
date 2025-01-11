@@ -1,14 +1,12 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env ruby --yjit
 # frozen_string_literal: true
 
 require "protobug_compiler_protos"
 require "protobug/compiler"
 
-compiler_registry = Protobug::Registry.new do |registry|
-  Google::Protobuf::Compiler.register_plugin_protos(registry)
-end
+Protobug.known_type_names.each_value(&:freeze)
 
-request = Google::Protobuf::Compiler::CodeGeneratorRequest.decode($stdin, registry: compiler_registry)
+request = Google::Protobuf::Compiler::CodeGeneratorRequest.decode($stdin.read)
 SimpleCov.command_name "protoc-gen-protobug:#{Digest::SHA256.hexdigest(request.to_json)}" if defined?(SimpleCov)
 
 response = Protobug::Compiler.compile!(request)

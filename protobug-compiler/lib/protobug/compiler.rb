@@ -27,6 +27,7 @@ module Protobug
       def initialize
         @descs_by_name = {}
         @files_by_path = {}
+        @extensions_by_extendee = Hash.new { |h, k| h[k] = {} }
         @num_files = 0
       end
 
@@ -52,9 +53,14 @@ module Protobug
         end
 
         decl.each_declaration do |d|
+          @extensions_by_extendee[d.extendee][d.number] = d if d.is_a?(FieldDescriptorProto) && d.has_extendee?
           register_decl(d)
         end
         decl
+      end
+
+      def fetch_extension(extendee, number)
+        @extensions_by_extendee.fetch(extendee).fetch(number)
       end
     end
 
@@ -97,7 +103,7 @@ module Protobug
         if parent
           "#{parent.to_constant}::#{name}"
         else
-          return file.options.ruby_package if file.options&.ruby_package?
+          return file.options.ruby_package if file.options&.has_ruby_package?
 
           parts = descriptor.package.split(".")
           parts.map! do |part|
@@ -114,7 +120,7 @@ module Protobug
 
           fields_by_name.each do |name, field|
             unless field.is_a?(Field::MessageField) &&
-                   /\Agoogle\.protobuf\.([^.]*Descriptor[^.]*)\z/ =~ field.message_type
+                   /\AGoogle::Protobuf::([^:]*Descriptor[^:]*)\z/ =~ field.message_class
               next
             end
             raise "expected #{self}.#{name} to be repeated" unless field.repeated?
@@ -135,7 +141,7 @@ module Protobug
             return enum_for(__method__) unless blk # rubocop:disable Lint/ToEnumArguments
 
             decls = methods.flat_map { send(_1) }
-            decls.sort_by! { |d| d.source_loc&.span || [] }
+            decls.sort_by! { |d| [d.source_loc&.span || [], d.class.name] }
             decls.each(&blk)
             nil
           end
@@ -161,7 +167,7 @@ module Protobug
       include Descriptor
 
       def file_name
-        ruby_package = options.ruby_package if options&.ruby_package?
+        ruby_package = options.ruby_package if options&.has_ruby_package?
         prefix = if ruby_package
                    ruby_package.split("::").map!(&:downcase).join("/")
                  else
@@ -183,6 +189,10 @@ module Protobug
 
     class FieldDescriptorProto < DelegateClass(Google::Protobuf::FieldDescriptorProto)
       include Descriptor
+
+      def to_constant
+        "#{parent.to_constant}::#{name.upcase}"
+      end
     end
 
     class EnumDescriptorProto < DelegateClass(Google::Protobuf::EnumDescriptorProto)
@@ -191,6 +201,20 @@ module Protobug
 
     class EnumValueDescriptorProto < DelegateClass(Google::Protobuf::EnumValueDescriptorProto)
       include Descriptor
+
+      def to_constant
+        const_name = name.start_with?("k") ? "K_#{name[1..]}" : name
+
+        prefix = parent.name.gsub(/(?:(?<=([A-Za-z\d]))|\b)(?=\b|[^a-z])/) do
+          "#{::Regexp.last_match(1) && "_"}#{::Regexp.last_match(2)}"
+        end
+        prefix.gsub!(/(?<=[A-Z])(?=[A-Z][a-z])|(?<=[a-z\d])(?=[A-Z])/, "_")
+        prefix.upcase!
+
+        const_name = const_name.delete_prefix(prefix) if const_name.match?(/\A#{Regexp.escape(prefix)}[A-Z]/)
+        const_name = "K_#{const_name}" unless const_name.match?(/\A[A-Z]/)
+        const_name
+      end
     end
 
     class ServiceDescriptorProto < DelegateClass(Google::Protobuf::ServiceDescriptorProto)
@@ -219,8 +243,7 @@ module Protobug
     end
 
     def compile!
-      response.supported_features |=
-        Google::Protobuf::Compiler::CodeGeneratorResponse::Feature::FEATURE_PROTO3_OPTIONAL.value
+      response.supported_features |= Google::Protobuf::Compiler::CodeGeneratorResponse::Feature::PROTO3_OPTIONAL
       @files = Files.new
 
       request.proto_file.each do |file|
@@ -240,16 +263,20 @@ module Protobug
       end
     end
 
-    def emit_decls(descriptor, group)
+    def emit_decls(descriptor, group, inside_extension: false)
       source_loc = descriptor.source_loc
       return unless source_loc
+
+      if !inside_extension && descriptor.is_a?(FieldDescriptorProto) && descriptor.has_extendee?
+        return emit_extension(descriptor, group)
+      end
 
       source_loc.leading_detached_comments&.each do |c|
         group.comment(c)
         group.empty
       end
 
-      group.comment(source_loc.leading_comments) if source_loc.leading_comments?
+      group.comment(source_loc.leading_comments) if source_loc.has_leading_comments?
 
       case descriptor
       when DescriptorProto
@@ -269,13 +296,13 @@ module Protobug
             g.empty
             descriptor.file.loc_by_path(descriptor.source_loc.path +
                                         [DescriptorProto.fields_by_name.fetch("reserved_range").number])&.tap do |loc|
-              g.comment(loc.leading_comments) if loc.leading_comments?
+              g.comment(loc.leading_comments) if loc.has_leading_comments?
             end
             descriptor.reserved_range.each_with_index do |range, idx|
               descriptor.file.loc_by_path(descriptor.source_loc.path + [
                 DescriptorProto.fields_by_name.fetch("reserved_range").number, idx
               ]).tap do |loc|
-                g.comment(loc.leading_comments) if loc.leading_comments?
+                g.comment(loc.leading_comments) if loc.has_leading_comments?
               end
               g.identifier("reserved_range").call do |c|
                 c.literal(range.start).op("...").literal(range.end)
@@ -289,7 +316,7 @@ module Protobug
           end
         end
       when EnumDescriptorProto
-        group._class.identifier(descriptor.name).block do |g|
+        group._module.identifier(descriptor.name).block do |g|
           g.identifier("extend").identifier("Protobug::Enum")
           g.empty
           g.identifier("self").dot("full_name").op("=")
@@ -315,43 +342,29 @@ module Protobug
           end
         end
       when EnumValueDescriptorProto
-        const_name = descriptor.name.start_with?("k") ? "K_#{descriptor.name[1..]}" : descriptor.name
-        const_name = "K_#{const_name}" unless const_name.match?(/\A[A-Z]/)
-        group.identifier(const_name).op("=").identifier("new").call do |c|
+        group.identifier(descriptor.to_constant).op("=").identifier("register").call do |c|
           c.literal(descriptor.name)
           c.literal(descriptor.number)
-        end.dot("freeze")
-      when FieldDescriptorProto
-        if descriptor.extendee?
-          containing_type = files.fetch_type(
-            if descriptor.extendee.start_with?(".")
-              descriptor.extendee[1..]
-            else
-              "#{descriptor.parent.full_name}.#{descriptor.extendee}"
-            end
-          )
-          group.comment("extension: #{containing_type.full_name}\n  #{descriptor.name} #{descriptor.number}")
-          return # rubocop:disable Lint/NonLocalExitFromIterator
         end
+      when FieldDescriptorProto
+        type = descriptor.type_case_name.downcase.delete_prefix!("type_").to_sym
 
-        type = descriptor.type.name.downcase.delete_prefix("type_").to_sym
-
-        if descriptor.type_name?
+        if descriptor.has_type_name?
           referenced_type = files.fetch_type(descriptor.type_name.delete_prefix("."))
           type = :map unless referenced_type.source_loc
         end
 
         group.identifier(
           case descriptor.label
-          when Google::Protobuf::FieldDescriptorProto::Label::LABEL_OPTIONAL
+          when Google::Protobuf::FieldDescriptorProto::Label::OPTIONAL
             "optional"
-          when Google::Protobuf::FieldDescriptorProto::Label::LABEL_REPEATED
+          when Google::Protobuf::FieldDescriptorProto::Label::REPEATED
             if type == :map
               "map"
             else
               "repeated"
             end
-          when Google::Protobuf::FieldDescriptorProto::Label::LABEL_REQUIRED
+          when Google::Protobuf::FieldDescriptorProto::Label::REQUIRED
             "required"
           else
             raise "Unknown label: #{descriptor.label}"
@@ -362,43 +375,63 @@ module Protobug
           c.identifier("type:").literal(type) unless type == :map
 
           if type == :map
+            raise unless referenced_type.field.count == 2
+
             c.identifier("key_type:")
-             .literal(referenced_type.field[0].type.name.downcase.delete_prefix("type_").to_sym)
-            value_type = referenced_type.field[1].type.name.downcase.delete_prefix("type_").to_sym
+             .literal(referenced_type.field[0].type_case_name.downcase.delete_prefix("type_").to_sym)
+            value_type = referenced_type.field[1].type_case_name.downcase.delete_prefix("type_").to_sym
             c.identifier("value_type:")
              .literal(value_type)
-            if referenced_type.field[1].type_name?
-              c.identifier("#{value_type}_type:")
-               .literal(referenced_type.field[1].type_name.delete_prefix("."))
+            if referenced_type.field[1].has_type_name?
+              nested_name = referenced_type.field[1].type_name.delete_prefix(".")
+              c.identifier("#{value_type}_class:").literal(files.fetch_type(nested_name).to_constant)
             end
-          elsif descriptor.type_name?
-            c.identifier("#{type}_type:").literal(descriptor.type_name.delete_prefix("."))
+          elsif descriptor.has_type_name? && type != :group
+            nested_name = descriptor.type_name.delete_prefix(".")
+            c.identifier("#{type}_class:").literal(files.fetch_type(nested_name).to_constant)
           end
 
-          packed = descriptor.options&.packed
+          packed = descriptor.options&.packed if descriptor.options&.has_packed?
           # TODO: exclude other types that cannot be packed
-          if !descriptor.options&.packed? && !%i[message bytes string map].include?(type)
-            packed = descriptor.label == Google::Protobuf::FieldDescriptorProto::Label::LABEL_REPEATED &&
+          if !descriptor.options&.has_packed? && !%i[message bytes string map].include?(type)
+            packed = descriptor.label == Google::Protobuf::FieldDescriptorProto::Label::REPEATED &&
                      descriptor.file.syntax == "proto3"
           end
           c.identifier("packed:").literal(packed) if packed
-          if descriptor.json_name? && descriptor.json_name != descriptor.name
+          if descriptor.has_json_name? && descriptor.json_name != descriptor.name
             c.identifier("json_name:").literal(descriptor.json_name)
           end
-          if descriptor.oneof_index?
+          if descriptor.has_oneof_index?
             oneof = descriptor.parent.oneof_decl[descriptor.oneof_index]
             synthetic = descriptor.proto3_optional && (descriptor.parent.field.count do |f|
-              f.oneof_index? && f.oneof_index == descriptor.oneof_index
+              f.has_oneof_index? && f.oneof_index == descriptor.oneof_index
             end == 1)
             c.identifier("oneof:").literal(oneof.name.to_sym) unless synthetic
           end
-          if descriptor.label == Google::Protobuf::FieldDescriptorProto::Label::LABEL_OPTIONAL &&
+          if descriptor.label == Google::Protobuf::FieldDescriptorProto::Label::OPTIONAL &&
              descriptor.file.syntax == "proto3" && !descriptor.proto3_optional
             c.identifier("proto3_optional:").literal(false)
           end
+          c.identifier("default:").literal(descriptor.default_value) if descriptor.has_default_value?
+          descriptor.options.unknown_fields&.each do |(number, _, value)|
+            extension = files.fetch_extension(".#{descriptor.options.class.full_name}", number)
+            extension_type = files.fetch_type(extension.type_name.delete_prefix("."))
+
+            case extension_type
+            when EnumDescriptorProto
+              value = extension_type.value.find do |v|
+                v.number == value
+              end
+
+              c.identifier(extension.to_constant).op("=>")
+               .identifier("#{extension_type.to_constant}::#{value.to_constant}")
+            else
+              raise "Unknown extension type: #{extension_type}"
+            end
+          end
         end
       when OneofDescriptorProto
-        group.empty if source_loc.leading_comments?
+        group.empty if source_loc.has_leading_comments?
         # no-op
       when ServiceDescriptorProto
         group._class.identifier(descriptor.name).block do |g|
@@ -421,7 +454,22 @@ module Protobug
       else
         raise "Unknown descriptor type: #{descriptor.class}"
       end.tap do |s|
-        s.comment(source_loc.trailing_comments) if source_loc.trailing_comments?
+        s.comment(source_loc.trailing_comments) if source_loc.has_trailing_comments?
+      end
+    end
+
+    def emit_extension(descriptor, group)
+      containing_type = files.fetch_type(
+        if descriptor.extendee.start_with?(".")
+          descriptor.extendee[1..]
+        else
+          "#{descriptor.parent.full_name}.#{descriptor.extendee}"
+        end
+      )
+      group.identifier(descriptor.name.upcase).op("=").identifier("Protobug::Extension").call do |c|
+        c.identifier("::#{containing_type.to_constant}")
+      end._do.block do |c|
+        emit_decls(descriptor, c, inside_extension: true)
       end
     end
 
@@ -431,21 +479,21 @@ module Protobug
         f.header_comment "Code generated by protoc-gen-protobug. DO NOT EDIT."
 
         f.comment "source: #{file.name}"
-        f.comment "syntax: #{file.syntax? ? file.syntax : "proto2"}"
+        f.comment "syntax: #{file.has_syntax? ? file.syntax : "proto2"}"
         f.comment "package: #{file.package}"
         f.comment "options:"
         if file.options
-          file.options.class.fields_by_name.each_key do |name|
-            next unless file.options.send(:"#{name}?")
+          file.options.class.fields_by_name.each do |name, field|
+            next unless file.options.send(field.haser)
 
-            value = case value = file.options.send(name)
-                    when Enum::InstanceMethods
-                      value.name
-                    when Symbol
-                      raise "Unknown symbol: #{value} for #{name} in #{file.options.inspect}"
-                    else
-                      value.inspect
-                    end
+            value = file.options.send(name)
+            if value.is_a?(Symbol)
+              raise "Unknown symbol: #{value} for #{name} in #{file.options.inspect}"
+            elsif field.is_a?(Field::EnumField)
+              value = file.options.send(:"#{name}_case_name")
+            else
+              value = value.inspect
+            end
 
             f.comment "   #{name}: #{value}"
           end
@@ -491,52 +539,6 @@ module Protobug
           emit_decls(decl, g)
           first = false
         end
-
-        g.empty unless first
-        g._def.identifier("self")
-         .dot("register_#{File.basename file.name.delete_suffix(".proto")}_protos")
-         .call do |c|
-          c.identifier("registry")
-        end.block do |defn|
-          file.dependency.each do |dep|
-            defn.identifier(files.fetch(dep).to_constant)
-                .dot("register_#{File.basename dep.delete_suffix(".proto")}_protos")
-                .call do |c|
-              c.identifier("registry")
-            end
-          end
-          emit_register(defn, file)
-        end
-      end
-    end
-
-    def emit_register(defn, descriptor)
-      case descriptor
-      when DescriptorProto, EnumDescriptorProto
-        return unless descriptor.source_loc
-
-        defn.identifier("registry").dot("register").call do |c|
-          c.identifier(descriptor.to_constant)
-        end
-      when FieldDescriptorProto
-        return unless descriptor.extendee?
-
-        containing_type = files.fetch_type(
-          if descriptor.extendee.start_with?(".")
-            descriptor.extendee[1..]
-          else
-            "#{descriptor.parent.full_name}.#{descriptor.extendee}"
-          end
-        )
-        defn.comment("extension: #{containing_type.full_name}\n  #{descriptor.type} #{descriptor.number}")
-      when FileDescriptorProto, EnumValueDescriptorProto, ServiceDescriptorProto, OneofDescriptorProto,
-        MethodDescriptorProto
-        # no-op
-      else
-        raise "Unknown descriptor type: #{descriptor.class}"
-      end
-      descriptor.each_declaration do |decl|
-        emit_register(defn, decl)
       end
     end
   end
