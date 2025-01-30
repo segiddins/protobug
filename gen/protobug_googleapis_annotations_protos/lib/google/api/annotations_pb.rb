@@ -34,15 +34,15 @@ require_relative "http_pb"
 
 module Google
   module Api
-    # See `HttpRule`.
-    # extension: google.protobuf.MethodOptions
-    #   http 72295728
-
-    def self.register_annotations_protos(registry)
-      Google::Api.register_http_protos(registry)
-      Google::Protobuf.register_descriptor_protos(registry)
-      # extension: google.protobuf.MethodOptions
-      #   TYPE_MESSAGE 72295728
+    HTTP = Protobug::Extension(::Google::Protobuf::MethodOptions) do
+      # See `HttpRule`.
+      optional(
+        72_295_728,
+        "http",
+        type: :message,
+        message_class: "Google::Api::HttpRule",
+        proto3_optional: false
+      )
     end
   end
 end

@@ -165,18 +165,6 @@ module Google
       # The bytes value.
       optional(1, "value", type: :bytes, proto3_optional: false)
     end
-
-    def self.register_wrappers_protos(registry)
-      registry.register(Google::Protobuf::DoubleValue)
-      registry.register(Google::Protobuf::FloatValue)
-      registry.register(Google::Protobuf::Int64Value)
-      registry.register(Google::Protobuf::UInt64Value)
-      registry.register(Google::Protobuf::Int32Value)
-      registry.register(Google::Protobuf::UInt32Value)
-      registry.register(Google::Protobuf::BoolValue)
-      registry.register(Google::Protobuf::StringValue)
-      registry.register(Google::Protobuf::BytesValue)
-    end
   end
 end
 

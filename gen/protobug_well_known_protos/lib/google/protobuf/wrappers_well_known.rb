@@ -9,16 +9,15 @@ Google::Protobuf.module_eval do
     .each do |const|
     klass = const_get(const)
     klass.class_eval do
-      def self.decode_json_hash(json, registry:, ignore_unknown_fields: false)
-        return Protobug::UNSET if json.nil?
+      def self.decode_json_hash(json, ignore_unknown_fields: false)
+        return if json.nil?
 
         json = { "value" => json }
         super
       end
 
-      def as_json(print_unknown_fields: false)
-        field = self.class.fields_by_name.fetch("value")
-        field.send(:json_encode_one, value, print_unknown_fields: print_unknown_fields)
+      def as_json
+        super["value"] || self.class.fields_by_number.fetch(1).default
       end
     end
   end

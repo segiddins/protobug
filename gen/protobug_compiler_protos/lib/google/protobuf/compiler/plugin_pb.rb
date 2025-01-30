@@ -92,7 +92,7 @@ module Google
           15,
           "proto_file",
           type: :message,
-          message_type: "google.protobuf.FileDescriptorProto",
+          message_class: "Google::Protobuf::FileDescriptorProto",
           json_name: "protoFile"
         )
         # File descriptors with all options, including source-retention options.
@@ -102,7 +102,7 @@ module Google
           17,
           "source_file_descriptors",
           type: :message,
-          message_type: "google.protobuf.FileDescriptorProto",
+          message_class: "Google::Protobuf::FileDescriptorProto",
           json_name: "sourceFileDescriptors"
         )
         # The version number of protocol compiler.
@@ -110,7 +110,7 @@ module Google
           3,
           "compiler_version",
           type: :message,
-          message_type: "google.protobuf.compiler.Version",
+          message_class: "Google::Protobuf::Compiler::Version",
           json_name: "compilerVersion"
         )
       end
@@ -139,14 +139,14 @@ module Google
           json_name: "supportedFeatures"
         )
         # Sync with code_generator.h.
-        class Feature
+        module Feature
           extend Protobug::Enum
 
           self.full_name = "google.protobuf.compiler.CodeGeneratorResponse.Feature"
 
-          FEATURE_NONE = new("FEATURE_NONE", 0).freeze
-          FEATURE_PROTO3_OPTIONAL = new("FEATURE_PROTO3_OPTIONAL", 1).freeze
-          FEATURE_SUPPORTS_EDITIONS = new("FEATURE_SUPPORTS_EDITIONS", 2).freeze
+          NONE = register("FEATURE_NONE", 0)
+          PROTO3_OPTIONAL = register("FEATURE_PROTO3_OPTIONAL", 1)
+          SUPPORTS_EDITIONS = register("FEATURE_SUPPORTS_EDITIONS", 2)
         end
 
         # The minimum edition this plugin supports.  This will be treated as an
@@ -239,7 +239,7 @@ module Google
             16,
             "generated_code_info",
             type: :message,
-            message_type: "google.protobuf.GeneratedCodeInfo",
+            message_class: "Google::Protobuf::GeneratedCodeInfo",
             json_name: "generatedCodeInfo"
           )
         end
@@ -248,20 +248,8 @@ module Google
           15,
           "file",
           type: :message,
-          message_type: "google.protobuf.compiler.CodeGeneratorResponse.File"
-        )
-      end
-
-      def self.register_plugin_protos(registry)
-        Google::Protobuf.register_descriptor_protos(registry)
-        registry.register(Google::Protobuf::Compiler::Version)
-        registry.register(Google::Protobuf::Compiler::CodeGeneratorRequest)
-        registry.register(Google::Protobuf::Compiler::CodeGeneratorResponse)
-        registry.register(
-          Google::Protobuf::Compiler::CodeGeneratorResponse::Feature
-        )
-        registry.register(
-          Google::Protobuf::Compiler::CodeGeneratorResponse::File
+          message_class:
+          "Google::Protobuf::Compiler::CodeGeneratorResponse::File"
         )
       end
     end
