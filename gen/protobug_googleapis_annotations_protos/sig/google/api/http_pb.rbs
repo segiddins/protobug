@@ -1,0 +1,65 @@
+class Google::Api::Http # /lib/google/api/http_pb.rb:37
+  def self.decode: (String string) -> Google::Api::Http
+  # repeated(1, :rules, type: :message)
+  def rules: () -> Google::Api::HttpRule
+  def has_rules?: () -> bool
+  @rules: Google::Api::HttpRule?
+  # optional(2, :fully_decode_reserved_expansion, type: :bool)
+  def fully_decode_reserved_expansion: () -> Integer
+  def has_fully_decode_reserved_expansion?: () -> bool
+  @fully_decode_reserved_expansion: Integer?
+end
+class Google::Api::HttpRule # /lib/google/api/http_pb.rb:338
+  def self.decode: (String string) -> Google::Api::HttpRule
+  # optional(1, :selector, type: :string)
+  def selector: () -> String
+  def has_selector?: () -> bool
+  @selector: String?
+  # optional(2, :get, type: :string)
+  def get: () -> String
+  def has_get?: () -> bool
+  @get: String?
+  # optional(3, :put, type: :string)
+  def put: () -> String
+  def has_put?: () -> bool
+  @put: String?
+  # optional(4, :post, type: :string)
+  def post: () -> String
+  def has_post?: () -> bool
+  @post: String?
+  # optional(5, :delete, type: :string)
+  def delete: () -> String
+  def has_delete?: () -> bool
+  @delete: String?
+  # optional(6, :patch, type: :string)
+  def patch: () -> String
+  def has_patch?: () -> bool
+  @patch: String?
+  # optional(8, :custom, type: :message)
+  def custom: () -> Google::Api::CustomHttpPattern
+  def has_custom?: () -> bool
+  @custom: Google::Api::CustomHttpPattern?
+  # optional(7, :body, type: :string)
+  def body: () -> String
+  def has_body?: () -> bool
+  @body: String?
+  # optional(12, :response_body, type: :string)
+  def response_body: () -> String
+  def has_response_body?: () -> bool
+  @response_body: String?
+  # repeated(11, :additional_bindings, type: :message)
+  def additional_bindings: () -> Google::Api::HttpRule
+  def has_additional_bindings?: () -> bool
+  @additional_bindings: Google::Api::HttpRule?
+end
+class Google::Api::CustomHttpPattern # /lib/google/api/http_pb.rb:426
+  def self.decode: (String string) -> Google::Api::CustomHttpPattern
+  # optional(1, :kind, type: :string)
+  def kind: () -> String
+  def has_kind?: () -> bool
+  @kind: String?
+  # optional(2, :path, type: :string)
+  def path: () -> String
+  def has_path?: () -> bool
+  @path: String?
+end

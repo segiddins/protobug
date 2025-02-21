@@ -47,7 +47,7 @@ module Sigstore
           2,
           "san",
           type: :message,
-          message_type: "dev.sigstore.common.v1.SubjectAlternativeName",
+          message_class: "Sigstore::Common::V1::SubjectAlternativeName",
           proto3_optional: false
         )
         # An unordered list of OIDs that must be verified.
@@ -57,7 +57,7 @@ module Sigstore
           3,
           "oids",
           type: :message,
-          message_type: "dev.sigstore.common.v1.ObjectIdentifierValuePair"
+          message_class: "Sigstore::Common::V1::ObjectIdentifierValuePair"
         )
       end
 
@@ -70,7 +70,7 @@ module Sigstore
           1,
           "identities",
           type: :message,
-          message_type: "dev.sigstore.verification.v1.CertificateIdentity"
+          message_class: "Sigstore::Verification::V1::CertificateIdentity"
         )
       end
 
@@ -83,7 +83,7 @@ module Sigstore
           1,
           "public_keys",
           type: :message,
-          message_type: "dev.sigstore.common.v1.PublicKey",
+          message_class: "Sigstore::Common::V1::PublicKey",
           json_name: "publicKeys"
         )
       end
@@ -173,7 +173,7 @@ module Sigstore
           1,
           "certificate_identities",
           type: :message,
-          message_type: "dev.sigstore.verification.v1.CertificateIdentities",
+          message_class: "Sigstore::Verification::V1::CertificateIdentities",
           json_name: "certificateIdentities",
           oneof: :signers,
           proto3_optional: false
@@ -191,7 +191,7 @@ module Sigstore
           2,
           "public_keys",
           type: :message,
-          message_type: "dev.sigstore.verification.v1.PublicKeyIdentities",
+          message_class: "Sigstore::Verification::V1::PublicKeyIdentities",
           json_name: "publicKeys",
           oneof: :signers,
           proto3_optional: false
@@ -205,8 +205,8 @@ module Sigstore
           3,
           "tlog_options",
           type: :message,
-          message_type:
-          "dev.sigstore.verification.v1.ArtifactVerificationOptions.TlogOptions",
+          message_class:
+          "Sigstore::Verification::V1::ArtifactVerificationOptions::TlogOptions",
           json_name: "tlogOptions"
         )
         # Optional options for certificate transparency log verification.
@@ -217,8 +217,8 @@ module Sigstore
           4,
           "ctlog_options",
           type: :message,
-          message_type:
-          "dev.sigstore.verification.v1.ArtifactVerificationOptions.CtlogOptions",
+          message_class:
+          "Sigstore::Verification::V1::ArtifactVerificationOptions::CtlogOptions",
           json_name: "ctlogOptions"
         )
         # Optional options for certificate signed timestamp verification.
@@ -229,8 +229,8 @@ module Sigstore
           5,
           "tsa_options",
           type: :message,
-          message_type:
-          "dev.sigstore.verification.v1.ArtifactVerificationOptions.TimestampAuthorityOptions",
+          message_class:
+          "Sigstore::Verification::V1::ArtifactVerificationOptions::TimestampAuthorityOptions",
           json_name: "tsaOptions"
         )
         # Optional options for integrated timestamp verification.
@@ -241,8 +241,8 @@ module Sigstore
           6,
           "integrated_ts_options",
           type: :message,
-          message_type:
-          "dev.sigstore.verification.v1.ArtifactVerificationOptions.TlogIntegratedTimestampOptions",
+          message_class:
+          "Sigstore::Verification::V1::ArtifactVerificationOptions::TlogIntegratedTimestampOptions",
           json_name: "integratedTsOptions"
         )
         # Optional options for observed timestamp verification.
@@ -253,8 +253,8 @@ module Sigstore
           7,
           "observer_options",
           type: :message,
-          message_type:
-          "dev.sigstore.verification.v1.ArtifactVerificationOptions.ObserverTimestampOptions",
+          message_class:
+          "Sigstore::Verification::V1::ArtifactVerificationOptions::ObserverTimestampOptions",
           json_name: "observerOptions"
         )
       end
@@ -286,7 +286,7 @@ module Sigstore
           3,
           "artifact_digest",
           type: :message,
-          message_type: "dev.sigstore.common.v1.HashOutput",
+          message_class: "Sigstore::Common::V1::HashOutput",
           json_name: "artifactDigest",
           oneof: :data,
           proto3_optional: false
@@ -312,7 +312,7 @@ module Sigstore
           1,
           "artifact_trust_root",
           type: :message,
-          message_type: "dev.sigstore.trustroot.v1.TrustedRoot",
+          message_class: "Sigstore::TrustRoot::V1::TrustedRoot",
           json_name: "artifactTrustRoot",
           proto3_optional: false
         )
@@ -320,8 +320,8 @@ module Sigstore
           2,
           "artifact_verification_options",
           type: :message,
-          message_type:
-          "dev.sigstore.verification.v1.ArtifactVerificationOptions",
+          message_class:
+          "Sigstore::Verification::V1::ArtifactVerificationOptions",
           json_name: "artifactVerificationOptions",
           proto3_optional: false
         )
@@ -329,7 +329,7 @@ module Sigstore
           3,
           "bundle",
           type: :message,
-          message_type: "dev.sigstore.bundle.v1.Bundle",
+          message_class: "Sigstore::Bundle::V1::Bundle",
           proto3_optional: false
         )
         # If the bundle contains a message signature, the artifact must be
@@ -338,37 +338,8 @@ module Sigstore
           4,
           "artifact",
           type: :message,
-          message_type: "dev.sigstore.verification.v1.Artifact"
+          message_class: "Sigstore::Verification::V1::Artifact"
         )
-      end
-
-      def self.register_sigstore_verification_protos(registry)
-        Sigstore::Common::V1.register_sigstore_common_protos(registry)
-        Sigstore::TrustRoot::V1.register_sigstore_trustroot_protos(registry)
-        Sigstore::Bundle::V1.register_sigstore_bundle_protos(registry)
-        registry.register(Sigstore::Verification::V1::CertificateIdentity)
-        registry.register(Sigstore::Verification::V1::CertificateIdentities)
-        registry.register(Sigstore::Verification::V1::PublicKeyIdentities)
-        registry.register(
-          Sigstore::Verification::V1::ArtifactVerificationOptions
-        )
-        registry.register(
-          Sigstore::Verification::V1::ArtifactVerificationOptions::TlogOptions
-        )
-        registry.register(
-          Sigstore::Verification::V1::ArtifactVerificationOptions::CtlogOptions
-        )
-        registry.register(
-          Sigstore::Verification::V1::ArtifactVerificationOptions::TimestampAuthorityOptions
-        )
-        registry.register(
-          Sigstore::Verification::V1::ArtifactVerificationOptions::TlogIntegratedTimestampOptions
-        )
-        registry.register(
-          Sigstore::Verification::V1::ArtifactVerificationOptions::ObserverTimestampOptions
-        )
-        registry.register(Sigstore::Verification::V1::Artifact)
-        registry.register(Sigstore::Verification::V1::Input)
       end
     end
   end
