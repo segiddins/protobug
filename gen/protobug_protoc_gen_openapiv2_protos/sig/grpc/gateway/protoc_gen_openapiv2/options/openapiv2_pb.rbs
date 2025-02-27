@@ -1,0 +1,519 @@
+module Grpc::Gateway::ProtocGenOpenapiv2::Options::Scheme # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:21
+  UNKNOWN: Integer
+  HTTP: Integer
+  HTTPS: Integer
+  WS: Integer
+  WSS: Integer
+end
+class Grpc::Gateway::ProtocGenOpenapiv2::Options::Swagger # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:58
+  def self.decode: (String string) -> Grpc::Gateway::ProtocGenOpenapiv2::Options::Swagger
+  # optional(1, :swagger, type: :string)
+  def swagger: () -> String
+  def has_swagger?: () -> bool
+  @swagger: String?
+  # optional(2, :info, type: :message)
+  def info: () -> Grpc::Gateway::ProtocGenOpenapiv2::Options::Info
+  def has_info?: () -> bool
+  @info: Grpc::Gateway::ProtocGenOpenapiv2::Options::Info?
+  # optional(3, :host, type: :string)
+  def host: () -> String
+  def has_host?: () -> bool
+  @host: String?
+  # optional(4, :base_path, type: :string)
+  def base_path: () -> String
+  def has_base_path?: () -> bool
+  @base_path: String?
+  # repeated(5, :schemes, type: :enum)
+  def schemes: () -> Integer
+  def has_schemes?: () -> bool
+  @schemes: Integer?
+  # repeated(6, :consumes, type: :string)
+  def consumes: () -> String
+  def has_consumes?: () -> bool
+  @consumes: String?
+  # repeated(7, :produces, type: :string)
+  def produces: () -> String
+  def has_produces?: () -> bool
+  @produces: String?
+  # map(10, :responses, type: :map)
+  def responses: () -> Hash
+  def has_responses?: () -> bool
+  @responses: Hash?
+  # optional(11, :security_definitions, type: :message)
+  def security_definitions: () -> Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityDefinitions
+  def has_security_definitions?: () -> bool
+  @security_definitions: Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityDefinitions?
+  # repeated(12, :security, type: :message)
+  def security: () -> Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityRequirement
+  def has_security?: () -> bool
+  @security: Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityRequirement?
+  # repeated(13, :tags, type: :message)
+  def tags: () -> Grpc::Gateway::ProtocGenOpenapiv2::Options::Tag
+  def has_tags?: () -> bool
+  @tags: Grpc::Gateway::ProtocGenOpenapiv2::Options::Tag?
+  # optional(14, :external_docs, type: :message)
+  def external_docs: () -> Grpc::Gateway::ProtocGenOpenapiv2::Options::ExternalDocumentation
+  def has_external_docs?: () -> bool
+  @external_docs: Grpc::Gateway::ProtocGenOpenapiv2::Options::ExternalDocumentation?
+  # map(15, :extensions, type: :map)
+  def extensions: () -> Hash
+  def has_extensions?: () -> bool
+  @extensions: Hash?
+end
+class Grpc::Gateway::ProtocGenOpenapiv2::Options::Operation # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:205
+  def self.decode: (String string) -> Grpc::Gateway::ProtocGenOpenapiv2::Options::Operation
+  # repeated(1, :tags, type: :string)
+  def tags: () -> String
+  def has_tags?: () -> bool
+  @tags: String?
+  # optional(2, :summary, type: :string)
+  def summary: () -> String
+  def has_summary?: () -> bool
+  @summary: String?
+  # optional(3, :description, type: :string)
+  def description: () -> String
+  def has_description?: () -> bool
+  @description: String?
+  # optional(4, :external_docs, type: :message)
+  def external_docs: () -> Grpc::Gateway::ProtocGenOpenapiv2::Options::ExternalDocumentation
+  def has_external_docs?: () -> bool
+  @external_docs: Grpc::Gateway::ProtocGenOpenapiv2::Options::ExternalDocumentation?
+  # optional(5, :operation_id, type: :string)
+  def operation_id: () -> String
+  def has_operation_id?: () -> bool
+  @operation_id: String?
+  # repeated(6, :consumes, type: :string)
+  def consumes: () -> String
+  def has_consumes?: () -> bool
+  @consumes: String?
+  # repeated(7, :produces, type: :string)
+  def produces: () -> String
+  def has_produces?: () -> bool
+  @produces: String?
+  # map(9, :responses, type: :map)
+  def responses: () -> Hash
+  def has_responses?: () -> bool
+  @responses: Hash?
+  # repeated(10, :schemes, type: :enum)
+  def schemes: () -> Integer
+  def has_schemes?: () -> bool
+  @schemes: Integer?
+  # optional(11, :deprecated, type: :bool)
+  def deprecated: () -> Integer
+  def has_deprecated?: () -> bool
+  @deprecated: Integer?
+  # repeated(12, :security, type: :message)
+  def security: () -> Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityRequirement
+  def has_security?: () -> bool
+  @security: Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityRequirement?
+  # map(13, :extensions, type: :map)
+  def extensions: () -> Hash
+  def has_extensions?: () -> bool
+  @extensions: Hash?
+  # optional(14, :parameters, type: :message)
+  def parameters: () -> Grpc::Gateway::ProtocGenOpenapiv2::Options::Parameters
+  def has_parameters?: () -> bool
+  @parameters: Grpc::Gateway::ProtocGenOpenapiv2::Options::Parameters?
+end
+class Grpc::Gateway::ProtocGenOpenapiv2::Options::Parameters # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:314
+  def self.decode: (String string) -> Grpc::Gateway::ProtocGenOpenapiv2::Options::Parameters
+  # repeated(1, :headers, type: :message)
+  def headers: () -> Grpc::Gateway::ProtocGenOpenapiv2::Options::HeaderParameter
+  def has_headers?: () -> bool
+  @headers: Grpc::Gateway::ProtocGenOpenapiv2::Options::HeaderParameter?
+end
+class Grpc::Gateway::ProtocGenOpenapiv2::Options::HeaderParameter # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:332
+  def self.decode: (String string) -> Grpc::Gateway::ProtocGenOpenapiv2::Options::HeaderParameter
+  # optional(1, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # optional(2, :description, type: :string)
+  def description: () -> String
+  def has_description?: () -> bool
+  @description: String?
+  # optional(3, :type, type: :enum)
+  def type: () -> Integer
+  def has_type?: () -> bool
+  @type: Integer?
+  # optional(4, :format, type: :string)
+  def format: () -> String
+  def has_format?: () -> bool
+  @format: String?
+  # optional(5, :required, type: :bool)
+  def required: () -> Integer
+  def has_required?: () -> bool
+  @required: Integer?
+end
+module Grpc::Gateway::ProtocGenOpenapiv2::Options::HeaderParameter::Type # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:339
+  UNKNOWN: Integer
+  STRING: Integer
+  NUMBER: Integer
+  INTEGER: Integer
+  BOOLEAN: Integer
+end
+class Grpc::Gateway::ProtocGenOpenapiv2::Options::Header # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:378
+  def self.decode: (String string) -> Grpc::Gateway::ProtocGenOpenapiv2::Options::Header
+  # optional(1, :description, type: :string)
+  def description: () -> String
+  def has_description?: () -> bool
+  @description: String?
+  # optional(2, :type, type: :string)
+  def type: () -> String
+  def has_type?: () -> bool
+  @type: String?
+  # optional(3, :format, type: :string)
+  def format: () -> String
+  def has_format?: () -> bool
+  @format: String?
+  # optional(6, :default, type: :string)
+  def default: () -> String
+  def has_default?: () -> bool
+  @default: String?
+  # optional(13, :pattern, type: :string)
+  def pattern: () -> String
+  def has_pattern?: () -> bool
+  @pattern: String?
+end
+class Grpc::Gateway::ProtocGenOpenapiv2::Options::Response # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:415
+  def self.decode: (String string) -> Grpc::Gateway::ProtocGenOpenapiv2::Options::Response
+  # optional(1, :description, type: :string)
+  def description: () -> String
+  def has_description?: () -> bool
+  @description: String?
+  # optional(2, :schema, type: :message)
+  def schema: () -> Grpc::Gateway::ProtocGenOpenapiv2::Options::Schema
+  def has_schema?: () -> bool
+  @schema: Grpc::Gateway::ProtocGenOpenapiv2::Options::Schema?
+  # map(3, :headers, type: :map)
+  def headers: () -> Hash
+  def has_headers?: () -> bool
+  @headers: Hash?
+  # map(4, :examples, type: :map)
+  def examples: () -> Hash
+  def has_examples?: () -> bool
+  @examples: Hash?
+  # map(5, :extensions, type: :map)
+  def extensions: () -> Hash
+  def has_extensions?: () -> bool
+  @extensions: Hash?
+end
+class Grpc::Gateway::ProtocGenOpenapiv2::Options::Info # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:480
+  def self.decode: (String string) -> Grpc::Gateway::ProtocGenOpenapiv2::Options::Info
+  # optional(1, :title, type: :string)
+  def title: () -> String
+  def has_title?: () -> bool
+  @title: String?
+  # optional(2, :description, type: :string)
+  def description: () -> String
+  def has_description?: () -> bool
+  @description: String?
+  # optional(3, :terms_of_service, type: :string)
+  def terms_of_service: () -> String
+  def has_terms_of_service?: () -> bool
+  @terms_of_service: String?
+  # optional(4, :contact, type: :message)
+  def contact: () -> Grpc::Gateway::ProtocGenOpenapiv2::Options::Contact
+  def has_contact?: () -> bool
+  @contact: Grpc::Gateway::ProtocGenOpenapiv2::Options::Contact?
+  # optional(5, :license, type: :message)
+  def license: () -> Grpc::Gateway::ProtocGenOpenapiv2::Options::License
+  def has_license?: () -> bool
+  @license: Grpc::Gateway::ProtocGenOpenapiv2::Options::License?
+  # optional(6, :version, type: :string)
+  def version: () -> String
+  def has_version?: () -> bool
+  @version: String?
+  # map(7, :extensions, type: :map)
+  def extensions: () -> Hash
+  def has_extensions?: () -> bool
+  @extensions: Hash?
+end
+class Grpc::Gateway::ProtocGenOpenapiv2::Options::Contact # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:549
+  def self.decode: (String string) -> Grpc::Gateway::ProtocGenOpenapiv2::Options::Contact
+  # optional(1, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # optional(2, :url, type: :string)
+  def url: () -> String
+  def has_url?: () -> bool
+  @url: String?
+  # optional(3, :email, type: :string)
+  def email: () -> String
+  def has_email?: () -> bool
+  @email: String?
+end
+class Grpc::Gateway::ProtocGenOpenapiv2::Options::License # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:581
+  def self.decode: (String string) -> Grpc::Gateway::ProtocGenOpenapiv2::Options::License
+  # optional(1, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # optional(2, :url, type: :string)
+  def url: () -> String
+  def has_url?: () -> bool
+  @url: String?
+end
+class Grpc::Gateway::ProtocGenOpenapiv2::Options::ExternalDocumentation # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:607
+  def self.decode: (String string) -> Grpc::Gateway::ProtocGenOpenapiv2::Options::ExternalDocumentation
+  # optional(1, :description, type: :string)
+  def description: () -> String
+  def has_description?: () -> bool
+  @description: String?
+  # optional(2, :url, type: :string)
+  def url: () -> String
+  def has_url?: () -> bool
+  @url: String?
+end
+class Grpc::Gateway::ProtocGenOpenapiv2::Options::Schema # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:623
+  def self.decode: (String string) -> Grpc::Gateway::ProtocGenOpenapiv2::Options::Schema
+  # optional(1, :json_schema, type: :message)
+  def json_schema: () -> Grpc::Gateway::ProtocGenOpenapiv2::Options::JSONSchema
+  def has_json_schema?: () -> bool
+  @json_schema: Grpc::Gateway::ProtocGenOpenapiv2::Options::JSONSchema?
+  # optional(2, :discriminator, type: :string)
+  def discriminator: () -> String
+  def has_discriminator?: () -> bool
+  @discriminator: String?
+  # optional(3, :read_only, type: :bool)
+  def read_only: () -> Integer
+  def has_read_only?: () -> bool
+  @read_only: Integer?
+  # optional(5, :external_docs, type: :message)
+  def external_docs: () -> Grpc::Gateway::ProtocGenOpenapiv2::Options::ExternalDocumentation
+  def has_external_docs?: () -> bool
+  @external_docs: Grpc::Gateway::ProtocGenOpenapiv2::Options::ExternalDocumentation?
+  # optional(6, :example, type: :string)
+  def example: () -> String
+  def has_example?: () -> bool
+  @example: String?
+end
+class Grpc::Gateway::ProtocGenOpenapiv2::Options::JSONSchema # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:700
+  def self.decode: (String string) -> Grpc::Gateway::ProtocGenOpenapiv2::Options::JSONSchema
+  # optional(3, :ref, type: :string)
+  def ref: () -> String
+  def has_ref?: () -> bool
+  @ref: String?
+  # optional(5, :title, type: :string)
+  def title: () -> String
+  def has_title?: () -> bool
+  @title: String?
+  # optional(6, :description, type: :string)
+  def description: () -> String
+  def has_description?: () -> bool
+  @description: String?
+  # optional(7, :default, type: :string)
+  def default: () -> String
+  def has_default?: () -> bool
+  @default: String?
+  # optional(8, :read_only, type: :bool)
+  def read_only: () -> Integer
+  def has_read_only?: () -> bool
+  @read_only: Integer?
+  # optional(9, :example, type: :string)
+  def example: () -> String
+  def has_example?: () -> bool
+  @example: String?
+  # optional(10, :multiple_of, type: :double)
+  def multiple_of: () -> Float
+  def has_multiple_of?: () -> bool
+  @multiple_of: Float?
+  # optional(11, :maximum, type: :double)
+  def maximum: () -> Float
+  def has_maximum?: () -> bool
+  @maximum: Float?
+  # optional(12, :exclusive_maximum, type: :bool)
+  def exclusive_maximum: () -> Integer
+  def has_exclusive_maximum?: () -> bool
+  @exclusive_maximum: Integer?
+  # optional(13, :minimum, type: :double)
+  def minimum: () -> Float
+  def has_minimum?: () -> bool
+  @minimum: Float?
+  # optional(14, :exclusive_minimum, type: :bool)
+  def exclusive_minimum: () -> Integer
+  def has_exclusive_minimum?: () -> bool
+  @exclusive_minimum: Integer?
+  # optional(15, :max_length, type: :uint64)
+  def max_length: () -> Integer
+  def has_max_length?: () -> bool
+  @max_length: Integer?
+  # optional(16, :min_length, type: :uint64)
+  def min_length: () -> Integer
+  def has_min_length?: () -> bool
+  @min_length: Integer?
+  # optional(17, :pattern, type: :string)
+  def pattern: () -> String
+  def has_pattern?: () -> bool
+  @pattern: String?
+  # optional(20, :max_items, type: :uint64)
+  def max_items: () -> Integer
+  def has_max_items?: () -> bool
+  @max_items: Integer?
+  # optional(21, :min_items, type: :uint64)
+  def min_items: () -> Integer
+  def has_min_items?: () -> bool
+  @min_items: Integer?
+  # optional(22, :unique_items, type: :bool)
+  def unique_items: () -> Integer
+  def has_unique_items?: () -> bool
+  @unique_items: Integer?
+  # optional(24, :max_properties, type: :uint64)
+  def max_properties: () -> Integer
+  def has_max_properties?: () -> bool
+  @max_properties: Integer?
+  # optional(25, :min_properties, type: :uint64)
+  def min_properties: () -> Integer
+  def has_min_properties?: () -> bool
+  @min_properties: Integer?
+  # repeated(26, :required, type: :string)
+  def required: () -> String
+  def has_required?: () -> bool
+  @required: String?
+  # repeated(34, :array, type: :string)
+  def array: () -> String
+  def has_array?: () -> bool
+  @array: String?
+  # repeated(35, :type, type: :enum)
+  def type: () -> Integer
+  def has_type?: () -> bool
+  @type: Integer?
+  # optional(36, :format, type: :string)
+  def format: () -> String
+  def has_format?: () -> bool
+  @format: String?
+  # repeated(46, :enum, type: :string)
+  def enum: () -> String
+  def has_enum?: () -> bool
+  @enum: String?
+  # optional(1001, :field_configuration, type: :message)
+  def field_configuration: () -> Grpc::Gateway::ProtocGenOpenapiv2::Options::JSONSchema::FieldConfiguration
+  def has_field_configuration?: () -> bool
+  @field_configuration: Grpc::Gateway::ProtocGenOpenapiv2::Options::JSONSchema::FieldConfiguration?
+  # map(48, :extensions, type: :map)
+  def extensions: () -> Hash
+  def has_extensions?: () -> bool
+  @extensions: Hash?
+end
+module Grpc::Gateway::ProtocGenOpenapiv2::Options::JSONSchema::JSONSchemaSimpleTypes # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:808
+  UNKNOWN: Integer
+  ARRAY: Integer
+  BOOLEAN: Integer
+  INTEGER: Integer
+  NULL: Integer
+  NUMBER: Integer
+  OBJECT: Integer
+  STRING: Integer
+end
+class Grpc::Gateway::ProtocGenOpenapiv2::Options::JSONSchema::FieldConfiguration # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:847
+  def self.decode: (String string) -> Grpc::Gateway::ProtocGenOpenapiv2::Options::JSONSchema::FieldConfiguration
+  # optional(47, :path_param_name, type: :string)
+  def path_param_name: () -> String
+  def has_path_param_name?: () -> bool
+  @path_param_name: String?
+end
+class Grpc::Gateway::ProtocGenOpenapiv2::Options::Tag # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:895
+  def self.decode: (String string) -> Grpc::Gateway::ProtocGenOpenapiv2::Options::Tag
+  # optional(1, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # optional(2, :description, type: :string)
+  def description: () -> String
+  def has_description?: () -> bool
+  @description: String?
+  # optional(3, :external_docs, type: :message)
+  def external_docs: () -> Grpc::Gateway::ProtocGenOpenapiv2::Options::ExternalDocumentation
+  def has_external_docs?: () -> bool
+  @external_docs: Grpc::Gateway::ProtocGenOpenapiv2::Options::ExternalDocumentation?
+  # map(4, :extensions, type: :map)
+  def extensions: () -> Hash
+  def has_extensions?: () -> bool
+  @extensions: Hash?
+end
+class Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityDefinitions # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:937
+  def self.decode: (String string) -> Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityDefinitions
+  # map(1, :security, type: :map)
+  def security: () -> Hash
+  def has_security?: () -> bool
+  @security: Hash?
+end
+class Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityScheme # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:963
+  def self.decode: (String string) -> Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityScheme
+  # optional(1, :type, type: :enum)
+  def type: () -> Integer
+  def has_type?: () -> bool
+  @type: Integer?
+  # optional(2, :description, type: :string)
+  def description: () -> String
+  def has_description?: () -> bool
+  @description: String?
+  # optional(3, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # optional(4, :in, type: :enum)
+  def in: () -> Integer
+  def has_in?: () -> bool
+  @in: Integer?
+  # optional(5, :flow, type: :enum)
+  def flow: () -> Integer
+  def has_flow?: () -> bool
+  @flow: Integer?
+  # optional(6, :authorization_url, type: :string)
+  def authorization_url: () -> String
+  def has_authorization_url?: () -> bool
+  @authorization_url: String?
+  # optional(7, :token_url, type: :string)
+  def token_url: () -> String
+  def has_token_url?: () -> bool
+  @token_url: String?
+  # optional(8, :scopes, type: :message)
+  def scopes: () -> Grpc::Gateway::ProtocGenOpenapiv2::Options::Scopes
+  def has_scopes?: () -> bool
+  @scopes: Grpc::Gateway::ProtocGenOpenapiv2::Options::Scopes?
+  # map(9, :extensions, type: :map)
+  def extensions: () -> Hash
+  def has_extensions?: () -> bool
+  @extensions: Hash?
+end
+module Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityScheme::Type # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:970
+  TYPE_INVALID: Integer
+  TYPE_BASIC: Integer
+  TYPE_API_KEY: Integer
+  TYPE_OAUTH2: Integer
+end
+module Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityScheme::In # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:982
+  IN_INVALID: Integer
+  IN_QUERY: Integer
+  IN_HEADER: Integer
+end
+module Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityScheme::Flow # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:994
+  FLOW_INVALID: Integer
+  FLOW_IMPLICIT: Integer
+  FLOW_PASSWORD: Integer
+  FLOW_APPLICATION: Integer
+  FLOW_ACCESS_CODE: Integer
+end
+class Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityRequirement # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:1095
+  def self.decode: (String string) -> Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityRequirement
+  # map(1, :security_requirement, type: :map)
+  def security_requirement: () -> Hash
+  def has_security_requirement?: () -> bool
+  @security_requirement: Hash?
+end
+class Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityRequirement::SecurityRequirementValue # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:1103
+  def self.decode: (String string) -> Grpc::Gateway::ProtocGenOpenapiv2::Options::SecurityRequirement::SecurityRequirementValue
+  # repeated(1, :scope, type: :string)
+  def scope: () -> String
+  def has_scope?: () -> bool
+  @scope: String?
+end
+class Grpc::Gateway::ProtocGenOpenapiv2::Options::Scopes # /lib/grpc/gateway/protoc_gen_openapiv2/options/openapiv2_pb.rb:1131
+  def self.decode: (String string) -> Grpc::Gateway::ProtocGenOpenapiv2::Options::Scopes
+  # map(1, :scope, type: :map)
+  def scope: () -> Hash
+  def has_scope?: () -> bool
+  @scope: Hash?
+end

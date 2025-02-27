@@ -39,21 +39,21 @@ module InTotoAttestation
             2,
             "target",
             type: :message,
-            message_type: "in_toto_attestation.v1.ResourceDescriptor",
+            message_class: "InTotoAttestation::V1::ResourceDescriptor",
             proto3_optional: false
           )
           optional(
             3,
             "conditions",
             type: :message,
-            message_type: "google.protobuf.Struct",
+            message_class: "Google::Protobuf::Struct",
             proto3_optional: false
           )
           optional(
             4,
             "evidence",
             type: :message,
-            message_type: "in_toto_attestation.v1.ResourceDescriptor",
+            message_class: "InTotoAttestation::V1::ResourceDescriptor",
             proto3_optional: false
           )
         end
@@ -67,26 +67,15 @@ module InTotoAttestation
             1,
             "attributes",
             type: :message,
-            message_type:
-            "in_toto_attestation.predicates.scai.v0.AttributeAssertion"
+            message_class:
+            "InTotoAttestation::Predicates::Scai::V0::AttributeAssertion"
           )
           optional(
             2,
             "producer",
             type: :message,
-            message_type: "in_toto_attestation.v1.ResourceDescriptor",
+            message_class: "InTotoAttestation::V1::ResourceDescriptor",
             proto3_optional: false
-          )
-        end
-
-        def self.register_scai_protos(registry)
-          Google::Protobuf.register_struct_protos(registry)
-          InTotoAttestation::V1.register_resource_descriptor_protos(registry)
-          registry.register(
-            InTotoAttestation::Predicates::Scai::V0::AttributeAssertion
-          )
-          registry.register(
-            InTotoAttestation::Predicates::Scai::V0::AttributeReport
           )
         end
       end
