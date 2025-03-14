@@ -1,0 +1,7 @@
+class Google::Protobuf::SourceContext # /lib/google/protobuf/source_context_pb.rb:52
+  def self.decode: (String string) -> Google::Protobuf::SourceContext
+  # optional(1, :file_name, type: :string)
+  def file_name: () -> String
+  def has_file_name?: () -> bool
+  @file_name: String?
+end
