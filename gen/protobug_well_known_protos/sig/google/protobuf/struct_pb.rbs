@@ -1,0 +1,44 @@
+class Google::Protobuf::Struct # /lib/google/protobuf/struct_pb.rb:59
+  def self.decode: (String string) -> Google::Protobuf::Struct
+  # map(1, :fields, type: :map)
+  def fields: () -> Hash
+  def has_fields?: () -> bool
+  @fields: Hash?
+end
+class Google::Protobuf::Value # /lib/google/protobuf/struct_pb.rb:80
+  def self.decode: (String string) -> Google::Protobuf::Value
+  # optional(1, :null_value, type: :enum)
+  def null_value: () -> Integer
+  def has_null_value?: () -> bool
+  @null_value: Integer?
+  # optional(2, :number_value, type: :double)
+  def number_value: () -> Float
+  def has_number_value?: () -> bool
+  @number_value: Float?
+  # optional(3, :string_value, type: :string)
+  def string_value: () -> String
+  def has_string_value?: () -> bool
+  @string_value: String?
+  # optional(4, :bool_value, type: :bool)
+  def bool_value: () -> Integer
+  def has_bool_value?: () -> bool
+  @bool_value: Integer?
+  # optional(5, :struct_value, type: :message)
+  def struct_value: () -> Google::Protobuf::Struct
+  def has_struct_value?: () -> bool
+  @struct_value: Google::Protobuf::Struct?
+  # optional(6, :list_value, type: :message)
+  def list_value: () -> Google::Protobuf::ListValue
+  def has_list_value?: () -> bool
+  @list_value: Google::Protobuf::ListValue?
+end
+module Google::Protobuf::NullValue # /lib/google/protobuf/struct_pb.rb:150
+  NULL_VALUE: Integer
+end
+class Google::Protobuf::ListValue # /lib/google/protobuf/struct_pb.rb:162
+  def self.decode: (String string) -> Google::Protobuf::ListValue
+  # repeated(1, :values, type: :message)
+  def values: () -> Google::Protobuf::Value
+  def has_values?: () -> bool
+  @values: Google::Protobuf::Value?
+end

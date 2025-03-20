@@ -1,0 +1,26 @@
+class Sigstore::DSSE::Envelope # /lib/sigstore/dsse/envelope_pb.rb:31
+  def self.decode: (String string) -> Sigstore::DSSE::Envelope
+  # optional(1, :payload, type: :bytes)
+  def payload: () -> String
+  def has_payload?: () -> bool
+  @payload: String?
+  # optional(2, :payloadType, type: :string)
+  def payloadType: () -> String
+  def has_payloadType?: () -> bool
+  @payloadType: String?
+  # repeated(3, :signatures, type: :message)
+  def signatures: () -> Sigstore::DSSE::Signature
+  def has_signatures?: () -> bool
+  @signatures: Sigstore::DSSE::Signature?
+end
+class Sigstore::DSSE::Signature # /lib/sigstore/dsse/envelope_pb.rb:59
+  def self.decode: (String string) -> Sigstore::DSSE::Signature
+  # optional(1, :sig, type: :bytes)
+  def sig: () -> String
+  def has_sig?: () -> bool
+  @sig: String?
+  # optional(2, :keyid, type: :string)
+  def keyid: () -> String
+  def has_keyid?: () -> bool
+  @keyid: String?
+end
