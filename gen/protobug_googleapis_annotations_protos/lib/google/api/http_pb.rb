@@ -42,7 +42,12 @@ module Google
       # A list of HTTP configuration rules that apply to individual API methods.
       #
       # **NOTE:** All service configuration rules follow "last one wins" order.
-      repeated(1, "rules", type: :message, message_type: "google.api.HttpRule")
+      repeated(
+        1,
+        "rules",
+        type: :message,
+        message_class: "Google::Api::HttpRule"
+      )
       # When set to true, URL path parameters will be fully URI-decoded except in
       # cases of single segment matches in reserved expansion, where "%2F" will be
       # left encoded.
@@ -381,7 +386,7 @@ module Google
         8,
         "custom",
         type: :message,
-        message_type: "google.api.CustomHttpPattern",
+        message_class: "Google::Api::CustomHttpPattern",
         oneof: :pattern,
         proto3_optional: false
       )
@@ -412,7 +417,7 @@ module Google
         11,
         "additional_bindings",
         type: :message,
-        message_type: "google.api.HttpRule",
+        message_class: "Google::Api::HttpRule",
         json_name: "additionalBindings"
       )
     end
@@ -427,12 +432,6 @@ module Google
       optional(1, "kind", type: :string, proto3_optional: false)
       # The path matched by this custom verb.
       optional(2, "path", type: :string, proto3_optional: false)
-    end
-
-    def self.register_http_protos(registry)
-      registry.register(Google::Api::Http)
-      registry.register(Google::Api::HttpRule)
-      registry.register(Google::Api::CustomHttpPattern)
     end
   end
 end
