@@ -72,14 +72,14 @@ module Google
         2,
         "methods",
         type: :message,
-        message_type: "google.protobuf.Method"
+        message_class: "Google::Protobuf::Method"
       )
       # Any metadata attached to the interface.
       repeated(
         3,
         "options",
         type: :message,
-        message_type: "google.protobuf.Option"
+        message_class: "Google::Protobuf::Option"
       )
       # A version string for this interface. If specified, must have the form
       # `major-version.minor-version`, as in `1.10`. If the minor version is
@@ -107,7 +107,7 @@ module Google
         5,
         "source_context",
         type: :message,
-        message_type: "google.protobuf.SourceContext",
+        message_class: "Google::Protobuf::SourceContext",
         json_name: "sourceContext",
         proto3_optional: false
       )
@@ -116,14 +116,14 @@ module Google
         6,
         "mixins",
         type: :message,
-        message_type: "google.protobuf.Mixin"
+        message_class: "Google::Protobuf::Mixin"
       )
       # The source syntax of the service.
       optional(
         7,
         "syntax",
         type: :enum,
-        enum_type: "google.protobuf.Syntax",
+        enum_class: "Google::Protobuf::Syntax",
         proto3_optional: false
       )
     end
@@ -173,14 +173,14 @@ module Google
         6,
         "options",
         type: :message,
-        message_type: "google.protobuf.Option"
+        message_class: "Google::Protobuf::Option"
       )
       # The source syntax of this method.
       optional(
         7,
         "syntax",
         type: :enum,
-        enum_type: "google.protobuf.Syntax",
+        enum_class: "Google::Protobuf::Syntax",
         proto3_optional: false
       )
     end
@@ -273,14 +273,6 @@ module Google
       # If non-empty specifies a path under which inherited HTTP paths
       # are rooted.
       optional(2, "root", type: :string, proto3_optional: false)
-    end
-
-    def self.register_api_protos(registry)
-      Google::Protobuf.register_source_context_protos(registry)
-      Google::Protobuf.register_type_protos(registry)
-      registry.register(Google::Protobuf::Api)
-      registry.register(Google::Protobuf::Method)
-      registry.register(Google::Protobuf::Mixin)
     end
   end
 end

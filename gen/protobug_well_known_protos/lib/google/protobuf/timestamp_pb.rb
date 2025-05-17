@@ -152,10 +152,6 @@ module Google
       # inclusive.
       optional(2, "nanos", type: :int32, proto3_optional: false)
     end
-
-    def self.register_timestamp_protos(registry)
-      registry.register(Google::Protobuf::Timestamp)
-    end
   end
 end
 
