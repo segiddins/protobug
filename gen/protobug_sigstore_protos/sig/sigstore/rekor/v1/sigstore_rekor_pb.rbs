@@ -1,0 +1,79 @@
+class Sigstore::Rekor::V1::KindVersion # /lib/sigstore/rekor/v1/sigstore_rekor_pb.rb:39
+  def self.decode: (String string) -> Sigstore::Rekor::V1::KindVersion
+  # optional(1, :kind, type: :string)
+  def kind: () -> String
+  def has_kind?: () -> bool
+  @kind: String?
+  # optional(2, :version, type: :string)
+  def version: () -> String
+  def has_version?: () -> bool
+  @version: String?
+end
+class Sigstore::Rekor::V1::Checkpoint # /lib/sigstore/rekor/v1/sigstore_rekor_pb.rb:73
+  def self.decode: (String string) -> Sigstore::Rekor::V1::Checkpoint
+  # optional(1, :envelope, type: :string)
+  def envelope: () -> String
+  def has_envelope?: () -> bool
+  @envelope: String?
+end
+class Sigstore::Rekor::V1::InclusionProof # /lib/sigstore/rekor/v1/sigstore_rekor_pb.rb:89
+  def self.decode: (String string) -> Sigstore::Rekor::V1::InclusionProof
+  # optional(1, :log_index, type: :int64)
+  def log_index: () -> Integer
+  def has_log_index?: () -> bool
+  @log_index: Integer?
+  # optional(2, :root_hash, type: :bytes)
+  def root_hash: () -> String
+  def has_root_hash?: () -> bool
+  @root_hash: String?
+  # optional(3, :tree_size, type: :int64)
+  def tree_size: () -> Integer
+  def has_tree_size?: () -> bool
+  @tree_size: Integer?
+  # repeated(4, :hashes, type: :bytes)
+  def hashes: () -> String
+  def has_hashes?: () -> bool
+  @hashes: String?
+  # optional(5, :checkpoint, type: :message)
+  def checkpoint: () -> Sigstore::Rekor::V1::Checkpoint
+  def has_checkpoint?: () -> bool
+  @checkpoint: Sigstore::Rekor::V1::Checkpoint?
+end
+class Sigstore::Rekor::V1::InclusionPromise # /lib/sigstore/rekor/v1/sigstore_rekor_pb.rb:155
+  def self.decode: (String string) -> Sigstore::Rekor::V1::InclusionPromise
+  # optional(1, :signed_entry_timestamp, type: :bytes)
+  def signed_entry_timestamp: () -> String
+  def has_signed_entry_timestamp?: () -> bool
+  @signed_entry_timestamp: String?
+end
+class Sigstore::Rekor::V1::TransparencyLogEntry # /lib/sigstore/rekor/v1/sigstore_rekor_pb.rb:178
+  def self.decode: (String string) -> Sigstore::Rekor::V1::TransparencyLogEntry
+  # optional(1, :log_index, type: :int64)
+  def log_index: () -> Integer
+  def has_log_index?: () -> bool
+  @log_index: Integer?
+  # optional(2, :log_id, type: :message)
+  def log_id: () -> Sigstore::Common::V1::LogId
+  def has_log_id?: () -> bool
+  @log_id: Sigstore::Common::V1::LogId?
+  # optional(3, :kind_version, type: :message)
+  def kind_version: () -> Sigstore::Rekor::V1::KindVersion
+  def has_kind_version?: () -> bool
+  @kind_version: Sigstore::Rekor::V1::KindVersion?
+  # optional(4, :integrated_time, type: :int64)
+  def integrated_time: () -> Integer
+  def has_integrated_time?: () -> bool
+  @integrated_time: Integer?
+  # optional(5, :inclusion_promise, type: :message)
+  def inclusion_promise: () -> Sigstore::Rekor::V1::InclusionPromise
+  def has_inclusion_promise?: () -> bool
+  @inclusion_promise: Sigstore::Rekor::V1::InclusionPromise?
+  # optional(6, :inclusion_proof, type: :message)
+  def inclusion_proof: () -> Sigstore::Rekor::V1::InclusionProof
+  def has_inclusion_proof?: () -> bool
+  @inclusion_proof: Sigstore::Rekor::V1::InclusionProof?
+  # optional(7, :canonicalized_body, type: :bytes)
+  def canonicalized_body: () -> String
+  def has_canonicalized_body?: () -> bool
+  @canonicalized_body: String?
+end

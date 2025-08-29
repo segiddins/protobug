@@ -43,9 +43,21 @@ module Sigstore
 
         # Kind is the type of entry being stored in the log.
         # See here for a list: https://github.com/sigstore/rekor/tree/main/pkg/types
-        optional(1, "kind", type: :string, proto3_optional: false)
+        optional(
+          1,
+          "kind",
+          type: :string,
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
+        )
         # The specific api version of the type.
-        optional(2, "version", type: :string, proto3_optional: false)
+        optional(
+          2,
+          "version",
+          type: :string,
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
+        )
       end
 
       # The checkpoint MUST contain an origin string as a unique log identifier,
@@ -63,7 +75,13 @@ module Sigstore
 
         self.full_name = "dev.sigstore.rekor.v1.Checkpoint"
 
-        optional(1, "envelope", type: :string, proto3_optional: false)
+        optional(
+          1,
+          "envelope",
+          type: :string,
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
+        )
       end
 
       # InclusionProof is the proof returned from the transparency log. Can
@@ -79,7 +97,8 @@ module Sigstore
           "log_index",
           type: :int64,
           json_name: "logIndex",
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
         # The hash digest stored at the root of the merkle tree at the time
         # the proof was generated.
@@ -88,7 +107,8 @@ module Sigstore
           "root_hash",
           type: :bytes,
           json_name: "rootHash",
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
         # The size of the merkle tree at the time the proof was generated.
         optional(
@@ -96,22 +116,29 @@ module Sigstore
           "tree_size",
           type: :int64,
           json_name: "treeSize",
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
         # A list of hashes required to compute the inclusion proof, sorted
         # in order from leaf to root.
         # Note that leaf and root hashes are not included.
         # The root hash is available separately in this message, and the
         # leaf hash should be calculated by the client.
-        repeated(4, "hashes", type: :bytes)
+        repeated(
+          4,
+          "hashes",
+          type: :bytes,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
+        )
         # Signature of the tree head, as of the time of this proof was
         # generated. See above info on 'Checkpoint' for more details.
         optional(
           5,
           "checkpoint",
           type: :message,
-          message_type: "dev.sigstore.rekor.v1.Checkpoint",
-          proto3_optional: false
+          message_class: "Sigstore::Rekor::V1::Checkpoint",
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
       end
 
@@ -135,7 +162,8 @@ module Sigstore
           "signed_entry_timestamp",
           type: :bytes,
           json_name: "signedEntryTimestamp",
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
       end
 
@@ -158,16 +186,18 @@ module Sigstore
           "log_index",
           type: :int64,
           json_name: "logIndex",
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
         # The unique identifier of the log.
         optional(
           2,
           "log_id",
           type: :message,
-          message_type: "dev.sigstore.common.v1.LogId",
+          message_class: "Sigstore::Common::V1::LogId",
           json_name: "logId",
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
         # The kind (type) and version of the object associated with this
         # entry. These values are required to construct the entry during
@@ -176,9 +206,10 @@ module Sigstore
           3,
           "kind_version",
           type: :message,
-          message_type: "dev.sigstore.rekor.v1.KindVersion",
+          message_class: "Sigstore::Rekor::V1::KindVersion",
           json_name: "kindVersion",
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
         # The UNIX timestamp from the log when the entry was persisted.
         optional(
@@ -186,7 +217,8 @@ module Sigstore
           "integrated_time",
           type: :int64,
           json_name: "integratedTime",
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
         # The inclusion promise/signed entry timestamp from the log.
         # Required for v0.1 bundles, and MUST be verified.
@@ -199,7 +231,7 @@ module Sigstore
           5,
           "inclusion_promise",
           type: :message,
-          message_type: "dev.sigstore.rekor.v1.InclusionPromise",
+          message_class: "Sigstore::Rekor::V1::InclusionPromise",
           json_name: "inclusionPromise",
           proto3_optional: false
         )
@@ -210,9 +242,10 @@ module Sigstore
           6,
           "inclusion_proof",
           type: :message,
-          message_type: "dev.sigstore.rekor.v1.InclusionProof",
+          message_class: "Sigstore::Rekor::V1::InclusionProof",
           json_name: "inclusionProof",
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
         # Optional. The canonicalized transparency log entry, used to
         # reconstruct the Signed Entry Timestamp (SET) during verification.
@@ -239,16 +272,6 @@ module Sigstore
           json_name: "canonicalizedBody",
           proto3_optional: false
         )
-      end
-
-      def self.register_sigstore_rekor_protos(registry)
-        Google::Api.register_field_behavior_protos(registry)
-        Sigstore::Common::V1.register_sigstore_common_protos(registry)
-        registry.register(Sigstore::Rekor::V1::KindVersion)
-        registry.register(Sigstore::Rekor::V1::Checkpoint)
-        registry.register(Sigstore::Rekor::V1::InclusionProof)
-        registry.register(Sigstore::Rekor::V1::InclusionPromise)
-        registry.register(Sigstore::Rekor::V1::TransparencyLogEntry)
       end
     end
   end

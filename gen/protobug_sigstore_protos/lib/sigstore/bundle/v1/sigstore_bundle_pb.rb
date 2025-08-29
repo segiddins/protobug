@@ -61,7 +61,7 @@ module Sigstore
           1,
           "rfc3161_timestamps",
           type: :message,
-          message_type: "dev.sigstore.common.v1.RFC3161SignedTimestamp",
+          message_class: "Sigstore::Common::V1::RFC3161SignedTimestamp",
           json_name: "rfc3161Timestamps"
         )
       end
@@ -118,27 +118,30 @@ module Sigstore
           1,
           "public_key",
           type: :message,
-          message_type: "dev.sigstore.common.v1.PublicKeyIdentifier",
+          message_class: "Sigstore::Common::V1::PublicKeyIdentifier",
           json_name: "publicKey",
           oneof: :content,
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
         optional(
           2,
           "x509_certificate_chain",
           type: :message,
-          message_type: "dev.sigstore.common.v1.X509CertificateChain",
+          message_class: "Sigstore::Common::V1::X509CertificateChain",
           json_name: "x509CertificateChain",
           oneof: :content,
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
         optional(
           5,
           "certificate",
           type: :message,
-          message_type: "dev.sigstore.common.v1.X509Certificate",
+          message_class: "Sigstore::Common::V1::X509Certificate",
           oneof: :content,
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
         # An inclusion proof and an optional signed timestamp from the log.
         # Client verification libraries MAY provide an option to support v0.1
@@ -151,7 +154,7 @@ module Sigstore
           3,
           "tlog_entries",
           type: :message,
-          message_type: "dev.sigstore.rekor.v1.TransparencyLogEntry",
+          message_class: "Sigstore::Rekor::V1::TransparencyLogEntry",
           json_name: "tlogEntries"
         )
         # Timestamp may also come from
@@ -160,7 +163,7 @@ module Sigstore
           4,
           "timestamp_verification_data",
           type: :message,
-          message_type: "dev.sigstore.bundle.v1.TimestampVerificationData",
+          message_class: "Sigstore::Bundle::V1::TimestampVerificationData",
           json_name: "timestampVerificationData",
           proto3_optional: false
         )
@@ -198,18 +201,20 @@ module Sigstore
           2,
           "verification_material",
           type: :message,
-          message_type: "dev.sigstore.bundle.v1.VerificationMaterial",
+          message_class: "Sigstore::Bundle::V1::VerificationMaterial",
           json_name: "verificationMaterial",
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
         optional(
           3,
           "message_signature",
           type: :message,
-          message_type: "dev.sigstore.common.v1.MessageSignature",
+          message_class: "Sigstore::Common::V1::MessageSignature",
           json_name: "messageSignature",
           oneof: :content,
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
         # A DSSE envelope can contain arbitrary payloads.
         # Verifiers must verify that the payload type is a
@@ -228,24 +233,15 @@ module Sigstore
           4,
           "dsse_envelope",
           type: :message,
-          message_type: "io.intoto.Envelope",
+          message_class: "Sigstore::DSSE::Envelope",
           json_name: "dsseEnvelope",
           oneof: :content,
-          proto3_optional: false
+          proto3_optional: false,
+          Google::Api::FIELD_BEHAVIOR => Google::Api::FieldBehavior::REQUIRED
         )
 
         # Reserved for future additions of artifact types.
         reserved_range(5...51)
-      end
-
-      def self.register_sigstore_bundle_protos(registry)
-        Google::Api.register_field_behavior_protos(registry)
-        Sigstore::DSSE.register_envelope_protos(registry)
-        Sigstore::Common::V1.register_sigstore_common_protos(registry)
-        Sigstore::Rekor::V1.register_sigstore_rekor_protos(registry)
-        registry.register(Sigstore::Bundle::V1::TimestampVerificationData)
-        registry.register(Sigstore::Bundle::V1::VerificationMaterial)
-        registry.register(Sigstore::Bundle::V1::Bundle)
       end
     end
   end

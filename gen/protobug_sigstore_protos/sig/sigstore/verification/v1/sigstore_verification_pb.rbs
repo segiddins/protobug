@@ -1,0 +1,153 @@
+class Sigstore::Verification::V1::CertificateIdentity # /lib/sigstore/verification/v1/sigstore_verification_pb.rb:39
+  def self.decode: (String string) -> Sigstore::Verification::V1::CertificateIdentity
+  # optional(1, :issuer, type: :string)
+  def issuer: () -> String
+  def has_issuer?: () -> bool
+  @issuer: String?
+  # optional(2, :san, type: :message)
+  def san: () -> Sigstore::Common::V1::SubjectAlternativeName
+  def has_san?: () -> bool
+  @san: Sigstore::Common::V1::SubjectAlternativeName?
+  # repeated(3, :oids, type: :message)
+  def oids: () -> Sigstore::Common::V1::ObjectIdentifierValuePair
+  def has_oids?: () -> bool
+  @oids: Sigstore::Common::V1::ObjectIdentifierValuePair?
+end
+class Sigstore::Verification::V1::CertificateIdentities # /lib/sigstore/verification/v1/sigstore_verification_pb.rb:64
+  def self.decode: (String string) -> Sigstore::Verification::V1::CertificateIdentities
+  # repeated(1, :identities, type: :message)
+  def identities: () -> Sigstore::Verification::V1::CertificateIdentity
+  def has_identities?: () -> bool
+  @identities: Sigstore::Verification::V1::CertificateIdentity?
+end
+class Sigstore::Verification::V1::PublicKeyIdentities # /lib/sigstore/verification/v1/sigstore_verification_pb.rb:77
+  def self.decode: (String string) -> Sigstore::Verification::V1::PublicKeyIdentities
+  # repeated(1, :public_keys, type: :message)
+  def public_keys: () -> Sigstore::Common::V1::PublicKey
+  def has_public_keys?: () -> bool
+  @public_keys: Sigstore::Common::V1::PublicKey?
+end
+class Sigstore::Verification::V1::ArtifactVerificationOptions # /lib/sigstore/verification/v1/sigstore_verification_pb.rb:93
+  def self.decode: (String string) -> Sigstore::Verification::V1::ArtifactVerificationOptions
+  # optional(1, :certificate_identities, type: :message)
+  def certificate_identities: () -> Sigstore::Verification::V1::CertificateIdentities
+  def has_certificate_identities?: () -> bool
+  @certificate_identities: Sigstore::Verification::V1::CertificateIdentities?
+  # optional(2, :public_keys, type: :message)
+  def public_keys: () -> Sigstore::Verification::V1::PublicKeyIdentities
+  def has_public_keys?: () -> bool
+  @public_keys: Sigstore::Verification::V1::PublicKeyIdentities?
+  # optional(3, :tlog_options, type: :message)
+  def tlog_options: () -> Sigstore::Verification::V1::ArtifactVerificationOptions::TlogOptions
+  def has_tlog_options?: () -> bool
+  @tlog_options: Sigstore::Verification::V1::ArtifactVerificationOptions::TlogOptions?
+  # optional(4, :ctlog_options, type: :message)
+  def ctlog_options: () -> Sigstore::Verification::V1::ArtifactVerificationOptions::CtlogOptions
+  def has_ctlog_options?: () -> bool
+  @ctlog_options: Sigstore::Verification::V1::ArtifactVerificationOptions::CtlogOptions?
+  # optional(5, :tsa_options, type: :message)
+  def tsa_options: () -> Sigstore::Verification::V1::ArtifactVerificationOptions::TimestampAuthorityOptions
+  def has_tsa_options?: () -> bool
+  @tsa_options: Sigstore::Verification::V1::ArtifactVerificationOptions::TimestampAuthorityOptions?
+  # optional(6, :integrated_ts_options, type: :message)
+  def integrated_ts_options: () -> Sigstore::Verification::V1::ArtifactVerificationOptions::TlogIntegratedTimestampOptions
+  def has_integrated_ts_options?: () -> bool
+  @integrated_ts_options: Sigstore::Verification::V1::ArtifactVerificationOptions::TlogIntegratedTimestampOptions?
+  # optional(7, :observer_options, type: :message)
+  def observer_options: () -> Sigstore::Verification::V1::ArtifactVerificationOptions::ObserverTimestampOptions
+  def has_observer_options?: () -> bool
+  @observer_options: Sigstore::Verification::V1::ArtifactVerificationOptions::ObserverTimestampOptions?
+end
+class Sigstore::Verification::V1::ArtifactVerificationOptions::TlogOptions # /lib/sigstore/verification/v1/sigstore_verification_pb.rb:98
+  def self.decode: (String string) -> Sigstore::Verification::V1::ArtifactVerificationOptions::TlogOptions
+  # optional(1, :threshold, type: :int32)
+  def threshold: () -> Integer
+  def has_threshold?: () -> bool
+  @threshold: Integer?
+  # optional(2, :perform_online_verification, type: :bool)
+  def perform_online_verification: () -> Integer
+  def has_perform_online_verification?: () -> bool
+  @perform_online_verification: Integer?
+  # optional(3, :disable, type: :bool)
+  def disable: () -> Integer
+  def has_disable?: () -> bool
+  @disable: Integer?
+end
+class Sigstore::Verification::V1::ArtifactVerificationOptions::CtlogOptions # /lib/sigstore/verification/v1/sigstore_verification_pb.rb:117
+  def self.decode: (String string) -> Sigstore::Verification::V1::ArtifactVerificationOptions::CtlogOptions
+  # optional(1, :threshold, type: :int32)
+  def threshold: () -> Integer
+  def has_threshold?: () -> bool
+  @threshold: Integer?
+  # optional(3, :disable, type: :bool)
+  def disable: () -> Integer
+  def has_disable?: () -> bool
+  @disable: Integer?
+end
+class Sigstore::Verification::V1::ArtifactVerificationOptions::TimestampAuthorityOptions # /lib/sigstore/verification/v1/sigstore_verification_pb.rb:131
+  def self.decode: (String string) -> Sigstore::Verification::V1::ArtifactVerificationOptions::TimestampAuthorityOptions
+  # optional(1, :threshold, type: :int32)
+  def threshold: () -> Integer
+  def has_threshold?: () -> bool
+  @threshold: Integer?
+  # optional(2, :disable, type: :bool)
+  def disable: () -> Integer
+  def has_disable?: () -> bool
+  @disable: Integer?
+end
+class Sigstore::Verification::V1::ArtifactVerificationOptions::TlogIntegratedTimestampOptions # /lib/sigstore/verification/v1/sigstore_verification_pb.rb:142
+  def self.decode: (String string) -> Sigstore::Verification::V1::ArtifactVerificationOptions::TlogIntegratedTimestampOptions
+  # optional(1, :threshold, type: :int32)
+  def threshold: () -> Integer
+  def has_threshold?: () -> bool
+  @threshold: Integer?
+  # optional(2, :disable, type: :bool)
+  def disable: () -> Integer
+  def has_disable?: () -> bool
+  @disable: Integer?
+end
+class Sigstore::Verification::V1::ArtifactVerificationOptions::ObserverTimestampOptions # /lib/sigstore/verification/v1/sigstore_verification_pb.rb:153
+  def self.decode: (String string) -> Sigstore::Verification::V1::ArtifactVerificationOptions::ObserverTimestampOptions
+  # optional(1, :threshold, type: :int32)
+  def threshold: () -> Integer
+  def has_threshold?: () -> bool
+  @threshold: Integer?
+  # optional(2, :disable, type: :bool)
+  def disable: () -> Integer
+  def has_disable?: () -> bool
+  @disable: Integer?
+end
+class Sigstore::Verification::V1::Artifact # /lib/sigstore/verification/v1/sigstore_verification_pb.rb:262
+  def self.decode: (String string) -> Sigstore::Verification::V1::Artifact
+  # optional(1, :artifact_uri, type: :string)
+  def artifact_uri: () -> String
+  def has_artifact_uri?: () -> bool
+  @artifact_uri: String?
+  # optional(2, :artifact, type: :bytes)
+  def artifact: () -> String
+  def has_artifact?: () -> bool
+  @artifact: String?
+  # optional(3, :artifact_digest, type: :message)
+  def artifact_digest: () -> Sigstore::Common::V1::HashOutput
+  def has_artifact_digest?: () -> bool
+  @artifact_digest: Sigstore::Common::V1::HashOutput?
+end
+class Sigstore::Verification::V1::Input # /lib/sigstore/verification/v1/sigstore_verification_pb.rb:298
+  def self.decode: (String string) -> Sigstore::Verification::V1::Input
+  # optional(1, :artifact_trust_root, type: :message)
+  def artifact_trust_root: () -> Sigstore::TrustRoot::V1::TrustedRoot
+  def has_artifact_trust_root?: () -> bool
+  @artifact_trust_root: Sigstore::TrustRoot::V1::TrustedRoot?
+  # optional(2, :artifact_verification_options, type: :message)
+  def artifact_verification_options: () -> Sigstore::Verification::V1::ArtifactVerificationOptions
+  def has_artifact_verification_options?: () -> bool
+  @artifact_verification_options: Sigstore::Verification::V1::ArtifactVerificationOptions?
+  # optional(3, :bundle, type: :message)
+  def bundle: () -> Sigstore::Bundle::V1::Bundle
+  def has_bundle?: () -> bool
+  @bundle: Sigstore::Bundle::V1::Bundle?
+  # optional(4, :artifact, type: :message)
+  def artifact: () -> Sigstore::Verification::V1::Artifact
+  def has_artifact?: () -> bool
+  @artifact: Sigstore::Verification::V1::Artifact?
+end

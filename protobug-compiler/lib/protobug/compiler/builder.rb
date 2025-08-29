@@ -37,13 +37,13 @@ module Protobug
         end
 
         def literal(content)
-          append Token.new(type: :literal, content: content)
+          append Token.new(type: :literal, content:)
         end
 
-        def block(&blk)
+        def block(&)
           append Group.new(
             name: "block", items: [], close: "end", multi: true, indent: 2
-          ).tap(&blk)
+          ).tap(&)
         end
 
         def dot(name)
@@ -63,7 +63,8 @@ module Protobug
 
               if !first && !item.compact? && !prev&.compact?
                 if (item.is_a?(Token) && item.type == :operator) || (prev.is_a?(Token) && prev.type == :operator) ||
-                   item.is_a?(Comment)
+                   item.is_a?(Comment) || (item.is_a?(Token) && item.type == :keyword) ||
+                   (prev.is_a?(Token) && prev.type == :keyword)
                   q.text " "
                 elsif !(item.is_a?(Group) && item.name == :call) && !(item.is_a?(Group) && item.multi)
                   q.fill_breakable " "

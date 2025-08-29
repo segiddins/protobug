@@ -1,0 +1,379 @@
+module Protobug
+  class Field
+    @number: untyped
+
+    @name: untyped
+
+    @json_name: untyped
+
+    @cardinality: untyped
+
+    @oneof: untyped
+
+    @setter: untyped
+
+    @adder: untyped
+
+    @ivar: untyped
+
+    @clearer: untyped
+
+    @haser: untyped
+
+    @packed: untyped
+
+    @proto3_optional: untyped
+
+    @escaped_name: untyped
+
+    @proto3_optional_index: untyped
+
+    @default: untyped
+
+    RUBY_KEYWORDS: untyped
+
+    attr_accessor number: untyped
+
+    attr_accessor name: untyped
+
+    attr_accessor json_name: untyped
+
+    attr_accessor cardinality: untyped
+
+    attr_accessor oneof: untyped
+
+    attr_accessor ivar: untyped
+
+    attr_accessor setter: untyped
+
+    attr_accessor adder: untyped
+
+    attr_accessor haser: untyped
+
+    attr_accessor clearer: untyped
+
+    attr_accessor escaped_name: untyped
+
+    def initialize: (untyped number, untyped name, ?json_name: untyped?, ?cardinality: ::Symbol, ?oneof: untyped?, ?packed: bool, ?proto3_optional: untyped, ?proto3_optional_count: untyped?, ?default: untyped?) -> void
+
+    def to_s: () -> ::String
+
+    def pretty_print: (untyped pp) -> untyped
+
+    def repeated?: () -> untyped
+
+    def map?: () -> false
+
+    def group?: () -> false
+
+    def packed?: () -> untyped
+
+    def optional?: () -> untyped
+
+    def proto3_optional?: () -> untyped
+
+    def method_definitions: () -> untyped
+
+    def to_text: (untyped value) -> untyped
+
+    def binary_encode: (untyped value, untyped outbuf) -> (untyped | nil | untyped)
+
+    def as_json_code: () -> untyped
+
+    def default_code: () -> ("[]" | untyped)
+
+    def json_decode: (untyped value, untyped message, untyped ignore_unknown_fields) -> (nil | untyped | untyped)
+
+    def validate!: (untyped value, untyped message) -> (untyped | nil)
+
+    def validate_code: () -> ::String
+
+    private
+
+    def binary_encode_packed: (untyped value, untyped outbuf) -> untyped
+
+    class MessageField < Field
+      @message_class: untyped
+
+      attr_reader message_class: untyped
+
+      def initialize: (untyped number, untyped name, ?message_class: untyped?, **untyped kwargs) -> void
+
+      def binary_encode_one: (untyped value, untyped outbuf) -> untyped
+
+      def json_decode_one: (untyped value, untyped ignore_unknown_fields) -> untyped
+
+      def default: () -> (::Array[untyped] | nil)
+
+      def wire_type: () -> 2
+
+      def binary_decode_code: (untyped protobug_read_varint) -> ::String
+
+      def expected_class: () -> untyped
+
+      def as_json_code: () -> ::String
+
+      def default_code: () -> ::String
+    end
+
+    class MapField < MessageField
+      @map_class: untyped
+
+      SUPER_INITIALIZE: untyped
+
+      def initialize: (untyped number, untyped name, key_type: untyped, value_type: untyped, ?enum_class: untyped?, ?message_class: untyped?, **untyped kwargs) -> void
+
+      def default_code: () -> "{}"
+
+      def default: () -> ::Hash[untyped, untyped]
+
+      def repeated?: () -> true
+
+      def map?: () -> true
+
+      def binary_encode: (untyped value, untyped outbuf) -> untyped
+
+      def json_decode: (untyped value, untyped message, untyped ignore_unknown_fields) -> (nil | untyped)
+
+      def binary_decode_code: (untyped protobug_read_varint) -> ::String
+
+      def as_json_code: () -> untyped
+
+      def expected_class: () -> untyped
+    end
+
+    class BytesField < Field
+      def binary_encode_one: (untyped value, untyped outbuf) -> untyped
+
+      def json_decode_one: (untyped value, untyped _ignore_unknown_fields) -> (nil | untyped)
+
+      def as_json_code: () -> ::String
+
+      def default: () -> (::Array[untyped] | untyped)
+
+      def default_code: () -> "\"\".b"
+
+      def wire_type: () -> 2
+
+      def binary_decode_code: (untyped protobug_read_varint) -> untyped
+
+      def expected_class: () -> untyped
+    end
+
+    class StringField < BytesField
+      def binary_encode_one: (untyped value, untyped outbuf) -> untyped
+
+      def json_decode_one: (untyped value, untyped _ignore_unknown_fields) -> (nil | untyped)
+
+      def default: () -> (::Array[untyped] | untyped)
+
+      def default_code: () -> "+\"\""
+
+      def binary_decode_code: (untyped protobug_read_varint) -> untyped
+
+      def as_json_code: () -> untyped
+    end
+
+    class IntegerField < Field
+      def default: () -> (::Array[untyped] | untyped)
+
+      def binary_decode_code: (untyped protobug_read_varint) -> ::String
+
+      def binary_encode_one: (untyped value, untyped outbuf) -> untyped
+
+      def json_decode_one: (untyped value, untyped _ignore_unknown_fields) -> (nil | untyped)
+
+      def maximum: () -> untyped
+
+      def minimum: () -> (untyped | 0)
+
+      def validate!: (untyped value, untyped message) -> untyped
+
+      def validate_code: () -> untyped
+
+      def expected_class: () -> untyped
+
+      def as_json_code: () -> (untyped | ::String)
+    end
+
+    # encoding: fixed, varint, zigzag
+    # bitlength: 32, 64
+    # signed: true, false
+    # EXCEPT: no unsigned zigzag
+    class Int64Field < IntegerField
+      def encoding: () -> :varint
+
+      def bit_length: () -> 64
+
+      def signed: () -> true
+
+      def wire_type: () -> 0
+    end
+
+    class UInt64Field < IntegerField
+      def encoding: () -> :varint
+
+      def bit_length: () -> 64
+
+      def signed: () -> false
+
+      def wire_type: () -> 0
+    end
+
+    class SInt64Field < IntegerField
+      def encoding: () -> :zigzag
+
+      def bit_length: () -> 64
+
+      def signed: () -> true
+
+      def wire_type: () -> 0
+    end
+
+    class Fixed64Field < IntegerField
+      def encoding: () -> :fixed
+
+      def bit_length: () -> 64
+
+      def signed: () -> false
+
+      def wire_type: () -> 1
+
+      def binary_pack: () -> "Q"
+    end
+
+    class SFixed64Field < IntegerField
+      def encoding: () -> :fixed
+
+      def bit_length: () -> 64
+
+      def signed: () -> true
+
+      def wire_type: () -> 1
+
+      def binary_pack: () -> "q"
+    end
+
+    class Int32Field < IntegerField
+      def encoding: () -> :varint
+
+      def bit_length: () -> 32
+
+      def signed: () -> true
+
+      def wire_type: () -> 0
+    end
+
+    class UInt32Field < IntegerField
+      def encoding: () -> :varint
+
+      def bit_length: () -> 32
+
+      def signed: () -> false
+
+      def wire_type: () -> 0
+    end
+
+    class SInt32Field < IntegerField
+      def encoding: () -> :zigzag
+
+      def bit_length: () -> 32
+
+      def signed: () -> true
+
+      def wire_type: () -> 0
+    end
+
+    class Fixed32Field < IntegerField
+      def encoding: () -> :fixed
+
+      def bit_length: () -> 32
+
+      def signed: () -> false
+
+      def wire_type: () -> 5
+
+      def binary_pack: () -> "V"
+    end
+
+    class SFixed32Field < IntegerField
+      def encoding: () -> :fixed
+
+      def bit_length: () -> 32
+
+      def signed: () -> true
+
+      def wire_type: () -> 5
+
+      def binary_pack: () -> "l"
+    end
+
+    class BoolField < UInt64Field
+      def binary_encode_one: (untyped value, untyped outbuf) -> untyped
+
+      def json_decode_one: (untyped value, untyped _ignore_unknown_fields) -> untyped
+
+      def validate!: (untyped value, untyped message) -> untyped
+
+      def validate_code: () -> ::String
+
+      def default: () -> (::Array[untyped] | untyped)
+
+      def binary_decode_code: (untyped protobug_read_varint) -> ::String
+    end
+
+    class EnumField < Int32Field
+      @enum_class: untyped
+
+      attr_reader enum_class: untyped
+
+      def initialize: (untyped number, untyped name, ?enum_class: untyped?, **untyped kwargs) -> void
+
+      def json_decode: (untyped value, untyped message, untyped ignore_unknown_fields) -> (untyped | nil)
+
+      def json_decode_one: (untyped value, untyped ignore_unknown_fields) -> untyped
+
+      def default: () -> (::Array[untyped] | untyped)
+
+      def as_json_code: () -> ::String
+    end
+
+    class DoubleField < Field
+      def binary_pack: () -> "E"
+
+      def wire_type: () -> 1
+
+      def binary_encode_one: (untyped value, untyped outbuf) -> untyped
+
+      def json_decode_one: (untyped value, untyped _ignore_unknown_fields) -> untyped
+
+      def as_json_code: () -> untyped
+
+      def default: () -> (::Array[untyped] | untyped)
+
+      def binary_decode_code: (untyped _) -> ::String
+
+      def expected_class: () -> untyped
+    end
+
+    class FloatField < DoubleField
+      def binary_pack: () -> "e"
+
+      def wire_type: () -> 5
+    end
+
+    class GroupField < Field
+      def wire_type: () -> 3
+
+      def binary_decode_code: (untyped _) -> "raise UnsupportedFeatureError.new(:group, \"reading groups from binary protos (in \#{self})\")\n"
+
+      def default: () -> nil
+
+      def group?: () -> true
+
+      def validate_code: () -> "raise UnsupportedFeatureError.new(:group, \"setting group\")\n"
+    end
+
+    BY_TYPE: { message: untyped, enum: untyped, bytes: untyped, string: untyped, map: untyped, int64: untyped, uint64: untyped, sint64: untyped, fixed64: untyped, sfixed64: untyped, int32: untyped, uint32: untyped, sint32: untyped, fixed32: untyped, sfixed32: untyped, bool: untyped, float: untyped, double: untyped, group: untyped }
+  end
+end

@@ -37,7 +37,7 @@ module InTotoAttestation
         2,
         "subject",
         type: :message,
-        message_type: "in_toto_attestation.v1.ResourceDescriptor"
+        message_class: "InTotoAttestation::V1::ResourceDescriptor"
       )
       optional(
         3,
@@ -50,15 +50,9 @@ module InTotoAttestation
         4,
         "predicate",
         type: :message,
-        message_type: "google.protobuf.Struct",
+        message_class: "Google::Protobuf::Struct",
         proto3_optional: false
       )
-    end
-
-    def self.register_statement_protos(registry)
-      Google::Protobuf.register_struct_protos(registry)
-      InTotoAttestation::V1.register_resource_descriptor_protos(registry)
-      registry.register(InTotoAttestation::V1::Statement)
     end
   end
 end

@@ -67,40 +67,43 @@ module Google
         1,
         "file",
         type: :message,
-        message_type: "google.protobuf.FileDescriptorProto"
+        message_class: "Google::Protobuf::FileDescriptorProto"
       )
     end
 
     # The full set of known editions.
-    class Edition
+    module Edition
       extend Protobug::Enum
 
       self.full_name = "google.protobuf.Edition"
 
       # A placeholder for an unknown edition value.
-      EDITION_UNKNOWN = new("EDITION_UNKNOWN", 0).freeze
+      UNKNOWN = register("EDITION_UNKNOWN", 0)
+      # A placeholder edition for specifying default behaviors *before* a feature
+      # was first introduced.  This is effectively an "infinite past".
+      LEGACY = register("EDITION_LEGACY", 900)
       # Legacy syntax "editions".  These pre-date editions, but behave much like
       # distinct editions.  These can't be used to specify the edition of proto
       # files, but feature definitions must supply proto2/proto3 defaults for
       # backwards compatibility.
-      EDITION_PROTO2 = new("EDITION_PROTO2", 998).freeze
-      EDITION_PROTO3 = new("EDITION_PROTO3", 999).freeze
+      PROTO2 = register("EDITION_PROTO2", 998)
+      PROTO3 = register("EDITION_PROTO3", 999)
       # Editions that have been released.  The specific values are arbitrary and
       # should not be depended on, but they will always be time-ordered for easy
       # comparison.
-      EDITION_2023 = new("EDITION_2023", 1_000).freeze
-      EDITION_2024 = new("EDITION_2024", 1_001).freeze
+      EDITION_2023 = register("EDITION_2023", 1_000)
+      EDITION_2024 = register("EDITION_2024", 1_001)
       # Placeholder editions for testing feature resolution.  These should not be
       # used or relyed on outside of tests.
-      EDITION_1_TEST_ONLY = new("EDITION_1_TEST_ONLY", 1).freeze
-      EDITION_2_TEST_ONLY = new("EDITION_2_TEST_ONLY", 2).freeze
-      EDITION_99997_TEST_ONLY = new("EDITION_99997_TEST_ONLY", 99_997).freeze
-      EDITION_99998_TEST_ONLY = new("EDITION_99998_TEST_ONLY", 99_998).freeze
-      EDITION_99999_TEST_ONLY = new("EDITION_99999_TEST_ONLY", 99_999).freeze
+      EDITION_1_TEST_ONLY = register("EDITION_1_TEST_ONLY", 1)
+      EDITION_2_TEST_ONLY = register("EDITION_2_TEST_ONLY", 2)
+      EDITION_99997_TEST_ONLY = register("EDITION_99997_TEST_ONLY", 99_997)
+      EDITION_99998_TEST_ONLY = register("EDITION_99998_TEST_ONLY", 99_998)
+      EDITION_99999_TEST_ONLY = register("EDITION_99999_TEST_ONLY", 99_999)
       # Placeholder for specifying unbounded edition support.  This should only
       # ever be used by plugins that can expect to never require any changes to
       # support a new edition.
-      EDITION_MAX = new("EDITION_MAX", 2_147_483_647).freeze
+      MAX = register("EDITION_MAX", 2_147_483_647)
     end
 
     # Describes a complete .proto file.
@@ -132,33 +135,33 @@ module Google
         4,
         "message_type",
         type: :message,
-        message_type: "google.protobuf.DescriptorProto",
+        message_class: "Google::Protobuf::DescriptorProto",
         json_name: "messageType"
       )
       repeated(
         5,
         "enum_type",
         type: :message,
-        message_type: "google.protobuf.EnumDescriptorProto",
+        message_class: "Google::Protobuf::EnumDescriptorProto",
         json_name: "enumType"
       )
       repeated(
         6,
         "service",
         type: :message,
-        message_type: "google.protobuf.ServiceDescriptorProto"
+        message_class: "Google::Protobuf::ServiceDescriptorProto"
       )
       repeated(
         7,
         "extension",
         type: :message,
-        message_type: "google.protobuf.FieldDescriptorProto"
+        message_class: "Google::Protobuf::FieldDescriptorProto"
       )
       optional(
         8,
         "options",
         type: :message,
-        message_type: "google.protobuf.FileOptions"
+        message_class: "Google::Protobuf::FileOptions"
       )
       # This field contains optional information about the original source code.
       # You may safely remove this entire field without harming runtime
@@ -168,7 +171,7 @@ module Google
         9,
         "source_code_info",
         type: :message,
-        message_type: "google.protobuf.SourceCodeInfo",
+        message_class: "Google::Protobuf::SourceCodeInfo",
         json_name: "sourceCodeInfo"
       )
       # The syntax of the proto file.
@@ -177,7 +180,12 @@ module Google
       # If `edition` is present, this value must be "editions".
       optional(12, "syntax", type: :string)
       # The edition of the proto file.
-      optional(14, "edition", type: :enum, enum_type: "google.protobuf.Edition")
+      optional(
+        14,
+        "edition",
+        type: :enum,
+        enum_class: "Google::Protobuf::Edition"
+      )
     end
 
     # Describes a message type.
@@ -191,26 +199,26 @@ module Google
         2,
         "field",
         type: :message,
-        message_type: "google.protobuf.FieldDescriptorProto"
+        message_class: "Google::Protobuf::FieldDescriptorProto"
       )
       repeated(
         6,
         "extension",
         type: :message,
-        message_type: "google.protobuf.FieldDescriptorProto"
+        message_class: "Google::Protobuf::FieldDescriptorProto"
       )
       repeated(
         3,
         "nested_type",
         type: :message,
-        message_type: "google.protobuf.DescriptorProto",
+        message_class: "Google::Protobuf::DescriptorProto",
         json_name: "nestedType"
       )
       repeated(
         4,
         "enum_type",
         type: :message,
-        message_type: "google.protobuf.EnumDescriptorProto",
+        message_class: "Google::Protobuf::EnumDescriptorProto",
         json_name: "enumType"
       )
       class ExtensionRange
@@ -224,7 +232,7 @@ module Google
           3,
           "options",
           type: :message,
-          message_type: "google.protobuf.ExtensionRangeOptions"
+          message_class: "Google::Protobuf::ExtensionRangeOptions"
         )
       end
 
@@ -232,21 +240,21 @@ module Google
         5,
         "extension_range",
         type: :message,
-        message_type: "google.protobuf.DescriptorProto.ExtensionRange",
+        message_class: "Google::Protobuf::DescriptorProto::ExtensionRange",
         json_name: "extensionRange"
       )
       repeated(
         8,
         "oneof_decl",
         type: :message,
-        message_type: "google.protobuf.OneofDescriptorProto",
+        message_class: "Google::Protobuf::OneofDescriptorProto",
         json_name: "oneofDecl"
       )
       optional(
         7,
         "options",
         type: :message,
-        message_type: "google.protobuf.MessageOptions"
+        message_class: "Google::Protobuf::MessageOptions"
       )
       # Range of reserved tag numbers. Reserved tag numbers may not be used by
       # fields or extension ranges in the same message. Reserved ranges may
@@ -264,7 +272,7 @@ module Google
         9,
         "reserved_range",
         type: :message,
-        message_type: "google.protobuf.DescriptorProto.ReservedRange",
+        message_class: "Google::Protobuf::DescriptorProto::ReservedRange",
         json_name: "reservedRange"
       )
       # Reserved field names, which may not be used by fields in the same message.
@@ -282,7 +290,7 @@ module Google
         999,
         "uninterpreted_option",
         type: :message,
-        message_type: "google.protobuf.UninterpretedOption",
+        message_class: "Google::Protobuf::UninterpretedOption",
         json_name: "uninterpretedOption"
       )
       class Declaration
@@ -317,24 +325,24 @@ module Google
         2,
         "declaration",
         type: :message,
-        message_type: "google.protobuf.ExtensionRangeOptions.Declaration"
+        message_class: "Google::Protobuf::ExtensionRangeOptions::Declaration"
       )
       # Any features defined in the specific edition.
       optional(
         50,
         "features",
         type: :message,
-        message_type: "google.protobuf.FeatureSet"
+        message_class: "Google::Protobuf::FeatureSet"
       )
       # The verification state of the extension range.
-      class VerificationState
+      module VerificationState
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.ExtensionRangeOptions.VerificationState"
 
         # All the extensions of the range must be declared.
-        DECLARATION = new("DECLARATION", 0).freeze
-        UNVERIFIED = new("UNVERIFIED", 1).freeze
+        DECLARATION = register("DECLARATION", 0)
+        UNVERIFIED = register("UNVERIFIED", 1)
       end
 
       # The verification state of the range.
@@ -344,7 +352,9 @@ module Google
         3,
         "verification",
         type: :enum,
-        enum_type: "google.protobuf.ExtensionRangeOptions.VerificationState"
+        enum_class:
+        "Google::Protobuf::ExtensionRangeOptions::VerificationState",
+        default: "UNVERIFIED"
       )
     end
 
@@ -354,58 +364,55 @@ module Google
 
       self.full_name = "google.protobuf.FieldDescriptorProto"
 
-      class Type
+      module Type
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FieldDescriptorProto.Type"
 
         # 0 is reserved for errors.
         # Order is weird for historical reasons.
-        TYPE_DOUBLE = new("TYPE_DOUBLE", 1).freeze
-        TYPE_FLOAT = new("TYPE_FLOAT", 2).freeze
+        DOUBLE = register("TYPE_DOUBLE", 1)
+        FLOAT = register("TYPE_FLOAT", 2)
         # Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT64 if
         # negative values are likely.
-        TYPE_INT64 = new("TYPE_INT64", 3).freeze
-        TYPE_UINT64 = new("TYPE_UINT64", 4).freeze
+        INT64 = register("TYPE_INT64", 3)
+        UINT64 = register("TYPE_UINT64", 4)
         # Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT32 if
         # negative values are likely.
-        TYPE_INT32 = new("TYPE_INT32", 5).freeze
-        TYPE_FIXED64 = new("TYPE_FIXED64", 6).freeze
-        TYPE_FIXED32 = new("TYPE_FIXED32", 7).freeze
-        TYPE_BOOL = new("TYPE_BOOL", 8).freeze
-        TYPE_STRING = new("TYPE_STRING", 9).freeze
+        INT32 = register("TYPE_INT32", 5)
+        FIXED64 = register("TYPE_FIXED64", 6)
+        FIXED32 = register("TYPE_FIXED32", 7)
+        BOOL = register("TYPE_BOOL", 8)
+        STRING = register("TYPE_STRING", 9)
         # Tag-delimited aggregate.
         # Group type is deprecated and not supported after google.protobuf. However, Proto3
         # implementations should still be able to parse the group wire format and
         # treat group fields as unknown fields.  In Editions, the group wire format
         # can be enabled via the `message_encoding` feature.
-        TYPE_GROUP = new("TYPE_GROUP", 10).freeze
-        TYPE_MESSAGE = new(
-          "TYPE_MESSAGE",
-          11
-        ).freeze # Length-delimited aggregate.
+        GROUP = register("TYPE_GROUP", 10)
+        MESSAGE = register("TYPE_MESSAGE", 11) # Length-delimited aggregate.
         # New in version 2.
-        TYPE_BYTES = new("TYPE_BYTES", 12).freeze
-        TYPE_UINT32 = new("TYPE_UINT32", 13).freeze
-        TYPE_ENUM = new("TYPE_ENUM", 14).freeze
-        TYPE_SFIXED32 = new("TYPE_SFIXED32", 15).freeze
-        TYPE_SFIXED64 = new("TYPE_SFIXED64", 16).freeze
-        TYPE_SINT32 = new("TYPE_SINT32", 17).freeze # Uses ZigZag encoding.
-        TYPE_SINT64 = new("TYPE_SINT64", 18).freeze # Uses ZigZag encoding.
+        BYTES = register("TYPE_BYTES", 12)
+        UINT32 = register("TYPE_UINT32", 13)
+        ENUM = register("TYPE_ENUM", 14)
+        SFIXED32 = register("TYPE_SFIXED32", 15)
+        SFIXED64 = register("TYPE_SFIXED64", 16)
+        SINT32 = register("TYPE_SINT32", 17) # Uses ZigZag encoding.
+        SINT64 = register("TYPE_SINT64", 18) # Uses ZigZag encoding.
       end
 
-      class Label
+      module Label
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FieldDescriptorProto.Label"
 
         # 0 is reserved for errors
-        LABEL_OPTIONAL = new("LABEL_OPTIONAL", 1).freeze
-        LABEL_REPEATED = new("LABEL_REPEATED", 3).freeze
+        OPTIONAL = register("LABEL_OPTIONAL", 1)
+        REPEATED = register("LABEL_REPEATED", 3)
         # The required label is only allowed in google.protobuf.  In proto3 and Editions
         # it's explicitly prohibited.  In Editions, the `field_presence` feature
         # can be used to get this behavior.
-        LABEL_REQUIRED = new("LABEL_REQUIRED", 2).freeze
+        REQUIRED = register("LABEL_REQUIRED", 2)
       end
 
       optional(1, "name", type: :string)
@@ -414,7 +421,7 @@ module Google
         4,
         "label",
         type: :enum,
-        enum_type: "google.protobuf.FieldDescriptorProto.Label"
+        enum_class: "Google::Protobuf::FieldDescriptorProto::Label"
       )
       # If type_name is set, this need not be set.  If both this and type_name
       # are set, this must be one of TYPE_ENUM, TYPE_MESSAGE or TYPE_GROUP.
@@ -422,7 +429,7 @@ module Google
         5,
         "type",
         type: :enum,
-        enum_type: "google.protobuf.FieldDescriptorProto.Type"
+        enum_class: "Google::Protobuf::FieldDescriptorProto::Type"
       )
       # For message and enum types, this is the name of the type.  If the name
       # starts with a '.', it is fully-qualified.  Otherwise, C++-like scoping
@@ -450,7 +457,7 @@ module Google
         8,
         "options",
         type: :message,
-        message_type: "google.protobuf.FieldOptions"
+        message_class: "Google::Protobuf::FieldOptions"
       )
       # If true, this is a proto3 "optional". When a proto3 field is optional, it
       # tracks presence regardless of field type.
@@ -487,7 +494,7 @@ module Google
         2,
         "options",
         type: :message,
-        message_type: "google.protobuf.OneofOptions"
+        message_class: "Google::Protobuf::OneofOptions"
       )
     end
 
@@ -502,13 +509,13 @@ module Google
         2,
         "value",
         type: :message,
-        message_type: "google.protobuf.EnumValueDescriptorProto"
+        message_class: "Google::Protobuf::EnumValueDescriptorProto"
       )
       optional(
         3,
         "options",
         type: :message,
-        message_type: "google.protobuf.EnumOptions"
+        message_class: "Google::Protobuf::EnumOptions"
       )
       # Range of reserved numeric values. Reserved values may not be used by
       # entries in the same enum. Reserved ranges may not overlap.
@@ -532,7 +539,8 @@ module Google
         4,
         "reserved_range",
         type: :message,
-        message_type: "google.protobuf.EnumDescriptorProto.EnumReservedRange",
+        message_class:
+        "Google::Protobuf::EnumDescriptorProto::EnumReservedRange",
         json_name: "reservedRange"
       )
       # Reserved enum value names, which may not be reused. A given name may only
@@ -552,7 +560,7 @@ module Google
         3,
         "options",
         type: :message,
-        message_type: "google.protobuf.EnumValueOptions"
+        message_class: "Google::Protobuf::EnumValueOptions"
       )
     end
 
@@ -567,13 +575,13 @@ module Google
         2,
         "method",
         type: :message,
-        message_type: "google.protobuf.MethodDescriptorProto"
+        message_class: "Google::Protobuf::MethodDescriptorProto"
       )
       optional(
         3,
         "options",
         type: :message,
-        message_type: "google.protobuf.ServiceOptions"
+        message_class: "Google::Protobuf::ServiceOptions"
       )
     end
 
@@ -592,12 +600,24 @@ module Google
         4,
         "options",
         type: :message,
-        message_type: "google.protobuf.MethodOptions"
+        message_class: "Google::Protobuf::MethodOptions"
       )
       # Identifies if client streams multiple client messages
-      optional(5, "client_streaming", type: :bool, json_name: "clientStreaming")
+      optional(
+        5,
+        "client_streaming",
+        type: :bool,
+        json_name: "clientStreaming",
+        default: "false"
+      )
       # Identifies if server streams multiple server messages
-      optional(6, "server_streaming", type: :bool, json_name: "serverStreaming")
+      optional(
+        6,
+        "server_streaming",
+        type: :bool,
+        json_name: "serverStreaming",
+        default: "false"
+      )
     end
 
     # ===================================================================
@@ -663,7 +683,8 @@ module Google
         10,
         "java_multiple_files",
         type: :bool,
-        json_name: "javaMultipleFiles"
+        json_name: "javaMultipleFiles",
+        default: "false"
       )
       # This option does nothing.
       optional(
@@ -672,45 +693,51 @@ module Google
         type: :bool,
         json_name: "javaGenerateEqualsAndHash"
       )
-      # If set true, then the Java2 code generator will generate code that
-      # throws an exception whenever an attempt is made to assign a non-UTF-8
-      # byte sequence to a string field.
-      # Message reflection will do the same.
-      # However, an extension field still accepts non-UTF-8 byte sequences.
-      # This option has no effect on when used with the lite runtime.
+      # A proto2 file can set this to true to opt in to UTF-8 checking for Java,
+      # which will throw an exception if invalid UTF-8 is parsed from the wire or
+      # assigned to a string field.
+      #
+      # TODO: clarify exactly what kinds of field types this option
+      # applies to, and update these docs accordingly.
+      #
+      # Proto3 files already perform these checks. Setting the option explicitly to
+      # false has no effect: it cannot be used to opt proto3 files out of UTF-8
+      # checks.
       optional(
         27,
         "java_string_check_utf8",
         type: :bool,
-        json_name: "javaStringCheckUtf8"
+        json_name: "javaStringCheckUtf8",
+        default: "false"
       )
       # Generated classes can be optimized for speed or code size.
-      class OptimizeMode
+      module OptimizeMode
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FileOptions.OptimizeMode"
 
-        SPEED = new(
+        SPEED = register(
           "SPEED",
           1
-        ).freeze # Generate complete code for parsing, serialization,
+        ) # Generate complete code for parsing, serialization,
         # etc.
-        CODE_SIZE = new(
+        CODE_SIZE = register(
           "CODE_SIZE",
           2
-        ).freeze # Use ReflectionOps to implement these methods.
-        LITE_RUNTIME = new(
+        ) # Use ReflectionOps to implement these methods.
+        LITE_RUNTIME = register(
           "LITE_RUNTIME",
           3
-        ).freeze # Generate code using MessageLite and the lite runtime.
+        ) # Generate code using MessageLite and the lite runtime.
       end
 
       optional(
         9,
         "optimize_for",
         type: :enum,
-        enum_type: "google.protobuf.FileOptions.OptimizeMode",
-        json_name: "optimizeFor"
+        enum_class: "Google::Protobuf::FileOptions::OptimizeMode",
+        json_name: "optimizeFor",
+        default: "SPEED"
       )
       # Sets the Go package where structs generated from this .proto will be
       # placed. If omitted, the Go package will be derived from the following:
@@ -732,28 +759,37 @@ module Google
         16,
         "cc_generic_services",
         type: :bool,
-        json_name: "ccGenericServices"
+        json_name: "ccGenericServices",
+        default: "false"
       )
       optional(
         17,
         "java_generic_services",
         type: :bool,
-        json_name: "javaGenericServices"
+        json_name: "javaGenericServices",
+        default: "false"
       )
       optional(
         18,
         "py_generic_services",
         type: :bool,
-        json_name: "pyGenericServices"
+        json_name: "pyGenericServices",
+        default: "false"
       )
       # Is this file deprecated?
       # Depending on the target platform, this can emit Deprecated annotations
       # for everything in the file, or it will be completely ignored; in the very
       # least, this is a formalization for deprecating files.
-      optional(23, "deprecated", type: :bool)
+      optional(23, "deprecated", type: :bool, default: "false")
       # Enables the use of arenas for the proto messages in this file. This applies
       # only to generated classes for C++.
-      optional(31, "cc_enable_arenas", type: :bool, json_name: "ccEnableArenas")
+      optional(
+        31,
+        "cc_enable_arenas",
+        type: :bool,
+        json_name: "ccEnableArenas",
+        default: "true"
+      )
       # Sets the objective c class prefix which is prepended to all objective c
       # generated classes from this .proto. There is no default.
       optional(
@@ -804,7 +840,7 @@ module Google
         50,
         "features",
         type: :message,
-        message_type: "google.protobuf.FeatureSet"
+        message_class: "Google::Protobuf::FeatureSet"
       )
       # The parser stores options it doesn't recognize here.
       # See the documentation for the "Options" section above.
@@ -812,12 +848,13 @@ module Google
         999,
         "uninterpreted_option",
         type: :message,
-        message_type: "google.protobuf.UninterpretedOption",
+        message_class: "Google::Protobuf::UninterpretedOption",
         json_name: "uninterpretedOption"
       )
 
       reserved_range(42...43)
       reserved_range(38...39)
+      reserved_name("php_generic_services")
     end
 
     class MessageOptions
@@ -847,7 +884,8 @@ module Google
         1,
         "message_set_wire_format",
         type: :bool,
-        json_name: "messageSetWireFormat"
+        json_name: "messageSetWireFormat",
+        default: "false"
       )
       # Disables the generation of the standard "descriptor()" accessor, which can
       # conflict with a field of the same name.  This is meant to make migration
@@ -856,13 +894,14 @@ module Google
         2,
         "no_standard_descriptor_accessor",
         type: :bool,
-        json_name: "noStandardDescriptorAccessor"
+        json_name: "noStandardDescriptorAccessor",
+        default: "false"
       )
       # Is this message deprecated?
       # Depending on the target platform, this can emit Deprecated annotations
       # for the message, or it will be completely ignored; in the very least,
       # this is a formalization for deprecating messages.
-      optional(3, "deprecated", type: :bool)
+      optional(3, "deprecated", type: :bool, default: "false")
       # Whether the message is an automatically generated map entry type for the
       # maps field.
       #
@@ -906,14 +945,14 @@ module Google
         12,
         "features",
         type: :message,
-        message_type: "google.protobuf.FeatureSet"
+        message_class: "Google::Protobuf::FeatureSet"
       )
       # The parser stores options it doesn't recognize here. See above.
       repeated(
         999,
         "uninterpreted_option",
         type: :message,
-        message_type: "google.protobuf.UninterpretedOption",
+        message_class: "Google::Protobuf::UninterpretedOption",
         json_name: "uninterpretedOption"
       )
 
@@ -929,33 +968,35 @@ module Google
 
       self.full_name = "google.protobuf.FieldOptions"
 
+      # NOTE: ctype is deprecated. Use `features.(pb.cpp).string_type` instead.
       # The ctype option instructs the C++ code generator to use a different
       # representation of the field than it normally would.  See the specific
       # options below.  This option is only implemented to support use of
       # [ctype=CORD] and [ctype=STRING] (the default) on non-repeated fields of
-      # type "bytes" in the open source release -- sorry, we'll try to include
-      # other types in a future version!
+      # type "bytes" in the open source release.
+      # TODO: make ctype actually deprecated.
       optional(
         1,
         "ctype",
         type: :enum,
-        enum_type: "google.protobuf.FieldOptions.CType"
+        enum_class: "Google::Protobuf::FieldOptions::CType",
+        default: "STRING"
       )
-      class CType
+      module CType
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FieldOptions.CType"
 
         # Default mode.
-        STRING = new("STRING", 0).freeze
+        STRING = register("STRING", 0)
         # The option [ctype=CORD] may be applied to a non-repeated field of type
         # "bytes". It indicates that in C++, the data should be stored in a Cord
         # instead of a string.  For very large strings, this may reduce memory
         # fragmentation. It may also allow better performance when parsing from a
         # Cord, or when parsing with aliasing enabled, as the parsed Cord may then
         # alias the original buffer.
-        CORD = new("CORD", 1).freeze
-        STRING_PIECE = new("STRING_PIECE", 2).freeze
+        CORD = register("CORD", 1)
+        STRING_PIECE = register("STRING_PIECE", 2)
       end
 
       # The packed option can be enabled for repeated primitive fields to enable
@@ -981,19 +1022,20 @@ module Google
         6,
         "jstype",
         type: :enum,
-        enum_type: "google.protobuf.FieldOptions.JSType"
+        enum_class: "Google::Protobuf::FieldOptions::JSType",
+        default: "JS_NORMAL"
       )
-      class JSType
+      module JSType
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FieldOptions.JSType"
 
         # Use the default type.
-        JS_NORMAL = new("JS_NORMAL", 0).freeze
+        JS_NORMAL = register("JS_NORMAL", 0)
         # Use JavaScript strings.
-        JS_STRING = new("JS_STRING", 1).freeze
+        JS_STRING = register("JS_STRING", 1)
         # Use JavaScript numbers.
-        JS_NUMBER = new("JS_NUMBER", 2).freeze
+        JS_NUMBER = register("JS_NUMBER", 2)
       end
 
       # Should this field be parsed lazily?  Lazy applies only to message-type
@@ -1018,69 +1060,78 @@ module Google
       # on the outer message would fail if the inner message has missing required
       # fields. Failed verification would result in parsing failure (except when
       # uninitialized messages are acceptable).
-      optional(5, "lazy", type: :bool)
+      optional(5, "lazy", type: :bool, default: "false")
       # unverified_lazy does no correctness checks on the byte stream. This should
       # only be used where lazy with verification is prohibitive for performance
       # reasons.
-      optional(15, "unverified_lazy", type: :bool, json_name: "unverifiedLazy")
+      optional(
+        15,
+        "unverified_lazy",
+        type: :bool,
+        json_name: "unverifiedLazy",
+        default: "false"
+      )
       # Is this field deprecated?
       # Depending on the target platform, this can emit Deprecated annotations
       # for accessors, or it will be completely ignored; in the very least, this
       # is a formalization for deprecating fields.
-      optional(3, "deprecated", type: :bool)
+      optional(3, "deprecated", type: :bool, default: "false")
       # For Google-internal migration only. Do not use.
-      optional(10, "weak", type: :bool)
+      optional(10, "weak", type: :bool, default: "false")
       # Indicate that the field value should not be printed out when using debug
       # formats, e.g. when the field contains sensitive credentials.
-      optional(16, "debug_redact", type: :bool, json_name: "debugRedact")
+      optional(
+        16,
+        "debug_redact",
+        type: :bool,
+        json_name: "debugRedact",
+        default: "false"
+      )
       # If set to RETENTION_SOURCE, the option will be omitted from the binary.
       # Note: as of January 2023, support for this is in progress and does not yet
       # have an effect (b/264593489).
-      class OptionRetention
+      module OptionRetention
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FieldOptions.OptionRetention"
 
-        RETENTION_UNKNOWN = new("RETENTION_UNKNOWN", 0).freeze
-        RETENTION_RUNTIME = new("RETENTION_RUNTIME", 1).freeze
-        RETENTION_SOURCE = new("RETENTION_SOURCE", 2).freeze
+        RETENTION_UNKNOWN = register("RETENTION_UNKNOWN", 0)
+        RETENTION_RUNTIME = register("RETENTION_RUNTIME", 1)
+        RETENTION_SOURCE = register("RETENTION_SOURCE", 2)
       end
 
       optional(
         17,
         "retention",
         type: :enum,
-        enum_type: "google.protobuf.FieldOptions.OptionRetention"
+        enum_class: "Google::Protobuf::FieldOptions::OptionRetention"
       )
       # This indicates the types of entities that the field may apply to when used
       # as an option. If it is unset, then the field may be freely used as an
       # option on any kind of entity. Note: as of January 2023, support for this is
       # in progress and does not yet have an effect (b/264593489).
-      class OptionTargetType
+      module OptionTargetType
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FieldOptions.OptionTargetType"
 
-        TARGET_TYPE_UNKNOWN = new("TARGET_TYPE_UNKNOWN", 0).freeze
-        TARGET_TYPE_FILE = new("TARGET_TYPE_FILE", 1).freeze
-        TARGET_TYPE_EXTENSION_RANGE = new(
-          "TARGET_TYPE_EXTENSION_RANGE",
-          2
-        ).freeze
-        TARGET_TYPE_MESSAGE = new("TARGET_TYPE_MESSAGE", 3).freeze
-        TARGET_TYPE_FIELD = new("TARGET_TYPE_FIELD", 4).freeze
-        TARGET_TYPE_ONEOF = new("TARGET_TYPE_ONEOF", 5).freeze
-        TARGET_TYPE_ENUM = new("TARGET_TYPE_ENUM", 6).freeze
-        TARGET_TYPE_ENUM_ENTRY = new("TARGET_TYPE_ENUM_ENTRY", 7).freeze
-        TARGET_TYPE_SERVICE = new("TARGET_TYPE_SERVICE", 8).freeze
-        TARGET_TYPE_METHOD = new("TARGET_TYPE_METHOD", 9).freeze
+        TARGET_TYPE_UNKNOWN = register("TARGET_TYPE_UNKNOWN", 0)
+        TARGET_TYPE_FILE = register("TARGET_TYPE_FILE", 1)
+        TARGET_TYPE_EXTENSION_RANGE = register("TARGET_TYPE_EXTENSION_RANGE", 2)
+        TARGET_TYPE_MESSAGE = register("TARGET_TYPE_MESSAGE", 3)
+        TARGET_TYPE_FIELD = register("TARGET_TYPE_FIELD", 4)
+        TARGET_TYPE_ONEOF = register("TARGET_TYPE_ONEOF", 5)
+        TARGET_TYPE_ENUM = register("TARGET_TYPE_ENUM", 6)
+        TARGET_TYPE_ENUM_ENTRY = register("TARGET_TYPE_ENUM_ENTRY", 7)
+        TARGET_TYPE_SERVICE = register("TARGET_TYPE_SERVICE", 8)
+        TARGET_TYPE_METHOD = register("TARGET_TYPE_METHOD", 9)
       end
 
       repeated(
         19,
         "targets",
         type: :enum,
-        enum_type: "google.protobuf.FieldOptions.OptionTargetType"
+        enum_class: "Google::Protobuf::FieldOptions::OptionTargetType"
       )
       class EditionDefault
         extend Protobug::Message
@@ -1091,7 +1142,7 @@ module Google
           3,
           "edition",
           type: :enum,
-          enum_type: "google.protobuf.Edition"
+          enum_class: "Google::Protobuf::Edition"
         )
         optional(2, "value", type: :string) # Textproto value.
       end
@@ -1100,7 +1151,7 @@ module Google
         20,
         "edition_defaults",
         type: :message,
-        message_type: "google.protobuf.FieldOptions.EditionDefault",
+        message_class: "Google::Protobuf::FieldOptions::EditionDefault",
         json_name: "editionDefaults"
       )
       # Any features defined in the specific edition.
@@ -1108,14 +1159,66 @@ module Google
         21,
         "features",
         type: :message,
-        message_type: "google.protobuf.FeatureSet"
+        message_class: "Google::Protobuf::FeatureSet"
+      )
+      # Information about the support window of a feature.
+      class FeatureSupport
+        extend Protobug::Message
+
+        self.full_name = "google.protobuf.FieldOptions.FeatureSupport"
+
+        # The edition that this feature was first available in.  In editions
+        # earlier than this one, the default assigned to EDITION_LEGACY will be
+        # used, and proto files will not be able to override it.
+        optional(
+          1,
+          "edition_introduced",
+          type: :enum,
+          enum_class: "Google::Protobuf::Edition",
+          json_name: "editionIntroduced"
+        )
+        # The edition this feature becomes deprecated in.  Using this after this
+        # edition may trigger warnings.
+        optional(
+          2,
+          "edition_deprecated",
+          type: :enum,
+          enum_class: "Google::Protobuf::Edition",
+          json_name: "editionDeprecated"
+        )
+        # The deprecation warning text if this feature is used after the edition it
+        # was marked deprecated in.
+        optional(
+          3,
+          "deprecation_warning",
+          type: :string,
+          json_name: "deprecationWarning"
+        )
+        # The edition this feature is no longer available in.  In editions after
+        # this one, the last default assigned will be used, and proto files will
+        # not be able to override it.
+        optional(
+          4,
+          "edition_removed",
+          type: :enum,
+          enum_class: "Google::Protobuf::Edition",
+          json_name: "editionRemoved"
+        )
+      end
+
+      optional(
+        22,
+        "feature_support",
+        type: :message,
+        message_class: "Google::Protobuf::FieldOptions::FeatureSupport",
+        json_name: "featureSupport"
       )
       # The parser stores options it doesn't recognize here. See above.
       repeated(
         999,
         "uninterpreted_option",
         type: :message,
-        message_type: "google.protobuf.UninterpretedOption",
+        message_class: "Google::Protobuf::UninterpretedOption",
         json_name: "uninterpretedOption"
       )
 
@@ -1133,14 +1236,14 @@ module Google
         1,
         "features",
         type: :message,
-        message_type: "google.protobuf.FeatureSet"
+        message_class: "Google::Protobuf::FeatureSet"
       )
       # The parser stores options it doesn't recognize here. See above.
       repeated(
         999,
         "uninterpreted_option",
         type: :message,
-        message_type: "google.protobuf.UninterpretedOption",
+        message_class: "Google::Protobuf::UninterpretedOption",
         json_name: "uninterpretedOption"
       )
     end
@@ -1157,7 +1260,7 @@ module Google
       # Depending on the target platform, this can emit Deprecated annotations
       # for the enum, or it will be completely ignored; in the very least, this
       # is a formalization for deprecating enums.
-      optional(3, "deprecated", type: :bool)
+      optional(3, "deprecated", type: :bool, default: "false")
       # Enable the legacy handling of JSON field name conflicts.  This lowercases
       # and strips underscored from the fields before comparison in proto3 only.
       # The new behavior takes `json_name` into account and applies to proto2 as
@@ -1175,14 +1278,14 @@ module Google
         7,
         "features",
         type: :message,
-        message_type: "google.protobuf.FeatureSet"
+        message_class: "Google::Protobuf::FeatureSet"
       )
       # The parser stores options it doesn't recognize here. See above.
       repeated(
         999,
         "uninterpreted_option",
         type: :message,
-        message_type: "google.protobuf.UninterpretedOption",
+        message_class: "Google::Protobuf::UninterpretedOption",
         json_name: "uninterpretedOption"
       )
 
@@ -1198,24 +1301,38 @@ module Google
       # Depending on the target platform, this can emit Deprecated annotations
       # for the enum value, or it will be completely ignored; in the very least,
       # this is a formalization for deprecating enum values.
-      optional(1, "deprecated", type: :bool)
+      optional(1, "deprecated", type: :bool, default: "false")
       # Any features defined in the specific edition.
       optional(
         2,
         "features",
         type: :message,
-        message_type: "google.protobuf.FeatureSet"
+        message_class: "Google::Protobuf::FeatureSet"
       )
       # Indicate that fields annotated with this enum value should not be printed
       # out when using debug formats, e.g. when the field contains sensitive
       # credentials.
-      optional(3, "debug_redact", type: :bool, json_name: "debugRedact")
+      optional(
+        3,
+        "debug_redact",
+        type: :bool,
+        json_name: "debugRedact",
+        default: "false"
+      )
+      # Information about the support window of a feature value.
+      optional(
+        4,
+        "feature_support",
+        type: :message,
+        message_class: "Google::Protobuf::FieldOptions::FeatureSupport",
+        json_name: "featureSupport"
+      )
       # The parser stores options it doesn't recognize here. See above.
       repeated(
         999,
         "uninterpreted_option",
         type: :message,
-        message_type: "google.protobuf.UninterpretedOption",
+        message_class: "Google::Protobuf::UninterpretedOption",
         json_name: "uninterpretedOption"
       )
     end
@@ -1230,7 +1347,7 @@ module Google
         34,
         "features",
         type: :message,
-        message_type: "google.protobuf.FeatureSet"
+        message_class: "Google::Protobuf::FeatureSet"
       )
       # Note:  Field numbers 1 through 32 are reserved for Google's internal RPC
       #   framework.  We apologize for hoarding these numbers to ourselves, but
@@ -1241,13 +1358,13 @@ module Google
       # Depending on the target platform, this can emit Deprecated annotations
       # for the service, or it will be completely ignored; in the very least,
       # this is a formalization for deprecating services.
-      optional(33, "deprecated", type: :bool)
+      optional(33, "deprecated", type: :bool, default: "false")
       # The parser stores options it doesn't recognize here. See above.
       repeated(
         999,
         "uninterpreted_option",
         type: :message,
-        message_type: "google.protobuf.UninterpretedOption",
+        message_class: "Google::Protobuf::UninterpretedOption",
         json_name: "uninterpretedOption"
       )
     end
@@ -1266,43 +1383,44 @@ module Google
       # Depending on the target platform, this can emit Deprecated annotations
       # for the method, or it will be completely ignored; in the very least,
       # this is a formalization for deprecating methods.
-      optional(33, "deprecated", type: :bool)
+      optional(33, "deprecated", type: :bool, default: "false")
       # Is this method side-effect-free (or safe in HTTP parlance), or idempotent,
       # or neither? HTTP based RPC implementation may choose GET verb for safe
       # methods, and PUT verb for idempotent methods instead of the default POST.
-      class IdempotencyLevel
+      module IdempotencyLevel
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.MethodOptions.IdempotencyLevel"
 
-        IDEMPOTENCY_UNKNOWN = new("IDEMPOTENCY_UNKNOWN", 0).freeze
-        NO_SIDE_EFFECTS = new("NO_SIDE_EFFECTS", 1).freeze # implies idempotent
-        IDEMPOTENT = new(
+        IDEMPOTENCY_UNKNOWN = register("IDEMPOTENCY_UNKNOWN", 0)
+        NO_SIDE_EFFECTS = register("NO_SIDE_EFFECTS", 1) # implies idempotent
+        IDEMPOTENT = register(
           "IDEMPOTENT",
           2
-        ).freeze # idempotent, but may have side effects
+        ) # idempotent, but may have side effects
       end
 
       optional(
         34,
         "idempotency_level",
         type: :enum,
-        enum_type: "google.protobuf.MethodOptions.IdempotencyLevel",
-        json_name: "idempotencyLevel"
+        enum_class: "Google::Protobuf::MethodOptions::IdempotencyLevel",
+        json_name: "idempotencyLevel",
+        default: "IDEMPOTENCY_UNKNOWN"
       )
       # Any features defined in the specific edition.
       optional(
         35,
         "features",
         type: :message,
-        message_type: "google.protobuf.FeatureSet"
+        message_class: "Google::Protobuf::FeatureSet"
       )
       # The parser stores options it doesn't recognize here. See above.
       repeated(
         999,
         "uninterpreted_option",
         type: :message,
-        message_type: "google.protobuf.UninterpretedOption",
+        message_class: "Google::Protobuf::UninterpretedOption",
         json_name: "uninterpretedOption"
       )
     end
@@ -1336,7 +1454,7 @@ module Google
         2,
         "name",
         type: :message,
-        message_type: "google.protobuf.UninterpretedOption.NamePart"
+        message_class: "Google::Protobuf::UninterpretedOption::NamePart"
       )
       # The value of the uninterpreted option, in whatever type the tokenizer
       # identified it as during parsing. Exactly one of these should be set.
@@ -1377,110 +1495,109 @@ module Google
 
       self.full_name = "google.protobuf.FeatureSet"
 
-      class FieldPresence
+      module FieldPresence
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FeatureSet.FieldPresence"
 
-        FIELD_PRESENCE_UNKNOWN = new("FIELD_PRESENCE_UNKNOWN", 0).freeze
-        EXPLICIT = new("EXPLICIT", 1).freeze
-        IMPLICIT = new("IMPLICIT", 2).freeze
-        LEGACY_REQUIRED = new("LEGACY_REQUIRED", 3).freeze
+        UNKNOWN = register("FIELD_PRESENCE_UNKNOWN", 0)
+        EXPLICIT = register("EXPLICIT", 1)
+        IMPLICIT = register("IMPLICIT", 2)
+        LEGACY_REQUIRED = register("LEGACY_REQUIRED", 3)
       end
 
       optional(
         1,
         "field_presence",
         type: :enum,
-        enum_type: "google.protobuf.FeatureSet.FieldPresence",
+        enum_class: "Google::Protobuf::FeatureSet::FieldPresence",
         json_name: "fieldPresence"
       )
-      class EnumType
+      module EnumType
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FeatureSet.EnumType"
 
-        ENUM_TYPE_UNKNOWN = new("ENUM_TYPE_UNKNOWN", 0).freeze
-        OPEN = new("OPEN", 1).freeze
-        CLOSED = new("CLOSED", 2).freeze
+        UNKNOWN = register("ENUM_TYPE_UNKNOWN", 0)
+        OPEN = register("OPEN", 1)
+        CLOSED = register("CLOSED", 2)
       end
 
       optional(
         2,
         "enum_type",
         type: :enum,
-        enum_type: "google.protobuf.FeatureSet.EnumType",
+        enum_class: "Google::Protobuf::FeatureSet::EnumType",
         json_name: "enumType"
       )
-      class RepeatedFieldEncoding
+      module RepeatedFieldEncoding
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FeatureSet.RepeatedFieldEncoding"
 
-        REPEATED_FIELD_ENCODING_UNKNOWN = new(
-          "REPEATED_FIELD_ENCODING_UNKNOWN",
-          0
-        ).freeze
-        PACKED = new("PACKED", 1).freeze
-        EXPANDED = new("EXPANDED", 2).freeze
+        UNKNOWN = register("REPEATED_FIELD_ENCODING_UNKNOWN", 0)
+        PACKED = register("PACKED", 1)
+        EXPANDED = register("EXPANDED", 2)
       end
 
       optional(
         3,
         "repeated_field_encoding",
         type: :enum,
-        enum_type: "google.protobuf.FeatureSet.RepeatedFieldEncoding",
+        enum_class: "Google::Protobuf::FeatureSet::RepeatedFieldEncoding",
         json_name: "repeatedFieldEncoding"
       )
-      class Utf8Validation
+      module Utf8Validation
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FeatureSet.Utf8Validation"
 
-        UTF8_VALIDATION_UNKNOWN = new("UTF8_VALIDATION_UNKNOWN", 0).freeze
-        VERIFY = new("VERIFY", 2).freeze
-        NONE = new("NONE", 3).freeze
+        UTF8_VALIDATION_UNKNOWN = register("UTF8_VALIDATION_UNKNOWN", 0)
+        VERIFY = register("VERIFY", 2)
+        NONE = register("NONE", 3)
+
+        reserved_range(1..0)
       end
 
       optional(
         4,
         "utf8_validation",
         type: :enum,
-        enum_type: "google.protobuf.FeatureSet.Utf8Validation",
+        enum_class: "Google::Protobuf::FeatureSet::Utf8Validation",
         json_name: "utf8Validation"
       )
-      class MessageEncoding
+      module MessageEncoding
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FeatureSet.MessageEncoding"
 
-        MESSAGE_ENCODING_UNKNOWN = new("MESSAGE_ENCODING_UNKNOWN", 0).freeze
-        LENGTH_PREFIXED = new("LENGTH_PREFIXED", 1).freeze
-        DELIMITED = new("DELIMITED", 2).freeze
+        UNKNOWN = register("MESSAGE_ENCODING_UNKNOWN", 0)
+        LENGTH_PREFIXED = register("LENGTH_PREFIXED", 1)
+        DELIMITED = register("DELIMITED", 2)
       end
 
       optional(
         5,
         "message_encoding",
         type: :enum,
-        enum_type: "google.protobuf.FeatureSet.MessageEncoding",
+        enum_class: "Google::Protobuf::FeatureSet::MessageEncoding",
         json_name: "messageEncoding"
       )
-      class JsonFormat
+      module JsonFormat
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.FeatureSet.JsonFormat"
 
-        JSON_FORMAT_UNKNOWN = new("JSON_FORMAT_UNKNOWN", 0).freeze
-        ALLOW = new("ALLOW", 1).freeze
-        LEGACY_BEST_EFFORT = new("LEGACY_BEST_EFFORT", 2).freeze
+        UNKNOWN = register("JSON_FORMAT_UNKNOWN", 0)
+        ALLOW = register("ALLOW", 1)
+        LEGACY_BEST_EFFORT = register("LEGACY_BEST_EFFORT", 2)
       end
 
       optional(
         6,
         "json_format",
         type: :enum,
-        enum_type: "google.protobuf.FeatureSet.JsonFormat",
+        enum_class: "Google::Protobuf::FeatureSet::JsonFormat",
         json_name: "jsonFormat"
       )
 
@@ -1509,22 +1626,36 @@ module Google
           3,
           "edition",
           type: :enum,
-          enum_type: "google.protobuf.Edition"
+          enum_class: "Google::Protobuf::Edition"
         )
+        # Defaults of features that can be overridden in this edition.
         optional(
-          2,
-          "features",
+          4,
+          "overridable_features",
           type: :message,
-          message_type: "google.protobuf.FeatureSet"
+          message_class: "Google::Protobuf::FeatureSet",
+          json_name: "overridableFeatures"
         )
+        # Defaults of features that can't be overridden in this edition.
+        optional(
+          5,
+          "fixed_features",
+          type: :message,
+          message_class: "Google::Protobuf::FeatureSet",
+          json_name: "fixedFeatures"
+        )
+
+        reserved_range(1...2)
+        reserved_range(2...3)
+        reserved_name("features")
       end
 
       repeated(
         1,
         "defaults",
         type: :message,
-        message_type:
-        "google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault"
+        message_class:
+        "Google::Protobuf::FeatureSetDefaults::FeatureSetEditionDefault"
       )
       # The minimum supported edition (inclusive) when this was constructed.
       # Editions before this will not have defaults.
@@ -1532,7 +1663,7 @@ module Google
         4,
         "minimum_edition",
         type: :enum,
-        enum_type: "google.protobuf.Edition",
+        enum_class: "Google::Protobuf::Edition",
         json_name: "minimumEdition"
       )
       # The maximum known edition (inclusive) when this was constructed. Editions
@@ -1541,7 +1672,7 @@ module Google
         5,
         "maximum_edition",
         type: :enum,
-        enum_type: "google.protobuf.Edition",
+        enum_class: "Google::Protobuf::Edition",
         json_name: "maximumEdition"
       )
     end
@@ -1603,7 +1734,7 @@ module Google
         1,
         "location",
         type: :message,
-        message_type: "google.protobuf.SourceCodeInfo.Location"
+        message_class: "Google::Protobuf::SourceCodeInfo::Location"
       )
       class Location
         extend Protobug::Message
@@ -1722,7 +1853,7 @@ module Google
         1,
         "annotation",
         type: :message,
-        message_type: "google.protobuf.GeneratedCodeInfo.Annotation"
+        message_class: "Google::Protobuf::GeneratedCodeInfo::Annotation"
       )
       class Annotation
         extend Protobug::Message
@@ -1743,86 +1874,27 @@ module Google
         optional(4, "end", type: :int32)
         # Represents the identified object's effect on the element in the original
         # .proto file.
-        class Semantic
+        module Semantic
           extend Protobug::Enum
 
           self.full_name = "google.protobuf.GeneratedCodeInfo.Annotation.Semantic"
 
           # There is no effect or the effect is indescribable.
-          NONE = new("NONE", 0).freeze
+          NONE = register("NONE", 0)
           # The element is set or otherwise mutated.
-          SET = new("SET", 1).freeze
+          SET = register("SET", 1)
           # An alias to the element is returned.
-          ALIAS = new("ALIAS", 2).freeze
+          ALIAS = register("ALIAS", 2)
         end
 
         optional(
           5,
           "semantic",
           type: :enum,
-          enum_type: "google.protobuf.GeneratedCodeInfo.Annotation.Semantic"
+          enum_class:
+          "Google::Protobuf::GeneratedCodeInfo::Annotation::Semantic"
         )
       end
-    end
-
-    def self.register_descriptor_protos(registry)
-      registry.register(Google::Protobuf::FileDescriptorSet)
-      registry.register(Google::Protobuf::Edition)
-      registry.register(Google::Protobuf::FileDescriptorProto)
-      registry.register(Google::Protobuf::DescriptorProto)
-      registry.register(Google::Protobuf::DescriptorProto::ExtensionRange)
-      registry.register(Google::Protobuf::DescriptorProto::ReservedRange)
-      registry.register(Google::Protobuf::ExtensionRangeOptions)
-      registry.register(Google::Protobuf::ExtensionRangeOptions::Declaration)
-      registry.register(
-        Google::Protobuf::ExtensionRangeOptions::VerificationState
-      )
-      registry.register(Google::Protobuf::FieldDescriptorProto)
-      registry.register(Google::Protobuf::FieldDescriptorProto::Type)
-      registry.register(Google::Protobuf::FieldDescriptorProto::Label)
-      registry.register(Google::Protobuf::OneofDescriptorProto)
-      registry.register(Google::Protobuf::EnumDescriptorProto)
-      registry.register(
-        Google::Protobuf::EnumDescriptorProto::EnumReservedRange
-      )
-      registry.register(Google::Protobuf::EnumValueDescriptorProto)
-      registry.register(Google::Protobuf::ServiceDescriptorProto)
-      registry.register(Google::Protobuf::MethodDescriptorProto)
-      registry.register(Google::Protobuf::FileOptions)
-      registry.register(Google::Protobuf::FileOptions::OptimizeMode)
-      registry.register(Google::Protobuf::MessageOptions)
-      registry.register(Google::Protobuf::FieldOptions)
-      registry.register(Google::Protobuf::FieldOptions::CType)
-      registry.register(Google::Protobuf::FieldOptions::JSType)
-      registry.register(Google::Protobuf::FieldOptions::OptionRetention)
-      registry.register(Google::Protobuf::FieldOptions::OptionTargetType)
-      registry.register(Google::Protobuf::FieldOptions::EditionDefault)
-      registry.register(Google::Protobuf::OneofOptions)
-      registry.register(Google::Protobuf::EnumOptions)
-      registry.register(Google::Protobuf::EnumValueOptions)
-      registry.register(Google::Protobuf::ServiceOptions)
-      registry.register(Google::Protobuf::MethodOptions)
-      registry.register(Google::Protobuf::MethodOptions::IdempotencyLevel)
-      registry.register(Google::Protobuf::UninterpretedOption)
-      registry.register(Google::Protobuf::UninterpretedOption::NamePart)
-      registry.register(Google::Protobuf::FeatureSet)
-      registry.register(Google::Protobuf::FeatureSet::FieldPresence)
-      registry.register(Google::Protobuf::FeatureSet::EnumType)
-      registry.register(Google::Protobuf::FeatureSet::RepeatedFieldEncoding)
-      registry.register(Google::Protobuf::FeatureSet::Utf8Validation)
-      registry.register(Google::Protobuf::FeatureSet::MessageEncoding)
-      registry.register(Google::Protobuf::FeatureSet::JsonFormat)
-      registry.register(Google::Protobuf::FeatureSetDefaults)
-      registry.register(
-        Google::Protobuf::FeatureSetDefaults::FeatureSetEditionDefault
-      )
-      registry.register(Google::Protobuf::SourceCodeInfo)
-      registry.register(Google::Protobuf::SourceCodeInfo::Location)
-      registry.register(Google::Protobuf::GeneratedCodeInfo)
-      registry.register(Google::Protobuf::GeneratedCodeInfo::Annotation)
-      registry.register(
-        Google::Protobuf::GeneratedCodeInfo::Annotation::Semantic
-      )
     end
   end
 end

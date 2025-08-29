@@ -51,14 +51,9 @@ module InTotoAttestation
         7,
         "annotations",
         type: :message,
-        message_type: "google.protobuf.Struct",
+        message_class: "Google::Protobuf::Struct",
         proto3_optional: false
       )
-    end
-
-    def self.register_resource_descriptor_protos(registry)
-      Google::Protobuf.register_struct_protos(registry)
-      registry.register(InTotoAttestation::V1::ResourceDescriptor)
     end
   end
 end

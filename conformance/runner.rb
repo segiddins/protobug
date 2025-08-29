@@ -5,34 +5,33 @@ require "bundler/setup"
 require "simplecov"
 
 SimpleCov.root(File.expand_path("..", __dir__))
-SimpleCov.start do
-  enable_coverage :branch
-end
+# SimpleCov.start do
+#   enable_coverage :branch
+# end
 
 require "protobug_conformance_protos"
-require "stringio"
 
 $test_count = 0
 $verbose = false
 
-$registry = Protobug::Registry.new do |registry|
-  Conformance.register_conformance_protos(registry)
-  ProtobufTestMessages::Proto2.register_test_messages_proto2_protos(registry)
-  ProtobufTestMessages::Proto3.register_test_messages_proto3_protos(registry)
-end
-
 def do_test(request)
   response = Conformance::ConformanceResponse.new
-  descriptor = $registry.fetch(request.message_type, nil)
-  test_message = nil
 
-  response.skipped = "Unknown message type: #{request.message_type.inspect}" unless descriptor
+  case request.message_type
+  when "protobuf_test_messages.proto2.TestAllTypesProto2"
+    descriptor = ProtobufTestMessages::Proto2::TestAllTypesProto2
+  when "protobuf_test_messages.proto3.TestAllTypesProto3"
+    descriptor = ProtobufTestMessages::Proto3::TestAllTypesProto3
+  else
+    raise "Unknown message type: #{request.message_type.inspect}"
+  end
+  test_message = nil
 
   begin
     case request.payload
     when :protobuf_payload
       begin
-        test_message = descriptor.decode(StringIO.new(request.protobuf_payload), registry: $registry)
+        test_message = descriptor.decode(request.protobuf_payload)
       rescue Protobug::UnsupportedFeatureError
         raise
       rescue Protobug::DecodeError, Protobug::InvalidValueError, EOFError => e
@@ -46,7 +45,7 @@ def do_test(request)
         if request.test_category == Conformance::TestCategory::JSON_IGNORE_UNKNOWN_PARSING_TEST
           options[:ignore_unknown_fields] = true
         end
-        test_message = descriptor.decode_json(request.json_payload, **options, registry: $registry)
+        test_message = descriptor.decode_json(request.json_payload, **options)
       rescue Protobug::UnsupportedFeatureError
         raise
       rescue Protobug::DecodeError, Protobug::InvalidValueError => e
@@ -77,7 +76,7 @@ def do_test(request)
 
     when Conformance::WireFormat::JSON
       begin
-        response.json_payload = test_message.to_json(print_unknown_fields: request.print_unknown_fields)
+        response.json_payload = test_message.to_json
       rescue Protobug::UnsupportedFeatureError
         raise
       rescue Protobug::EncodeError => e
@@ -109,7 +108,7 @@ def do_test_io
   serialized_request = $stdin.read(length)
   raise IOError if serialized_request.nil? || serialized_request.length != length
 
-  request = Conformance::ConformanceRequest.decode(StringIO.new(serialized_request), registry: $registry)
+  request = Conformance::ConformanceRequest.decode(serialized_request)
 
   response = do_test(request)
 

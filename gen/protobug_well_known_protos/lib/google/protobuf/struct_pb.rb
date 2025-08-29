@@ -67,7 +67,7 @@ module Google
         "fields",
         key_type: :string,
         value_type: :message,
-        message_type: "google.protobuf.Value"
+        message_class: "Google::Protobuf::Value"
       )
     end
 
@@ -89,7 +89,7 @@ module Google
         1,
         "null_value",
         type: :enum,
-        enum_type: "google.protobuf.NullValue",
+        enum_class: "Google::Protobuf::NullValue",
         json_name: "nullValue",
         oneof: :kind,
         proto3_optional: false
@@ -126,7 +126,7 @@ module Google
         5,
         "struct_value",
         type: :message,
-        message_type: "google.protobuf.Struct",
+        message_class: "Google::Protobuf::Struct",
         json_name: "structValue",
         oneof: :kind,
         proto3_optional: false
@@ -136,7 +136,7 @@ module Google
         6,
         "list_value",
         type: :message,
-        message_type: "google.protobuf.ListValue",
+        message_class: "Google::Protobuf::ListValue",
         json_name: "listValue",
         oneof: :kind,
         proto3_optional: false
@@ -147,13 +147,13 @@ module Google
     # `Value` type union.
     #
     # The JSON representation for `NullValue` is JSON `null`.
-    class NullValue
+    module NullValue
       extend Protobug::Enum
 
       self.full_name = "google.protobuf.NullValue"
 
       # Null value.
-      NULL_VALUE = new("NULL_VALUE", 0).freeze
+      NULL_VALUE = register("NULL_VALUE", 0)
     end
 
     # `ListValue` is a wrapper around a repeated field of values.
@@ -169,15 +169,8 @@ module Google
         1,
         "values",
         type: :message,
-        message_type: "google.protobuf.Value"
+        message_class: "Google::Protobuf::Value"
       )
-    end
-
-    def self.register_struct_protos(registry)
-      registry.register(Google::Protobuf::Struct)
-      registry.register(Google::Protobuf::Value)
-      registry.register(Google::Protobuf::NullValue)
-      registry.register(Google::Protobuf::ListValue)
     end
   end
 end

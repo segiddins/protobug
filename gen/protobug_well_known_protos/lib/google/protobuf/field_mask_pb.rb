@@ -255,10 +255,6 @@ module Google
       # The set of field mask paths.
       repeated(1, "paths", type: :string)
     end
-
-    def self.register_field_mask_protos(registry)
-      registry.register(Google::Protobuf::FieldMask)
-    end
   end
 end
 

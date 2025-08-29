@@ -62,7 +62,7 @@ Google::Protobuf::Value.class_eval do
     self
   end
 
-  def self.decode_json_hash(json, registry:, ignore_unknown_fields: false)
+  def self.decode_json_hash(json, ignore_unknown_fields: false)
     case json
     when NilClass
       json = { "nullValue" => "NULL_VALUE" }
@@ -81,7 +81,7 @@ Google::Protobuf::Value.class_eval do
     super
   end
 
-  def as_json(print_unknown_fields: false)
+  def as_json
     case kind
     when :null_value
       nil
@@ -92,9 +92,9 @@ Google::Protobuf::Value.class_eval do
     when :bool_value
       bool_value
     when :struct_value
-      struct_value.as_json(print_unknown_fields: print_unknown_fields)
+      struct_value.as_json
     when :list_value
-      list_value.values.map! { _1.as_json(print_unknown_fields: print_unknown_fields) }
+      list_value.values.map(&:as_json)
     else
       raise Protobug::EncodeError, "unknown kind: #{kind.inspect}"
     end
@@ -125,13 +125,13 @@ Google::Protobuf::Struct.class_eval do
     fields.key?(key)
   end
 
-  def self.decode_json_hash(json, registry:, ignore_unknown_fields: false)
+  def self.decode_json_hash(json, ignore_unknown_fields: false)
     json = { "fields" => json }
     super
   end
 
-  def as_json(print_unknown_fields: false)
-    fields.transform_values { _1&.as_json(print_unknown_fields: print_unknown_fields) }
+  def as_json
+    fields.transform_values(&:as_json)
   end
 end
 
@@ -168,24 +168,24 @@ Google::Protobuf::ListValue.class_eval do
     arr.each_with_object(new) { |val, ret| ret << val }
   end
 
-  def self.decode_json_hash(json, registry:, ignore_unknown_fields: false)
+  def self.decode_json_hash(json, ignore_unknown_fields: false)
     json = { "values" => json }
     super
   end
 
-  def as_json(print_unknown_fields: false)
-    values.map { _1.as_json(print_unknown_fields: print_unknown_fields) }
+  def as_json
+    values.map(&:as_json)
   end
 end
 
 Google::Protobuf::NullValue.class_eval do
-  def self.decode_json_hash(json, registry:, ignore_unknown_fields: false)
-    return values.fetch(0) if json.nil?
+  def self.decode_json_hash(json, ignore_unknown_fields: false)
+    return 0 if json.nil?
 
     super
   end
 
-  def as_json(print_unknown_fields: false)
+  def self.as_json(value)
     return if value == 0
 
     super

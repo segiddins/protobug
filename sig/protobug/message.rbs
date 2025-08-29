@@ -1,0 +1,79 @@
+module Protobug
+  attr_reader self.known_type_names: Hash[String, Message]
+
+  def self.resolve_known_type: (String name) -> Message
+
+  module Message
+    @__protobug_module__: untyped
+
+    def self.extended: (untyped base) -> untyped
+
+    attr_reader declared_fields: untyped
+
+    attr_reader fields_by_number: untyped
+
+    attr_reader fields_by_name: untyped
+
+    attr_reader fields_by_json_name: untyped
+
+    attr_reader reserved_ranges: untyped
+
+    attr_reader reserved_names: untyped
+
+    attr_reader oneofs: untyped
+
+    def freeze: () -> untyped
+
+    def optional: (untyped number, untyped name, **untyped kwargs) -> untyped
+
+    def repeated: (untyped number, untyped name, **untyped kwargs) -> untyped
+
+    def map: (untyped number, untyped name, **untyped kwargs) -> untyped
+
+    def required: (untyped number, untyped name, **untyped kwargs) -> untyped
+
+    def reserved_range: (untyped range) -> untyped
+
+    def reserved_name: (untyped name) -> untyped
+
+    def decode_json: (untyped json, ?ignore_unknown_fields: bool) -> untyped
+
+    def decode_json_hash: (untyped json, ?ignore_unknown_fields: bool) -> (nil | untyped)
+
+    def encode: (untyped message) -> untyped
+
+    def decode: (untyped binary) -> untyped
+
+    def field: (untyped number, untyped name, type: untyped, **untyped kwargs) -> (nil | untyped)
+
+    def __protobug_module__: () -> untyped
+
+    def __protobug_read_varint__: () -> untyped
+
+    def __protobug_instance_method_definitions__: () -> untyped
+
+    module InstanceMethods
+      @unknown_fields: untyped
+
+      def ==: (untyped other) -> (false | true | untyped)
+
+      alias eql? ==
+
+      def initialize: () -> void
+
+      def __protobug_initialize_defaults: () -> self
+
+      attr_reader unknown_fields: untyped
+
+      def pretty_print: (untyped pp) -> untyped
+
+      def hash: () -> untyped
+
+      def to_text: () -> untyped
+
+      def to_proto: () -> untyped
+
+      def to_json: (*untyped _args) -> untyped
+    end
+  end
+end
