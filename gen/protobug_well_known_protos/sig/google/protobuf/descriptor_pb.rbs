@@ -1,0 +1,895 @@
+class Google::Protobuf::FileDescriptorSet # /lib/google/protobuf/descriptor_pb.rb:61
+  def self.decode: (String string) -> Google::Protobuf::FileDescriptorSet
+  # repeated(1, :file, type: :message)
+  def file: () -> Google::Protobuf::FileDescriptorProto
+  def has_file?: () -> bool
+  @file: Google::Protobuf::FileDescriptorProto?
+end
+module Google::Protobuf::Edition # /lib/google/protobuf/descriptor_pb.rb:75
+  EDITION_UNKNOWN: Integer
+  EDITION_LEGACY: Integer
+  EDITION_PROTO2: Integer
+  EDITION_PROTO3: Integer
+  EDITION_2023: Integer
+  EDITION_2024: Integer
+  EDITION_1_TEST_ONLY: Integer
+  EDITION_2_TEST_ONLY: Integer
+  EDITION_99997_TEST_ONLY: Integer
+  EDITION_99998_TEST_ONLY: Integer
+  EDITION_99999_TEST_ONLY: Integer
+  EDITION_MAX: Integer
+end
+class Google::Protobuf::FileDescriptorProto # /lib/google/protobuf/descriptor_pb.rb:110
+  def self.decode: (String string) -> Google::Protobuf::FileDescriptorProto
+  # optional(1, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # optional(2, :package, type: :string)
+  def package: () -> String
+  def has_package?: () -> bool
+  @package: String?
+  # repeated(3, :dependency, type: :string)
+  def dependency: () -> String
+  def has_dependency?: () -> bool
+  @dependency: String?
+  # repeated(10, :public_dependency, type: :int32)
+  def public_dependency: () -> Integer
+  def has_public_dependency?: () -> bool
+  @public_dependency: Integer?
+  # repeated(11, :weak_dependency, type: :int32)
+  def weak_dependency: () -> Integer
+  def has_weak_dependency?: () -> bool
+  @weak_dependency: Integer?
+  # repeated(4, :message_type, type: :message)
+  def message_type: () -> Google::Protobuf::DescriptorProto
+  def has_message_type?: () -> bool
+  @message_type: Google::Protobuf::DescriptorProto?
+  # repeated(5, :enum_type, type: :message)
+  def enum_type: () -> Google::Protobuf::EnumDescriptorProto
+  def has_enum_type?: () -> bool
+  @enum_type: Google::Protobuf::EnumDescriptorProto?
+  # repeated(6, :service, type: :message)
+  def service: () -> Google::Protobuf::ServiceDescriptorProto
+  def has_service?: () -> bool
+  @service: Google::Protobuf::ServiceDescriptorProto?
+  # repeated(7, :extension, type: :message)
+  def extension: () -> Google::Protobuf::FieldDescriptorProto
+  def has_extension?: () -> bool
+  @extension: Google::Protobuf::FieldDescriptorProto?
+  # optional(8, :options, type: :message)
+  def options: () -> Google::Protobuf::FileOptions
+  def has_options?: () -> bool
+  @options: Google::Protobuf::FileOptions?
+  # optional(9, :source_code_info, type: :message)
+  def source_code_info: () -> Google::Protobuf::SourceCodeInfo
+  def has_source_code_info?: () -> bool
+  @source_code_info: Google::Protobuf::SourceCodeInfo?
+  # optional(12, :syntax, type: :string)
+  def syntax: () -> String
+  def has_syntax?: () -> bool
+  @syntax: String?
+  # optional(14, :edition, type: :enum)
+  def edition: () -> Integer
+  def has_edition?: () -> bool
+  @edition: Integer?
+end
+class Google::Protobuf::DescriptorProto # /lib/google/protobuf/descriptor_pb.rb:192
+  def self.decode: (String string) -> Google::Protobuf::DescriptorProto
+  # optional(1, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # repeated(2, :field, type: :message)
+  def field: () -> Google::Protobuf::FieldDescriptorProto
+  def has_field?: () -> bool
+  @field: Google::Protobuf::FieldDescriptorProto?
+  # repeated(6, :extension, type: :message)
+  def extension: () -> Google::Protobuf::FieldDescriptorProto
+  def has_extension?: () -> bool
+  @extension: Google::Protobuf::FieldDescriptorProto?
+  # repeated(3, :nested_type, type: :message)
+  def nested_type: () -> Google::Protobuf::DescriptorProto
+  def has_nested_type?: () -> bool
+  @nested_type: Google::Protobuf::DescriptorProto?
+  # repeated(4, :enum_type, type: :message)
+  def enum_type: () -> Google::Protobuf::EnumDescriptorProto
+  def has_enum_type?: () -> bool
+  @enum_type: Google::Protobuf::EnumDescriptorProto?
+  # repeated(5, :extension_range, type: :message)
+  def extension_range: () -> Google::Protobuf::DescriptorProto::ExtensionRange
+  def has_extension_range?: () -> bool
+  @extension_range: Google::Protobuf::DescriptorProto::ExtensionRange?
+  # repeated(8, :oneof_decl, type: :message)
+  def oneof_decl: () -> Google::Protobuf::OneofDescriptorProto
+  def has_oneof_decl?: () -> bool
+  @oneof_decl: Google::Protobuf::OneofDescriptorProto?
+  # optional(7, :options, type: :message)
+  def options: () -> Google::Protobuf::MessageOptions
+  def has_options?: () -> bool
+  @options: Google::Protobuf::MessageOptions?
+  # repeated(9, :reserved_range, type: :message)
+  def reserved_range: () -> Google::Protobuf::DescriptorProto::ReservedRange
+  def has_reserved_range?: () -> bool
+  @reserved_range: Google::Protobuf::DescriptorProto::ReservedRange?
+  # repeated(10, :reserved_name, type: :string)
+  def reserved_name: () -> String
+  def has_reserved_name?: () -> bool
+  @reserved_name: String?
+end
+class Google::Protobuf::DescriptorProto::ExtensionRange # /lib/google/protobuf/descriptor_pb.rb:224
+  def self.decode: (String string) -> Google::Protobuf::DescriptorProto::ExtensionRange
+  # optional(1, :start, type: :int32)
+  def start: () -> Integer
+  def has_start?: () -> bool
+  @start: Integer?
+  # optional(2, :end, type: :int32)
+  def end: () -> Integer
+  def has_end?: () -> bool
+  @end: Integer?
+  # optional(3, :options, type: :message)
+  def options: () -> Google::Protobuf::ExtensionRangeOptions
+  def has_options?: () -> bool
+  @options: Google::Protobuf::ExtensionRangeOptions?
+end
+class Google::Protobuf::DescriptorProto::ReservedRange # /lib/google/protobuf/descriptor_pb.rb:262
+  def self.decode: (String string) -> Google::Protobuf::DescriptorProto::ReservedRange
+  # optional(1, :start, type: :int32)
+  def start: () -> Integer
+  def has_start?: () -> bool
+  @start: Integer?
+  # optional(2, :end, type: :int32)
+  def end: () -> Integer
+  def has_end?: () -> bool
+  @end: Integer?
+end
+class Google::Protobuf::ExtensionRangeOptions # /lib/google/protobuf/descriptor_pb.rb:283
+  def self.decode: (String string) -> Google::Protobuf::ExtensionRangeOptions
+  # repeated(999, :uninterpreted_option, type: :message)
+  def uninterpreted_option: () -> Google::Protobuf::UninterpretedOption
+  def has_uninterpreted_option?: () -> bool
+  @uninterpreted_option: Google::Protobuf::UninterpretedOption?
+  # repeated(2, :declaration, type: :message)
+  def declaration: () -> Google::Protobuf::ExtensionRangeOptions::Declaration
+  def has_declaration?: () -> bool
+  @declaration: Google::Protobuf::ExtensionRangeOptions::Declaration?
+  # optional(50, :features, type: :message)
+  def features: () -> Google::Protobuf::FeatureSet
+  def has_features?: () -> bool
+  @features: Google::Protobuf::FeatureSet?
+  # optional(3, :verification, type: :enum)
+  def verification: () -> Integer
+  def has_verification?: () -> bool
+  @verification: Integer?
+end
+class Google::Protobuf::ExtensionRangeOptions::Declaration # /lib/google/protobuf/descriptor_pb.rb:296
+  def self.decode: (String string) -> Google::Protobuf::ExtensionRangeOptions::Declaration
+  # optional(1, :number, type: :int32)
+  def number: () -> Integer
+  def has_number?: () -> bool
+  @number: Integer?
+  # optional(2, :full_name, type: :string)
+  def full_name: () -> String
+  def has_full_name?: () -> bool
+  @full_name: String?
+  # optional(3, :type, type: :string)
+  def type: () -> String
+  def has_type?: () -> bool
+  @type: String?
+  # optional(5, :reserved, type: :bool)
+  def reserved: () -> Integer
+  def has_reserved?: () -> bool
+  @reserved: Integer?
+  # optional(6, :repeated, type: :bool)
+  def repeated: () -> Integer
+  def has_repeated?: () -> bool
+  @repeated: Integer?
+end
+module Google::Protobuf::ExtensionRangeOptions::VerificationState # /lib/google/protobuf/descriptor_pb.rb:338
+  DECLARATION: Integer
+  UNVERIFIED: Integer
+end
+class Google::Protobuf::FieldDescriptorProto # /lib/google/protobuf/descriptor_pb.rb:362
+  def self.decode: (String string) -> Google::Protobuf::FieldDescriptorProto
+  # optional(1, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # optional(3, :number, type: :int32)
+  def number: () -> Integer
+  def has_number?: () -> bool
+  @number: Integer?
+  # optional(4, :label, type: :enum)
+  def label: () -> Integer
+  def has_label?: () -> bool
+  @label: Integer?
+  # optional(5, :type, type: :enum)
+  def type: () -> Integer
+  def has_type?: () -> bool
+  @type: Integer?
+  # optional(6, :type_name, type: :string)
+  def type_name: () -> String
+  def has_type_name?: () -> bool
+  @type_name: String?
+  # optional(2, :extendee, type: :string)
+  def extendee: () -> String
+  def has_extendee?: () -> bool
+  @extendee: String?
+  # optional(7, :default_value, type: :string)
+  def default_value: () -> String
+  def has_default_value?: () -> bool
+  @default_value: String?
+  # optional(9, :oneof_index, type: :int32)
+  def oneof_index: () -> Integer
+  def has_oneof_index?: () -> bool
+  @oneof_index: Integer?
+  # optional(10, :json_name, type: :string)
+  def json_name: () -> String
+  def has_json_name?: () -> bool
+  @json_name: String?
+  # optional(8, :options, type: :message)
+  def options: () -> Google::Protobuf::FieldOptions
+  def has_options?: () -> bool
+  @options: Google::Protobuf::FieldOptions?
+  # optional(17, :proto3_optional, type: :bool)
+  def proto3_optional: () -> Integer
+  def has_proto3_optional?: () -> bool
+  @proto3_optional: Integer?
+end
+module Google::Protobuf::FieldDescriptorProto::Type # /lib/google/protobuf/descriptor_pb.rb:367
+  TYPE_DOUBLE: Integer
+  TYPE_FLOAT: Integer
+  TYPE_INT64: Integer
+  TYPE_UINT64: Integer
+  TYPE_INT32: Integer
+  TYPE_FIXED64: Integer
+  TYPE_FIXED32: Integer
+  TYPE_BOOL: Integer
+  TYPE_STRING: Integer
+  TYPE_GROUP: Integer
+  TYPE_MESSAGE: Integer
+  TYPE_BYTES: Integer
+  TYPE_UINT32: Integer
+  TYPE_ENUM: Integer
+  TYPE_SFIXED32: Integer
+  TYPE_SFIXED64: Integer
+  TYPE_SINT32: Integer
+  TYPE_SINT64: Integer
+end
+module Google::Protobuf::FieldDescriptorProto::Label # /lib/google/protobuf/descriptor_pb.rb:404
+  LABEL_OPTIONAL: Integer
+  LABEL_REPEATED: Integer
+  LABEL_REQUIRED: Integer
+end
+class Google::Protobuf::OneofDescriptorProto # /lib/google/protobuf/descriptor_pb.rb:487
+  def self.decode: (String string) -> Google::Protobuf::OneofDescriptorProto
+  # optional(1, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # optional(2, :options, type: :message)
+  def options: () -> Google::Protobuf::OneofOptions
+  def has_options?: () -> bool
+  @options: Google::Protobuf::OneofOptions?
+end
+class Google::Protobuf::EnumDescriptorProto # /lib/google/protobuf/descriptor_pb.rb:502
+  def self.decode: (String string) -> Google::Protobuf::EnumDescriptorProto
+  # optional(1, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # repeated(2, :value, type: :message)
+  def value: () -> Google::Protobuf::EnumValueDescriptorProto
+  def has_value?: () -> bool
+  @value: Google::Protobuf::EnumValueDescriptorProto?
+  # optional(3, :options, type: :message)
+  def options: () -> Google::Protobuf::EnumOptions
+  def has_options?: () -> bool
+  @options: Google::Protobuf::EnumOptions?
+  # repeated(4, :reserved_range, type: :message)
+  def reserved_range: () -> Google::Protobuf::EnumDescriptorProto::EnumReservedRange
+  def has_reserved_range?: () -> bool
+  @reserved_range: Google::Protobuf::EnumDescriptorProto::EnumReservedRange?
+  # repeated(5, :reserved_name, type: :string)
+  def reserved_name: () -> String
+  def has_reserved_name?: () -> bool
+  @reserved_name: String?
+end
+class Google::Protobuf::EnumDescriptorProto::EnumReservedRange # /lib/google/protobuf/descriptor_pb.rb:526
+  def self.decode: (String string) -> Google::Protobuf::EnumDescriptorProto::EnumReservedRange
+  # optional(1, :start, type: :int32)
+  def start: () -> Integer
+  def has_start?: () -> bool
+  @start: Integer?
+  # optional(2, :end, type: :int32)
+  def end: () -> Integer
+  def has_end?: () -> bool
+  @end: Integer?
+end
+class Google::Protobuf::EnumValueDescriptorProto # /lib/google/protobuf/descriptor_pb.rb:552
+  def self.decode: (String string) -> Google::Protobuf::EnumValueDescriptorProto
+  # optional(1, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # optional(2, :number, type: :int32)
+  def number: () -> Integer
+  def has_number?: () -> bool
+  @number: Integer?
+  # optional(3, :options, type: :message)
+  def options: () -> Google::Protobuf::EnumValueOptions
+  def has_options?: () -> bool
+  @options: Google::Protobuf::EnumValueOptions?
+end
+class Google::Protobuf::ServiceDescriptorProto # /lib/google/protobuf/descriptor_pb.rb:568
+  def self.decode: (String string) -> Google::Protobuf::ServiceDescriptorProto
+  # optional(1, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # repeated(2, :method, type: :message)
+  def method: () -> Google::Protobuf::MethodDescriptorProto
+  def has_method?: () -> bool
+  @method: Google::Protobuf::MethodDescriptorProto?
+  # optional(3, :options, type: :message)
+  def options: () -> Google::Protobuf::ServiceOptions
+  def has_options?: () -> bool
+  @options: Google::Protobuf::ServiceOptions?
+end
+class Google::Protobuf::MethodDescriptorProto # /lib/google/protobuf/descriptor_pb.rb:589
+  def self.decode: (String string) -> Google::Protobuf::MethodDescriptorProto
+  # optional(1, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # optional(2, :input_type, type: :string)
+  def input_type: () -> String
+  def has_input_type?: () -> bool
+  @input_type: String?
+  # optional(3, :output_type, type: :string)
+  def output_type: () -> String
+  def has_output_type?: () -> bool
+  @output_type: String?
+  # optional(4, :options, type: :message)
+  def options: () -> Google::Protobuf::MethodOptions
+  def has_options?: () -> bool
+  @options: Google::Protobuf::MethodOptions?
+  # optional(5, :client_streaming, type: :bool)
+  def client_streaming: () -> Integer
+  def has_client_streaming?: () -> bool
+  @client_streaming: Integer?
+  # optional(6, :server_streaming, type: :bool)
+  def server_streaming: () -> Integer
+  def has_server_streaming?: () -> bool
+  @server_streaming: Integer?
+end
+class Google::Protobuf::FileOptions # /lib/google/protobuf/descriptor_pb.rb:655
+  def self.decode: (String string) -> Google::Protobuf::FileOptions
+  # optional(1, :java_package, type: :string)
+  def java_package: () -> String
+  def has_java_package?: () -> bool
+  @java_package: String?
+  # optional(8, :java_outer_classname, type: :string)
+  def java_outer_classname: () -> String
+  def has_java_outer_classname?: () -> bool
+  @java_outer_classname: String?
+  # optional(10, :java_multiple_files, type: :bool)
+  def java_multiple_files: () -> Integer
+  def has_java_multiple_files?: () -> bool
+  @java_multiple_files: Integer?
+  # optional(20, :java_generate_equals_and_hash, type: :bool)
+  def java_generate_equals_and_hash: () -> Integer
+  def has_java_generate_equals_and_hash?: () -> bool
+  @java_generate_equals_and_hash: Integer?
+  # optional(27, :java_string_check_utf8, type: :bool)
+  def java_string_check_utf8: () -> Integer
+  def has_java_string_check_utf8?: () -> bool
+  @java_string_check_utf8: Integer?
+  # optional(9, :optimize_for, type: :enum)
+  def optimize_for: () -> Integer
+  def has_optimize_for?: () -> bool
+  @optimize_for: Integer?
+  # optional(11, :go_package, type: :string)
+  def go_package: () -> String
+  def has_go_package?: () -> bool
+  @go_package: String?
+  # optional(16, :cc_generic_services, type: :bool)
+  def cc_generic_services: () -> Integer
+  def has_cc_generic_services?: () -> bool
+  @cc_generic_services: Integer?
+  # optional(17, :java_generic_services, type: :bool)
+  def java_generic_services: () -> Integer
+  def has_java_generic_services?: () -> bool
+  @java_generic_services: Integer?
+  # optional(18, :py_generic_services, type: :bool)
+  def py_generic_services: () -> Integer
+  def has_py_generic_services?: () -> bool
+  @py_generic_services: Integer?
+  # optional(23, :deprecated, type: :bool)
+  def deprecated: () -> Integer
+  def has_deprecated?: () -> bool
+  @deprecated: Integer?
+  # optional(31, :cc_enable_arenas, type: :bool)
+  def cc_enable_arenas: () -> Integer
+  def has_cc_enable_arenas?: () -> bool
+  @cc_enable_arenas: Integer?
+  # optional(36, :objc_class_prefix, type: :string)
+  def objc_class_prefix: () -> String
+  def has_objc_class_prefix?: () -> bool
+  @objc_class_prefix: String?
+  # optional(37, :csharp_namespace, type: :string)
+  def csharp_namespace: () -> String
+  def has_csharp_namespace?: () -> bool
+  @csharp_namespace: String?
+  # optional(39, :swift_prefix, type: :string)
+  def swift_prefix: () -> String
+  def has_swift_prefix?: () -> bool
+  @swift_prefix: String?
+  # optional(40, :php_class_prefix, type: :string)
+  def php_class_prefix: () -> String
+  def has_php_class_prefix?: () -> bool
+  @php_class_prefix: String?
+  # optional(41, :php_namespace, type: :string)
+  def php_namespace: () -> String
+  def has_php_namespace?: () -> bool
+  @php_namespace: String?
+  # optional(44, :php_metadata_namespace, type: :string)
+  def php_metadata_namespace: () -> String
+  def has_php_metadata_namespace?: () -> bool
+  @php_metadata_namespace: String?
+  # optional(45, :ruby_package, type: :string)
+  def ruby_package: () -> String
+  def has_ruby_package?: () -> bool
+  @ruby_package: String?
+  # optional(50, :features, type: :message)
+  def features: () -> Google::Protobuf::FeatureSet
+  def has_features?: () -> bool
+  @features: Google::Protobuf::FeatureSet?
+  # repeated(999, :uninterpreted_option, type: :message)
+  def uninterpreted_option: () -> Google::Protobuf::UninterpretedOption
+  def has_uninterpreted_option?: () -> bool
+  @uninterpreted_option: Google::Protobuf::UninterpretedOption?
+end
+module Google::Protobuf::FileOptions::OptimizeMode # /lib/google/protobuf/descriptor_pb.rb:714
+  SPEED: Integer
+  CODE_SIZE: Integer
+  LITE_RUNTIME: Integer
+end
+class Google::Protobuf::MessageOptions # /lib/google/protobuf/descriptor_pb.rb:860
+  def self.decode: (String string) -> Google::Protobuf::MessageOptions
+  # optional(1, :message_set_wire_format, type: :bool)
+  def message_set_wire_format: () -> Integer
+  def has_message_set_wire_format?: () -> bool
+  @message_set_wire_format: Integer?
+  # optional(2, :no_standard_descriptor_accessor, type: :bool)
+  def no_standard_descriptor_accessor: () -> Integer
+  def has_no_standard_descriptor_accessor?: () -> bool
+  @no_standard_descriptor_accessor: Integer?
+  # optional(3, :deprecated, type: :bool)
+  def deprecated: () -> Integer
+  def has_deprecated?: () -> bool
+  @deprecated: Integer?
+  # optional(7, :map_entry, type: :bool)
+  def map_entry: () -> Integer
+  def has_map_entry?: () -> bool
+  @map_entry: Integer?
+  # optional(11, :deprecated_legacy_json_field_conflicts, type: :bool)
+  def deprecated_legacy_json_field_conflicts: () -> Integer
+  def has_deprecated_legacy_json_field_conflicts?: () -> bool
+  @deprecated_legacy_json_field_conflicts: Integer?
+  # optional(12, :features, type: :message)
+  def features: () -> Google::Protobuf::FeatureSet
+  def has_features?: () -> bool
+  @features: Google::Protobuf::FeatureSet?
+  # repeated(999, :uninterpreted_option, type: :message)
+  def uninterpreted_option: () -> Google::Protobuf::UninterpretedOption
+  def has_uninterpreted_option?: () -> bool
+  @uninterpreted_option: Google::Protobuf::UninterpretedOption?
+end
+class Google::Protobuf::FieldOptions # /lib/google/protobuf/descriptor_pb.rb:966
+  def self.decode: (String string) -> Google::Protobuf::FieldOptions
+  # optional(1, :ctype, type: :enum)
+  def ctype: () -> Integer
+  def has_ctype?: () -> bool
+  @ctype: Integer?
+  # optional(2, :packed, type: :bool)
+  def packed: () -> Integer
+  def has_packed?: () -> bool
+  @packed: Integer?
+  # optional(6, :jstype, type: :enum)
+  def jstype: () -> Integer
+  def has_jstype?: () -> bool
+  @jstype: Integer?
+  # optional(5, :lazy, type: :bool)
+  def lazy: () -> Integer
+  def has_lazy?: () -> bool
+  @lazy: Integer?
+  # optional(15, :unverified_lazy, type: :bool)
+  def unverified_lazy: () -> Integer
+  def has_unverified_lazy?: () -> bool
+  @unverified_lazy: Integer?
+  # optional(3, :deprecated, type: :bool)
+  def deprecated: () -> Integer
+  def has_deprecated?: () -> bool
+  @deprecated: Integer?
+  # optional(10, :weak, type: :bool)
+  def weak: () -> Integer
+  def has_weak?: () -> bool
+  @weak: Integer?
+  # optional(16, :debug_redact, type: :bool)
+  def debug_redact: () -> Integer
+  def has_debug_redact?: () -> bool
+  @debug_redact: Integer?
+  # optional(17, :retention, type: :enum)
+  def retention: () -> Integer
+  def has_retention?: () -> bool
+  @retention: Integer?
+  # repeated(19, :targets, type: :enum)
+  def targets: () -> Integer
+  def has_targets?: () -> bool
+  @targets: Integer?
+  # repeated(20, :edition_defaults, type: :message)
+  def edition_defaults: () -> Google::Protobuf::FieldOptions::EditionDefault
+  def has_edition_defaults?: () -> bool
+  @edition_defaults: Google::Protobuf::FieldOptions::EditionDefault?
+  # optional(21, :features, type: :message)
+  def features: () -> Google::Protobuf::FeatureSet
+  def has_features?: () -> bool
+  @features: Google::Protobuf::FeatureSet?
+  # optional(22, :feature_support, type: :message)
+  def feature_support: () -> Google::Protobuf::FieldOptions::FeatureSupport
+  def has_feature_support?: () -> bool
+  @feature_support: Google::Protobuf::FieldOptions::FeatureSupport?
+  # repeated(999, :uninterpreted_option, type: :message)
+  def uninterpreted_option: () -> Google::Protobuf::UninterpretedOption
+  def has_uninterpreted_option?: () -> bool
+  @uninterpreted_option: Google::Protobuf::UninterpretedOption?
+end
+module Google::Protobuf::FieldOptions::CType # /lib/google/protobuf/descriptor_pb.rb:985
+  STRING: Integer
+  CORD: Integer
+  STRING_PIECE: Integer
+end
+module Google::Protobuf::FieldOptions::JSType # /lib/google/protobuf/descriptor_pb.rb:1028
+  JS_NORMAL: Integer
+  JS_STRING: Integer
+  JS_NUMBER: Integer
+end
+module Google::Protobuf::FieldOptions::OptionRetention # /lib/google/protobuf/descriptor_pb.rb:1093
+  RETENTION_UNKNOWN: Integer
+  RETENTION_RUNTIME: Integer
+  RETENTION_SOURCE: Integer
+end
+module Google::Protobuf::FieldOptions::OptionTargetType # /lib/google/protobuf/descriptor_pb.rb:1113
+  TARGET_TYPE_UNKNOWN: Integer
+  TARGET_TYPE_FILE: Integer
+  TARGET_TYPE_EXTENSION_RANGE: Integer
+  TARGET_TYPE_MESSAGE: Integer
+  TARGET_TYPE_FIELD: Integer
+  TARGET_TYPE_ONEOF: Integer
+  TARGET_TYPE_ENUM: Integer
+  TARGET_TYPE_ENUM_ENTRY: Integer
+  TARGET_TYPE_SERVICE: Integer
+  TARGET_TYPE_METHOD: Integer
+end
+class Google::Protobuf::FieldOptions::EditionDefault # /lib/google/protobuf/descriptor_pb.rb:1136
+  def self.decode: (String string) -> Google::Protobuf::FieldOptions::EditionDefault
+  # optional(3, :edition, type: :enum)
+  def edition: () -> Integer
+  def has_edition?: () -> bool
+  @edition: Integer?
+  # optional(2, :value, type: :string)
+  def value: () -> String
+  def has_value?: () -> bool
+  @value: String?
+end
+class Google::Protobuf::FieldOptions::FeatureSupport # /lib/google/protobuf/descriptor_pb.rb:1165
+  def self.decode: (String string) -> Google::Protobuf::FieldOptions::FeatureSupport
+  # optional(1, :edition_introduced, type: :enum)
+  def edition_introduced: () -> Integer
+  def has_edition_introduced?: () -> bool
+  @edition_introduced: Integer?
+  # optional(2, :edition_deprecated, type: :enum)
+  def edition_deprecated: () -> Integer
+  def has_edition_deprecated?: () -> bool
+  @edition_deprecated: Integer?
+  # optional(3, :deprecation_warning, type: :string)
+  def deprecation_warning: () -> String
+  def has_deprecation_warning?: () -> bool
+  @deprecation_warning: String?
+  # optional(4, :edition_removed, type: :enum)
+  def edition_removed: () -> Integer
+  def has_edition_removed?: () -> bool
+  @edition_removed: Integer?
+end
+class Google::Protobuf::OneofOptions # /lib/google/protobuf/descriptor_pb.rb:1229
+  def self.decode: (String string) -> Google::Protobuf::OneofOptions
+  # optional(1, :features, type: :message)
+  def features: () -> Google::Protobuf::FeatureSet
+  def has_features?: () -> bool
+  @features: Google::Protobuf::FeatureSet?
+  # repeated(999, :uninterpreted_option, type: :message)
+  def uninterpreted_option: () -> Google::Protobuf::UninterpretedOption
+  def has_uninterpreted_option?: () -> bool
+  @uninterpreted_option: Google::Protobuf::UninterpretedOption?
+end
+class Google::Protobuf::EnumOptions # /lib/google/protobuf/descriptor_pb.rb:1251
+  def self.decode: (String string) -> Google::Protobuf::EnumOptions
+  # optional(2, :allow_alias, type: :bool)
+  def allow_alias: () -> Integer
+  def has_allow_alias?: () -> bool
+  @allow_alias: Integer?
+  # optional(3, :deprecated, type: :bool)
+  def deprecated: () -> Integer
+  def has_deprecated?: () -> bool
+  @deprecated: Integer?
+  # optional(6, :deprecated_legacy_json_field_conflicts, type: :bool)
+  def deprecated_legacy_json_field_conflicts: () -> Integer
+  def has_deprecated_legacy_json_field_conflicts?: () -> bool
+  @deprecated_legacy_json_field_conflicts: Integer?
+  # optional(7, :features, type: :message)
+  def features: () -> Google::Protobuf::FeatureSet
+  def has_features?: () -> bool
+  @features: Google::Protobuf::FeatureSet?
+  # repeated(999, :uninterpreted_option, type: :message)
+  def uninterpreted_option: () -> Google::Protobuf::UninterpretedOption
+  def has_uninterpreted_option?: () -> bool
+  @uninterpreted_option: Google::Protobuf::UninterpretedOption?
+end
+class Google::Protobuf::EnumValueOptions # /lib/google/protobuf/descriptor_pb.rb:1295
+  def self.decode: (String string) -> Google::Protobuf::EnumValueOptions
+  # optional(1, :deprecated, type: :bool)
+  def deprecated: () -> Integer
+  def has_deprecated?: () -> bool
+  @deprecated: Integer?
+  # optional(2, :features, type: :message)
+  def features: () -> Google::Protobuf::FeatureSet
+  def has_features?: () -> bool
+  @features: Google::Protobuf::FeatureSet?
+  # optional(3, :debug_redact, type: :bool)
+  def debug_redact: () -> Integer
+  def has_debug_redact?: () -> bool
+  @debug_redact: Integer?
+  # optional(4, :feature_support, type: :message)
+  def feature_support: () -> Google::Protobuf::FieldOptions::FeatureSupport
+  def has_feature_support?: () -> bool
+  @feature_support: Google::Protobuf::FieldOptions::FeatureSupport?
+  # repeated(999, :uninterpreted_option, type: :message)
+  def uninterpreted_option: () -> Google::Protobuf::UninterpretedOption
+  def has_uninterpreted_option?: () -> bool
+  @uninterpreted_option: Google::Protobuf::UninterpretedOption?
+end
+class Google::Protobuf::ServiceOptions # /lib/google/protobuf/descriptor_pb.rb:1340
+  def self.decode: (String string) -> Google::Protobuf::ServiceOptions
+  # optional(34, :features, type: :message)
+  def features: () -> Google::Protobuf::FeatureSet
+  def has_features?: () -> bool
+  @features: Google::Protobuf::FeatureSet?
+  # optional(33, :deprecated, type: :bool)
+  def deprecated: () -> Integer
+  def has_deprecated?: () -> bool
+  @deprecated: Integer?
+  # repeated(999, :uninterpreted_option, type: :message)
+  def uninterpreted_option: () -> Google::Protobuf::UninterpretedOption
+  def has_uninterpreted_option?: () -> bool
+  @uninterpreted_option: Google::Protobuf::UninterpretedOption?
+end
+class Google::Protobuf::MethodOptions # /lib/google/protobuf/descriptor_pb.rb:1372
+  def self.decode: (String string) -> Google::Protobuf::MethodOptions
+  # optional(33, :deprecated, type: :bool)
+  def deprecated: () -> Integer
+  def has_deprecated?: () -> bool
+  @deprecated: Integer?
+  # optional(34, :idempotency_level, type: :enum)
+  def idempotency_level: () -> Integer
+  def has_idempotency_level?: () -> bool
+  @idempotency_level: Integer?
+  # optional(35, :features, type: :message)
+  def features: () -> Google::Protobuf::FeatureSet
+  def has_features?: () -> bool
+  @features: Google::Protobuf::FeatureSet?
+  # repeated(999, :uninterpreted_option, type: :message)
+  def uninterpreted_option: () -> Google::Protobuf::UninterpretedOption
+  def has_uninterpreted_option?: () -> bool
+  @uninterpreted_option: Google::Protobuf::UninterpretedOption?
+end
+module Google::Protobuf::MethodOptions::IdempotencyLevel # /lib/google/protobuf/descriptor_pb.rb:1390
+  IDEMPOTENCY_UNKNOWN: Integer
+  NO_SIDE_EFFECTS: Integer
+  IDEMPOTENT: Integer
+end
+class Google::Protobuf::UninterpretedOption # /lib/google/protobuf/descriptor_pb.rb:1434
+  def self.decode: (String string) -> Google::Protobuf::UninterpretedOption
+  # repeated(2, :name, type: :message)
+  def name: () -> Google::Protobuf::UninterpretedOption::NamePart
+  def has_name?: () -> bool
+  @name: Google::Protobuf::UninterpretedOption::NamePart?
+  # optional(3, :identifier_value, type: :string)
+  def identifier_value: () -> String
+  def has_identifier_value?: () -> bool
+  @identifier_value: String?
+  # optional(4, :positive_int_value, type: :uint64)
+  def positive_int_value: () -> Integer
+  def has_positive_int_value?: () -> bool
+  @positive_int_value: Integer?
+  # optional(5, :negative_int_value, type: :int64)
+  def negative_int_value: () -> Integer
+  def has_negative_int_value?: () -> bool
+  @negative_int_value: Integer?
+  # optional(6, :double_value, type: :double)
+  def double_value: () -> Float
+  def has_double_value?: () -> bool
+  @double_value: Float?
+  # optional(7, :string_value, type: :bytes)
+  def string_value: () -> String
+  def has_string_value?: () -> bool
+  @string_value: String?
+  # optional(8, :aggregate_value, type: :string)
+  def aggregate_value: () -> String
+  def has_aggregate_value?: () -> bool
+  @aggregate_value: String?
+end
+class Google::Protobuf::UninterpretedOption::NamePart # /lib/google/protobuf/descriptor_pb.rb:1444
+  def self.decode: (String string) -> Google::Protobuf::UninterpretedOption::NamePart
+  # required(1, :name_part, type: :string)
+  def name_part: () -> String
+  def has_name_part?: () -> bool
+  @name_part: String?
+  # required(2, :is_extension, type: :bool)
+  def is_extension: () -> Integer
+  def has_is_extension?: () -> bool
+  @is_extension: Integer?
+end
+class Google::Protobuf::FeatureSet # /lib/google/protobuf/descriptor_pb.rb:1493
+  def self.decode: (String string) -> Google::Protobuf::FeatureSet
+  # optional(1, :field_presence, type: :enum)
+  def field_presence: () -> Integer
+  def has_field_presence?: () -> bool
+  @field_presence: Integer?
+  # optional(2, :enum_type, type: :enum)
+  def enum_type: () -> Integer
+  def has_enum_type?: () -> bool
+  @enum_type: Integer?
+  # optional(3, :repeated_field_encoding, type: :enum)
+  def repeated_field_encoding: () -> Integer
+  def has_repeated_field_encoding?: () -> bool
+  @repeated_field_encoding: Integer?
+  # optional(4, :utf8_validation, type: :enum)
+  def utf8_validation: () -> Integer
+  def has_utf8_validation?: () -> bool
+  @utf8_validation: Integer?
+  # optional(5, :message_encoding, type: :enum)
+  def message_encoding: () -> Integer
+  def has_message_encoding?: () -> bool
+  @message_encoding: Integer?
+  # optional(6, :json_format, type: :enum)
+  def json_format: () -> Integer
+  def has_json_format?: () -> bool
+  @json_format: Integer?
+end
+module Google::Protobuf::FeatureSet::FieldPresence # /lib/google/protobuf/descriptor_pb.rb:1498
+  FIELD_PRESENCE_UNKNOWN: Integer
+  EXPLICIT: Integer
+  IMPLICIT: Integer
+  LEGACY_REQUIRED: Integer
+end
+module Google::Protobuf::FeatureSet::EnumType # /lib/google/protobuf/descriptor_pb.rb:1516
+  ENUM_TYPE_UNKNOWN: Integer
+  OPEN: Integer
+  CLOSED: Integer
+end
+module Google::Protobuf::FeatureSet::RepeatedFieldEncoding # /lib/google/protobuf/descriptor_pb.rb:1533
+  REPEATED_FIELD_ENCODING_UNKNOWN: Integer
+  PACKED: Integer
+  EXPANDED: Integer
+end
+module Google::Protobuf::FeatureSet::Utf8Validation # /lib/google/protobuf/descriptor_pb.rb:1550
+  UTF8_VALIDATION_UNKNOWN: Integer
+  VERIFY: Integer
+  NONE: Integer
+end
+module Google::Protobuf::FeatureSet::MessageEncoding # /lib/google/protobuf/descriptor_pb.rb:1569
+  MESSAGE_ENCODING_UNKNOWN: Integer
+  LENGTH_PREFIXED: Integer
+  DELIMITED: Integer
+end
+module Google::Protobuf::FeatureSet::JsonFormat # /lib/google/protobuf/descriptor_pb.rb:1586
+  JSON_FORMAT_UNKNOWN: Integer
+  ALLOW: Integer
+  LEGACY_BEST_EFFORT: Integer
+end
+class Google::Protobuf::FeatureSetDefaults # /lib/google/protobuf/descriptor_pb.rb:1611
+  def self.decode: (String string) -> Google::Protobuf::FeatureSetDefaults
+  # repeated(1, :defaults, type: :message)
+  def defaults: () -> Google::Protobuf::FeatureSetDefaults::FeatureSetEditionDefault
+  def has_defaults?: () -> bool
+  @defaults: Google::Protobuf::FeatureSetDefaults::FeatureSetEditionDefault?
+  # optional(4, :minimum_edition, type: :enum)
+  def minimum_edition: () -> Integer
+  def has_minimum_edition?: () -> bool
+  @minimum_edition: Integer?
+  # optional(5, :maximum_edition, type: :enum)
+  def maximum_edition: () -> Integer
+  def has_maximum_edition?: () -> bool
+  @maximum_edition: Integer?
+end
+class Google::Protobuf::FeatureSetDefaults::FeatureSetEditionDefault # /lib/google/protobuf/descriptor_pb.rb:1620
+  def self.decode: (String string) -> Google::Protobuf::FeatureSetDefaults::FeatureSetEditionDefault
+  # optional(3, :edition, type: :enum)
+  def edition: () -> Integer
+  def has_edition?: () -> bool
+  @edition: Integer?
+  # optional(4, :overridable_features, type: :message)
+  def overridable_features: () -> Google::Protobuf::FeatureSet
+  def has_overridable_features?: () -> bool
+  @overridable_features: Google::Protobuf::FeatureSet?
+  # optional(5, :fixed_features, type: :message)
+  def fixed_features: () -> Google::Protobuf::FeatureSet
+  def has_fixed_features?: () -> bool
+  @fixed_features: Google::Protobuf::FeatureSet?
+end
+class Google::Protobuf::SourceCodeInfo # /lib/google/protobuf/descriptor_pb.rb:1685
+  def self.decode: (String string) -> Google::Protobuf::SourceCodeInfo
+  # repeated(1, :location, type: :message)
+  def location: () -> Google::Protobuf::SourceCodeInfo::Location
+  def has_location?: () -> bool
+  @location: Google::Protobuf::SourceCodeInfo::Location?
+end
+class Google::Protobuf::SourceCodeInfo::Location # /lib/google/protobuf/descriptor_pb.rb:1739
+  def self.decode: (String string) -> Google::Protobuf::SourceCodeInfo::Location
+  # repeated(1, :path, type: :int32)
+  def path: () -> Integer
+  def has_path?: () -> bool
+  @path: Integer?
+  # repeated(2, :span, type: :int32)
+  def span: () -> Integer
+  def has_span?: () -> bool
+  @span: Integer?
+  # optional(3, :leading_comments, type: :string)
+  def leading_comments: () -> String
+  def has_leading_comments?: () -> bool
+  @leading_comments: String?
+  # optional(4, :trailing_comments, type: :string)
+  def trailing_comments: () -> String
+  def has_trailing_comments?: () -> bool
+  @trailing_comments: String?
+  # repeated(6, :leading_detached_comments, type: :string)
+  def leading_detached_comments: () -> String
+  def has_leading_detached_comments?: () -> bool
+  @leading_detached_comments: String?
+end
+class Google::Protobuf::GeneratedCodeInfo # /lib/google/protobuf/descriptor_pb.rb:1845
+  def self.decode: (String string) -> Google::Protobuf::GeneratedCodeInfo
+  # repeated(1, :annotation, type: :message)
+  def annotation: () -> Google::Protobuf::GeneratedCodeInfo::Annotation
+  def has_annotation?: () -> bool
+  @annotation: Google::Protobuf::GeneratedCodeInfo::Annotation?
+end
+class Google::Protobuf::GeneratedCodeInfo::Annotation # /lib/google/protobuf/descriptor_pb.rb:1858
+  def self.decode: (String string) -> Google::Protobuf::GeneratedCodeInfo::Annotation
+  # repeated(1, :path, type: :int32)
+  def path: () -> Integer
+  def has_path?: () -> bool
+  @path: Integer?
+  # optional(2, :source_file, type: :string)
+  def source_file: () -> String
+  def has_source_file?: () -> bool
+  @source_file: String?
+  # optional(3, :begin, type: :int32)
+  def begin: () -> Integer
+  def has_begin?: () -> bool
+  @begin: Integer?
+  # optional(4, :end, type: :int32)
+  def end: () -> Integer
+  def has_end?: () -> bool
+  @end: Integer?
+  # optional(5, :semantic, type: :enum)
+  def semantic: () -> Integer
+  def has_semantic?: () -> bool
+  @semantic: Integer?
+end
+module Google::Protobuf::GeneratedCodeInfo::Annotation::Semantic # /lib/google/protobuf/descriptor_pb.rb:1877
+  NONE: Integer
+  SET: Integer
+  ALIAS: Integer
+end

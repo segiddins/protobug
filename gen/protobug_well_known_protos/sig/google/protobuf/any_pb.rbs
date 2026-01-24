@@ -1,0 +1,11 @@
+class Google::Protobuf::Any # /lib/google/protobuf/any_pb.rb:135
+  def self.decode: (String string) -> Google::Protobuf::Any
+  # optional(1, :type_url, type: :string)
+  def type_url: () -> String
+  def has_type_url?: () -> bool
+  @type_url: String?
+  # optional(2, :value, type: :bytes)
+  def value: () -> String
+  def has_value?: () -> bool
+  @value: String?
+end

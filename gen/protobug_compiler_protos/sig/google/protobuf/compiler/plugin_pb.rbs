@@ -1,0 +1,89 @@
+class Google::Protobuf::Compiler::Version # /lib/google/protobuf/compiler/plugin_pb.rb:42
+  def self.decode: (String string) -> Google::Protobuf::Compiler::Version
+  # optional(1, :major, type: :int32)
+  def major: () -> Integer
+  def has_major?: () -> bool
+  @major: Integer?
+  # optional(2, :minor, type: :int32)
+  def minor: () -> Integer
+  def has_minor?: () -> bool
+  @minor: Integer?
+  # optional(3, :patch, type: :int32)
+  def patch: () -> Integer
+  def has_patch?: () -> bool
+  @patch: Integer?
+  # optional(4, :suffix, type: :string)
+  def suffix: () -> String
+  def has_suffix?: () -> bool
+  @suffix: String?
+end
+class Google::Protobuf::Compiler::CodeGeneratorRequest # /lib/google/protobuf/compiler/plugin_pb.rb:56
+  def self.decode: (String string) -> Google::Protobuf::Compiler::CodeGeneratorRequest
+  # repeated(1, :file_to_generate, type: :string)
+  def file_to_generate: () -> String
+  def has_file_to_generate?: () -> bool
+  @file_to_generate: String?
+  # optional(2, :parameter, type: :string)
+  def parameter: () -> String
+  def has_parameter?: () -> bool
+  @parameter: String?
+  # repeated(15, :proto_file, type: :message)
+  def proto_file: () -> Google::Protobuf::FileDescriptorProto
+  def has_proto_file?: () -> bool
+  @proto_file: Google::Protobuf::FileDescriptorProto?
+  # repeated(17, :source_file_descriptors, type: :message)
+  def source_file_descriptors: () -> Google::Protobuf::FileDescriptorProto
+  def has_source_file_descriptors?: () -> bool
+  @source_file_descriptors: Google::Protobuf::FileDescriptorProto?
+  # optional(3, :compiler_version, type: :message)
+  def compiler_version: () -> Google::Protobuf::Compiler::Version
+  def has_compiler_version?: () -> bool
+  @compiler_version: Google::Protobuf::Compiler::Version?
+end
+class Google::Protobuf::Compiler::CodeGeneratorResponse # /lib/google/protobuf/compiler/plugin_pb.rb:119
+  def self.decode: (String string) -> Google::Protobuf::Compiler::CodeGeneratorResponse
+  # optional(1, :error, type: :string)
+  def error: () -> String
+  def has_error?: () -> bool
+  @error: String?
+  # optional(2, :supported_features, type: :uint64)
+  def supported_features: () -> Integer
+  def has_supported_features?: () -> bool
+  @supported_features: Integer?
+  # optional(3, :minimum_edition, type: :int32)
+  def minimum_edition: () -> Integer
+  def has_minimum_edition?: () -> bool
+  @minimum_edition: Integer?
+  # optional(4, :maximum_edition, type: :int32)
+  def maximum_edition: () -> Integer
+  def has_maximum_edition?: () -> bool
+  @maximum_edition: Integer?
+  # repeated(15, :file, type: :message)
+  def file: () -> Google::Protobuf::Compiler::CodeGeneratorResponse::File
+  def has_file?: () -> bool
+  @file: Google::Protobuf::Compiler::CodeGeneratorResponse::File?
+end
+module Google::Protobuf::Compiler::CodeGeneratorResponse::Feature # /lib/google/protobuf/compiler/plugin_pb.rb:142
+  FEATURE_NONE: Integer
+  FEATURE_PROTO3_OPTIONAL: Integer
+  FEATURE_SUPPORTS_EDITIONS: Integer
+end
+class Google::Protobuf::Compiler::CodeGeneratorResponse::File # /lib/google/protobuf/compiler/plugin_pb.rb:173
+  def self.decode: (String string) -> Google::Protobuf::Compiler::CodeGeneratorResponse::File
+  # optional(1, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # optional(2, :insertion_point, type: :string)
+  def insertion_point: () -> String
+  def has_insertion_point?: () -> bool
+  @insertion_point: String?
+  # optional(15, :content, type: :string)
+  def content: () -> String
+  def has_content?: () -> bool
+  @content: String?
+  # optional(16, :generated_code_info, type: :message)
+  def generated_code_info: () -> Google::Protobuf::GeneratedCodeInfo
+  def has_generated_code_info?: () -> bool
+  @generated_code_info: Google::Protobuf::GeneratedCodeInfo?
+end

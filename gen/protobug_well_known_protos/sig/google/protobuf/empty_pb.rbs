@@ -1,0 +1,3 @@
+class Google::Protobuf::Empty # /lib/google/protobuf/empty_pb.rb:58
+  def self.decode: (String string) -> Google::Protobuf::Empty
+end

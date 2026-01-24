@@ -30,28 +30,22 @@ module InTotoAttestation
             3,
             "materials",
             type: :message,
-            message_type: "in_toto_attestation.v1.ResourceDescriptor"
+            message_class: "InTotoAttestation::V1::ResourceDescriptor"
           )
           optional(
             4,
             "byproducts",
             type: :message,
-            message_type: "google.protobuf.Struct",
+            message_class: "Google::Protobuf::Struct",
             proto3_optional: false
           )
           optional(
             5,
             "environment",
             type: :message,
-            message_type: "google.protobuf.Struct",
+            message_class: "Google::Protobuf::Struct",
             proto3_optional: false
           )
-        end
-
-        def self.register_link_protos(registry)
-          InTotoAttestation::V1.register_resource_descriptor_protos(registry)
-          Google::Protobuf.register_struct_protos(registry)
-          registry.register(InTotoAttestation::Predicates::Link::V0::Link)
         end
       end
     end

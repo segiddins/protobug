@@ -64,7 +64,7 @@ module Google
         2,
         "fields",
         type: :message,
-        message_type: "google.protobuf.Field"
+        message_class: "Google::Protobuf::Field"
       )
       # The list of types appearing in `oneof` definitions in this type.
       repeated(3, "oneofs", type: :string)
@@ -73,14 +73,14 @@ module Google
         4,
         "options",
         type: :message,
-        message_type: "google.protobuf.Option"
+        message_class: "Google::Protobuf::Option"
       )
       # The source context.
       optional(
         5,
         "source_context",
         type: :message,
-        message_type: "google.protobuf.SourceContext",
+        message_class: "Google::Protobuf::SourceContext",
         json_name: "sourceContext",
         proto3_optional: false
       )
@@ -89,7 +89,7 @@ module Google
         6,
         "syntax",
         type: :enum,
-        enum_type: "google.protobuf.Syntax",
+        enum_class: "Google::Protobuf::Syntax",
         proto3_optional: false
       )
       # The source edition string, only valid when syntax is SYNTAX_EDITIONS.
@@ -103,65 +103,65 @@ module Google
       self.full_name = "google.protobuf.Field"
 
       # Basic field types.
-      class Kind
+      module Kind
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.Field.Kind"
 
         # Field type unknown.
-        TYPE_UNKNOWN = new("TYPE_UNKNOWN", 0).freeze
+        TYPE_UNKNOWN = register("TYPE_UNKNOWN", 0)
         # Field type double.
-        TYPE_DOUBLE = new("TYPE_DOUBLE", 1).freeze
+        TYPE_DOUBLE = register("TYPE_DOUBLE", 1)
         # Field type float.
-        TYPE_FLOAT = new("TYPE_FLOAT", 2).freeze
+        TYPE_FLOAT = register("TYPE_FLOAT", 2)
         # Field type int64.
-        TYPE_INT64 = new("TYPE_INT64", 3).freeze
+        TYPE_INT64 = register("TYPE_INT64", 3)
         # Field type uint64.
-        TYPE_UINT64 = new("TYPE_UINT64", 4).freeze
+        TYPE_UINT64 = register("TYPE_UINT64", 4)
         # Field type int32.
-        TYPE_INT32 = new("TYPE_INT32", 5).freeze
+        TYPE_INT32 = register("TYPE_INT32", 5)
         # Field type fixed64.
-        TYPE_FIXED64 = new("TYPE_FIXED64", 6).freeze
+        TYPE_FIXED64 = register("TYPE_FIXED64", 6)
         # Field type fixed32.
-        TYPE_FIXED32 = new("TYPE_FIXED32", 7).freeze
+        TYPE_FIXED32 = register("TYPE_FIXED32", 7)
         # Field type bool.
-        TYPE_BOOL = new("TYPE_BOOL", 8).freeze
+        TYPE_BOOL = register("TYPE_BOOL", 8)
         # Field type string.
-        TYPE_STRING = new("TYPE_STRING", 9).freeze
+        TYPE_STRING = register("TYPE_STRING", 9)
         # Field type group. Proto2 syntax only, and deprecated.
-        TYPE_GROUP = new("TYPE_GROUP", 10).freeze
+        TYPE_GROUP = register("TYPE_GROUP", 10)
         # Field type message.
-        TYPE_MESSAGE = new("TYPE_MESSAGE", 11).freeze
+        TYPE_MESSAGE = register("TYPE_MESSAGE", 11)
         # Field type bytes.
-        TYPE_BYTES = new("TYPE_BYTES", 12).freeze
+        TYPE_BYTES = register("TYPE_BYTES", 12)
         # Field type uint32.
-        TYPE_UINT32 = new("TYPE_UINT32", 13).freeze
+        TYPE_UINT32 = register("TYPE_UINT32", 13)
         # Field type enum.
-        TYPE_ENUM = new("TYPE_ENUM", 14).freeze
+        TYPE_ENUM = register("TYPE_ENUM", 14)
         # Field type sfixed32.
-        TYPE_SFIXED32 = new("TYPE_SFIXED32", 15).freeze
+        TYPE_SFIXED32 = register("TYPE_SFIXED32", 15)
         # Field type sfixed64.
-        TYPE_SFIXED64 = new("TYPE_SFIXED64", 16).freeze
+        TYPE_SFIXED64 = register("TYPE_SFIXED64", 16)
         # Field type sint32.
-        TYPE_SINT32 = new("TYPE_SINT32", 17).freeze
+        TYPE_SINT32 = register("TYPE_SINT32", 17)
         # Field type sint64.
-        TYPE_SINT64 = new("TYPE_SINT64", 18).freeze
+        TYPE_SINT64 = register("TYPE_SINT64", 18)
       end
 
       # Whether a field is optional, required, or repeated.
-      class Cardinality
+      module Cardinality
         extend Protobug::Enum
 
         self.full_name = "google.protobuf.Field.Cardinality"
 
         # For fields with unknown cardinality.
-        CARDINALITY_UNKNOWN = new("CARDINALITY_UNKNOWN", 0).freeze
+        UNKNOWN = register("CARDINALITY_UNKNOWN", 0)
         # For optional fields.
-        CARDINALITY_OPTIONAL = new("CARDINALITY_OPTIONAL", 1).freeze
+        OPTIONAL = register("CARDINALITY_OPTIONAL", 1)
         # For required fields. Proto2 syntax only.
-        CARDINALITY_REQUIRED = new("CARDINALITY_REQUIRED", 2).freeze
+        REQUIRED = register("CARDINALITY_REQUIRED", 2)
         # For repeated fields.
-        CARDINALITY_REPEATED = new("CARDINALITY_REPEATED", 3).freeze
+        REPEATED = register("CARDINALITY_REPEATED", 3)
       end
 
       # The field type.
@@ -169,7 +169,7 @@ module Google
         1,
         "kind",
         type: :enum,
-        enum_type: "google.protobuf.Field.Kind",
+        enum_class: "Google::Protobuf::Field::Kind",
         proto3_optional: false
       )
       # The field cardinality.
@@ -177,7 +177,7 @@ module Google
         2,
         "cardinality",
         type: :enum,
-        enum_type: "google.protobuf.Field.Cardinality",
+        enum_class: "Google::Protobuf::Field::Cardinality",
         proto3_optional: false
       )
       # The field number.
@@ -209,7 +209,7 @@ module Google
         9,
         "options",
         type: :message,
-        message_type: "google.protobuf.Option"
+        message_class: "Google::Protobuf::Option"
       )
       # The field JSON name.
       optional(
@@ -242,21 +242,21 @@ module Google
         2,
         "enumvalue",
         type: :message,
-        message_type: "google.protobuf.EnumValue"
+        message_class: "Google::Protobuf::EnumValue"
       )
       # Protocol buffer options.
       repeated(
         3,
         "options",
         type: :message,
-        message_type: "google.protobuf.Option"
+        message_class: "Google::Protobuf::Option"
       )
       # The source context.
       optional(
         4,
         "source_context",
         type: :message,
-        message_type: "google.protobuf.SourceContext",
+        message_class: "Google::Protobuf::SourceContext",
         json_name: "sourceContext",
         proto3_optional: false
       )
@@ -265,7 +265,7 @@ module Google
         5,
         "syntax",
         type: :enum,
-        enum_type: "google.protobuf.Syntax",
+        enum_class: "Google::Protobuf::Syntax",
         proto3_optional: false
       )
       # The source edition string, only valid when syntax is SYNTAX_EDITIONS.
@@ -287,7 +287,7 @@ module Google
         3,
         "options",
         type: :message,
-        message_type: "google.protobuf.Option"
+        message_class: "Google::Protobuf::Option"
       )
     end
 
@@ -311,36 +311,23 @@ module Google
         2,
         "value",
         type: :message,
-        message_type: "google.protobuf.Any",
+        message_class: "Google::Protobuf::Any",
         proto3_optional: false
       )
     end
 
     # The syntax in which a protocol buffer element is defined.
-    class Syntax
+    module Syntax
       extend Protobug::Enum
 
       self.full_name = "google.protobuf.Syntax"
 
       # Syntax `proto2`.
-      SYNTAX_PROTO2 = new("SYNTAX_PROTO2", 0).freeze
+      PROTO2 = register("SYNTAX_PROTO2", 0)
       # Syntax `proto3`.
-      SYNTAX_PROTO3 = new("SYNTAX_PROTO3", 1).freeze
+      PROTO3 = register("SYNTAX_PROTO3", 1)
       # Syntax `editions`.
-      SYNTAX_EDITIONS = new("SYNTAX_EDITIONS", 2).freeze
-    end
-
-    def self.register_type_protos(registry)
-      Google::Protobuf.register_any_protos(registry)
-      Google::Protobuf.register_source_context_protos(registry)
-      registry.register(Google::Protobuf::Type)
-      registry.register(Google::Protobuf::Field)
-      registry.register(Google::Protobuf::Field::Kind)
-      registry.register(Google::Protobuf::Field::Cardinality)
-      registry.register(Google::Protobuf::Enum)
-      registry.register(Google::Protobuf::EnumValue)
-      registry.register(Google::Protobuf::Option)
-      registry.register(Google::Protobuf::Syntax)
+      EDITIONS = register("SYNTAX_EDITIONS", 2)
     end
   end
 end

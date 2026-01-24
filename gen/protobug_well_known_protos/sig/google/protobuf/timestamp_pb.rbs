@@ -1,0 +1,11 @@
+class Google::Protobuf::Timestamp # /lib/google/protobuf/timestamp_pb.rb:140
+  def self.decode: (String string) -> Google::Protobuf::Timestamp
+  # optional(1, :seconds, type: :int64)
+  def seconds: () -> Integer
+  def has_seconds?: () -> bool
+  @seconds: Integer?
+  # optional(2, :nanos, type: :int32)
+  def nanos: () -> Integer
+  def has_nanos?: () -> bool
+  @nanos: Integer?
+end

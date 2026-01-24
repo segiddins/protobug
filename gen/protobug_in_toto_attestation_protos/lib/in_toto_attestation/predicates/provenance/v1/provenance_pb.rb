@@ -31,8 +31,8 @@ module InTotoAttestation
             1,
             "build_definition",
             type: :message,
-            message_type:
-            "in_toto_attestation.predicates.provenance.v1.BuildDefinition",
+            message_class:
+            "InTotoAttestation::Predicates::Provenance::V1::BuildDefinition",
             json_name: "buildDefinition",
             proto3_optional: false
           )
@@ -40,8 +40,8 @@ module InTotoAttestation
             2,
             "run_details",
             type: :message,
-            message_type:
-            "in_toto_attestation.predicates.provenance.v1.RunDetails",
+            message_class:
+            "InTotoAttestation::Predicates::Provenance::V1::RunDetails",
             json_name: "runDetails",
             proto3_optional: false
           )
@@ -63,7 +63,7 @@ module InTotoAttestation
             2,
             "external_parameters",
             type: :message,
-            message_type: "google.protobuf.Struct",
+            message_class: "Google::Protobuf::Struct",
             json_name: "externalParameters",
             proto3_optional: false
           )
@@ -71,7 +71,7 @@ module InTotoAttestation
             3,
             "internal_parameters",
             type: :message,
-            message_type: "google.protobuf.Struct",
+            message_class: "Google::Protobuf::Struct",
             json_name: "internalParameters",
             proto3_optional: false
           )
@@ -79,7 +79,7 @@ module InTotoAttestation
             4,
             "resolved_dependencies",
             type: :message,
-            message_type: "in_toto_attestation.v1.ResourceDescriptor",
+            message_class: "InTotoAttestation::V1::ResourceDescriptor",
             json_name: "resolvedDependencies"
           )
         end
@@ -93,23 +93,23 @@ module InTotoAttestation
             1,
             "builder",
             type: :message,
-            message_type:
-            "in_toto_attestation.predicates.provenance.v1.Builder",
+            message_class:
+            "InTotoAttestation::Predicates::Provenance::V1::Builder",
             proto3_optional: false
           )
           optional(
             2,
             "metadata",
             type: :message,
-            message_type:
-            "in_toto_attestation.predicates.provenance.v1.BuildMetadata",
+            message_class:
+            "InTotoAttestation::Predicates::Provenance::V1::BuildMetadata",
             proto3_optional: false
           )
           repeated(
             3,
             "byproducts",
             type: :message,
-            message_type: "in_toto_attestation.v1.ResourceDescriptor"
+            message_class: "InTotoAttestation::V1::ResourceDescriptor"
           )
         end
 
@@ -124,7 +124,7 @@ module InTotoAttestation
             3,
             "builder_dependencies",
             type: :message,
-            message_type: "in_toto_attestation.v1.ResourceDescriptor",
+            message_class: "InTotoAttestation::V1::ResourceDescriptor",
             json_name: "builderDependencies"
           )
         end
@@ -145,7 +145,7 @@ module InTotoAttestation
             2,
             "started_on",
             type: :message,
-            message_type: "google.protobuf.Timestamp",
+            message_class: "Google::Protobuf::Timestamp",
             json_name: "startedOn",
             proto3_optional: false
           )
@@ -153,30 +153,9 @@ module InTotoAttestation
             3,
             "finished_on",
             type: :message,
-            message_type: "google.protobuf.Timestamp",
+            message_class: "Google::Protobuf::Timestamp",
             json_name: "finishedOn",
             proto3_optional: false
-          )
-        end
-
-        def self.register_provenance_protos(registry)
-          InTotoAttestation::V1.register_resource_descriptor_protos(registry)
-          Google::Protobuf.register_struct_protos(registry)
-          Google::Protobuf.register_timestamp_protos(registry)
-          registry.register(
-            InTotoAttestation::Predicates::Provenance::V1::Provenance
-          )
-          registry.register(
-            InTotoAttestation::Predicates::Provenance::V1::BuildDefinition
-          )
-          registry.register(
-            InTotoAttestation::Predicates::Provenance::V1::RunDetails
-          )
-          registry.register(
-            InTotoAttestation::Predicates::Provenance::V1::Builder
-          )
-          registry.register(
-            InTotoAttestation::Predicates::Provenance::V1::BuildMetadata
           )
         end
       end

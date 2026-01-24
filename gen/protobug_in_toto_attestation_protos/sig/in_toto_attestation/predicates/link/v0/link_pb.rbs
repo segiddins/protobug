@@ -1,0 +1,23 @@
+class InTotoAttestation::Predicates::Link::V0::Link # /lib/in_toto_attestation/predicates/link/v0/link_pb.rb:22
+  def self.decode: (String string) -> InTotoAttestation::Predicates::Link::V0::Link
+  # optional(1, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # repeated(2, :command, type: :string)
+  def command: () -> String
+  def has_command?: () -> bool
+  @command: String?
+  # repeated(3, :materials, type: :message)
+  def materials: () -> InTotoAttestation::V1::ResourceDescriptor
+  def has_materials?: () -> bool
+  @materials: InTotoAttestation::V1::ResourceDescriptor?
+  # optional(4, :byproducts, type: :message)
+  def byproducts: () -> Google::Protobuf::Struct
+  def has_byproducts?: () -> bool
+  @byproducts: Google::Protobuf::Struct?
+  # optional(5, :environment, type: :message)
+  def environment: () -> Google::Protobuf::Struct
+  def has_environment?: () -> bool
+  @environment: Google::Protobuf::Struct?
+end

@@ -41,7 +41,6 @@ namespace :compiler do
           break
           case
           defined?
-          do
           else
           elsif
           end
@@ -101,7 +100,7 @@ namespace :compiler do
                   parameters.each do |param|
                     param = "*#{param}" if group[:variadic]
                     c.identifier(param)
-                    c.identifier("&blk")
+                    c.identifier("&")
                   end
                 end.block do |defn|
                   defn.identifier("append").identifier("Group").dot("new").call do |s|
@@ -110,7 +109,7 @@ namespace :compiler do
                       if parameters.empty?
                         items.literal([])
                       elsif group[:variadic]
-                        items.identifier(parameters.first)
+                        items.identifier(parameters.first) unless parameters.first == "items"
                       else
                         items.index do |index|
                           parameters.each do |param|
@@ -124,7 +123,7 @@ namespace :compiler do
 
                       s.identifier("#{key}:").literal(value)
                     end
-                  end.dot("tap").call { |c| c.identifier("&blk") }
+                  end.dot("tap").call { |c| c.identifier("&") }
                 end
                 first = false
               end

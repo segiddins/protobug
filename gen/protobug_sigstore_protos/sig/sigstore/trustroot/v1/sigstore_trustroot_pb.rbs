@@ -1,0 +1,103 @@
+class Sigstore::TrustRoot::V1::TransparencyLogInstance # /lib/sigstore/trustroot/v1/sigstore_trustroot_pb.rb:44
+  def self.decode: (String string) -> Sigstore::TrustRoot::V1::TransparencyLogInstance
+  # optional(1, :base_url, type: :string)
+  def base_url: () -> String
+  def has_base_url?: () -> bool
+  @base_url: String?
+  # optional(2, :hash_algorithm, type: :enum)
+  def hash_algorithm: () -> Integer
+  def has_hash_algorithm?: () -> bool
+  @hash_algorithm: Integer?
+  # optional(3, :public_key, type: :message)
+  def public_key: () -> Sigstore::Common::V1::PublicKey
+  def has_public_key?: () -> bool
+  @public_key: Sigstore::Common::V1::PublicKey?
+  # optional(4, :log_id, type: :message)
+  def log_id: () -> Sigstore::Common::V1::LogId
+  def has_log_id?: () -> bool
+  @log_id: Sigstore::Common::V1::LogId?
+  # optional(5, :checkpoint_key_id, type: :message)
+  def checkpoint_key_id: () -> Sigstore::Common::V1::LogId
+  def has_checkpoint_key_id?: () -> bool
+  @checkpoint_key_id: Sigstore::Common::V1::LogId?
+end
+class Sigstore::TrustRoot::V1::CertificateAuthority # /lib/sigstore/trustroot/v1/sigstore_trustroot_pb.rb:116
+  def self.decode: (String string) -> Sigstore::TrustRoot::V1::CertificateAuthority
+  # optional(1, :subject, type: :message)
+  def subject: () -> Sigstore::Common::V1::DistinguishedName
+  def has_subject?: () -> bool
+  @subject: Sigstore::Common::V1::DistinguishedName?
+  # optional(2, :uri, type: :string)
+  def uri: () -> String
+  def has_uri?: () -> bool
+  @uri: String?
+  # optional(3, :cert_chain, type: :message)
+  def cert_chain: () -> Sigstore::Common::V1::X509CertificateChain
+  def has_cert_chain?: () -> bool
+  @cert_chain: Sigstore::Common::V1::X509CertificateChain?
+  # optional(4, :valid_for, type: :message)
+  def valid_for: () -> Sigstore::Common::V1::TimeRange
+  def has_valid_for?: () -> bool
+  @valid_for: Sigstore::Common::V1::TimeRange?
+end
+class Sigstore::TrustRoot::V1::TrustedRoot # /lib/sigstore/trustroot/v1/sigstore_trustroot_pb.rb:195
+  def self.decode: (String string) -> Sigstore::TrustRoot::V1::TrustedRoot
+  # optional(1, :media_type, type: :string)
+  def media_type: () -> String
+  def has_media_type?: () -> bool
+  @media_type: String?
+  # repeated(2, :tlogs, type: :message)
+  def tlogs: () -> Sigstore::TrustRoot::V1::TransparencyLogInstance
+  def has_tlogs?: () -> bool
+  @tlogs: Sigstore::TrustRoot::V1::TransparencyLogInstance?
+  # repeated(3, :certificate_authorities, type: :message)
+  def certificate_authorities: () -> Sigstore::TrustRoot::V1::CertificateAuthority
+  def has_certificate_authorities?: () -> bool
+  @certificate_authorities: Sigstore::TrustRoot::V1::CertificateAuthority?
+  # repeated(4, :ctlogs, type: :message)
+  def ctlogs: () -> Sigstore::TrustRoot::V1::TransparencyLogInstance
+  def has_ctlogs?: () -> bool
+  @ctlogs: Sigstore::TrustRoot::V1::TransparencyLogInstance?
+  # repeated(5, :timestamp_authorities, type: :message)
+  def timestamp_authorities: () -> Sigstore::TrustRoot::V1::CertificateAuthority
+  def has_timestamp_authorities?: () -> bool
+  @timestamp_authorities: Sigstore::TrustRoot::V1::CertificateAuthority?
+end
+class Sigstore::TrustRoot::V1::SigningConfig # /lib/sigstore/trustroot/v1/sigstore_trustroot_pb.rb:254
+  def self.decode: (String string) -> Sigstore::TrustRoot::V1::SigningConfig
+  # optional(5, :media_type, type: :string)
+  def media_type: () -> String
+  def has_media_type?: () -> bool
+  @media_type: String?
+  # optional(1, :ca_url, type: :string)
+  def ca_url: () -> String
+  def has_ca_url?: () -> bool
+  @ca_url: String?
+  # optional(2, :oidc_url, type: :string)
+  def oidc_url: () -> String
+  def has_oidc_url?: () -> bool
+  @oidc_url: String?
+  # repeated(3, :tlog_urls, type: :string)
+  def tlog_urls: () -> String
+  def has_tlog_urls?: () -> bool
+  @tlog_urls: String?
+  # repeated(4, :tsa_urls, type: :string)
+  def tsa_urls: () -> String
+  def has_tsa_urls?: () -> bool
+  @tsa_urls: String?
+end
+class Sigstore::TrustRoot::V1::ClientTrustConfig # /lib/sigstore/trustroot/v1/sigstore_trustroot_pb.rb:310
+  def self.decode: (String string) -> Sigstore::TrustRoot::V1::ClientTrustConfig
+  # optional(1, :media_type, type: :string)
+  def media_type: () -> String
+  def has_media_type?: () -> bool
+  @media_type: String?
+  # optional(2, :trusted_root, type: :message)
+  def trusted_root: () -> Sigstore::TrustRoot::V1::TrustedRoot
+  def has_trusted_root?: () -> bool
+  @trusted_root: Sigstore::TrustRoot::V1::TrustedRoot?
+  # optional(3, :signing_config, type: :message)
+  def signing_config: () -> Sigstore::TrustRoot::V1::SigningConfig
+  def has_signing_config?: () -> bool
+  @signing_config: Sigstore::TrustRoot::V1::SigningConfig?
+end

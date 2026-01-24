@@ -1,0 +1,107 @@
+module Conformance::WireFormat # /lib/conformance/conformance_pb.rb:41
+  UNSPECIFIED: Integer
+  PROTOBUF: Integer
+  JSON: Integer
+  JSPB: Integer
+  TEXT_FORMAT: Integer
+end
+module Conformance::TestCategory # /lib/conformance/conformance_pb.rb:56
+  UNSPECIFIED_TEST: Integer
+  BINARY_TEST: Integer
+  JSON_TEST: Integer
+  JSON_IGNORE_UNKNOWN_PARSING_TEST: Integer
+  JSPB_TEST: Integer
+  TEXT_FORMAT_TEST: Integer
+end
+class Conformance::FailureSet # /lib/conformance/conformance_pb.rb:84
+  def self.decode: (String string) -> Conformance::FailureSet
+  # repeated(1, :failure, type: :string)
+  def failure: () -> String
+  def has_failure?: () -> bool
+  @failure: String?
+end
+class Conformance::ConformanceRequest # /lib/conformance/conformance_pb.rb:97
+  def self.decode: (String string) -> Conformance::ConformanceRequest
+  # optional(1, :protobuf_payload, type: :bytes)
+  def protobuf_payload: () -> String
+  def has_protobuf_payload?: () -> bool
+  @protobuf_payload: String?
+  # optional(2, :json_payload, type: :string)
+  def json_payload: () -> String
+  def has_json_payload?: () -> bool
+  @json_payload: String?
+  # optional(7, :jspb_payload, type: :string)
+  def jspb_payload: () -> String
+  def has_jspb_payload?: () -> bool
+  @jspb_payload: String?
+  # optional(8, :text_payload, type: :string)
+  def text_payload: () -> String
+  def has_text_payload?: () -> bool
+  @text_payload: String?
+  # optional(3, :requested_output_format, type: :enum)
+  def requested_output_format: () -> Integer
+  def has_requested_output_format?: () -> bool
+  @requested_output_format: Integer?
+  # optional(4, :message_type, type: :string)
+  def message_type: () -> String
+  def has_message_type?: () -> bool
+  @message_type: String?
+  # optional(5, :test_category, type: :enum)
+  def test_category: () -> Integer
+  def has_test_category?: () -> bool
+  @test_category: Integer?
+  # optional(6, :jspb_encoding_options, type: :message)
+  def jspb_encoding_options: () -> Conformance::JspbEncodingConfig
+  def has_jspb_encoding_options?: () -> bool
+  @jspb_encoding_options: Conformance::JspbEncodingConfig?
+  # optional(9, :print_unknown_fields, type: :bool)
+  def print_unknown_fields: () -> Integer
+  def has_print_unknown_fields?: () -> bool
+  @print_unknown_fields: Integer?
+end
+class Conformance::ConformanceResponse # /lib/conformance/conformance_pb.rb:193
+  def self.decode: (String string) -> Conformance::ConformanceResponse
+  # optional(1, :parse_error, type: :string)
+  def parse_error: () -> String
+  def has_parse_error?: () -> bool
+  @parse_error: String?
+  # optional(6, :serialize_error, type: :string)
+  def serialize_error: () -> String
+  def has_serialize_error?: () -> bool
+  @serialize_error: String?
+  # optional(9, :timeout_error, type: :string)
+  def timeout_error: () -> String
+  def has_timeout_error?: () -> bool
+  @timeout_error: String?
+  # optional(2, :runtime_error, type: :string)
+  def runtime_error: () -> String
+  def has_runtime_error?: () -> bool
+  @runtime_error: String?
+  # optional(3, :protobuf_payload, type: :bytes)
+  def protobuf_payload: () -> String
+  def has_protobuf_payload?: () -> bool
+  @protobuf_payload: String?
+  # optional(4, :json_payload, type: :string)
+  def json_payload: () -> String
+  def has_json_payload?: () -> bool
+  @json_payload: String?
+  # optional(5, :skipped, type: :string)
+  def skipped: () -> String
+  def has_skipped?: () -> bool
+  @skipped: String?
+  # optional(7, :jspb_payload, type: :string)
+  def jspb_payload: () -> String
+  def has_jspb_payload?: () -> bool
+  @jspb_payload: String?
+  # optional(8, :text_payload, type: :string)
+  def text_payload: () -> String
+  def has_text_payload?: () -> bool
+  @text_payload: String?
+end
+class Conformance::JspbEncodingConfig # /lib/conformance/conformance_pb.rb:297
+  def self.decode: (String string) -> Conformance::JspbEncodingConfig
+  # optional(1, :use_jspb_array_any_format, type: :bool)
+  def use_jspb_array_any_format: () -> Integer
+  def has_use_jspb_array_any_format?: () -> bool
+  @use_jspb_array_any_format: Integer?
+end

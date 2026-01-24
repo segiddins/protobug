@@ -1,0 +1,11 @@
+module Google::Api::FieldBehavior # /lib/google/api/field_behavior_pb.rb:63
+  FIELD_BEHAVIOR_UNSPECIFIED: Integer
+  OPTIONAL: Integer
+  REQUIRED: Integer
+  OUTPUT_ONLY: Integer
+  INPUT_ONLY: Integer
+  IMMUTABLE: Integer
+  UNORDERED_LIST: Integer
+  NON_EMPTY_DEFAULT: Integer
+  IDENTIFIER: Integer
+end

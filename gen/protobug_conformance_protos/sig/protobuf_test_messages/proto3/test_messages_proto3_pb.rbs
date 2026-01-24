@@ -1,0 +1,654 @@
+class ProtobufTestMessages::Proto3::TestAllTypesProto3 # /lib/protobuf_test_messages/proto3/test_messages_proto3_pb.rb:45
+  def self.decode: (String string) -> ProtobufTestMessages::Proto3::TestAllTypesProto3
+  # optional(1, :optional_int32, type: :int32)
+  def optional_int32: () -> Integer
+  def has_optional_int32?: () -> bool
+  @optional_int32: Integer?
+  # optional(2, :optional_int64, type: :int64)
+  def optional_int64: () -> Integer
+  def has_optional_int64?: () -> bool
+  @optional_int64: Integer?
+  # optional(3, :optional_uint32, type: :uint32)
+  def optional_uint32: () -> Integer
+  def has_optional_uint32?: () -> bool
+  @optional_uint32: Integer?
+  # optional(4, :optional_uint64, type: :uint64)
+  def optional_uint64: () -> Integer
+  def has_optional_uint64?: () -> bool
+  @optional_uint64: Integer?
+  # optional(5, :optional_sint32, type: :sint32)
+  def optional_sint32: () -> Integer
+  def has_optional_sint32?: () -> bool
+  @optional_sint32: Integer?
+  # optional(6, :optional_sint64, type: :sint64)
+  def optional_sint64: () -> Integer
+  def has_optional_sint64?: () -> bool
+  @optional_sint64: Integer?
+  # optional(7, :optional_fixed32, type: :fixed32)
+  def optional_fixed32: () -> Integer
+  def has_optional_fixed32?: () -> bool
+  @optional_fixed32: Integer?
+  # optional(8, :optional_fixed64, type: :fixed64)
+  def optional_fixed64: () -> Integer
+  def has_optional_fixed64?: () -> bool
+  @optional_fixed64: Integer?
+  # optional(9, :optional_sfixed32, type: :sfixed32)
+  def optional_sfixed32: () -> Integer
+  def has_optional_sfixed32?: () -> bool
+  @optional_sfixed32: Integer?
+  # optional(10, :optional_sfixed64, type: :sfixed64)
+  def optional_sfixed64: () -> Integer
+  def has_optional_sfixed64?: () -> bool
+  @optional_sfixed64: Integer?
+  # optional(11, :optional_float, type: :float)
+  def optional_float: () -> Float
+  def has_optional_float?: () -> bool
+  @optional_float: Float?
+  # optional(12, :optional_double, type: :double)
+  def optional_double: () -> Float
+  def has_optional_double?: () -> bool
+  @optional_double: Float?
+  # optional(13, :optional_bool, type: :bool)
+  def optional_bool: () -> Integer
+  def has_optional_bool?: () -> bool
+  @optional_bool: Integer?
+  # optional(14, :optional_string, type: :string)
+  def optional_string: () -> String
+  def has_optional_string?: () -> bool
+  @optional_string: String?
+  # optional(15, :optional_bytes, type: :bytes)
+  def optional_bytes: () -> String
+  def has_optional_bytes?: () -> bool
+  @optional_bytes: String?
+  # optional(18, :optional_nested_message, type: :message)
+  def optional_nested_message: () -> ProtobufTestMessages::Proto3::TestAllTypesProto3::NestedMessage
+  def has_optional_nested_message?: () -> bool
+  @optional_nested_message: ProtobufTestMessages::Proto3::TestAllTypesProto3::NestedMessage?
+  # optional(19, :optional_foreign_message, type: :message)
+  def optional_foreign_message: () -> ProtobufTestMessages::Proto3::ForeignMessage
+  def has_optional_foreign_message?: () -> bool
+  @optional_foreign_message: ProtobufTestMessages::Proto3::ForeignMessage?
+  # optional(21, :optional_nested_enum, type: :enum)
+  def optional_nested_enum: () -> Integer
+  def has_optional_nested_enum?: () -> bool
+  @optional_nested_enum: Integer?
+  # optional(22, :optional_foreign_enum, type: :enum)
+  def optional_foreign_enum: () -> Integer
+  def has_optional_foreign_enum?: () -> bool
+  @optional_foreign_enum: Integer?
+  # optional(23, :optional_aliased_enum, type: :enum)
+  def optional_aliased_enum: () -> Integer
+  def has_optional_aliased_enum?: () -> bool
+  @optional_aliased_enum: Integer?
+  # optional(24, :optional_string_piece, type: :string)
+  def optional_string_piece: () -> String
+  def has_optional_string_piece?: () -> bool
+  @optional_string_piece: String?
+  # optional(25, :optional_cord, type: :string)
+  def optional_cord: () -> String
+  def has_optional_cord?: () -> bool
+  @optional_cord: String?
+  # optional(27, :recursive_message, type: :message)
+  def recursive_message: () -> ProtobufTestMessages::Proto3::TestAllTypesProto3
+  def has_recursive_message?: () -> bool
+  @recursive_message: ProtobufTestMessages::Proto3::TestAllTypesProto3?
+  # repeated(31, :repeated_int32, type: :int32)
+  def repeated_int32: () -> Integer
+  def has_repeated_int32?: () -> bool
+  @repeated_int32: Integer?
+  # repeated(32, :repeated_int64, type: :int64)
+  def repeated_int64: () -> Integer
+  def has_repeated_int64?: () -> bool
+  @repeated_int64: Integer?
+  # repeated(33, :repeated_uint32, type: :uint32)
+  def repeated_uint32: () -> Integer
+  def has_repeated_uint32?: () -> bool
+  @repeated_uint32: Integer?
+  # repeated(34, :repeated_uint64, type: :uint64)
+  def repeated_uint64: () -> Integer
+  def has_repeated_uint64?: () -> bool
+  @repeated_uint64: Integer?
+  # repeated(35, :repeated_sint32, type: :sint32)
+  def repeated_sint32: () -> Integer
+  def has_repeated_sint32?: () -> bool
+  @repeated_sint32: Integer?
+  # repeated(36, :repeated_sint64, type: :sint64)
+  def repeated_sint64: () -> Integer
+  def has_repeated_sint64?: () -> bool
+  @repeated_sint64: Integer?
+  # repeated(37, :repeated_fixed32, type: :fixed32)
+  def repeated_fixed32: () -> Integer
+  def has_repeated_fixed32?: () -> bool
+  @repeated_fixed32: Integer?
+  # repeated(38, :repeated_fixed64, type: :fixed64)
+  def repeated_fixed64: () -> Integer
+  def has_repeated_fixed64?: () -> bool
+  @repeated_fixed64: Integer?
+  # repeated(39, :repeated_sfixed32, type: :sfixed32)
+  def repeated_sfixed32: () -> Integer
+  def has_repeated_sfixed32?: () -> bool
+  @repeated_sfixed32: Integer?
+  # repeated(40, :repeated_sfixed64, type: :sfixed64)
+  def repeated_sfixed64: () -> Integer
+  def has_repeated_sfixed64?: () -> bool
+  @repeated_sfixed64: Integer?
+  # repeated(41, :repeated_float, type: :float)
+  def repeated_float: () -> Float
+  def has_repeated_float?: () -> bool
+  @repeated_float: Float?
+  # repeated(42, :repeated_double, type: :double)
+  def repeated_double: () -> Float
+  def has_repeated_double?: () -> bool
+  @repeated_double: Float?
+  # repeated(43, :repeated_bool, type: :bool)
+  def repeated_bool: () -> Integer
+  def has_repeated_bool?: () -> bool
+  @repeated_bool: Integer?
+  # repeated(44, :repeated_string, type: :string)
+  def repeated_string: () -> String
+  def has_repeated_string?: () -> bool
+  @repeated_string: String?
+  # repeated(45, :repeated_bytes, type: :bytes)
+  def repeated_bytes: () -> String
+  def has_repeated_bytes?: () -> bool
+  @repeated_bytes: String?
+  # repeated(48, :repeated_nested_message, type: :message)
+  def repeated_nested_message: () -> ProtobufTestMessages::Proto3::TestAllTypesProto3::NestedMessage
+  def has_repeated_nested_message?: () -> bool
+  @repeated_nested_message: ProtobufTestMessages::Proto3::TestAllTypesProto3::NestedMessage?
+  # repeated(49, :repeated_foreign_message, type: :message)
+  def repeated_foreign_message: () -> ProtobufTestMessages::Proto3::ForeignMessage
+  def has_repeated_foreign_message?: () -> bool
+  @repeated_foreign_message: ProtobufTestMessages::Proto3::ForeignMessage?
+  # repeated(51, :repeated_nested_enum, type: :enum)
+  def repeated_nested_enum: () -> Integer
+  def has_repeated_nested_enum?: () -> bool
+  @repeated_nested_enum: Integer?
+  # repeated(52, :repeated_foreign_enum, type: :enum)
+  def repeated_foreign_enum: () -> Integer
+  def has_repeated_foreign_enum?: () -> bool
+  @repeated_foreign_enum: Integer?
+  # repeated(54, :repeated_string_piece, type: :string)
+  def repeated_string_piece: () -> String
+  def has_repeated_string_piece?: () -> bool
+  @repeated_string_piece: String?
+  # repeated(55, :repeated_cord, type: :string)
+  def repeated_cord: () -> String
+  def has_repeated_cord?: () -> bool
+  @repeated_cord: String?
+  # repeated(75, :packed_int32, type: :int32)
+  def packed_int32: () -> Integer
+  def has_packed_int32?: () -> bool
+  @packed_int32: Integer?
+  # repeated(76, :packed_int64, type: :int64)
+  def packed_int64: () -> Integer
+  def has_packed_int64?: () -> bool
+  @packed_int64: Integer?
+  # repeated(77, :packed_uint32, type: :uint32)
+  def packed_uint32: () -> Integer
+  def has_packed_uint32?: () -> bool
+  @packed_uint32: Integer?
+  # repeated(78, :packed_uint64, type: :uint64)
+  def packed_uint64: () -> Integer
+  def has_packed_uint64?: () -> bool
+  @packed_uint64: Integer?
+  # repeated(79, :packed_sint32, type: :sint32)
+  def packed_sint32: () -> Integer
+  def has_packed_sint32?: () -> bool
+  @packed_sint32: Integer?
+  # repeated(80, :packed_sint64, type: :sint64)
+  def packed_sint64: () -> Integer
+  def has_packed_sint64?: () -> bool
+  @packed_sint64: Integer?
+  # repeated(81, :packed_fixed32, type: :fixed32)
+  def packed_fixed32: () -> Integer
+  def has_packed_fixed32?: () -> bool
+  @packed_fixed32: Integer?
+  # repeated(82, :packed_fixed64, type: :fixed64)
+  def packed_fixed64: () -> Integer
+  def has_packed_fixed64?: () -> bool
+  @packed_fixed64: Integer?
+  # repeated(83, :packed_sfixed32, type: :sfixed32)
+  def packed_sfixed32: () -> Integer
+  def has_packed_sfixed32?: () -> bool
+  @packed_sfixed32: Integer?
+  # repeated(84, :packed_sfixed64, type: :sfixed64)
+  def packed_sfixed64: () -> Integer
+  def has_packed_sfixed64?: () -> bool
+  @packed_sfixed64: Integer?
+  # repeated(85, :packed_float, type: :float)
+  def packed_float: () -> Float
+  def has_packed_float?: () -> bool
+  @packed_float: Float?
+  # repeated(86, :packed_double, type: :double)
+  def packed_double: () -> Float
+  def has_packed_double?: () -> bool
+  @packed_double: Float?
+  # repeated(87, :packed_bool, type: :bool)
+  def packed_bool: () -> Integer
+  def has_packed_bool?: () -> bool
+  @packed_bool: Integer?
+  # repeated(88, :packed_nested_enum, type: :enum)
+  def packed_nested_enum: () -> Integer
+  def has_packed_nested_enum?: () -> bool
+  @packed_nested_enum: Integer?
+  # repeated(89, :unpacked_int32, type: :int32)
+  def unpacked_int32: () -> Integer
+  def has_unpacked_int32?: () -> bool
+  @unpacked_int32: Integer?
+  # repeated(90, :unpacked_int64, type: :int64)
+  def unpacked_int64: () -> Integer
+  def has_unpacked_int64?: () -> bool
+  @unpacked_int64: Integer?
+  # repeated(91, :unpacked_uint32, type: :uint32)
+  def unpacked_uint32: () -> Integer
+  def has_unpacked_uint32?: () -> bool
+  @unpacked_uint32: Integer?
+  # repeated(92, :unpacked_uint64, type: :uint64)
+  def unpacked_uint64: () -> Integer
+  def has_unpacked_uint64?: () -> bool
+  @unpacked_uint64: Integer?
+  # repeated(93, :unpacked_sint32, type: :sint32)
+  def unpacked_sint32: () -> Integer
+  def has_unpacked_sint32?: () -> bool
+  @unpacked_sint32: Integer?
+  # repeated(94, :unpacked_sint64, type: :sint64)
+  def unpacked_sint64: () -> Integer
+  def has_unpacked_sint64?: () -> bool
+  @unpacked_sint64: Integer?
+  # repeated(95, :unpacked_fixed32, type: :fixed32)
+  def unpacked_fixed32: () -> Integer
+  def has_unpacked_fixed32?: () -> bool
+  @unpacked_fixed32: Integer?
+  # repeated(96, :unpacked_fixed64, type: :fixed64)
+  def unpacked_fixed64: () -> Integer
+  def has_unpacked_fixed64?: () -> bool
+  @unpacked_fixed64: Integer?
+  # repeated(97, :unpacked_sfixed32, type: :sfixed32)
+  def unpacked_sfixed32: () -> Integer
+  def has_unpacked_sfixed32?: () -> bool
+  @unpacked_sfixed32: Integer?
+  # repeated(98, :unpacked_sfixed64, type: :sfixed64)
+  def unpacked_sfixed64: () -> Integer
+  def has_unpacked_sfixed64?: () -> bool
+  @unpacked_sfixed64: Integer?
+  # repeated(99, :unpacked_float, type: :float)
+  def unpacked_float: () -> Float
+  def has_unpacked_float?: () -> bool
+  @unpacked_float: Float?
+  # repeated(100, :unpacked_double, type: :double)
+  def unpacked_double: () -> Float
+  def has_unpacked_double?: () -> bool
+  @unpacked_double: Float?
+  # repeated(101, :unpacked_bool, type: :bool)
+  def unpacked_bool: () -> Integer
+  def has_unpacked_bool?: () -> bool
+  @unpacked_bool: Integer?
+  # repeated(102, :unpacked_nested_enum, type: :enum)
+  def unpacked_nested_enum: () -> Integer
+  def has_unpacked_nested_enum?: () -> bool
+  @unpacked_nested_enum: Integer?
+  # map(56, :map_int32_int32, type: :map)
+  def map_int32_int32: () -> Hash
+  def has_map_int32_int32?: () -> bool
+  @map_int32_int32: Hash?
+  # map(57, :map_int64_int64, type: :map)
+  def map_int64_int64: () -> Hash
+  def has_map_int64_int64?: () -> bool
+  @map_int64_int64: Hash?
+  # map(58, :map_uint32_uint32, type: :map)
+  def map_uint32_uint32: () -> Hash
+  def has_map_uint32_uint32?: () -> bool
+  @map_uint32_uint32: Hash?
+  # map(59, :map_uint64_uint64, type: :map)
+  def map_uint64_uint64: () -> Hash
+  def has_map_uint64_uint64?: () -> bool
+  @map_uint64_uint64: Hash?
+  # map(60, :map_sint32_sint32, type: :map)
+  def map_sint32_sint32: () -> Hash
+  def has_map_sint32_sint32?: () -> bool
+  @map_sint32_sint32: Hash?
+  # map(61, :map_sint64_sint64, type: :map)
+  def map_sint64_sint64: () -> Hash
+  def has_map_sint64_sint64?: () -> bool
+  @map_sint64_sint64: Hash?
+  # map(62, :map_fixed32_fixed32, type: :map)
+  def map_fixed32_fixed32: () -> Hash
+  def has_map_fixed32_fixed32?: () -> bool
+  @map_fixed32_fixed32: Hash?
+  # map(63, :map_fixed64_fixed64, type: :map)
+  def map_fixed64_fixed64: () -> Hash
+  def has_map_fixed64_fixed64?: () -> bool
+  @map_fixed64_fixed64: Hash?
+  # map(64, :map_sfixed32_sfixed32, type: :map)
+  def map_sfixed32_sfixed32: () -> Hash
+  def has_map_sfixed32_sfixed32?: () -> bool
+  @map_sfixed32_sfixed32: Hash?
+  # map(65, :map_sfixed64_sfixed64, type: :map)
+  def map_sfixed64_sfixed64: () -> Hash
+  def has_map_sfixed64_sfixed64?: () -> bool
+  @map_sfixed64_sfixed64: Hash?
+  # map(66, :map_int32_float, type: :map)
+  def map_int32_float: () -> Hash
+  def has_map_int32_float?: () -> bool
+  @map_int32_float: Hash?
+  # map(67, :map_int32_double, type: :map)
+  def map_int32_double: () -> Hash
+  def has_map_int32_double?: () -> bool
+  @map_int32_double: Hash?
+  # map(68, :map_bool_bool, type: :map)
+  def map_bool_bool: () -> Hash
+  def has_map_bool_bool?: () -> bool
+  @map_bool_bool: Hash?
+  # map(69, :map_string_string, type: :map)
+  def map_string_string: () -> Hash
+  def has_map_string_string?: () -> bool
+  @map_string_string: Hash?
+  # map(70, :map_string_bytes, type: :map)
+  def map_string_bytes: () -> Hash
+  def has_map_string_bytes?: () -> bool
+  @map_string_bytes: Hash?
+  # map(71, :map_string_nested_message, type: :map)
+  def map_string_nested_message: () -> Hash
+  def has_map_string_nested_message?: () -> bool
+  @map_string_nested_message: Hash?
+  # map(72, :map_string_foreign_message, type: :map)
+  def map_string_foreign_message: () -> Hash
+  def has_map_string_foreign_message?: () -> bool
+  @map_string_foreign_message: Hash?
+  # map(73, :map_string_nested_enum, type: :map)
+  def map_string_nested_enum: () -> Hash
+  def has_map_string_nested_enum?: () -> bool
+  @map_string_nested_enum: Hash?
+  # map(74, :map_string_foreign_enum, type: :map)
+  def map_string_foreign_enum: () -> Hash
+  def has_map_string_foreign_enum?: () -> bool
+  @map_string_foreign_enum: Hash?
+  # optional(111, :oneof_uint32, type: :uint32)
+  def oneof_uint32: () -> Integer
+  def has_oneof_uint32?: () -> bool
+  @oneof_uint32: Integer?
+  # optional(112, :oneof_nested_message, type: :message)
+  def oneof_nested_message: () -> ProtobufTestMessages::Proto3::TestAllTypesProto3::NestedMessage
+  def has_oneof_nested_message?: () -> bool
+  @oneof_nested_message: ProtobufTestMessages::Proto3::TestAllTypesProto3::NestedMessage?
+  # optional(113, :oneof_string, type: :string)
+  def oneof_string: () -> String
+  def has_oneof_string?: () -> bool
+  @oneof_string: String?
+  # optional(114, :oneof_bytes, type: :bytes)
+  def oneof_bytes: () -> String
+  def has_oneof_bytes?: () -> bool
+  @oneof_bytes: String?
+  # optional(115, :oneof_bool, type: :bool)
+  def oneof_bool: () -> Integer
+  def has_oneof_bool?: () -> bool
+  @oneof_bool: Integer?
+  # optional(116, :oneof_uint64, type: :uint64)
+  def oneof_uint64: () -> Integer
+  def has_oneof_uint64?: () -> bool
+  @oneof_uint64: Integer?
+  # optional(117, :oneof_float, type: :float)
+  def oneof_float: () -> Float
+  def has_oneof_float?: () -> bool
+  @oneof_float: Float?
+  # optional(118, :oneof_double, type: :double)
+  def oneof_double: () -> Float
+  def has_oneof_double?: () -> bool
+  @oneof_double: Float?
+  # optional(119, :oneof_enum, type: :enum)
+  def oneof_enum: () -> Integer
+  def has_oneof_enum?: () -> bool
+  @oneof_enum: Integer?
+  # optional(120, :oneof_null_value, type: :enum)
+  def oneof_null_value: () -> Integer
+  def has_oneof_null_value?: () -> bool
+  @oneof_null_value: Integer?
+  # optional(201, :optional_bool_wrapper, type: :message)
+  def optional_bool_wrapper: () -> Google::Protobuf::BoolValue
+  def has_optional_bool_wrapper?: () -> bool
+  @optional_bool_wrapper: Google::Protobuf::BoolValue?
+  # optional(202, :optional_int32_wrapper, type: :message)
+  def optional_int32_wrapper: () -> Google::Protobuf::Int32Value
+  def has_optional_int32_wrapper?: () -> bool
+  @optional_int32_wrapper: Google::Protobuf::Int32Value?
+  # optional(203, :optional_int64_wrapper, type: :message)
+  def optional_int64_wrapper: () -> Google::Protobuf::Int64Value
+  def has_optional_int64_wrapper?: () -> bool
+  @optional_int64_wrapper: Google::Protobuf::Int64Value?
+  # optional(204, :optional_uint32_wrapper, type: :message)
+  def optional_uint32_wrapper: () -> Google::Protobuf::UInt32Value
+  def has_optional_uint32_wrapper?: () -> bool
+  @optional_uint32_wrapper: Google::Protobuf::UInt32Value?
+  # optional(205, :optional_uint64_wrapper, type: :message)
+  def optional_uint64_wrapper: () -> Google::Protobuf::UInt64Value
+  def has_optional_uint64_wrapper?: () -> bool
+  @optional_uint64_wrapper: Google::Protobuf::UInt64Value?
+  # optional(206, :optional_float_wrapper, type: :message)
+  def optional_float_wrapper: () -> Google::Protobuf::FloatValue
+  def has_optional_float_wrapper?: () -> bool
+  @optional_float_wrapper: Google::Protobuf::FloatValue?
+  # optional(207, :optional_double_wrapper, type: :message)
+  def optional_double_wrapper: () -> Google::Protobuf::DoubleValue
+  def has_optional_double_wrapper?: () -> bool
+  @optional_double_wrapper: Google::Protobuf::DoubleValue?
+  # optional(208, :optional_string_wrapper, type: :message)
+  def optional_string_wrapper: () -> Google::Protobuf::StringValue
+  def has_optional_string_wrapper?: () -> bool
+  @optional_string_wrapper: Google::Protobuf::StringValue?
+  # optional(209, :optional_bytes_wrapper, type: :message)
+  def optional_bytes_wrapper: () -> Google::Protobuf::BytesValue
+  def has_optional_bytes_wrapper?: () -> bool
+  @optional_bytes_wrapper: Google::Protobuf::BytesValue?
+  # repeated(211, :repeated_bool_wrapper, type: :message)
+  def repeated_bool_wrapper: () -> Google::Protobuf::BoolValue
+  def has_repeated_bool_wrapper?: () -> bool
+  @repeated_bool_wrapper: Google::Protobuf::BoolValue?
+  # repeated(212, :repeated_int32_wrapper, type: :message)
+  def repeated_int32_wrapper: () -> Google::Protobuf::Int32Value
+  def has_repeated_int32_wrapper?: () -> bool
+  @repeated_int32_wrapper: Google::Protobuf::Int32Value?
+  # repeated(213, :repeated_int64_wrapper, type: :message)
+  def repeated_int64_wrapper: () -> Google::Protobuf::Int64Value
+  def has_repeated_int64_wrapper?: () -> bool
+  @repeated_int64_wrapper: Google::Protobuf::Int64Value?
+  # repeated(214, :repeated_uint32_wrapper, type: :message)
+  def repeated_uint32_wrapper: () -> Google::Protobuf::UInt32Value
+  def has_repeated_uint32_wrapper?: () -> bool
+  @repeated_uint32_wrapper: Google::Protobuf::UInt32Value?
+  # repeated(215, :repeated_uint64_wrapper, type: :message)
+  def repeated_uint64_wrapper: () -> Google::Protobuf::UInt64Value
+  def has_repeated_uint64_wrapper?: () -> bool
+  @repeated_uint64_wrapper: Google::Protobuf::UInt64Value?
+  # repeated(216, :repeated_float_wrapper, type: :message)
+  def repeated_float_wrapper: () -> Google::Protobuf::FloatValue
+  def has_repeated_float_wrapper?: () -> bool
+  @repeated_float_wrapper: Google::Protobuf::FloatValue?
+  # repeated(217, :repeated_double_wrapper, type: :message)
+  def repeated_double_wrapper: () -> Google::Protobuf::DoubleValue
+  def has_repeated_double_wrapper?: () -> bool
+  @repeated_double_wrapper: Google::Protobuf::DoubleValue?
+  # repeated(218, :repeated_string_wrapper, type: :message)
+  def repeated_string_wrapper: () -> Google::Protobuf::StringValue
+  def has_repeated_string_wrapper?: () -> bool
+  @repeated_string_wrapper: Google::Protobuf::StringValue?
+  # repeated(219, :repeated_bytes_wrapper, type: :message)
+  def repeated_bytes_wrapper: () -> Google::Protobuf::BytesValue
+  def has_repeated_bytes_wrapper?: () -> bool
+  @repeated_bytes_wrapper: Google::Protobuf::BytesValue?
+  # optional(301, :optional_duration, type: :message)
+  def optional_duration: () -> Google::Protobuf::Duration
+  def has_optional_duration?: () -> bool
+  @optional_duration: Google::Protobuf::Duration?
+  # optional(302, :optional_timestamp, type: :message)
+  def optional_timestamp: () -> Google::Protobuf::Timestamp
+  def has_optional_timestamp?: () -> bool
+  @optional_timestamp: Google::Protobuf::Timestamp?
+  # optional(303, :optional_field_mask, type: :message)
+  def optional_field_mask: () -> Google::Protobuf::FieldMask
+  def has_optional_field_mask?: () -> bool
+  @optional_field_mask: Google::Protobuf::FieldMask?
+  # optional(304, :optional_struct, type: :message)
+  def optional_struct: () -> Google::Protobuf::Struct
+  def has_optional_struct?: () -> bool
+  @optional_struct: Google::Protobuf::Struct?
+  # optional(305, :optional_any, type: :message)
+  def optional_any: () -> Google::Protobuf::Any
+  def has_optional_any?: () -> bool
+  @optional_any: Google::Protobuf::Any?
+  # optional(306, :optional_value, type: :message)
+  def optional_value: () -> Google::Protobuf::Value
+  def has_optional_value?: () -> bool
+  @optional_value: Google::Protobuf::Value?
+  # optional(307, :optional_null_value, type: :enum)
+  def optional_null_value: () -> Integer
+  def has_optional_null_value?: () -> bool
+  @optional_null_value: Integer?
+  # repeated(311, :repeated_duration, type: :message)
+  def repeated_duration: () -> Google::Protobuf::Duration
+  def has_repeated_duration?: () -> bool
+  @repeated_duration: Google::Protobuf::Duration?
+  # repeated(312, :repeated_timestamp, type: :message)
+  def repeated_timestamp: () -> Google::Protobuf::Timestamp
+  def has_repeated_timestamp?: () -> bool
+  @repeated_timestamp: Google::Protobuf::Timestamp?
+  # repeated(313, :repeated_fieldmask, type: :message)
+  def repeated_fieldmask: () -> Google::Protobuf::FieldMask
+  def has_repeated_fieldmask?: () -> bool
+  @repeated_fieldmask: Google::Protobuf::FieldMask?
+  # repeated(324, :repeated_struct, type: :message)
+  def repeated_struct: () -> Google::Protobuf::Struct
+  def has_repeated_struct?: () -> bool
+  @repeated_struct: Google::Protobuf::Struct?
+  # repeated(315, :repeated_any, type: :message)
+  def repeated_any: () -> Google::Protobuf::Any
+  def has_repeated_any?: () -> bool
+  @repeated_any: Google::Protobuf::Any?
+  # repeated(316, :repeated_value, type: :message)
+  def repeated_value: () -> Google::Protobuf::Value
+  def has_repeated_value?: () -> bool
+  @repeated_value: Google::Protobuf::Value?
+  # repeated(317, :repeated_list_value, type: :message)
+  def repeated_list_value: () -> Google::Protobuf::ListValue
+  def has_repeated_list_value?: () -> bool
+  @repeated_list_value: Google::Protobuf::ListValue?
+  # optional(401, :fieldname1, type: :int32)
+  def fieldname1: () -> Integer
+  def has_fieldname1?: () -> bool
+  @fieldname1: Integer?
+  # optional(402, :field_name2, type: :int32)
+  def field_name2: () -> Integer
+  def has_field_name2?: () -> bool
+  @field_name2: Integer?
+  # optional(403, :_field_name3, type: :int32)
+  def _field_name3: () -> Integer
+  def has__field_name3?: () -> bool
+  @_field_name3: Integer?
+  # optional(404, :field__name4_, type: :int32)
+  def field__name4_: () -> Integer
+  def has_field__name4_?: () -> bool
+  @field__name4_: Integer?
+  # optional(405, :field0name5, type: :int32)
+  def field0name5: () -> Integer
+  def has_field0name5?: () -> bool
+  @field0name5: Integer?
+  # optional(406, :field_0_name6, type: :int32)
+  def field_0_name6: () -> Integer
+  def has_field_0_name6?: () -> bool
+  @field_0_name6: Integer?
+  # optional(407, :fieldName7, type: :int32)
+  def fieldName7: () -> Integer
+  def has_fieldName7?: () -> bool
+  @fieldName7: Integer?
+  # optional(408, :FieldName8, type: :int32)
+  def FieldName8: () -> Integer
+  def has_FieldName8?: () -> bool
+  @FieldName8: Integer?
+  # optional(409, :field_Name9, type: :int32)
+  def field_Name9: () -> Integer
+  def has_field_Name9?: () -> bool
+  @field_Name9: Integer?
+  # optional(410, :Field_Name10, type: :int32)
+  def Field_Name10: () -> Integer
+  def has_Field_Name10?: () -> bool
+  @Field_Name10: Integer?
+  # optional(411, :FIELD_NAME11, type: :int32)
+  def FIELD_NAME11: () -> Integer
+  def has_FIELD_NAME11?: () -> bool
+  @FIELD_NAME11: Integer?
+  # optional(412, :FIELD_name12, type: :int32)
+  def FIELD_name12: () -> Integer
+  def has_FIELD_name12?: () -> bool
+  @FIELD_name12: Integer?
+  # optional(413, :__field_name13, type: :int32)
+  def __field_name13: () -> Integer
+  def has___field_name13?: () -> bool
+  @__field_name13: Integer?
+  # optional(414, :__Field_name14, type: :int32)
+  def __Field_name14: () -> Integer
+  def has___Field_name14?: () -> bool
+  @__Field_name14: Integer?
+  # optional(415, :field__name15, type: :int32)
+  def field__name15: () -> Integer
+  def has_field__name15?: () -> bool
+  @field__name15: Integer?
+  # optional(416, :field__Name16, type: :int32)
+  def field__Name16: () -> Integer
+  def has_field__Name16?: () -> bool
+  @field__Name16: Integer?
+  # optional(417, :field_name17__, type: :int32)
+  def field_name17__: () -> Integer
+  def has_field_name17__?: () -> bool
+  @field_name17__: Integer?
+  # optional(418, :Field_name18__, type: :int32)
+  def Field_name18__: () -> Integer
+  def has_Field_name18__?: () -> bool
+  @Field_name18__: Integer?
+end
+class ProtobufTestMessages::Proto3::TestAllTypesProto3::NestedMessage # /lib/protobuf_test_messages/proto3/test_messages_proto3_pb.rb:50
+  def self.decode: (String string) -> ProtobufTestMessages::Proto3::TestAllTypesProto3::NestedMessage
+  # optional(1, :a, type: :int32)
+  def a: () -> Integer
+  def has_a?: () -> bool
+  @a: Integer?
+  # optional(2, :corecursive, type: :message)
+  def corecursive: () -> ProtobufTestMessages::Proto3::TestAllTypesProto3
+  def has_corecursive?: () -> bool
+  @corecursive: ProtobufTestMessages::Proto3::TestAllTypesProto3?
+end
+module ProtobufTestMessages::Proto3::TestAllTypesProto3::NestedEnum # /lib/protobuf_test_messages/proto3/test_messages_proto3_pb.rb:65
+  FOO: Integer
+  BAR: Integer
+  BAZ: Integer
+  NEG: Integer
+end
+module ProtobufTestMessages::Proto3::TestAllTypesProto3::AliasedEnum # /lib/protobuf_test_messages/proto3/test_messages_proto3_pb.rb:76
+  ALIAS_FOO: Integer
+  ALIAS_BAR: Integer
+  ALIAS_BAZ: Integer
+  MOO: Integer
+  moo: Integer
+  bAz: Integer
+end
+class ProtobufTestMessages::Proto3::ForeignMessage # /lib/protobuf_test_messages/proto3/test_messages_proto3_pb.rb:1141
+  def self.decode: (String string) -> ProtobufTestMessages::Proto3::ForeignMessage
+  # optional(1, :c, type: :int32)
+  def c: () -> Integer
+  def has_c?: () -> bool
+  @c: Integer?
+end
+module ProtobufTestMessages::Proto3::ForeignEnum # /lib/protobuf_test_messages/proto3/test_messages_proto3_pb.rb:1149
+  FOREIGN_FOO: Integer
+  FOREIGN_BAR: Integer
+  FOREIGN_BAZ: Integer
+end
+class ProtobufTestMessages::Proto3::NullHypothesisProto3 # /lib/protobuf_test_messages/proto3/test_messages_proto3_pb.rb:1159
+  def self.decode: (String string) -> ProtobufTestMessages::Proto3::NullHypothesisProto3
+end
+class ProtobufTestMessages::Proto3::EnumOnlyProto3 # /lib/protobuf_test_messages/proto3/test_messages_proto3_pb.rb:1165
+  def self.decode: (String string) -> ProtobufTestMessages::Proto3::EnumOnlyProto3
+end
+module ProtobufTestMessages::Proto3::EnumOnlyProto3::Bool # /lib/protobuf_test_messages/proto3/test_messages_proto3_pb.rb:1170
+  kFalse: Integer
+  kTrue: Integer
+end

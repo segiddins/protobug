@@ -1,0 +1,49 @@
+class Sigstore::Bundle::V1::TimestampVerificationData # /lib/sigstore/bundle/v1/sigstore_bundle_pb.rb:50
+  def self.decode: (String string) -> Sigstore::Bundle::V1::TimestampVerificationData
+  # repeated(1, :rfc3161_timestamps, type: :message)
+  def rfc3161_timestamps: () -> Sigstore::Common::V1::RFC3161SignedTimestamp
+  def has_rfc3161_timestamps?: () -> bool
+  @rfc3161_timestamps: Sigstore::Common::V1::RFC3161SignedTimestamp?
+end
+class Sigstore::Bundle::V1::VerificationMaterial # /lib/sigstore/bundle/v1/sigstore_bundle_pb.rb:78
+  def self.decode: (String string) -> Sigstore::Bundle::V1::VerificationMaterial
+  # optional(1, :public_key, type: :message)
+  def public_key: () -> Sigstore::Common::V1::PublicKeyIdentifier
+  def has_public_key?: () -> bool
+  @public_key: Sigstore::Common::V1::PublicKeyIdentifier?
+  # optional(2, :x509_certificate_chain, type: :message)
+  def x509_certificate_chain: () -> Sigstore::Common::V1::X509CertificateChain
+  def has_x509_certificate_chain?: () -> bool
+  @x509_certificate_chain: Sigstore::Common::V1::X509CertificateChain?
+  # optional(5, :certificate, type: :message)
+  def certificate: () -> Sigstore::Common::V1::X509Certificate
+  def has_certificate?: () -> bool
+  @certificate: Sigstore::Common::V1::X509Certificate?
+  # repeated(3, :tlog_entries, type: :message)
+  def tlog_entries: () -> Sigstore::Rekor::V1::TransparencyLogEntry
+  def has_tlog_entries?: () -> bool
+  @tlog_entries: Sigstore::Rekor::V1::TransparencyLogEntry?
+  # optional(4, :timestamp_verification_data, type: :message)
+  def timestamp_verification_data: () -> Sigstore::Bundle::V1::TimestampVerificationData
+  def has_timestamp_verification_data?: () -> bool
+  @timestamp_verification_data: Sigstore::Bundle::V1::TimestampVerificationData?
+end
+class Sigstore::Bundle::V1::Bundle # /lib/sigstore/bundle/v1/sigstore_bundle_pb.rb:172
+  def self.decode: (String string) -> Sigstore::Bundle::V1::Bundle
+  # optional(1, :media_type, type: :string)
+  def media_type: () -> String
+  def has_media_type?: () -> bool
+  @media_type: String?
+  # optional(2, :verification_material, type: :message)
+  def verification_material: () -> Sigstore::Bundle::V1::VerificationMaterial
+  def has_verification_material?: () -> bool
+  @verification_material: Sigstore::Bundle::V1::VerificationMaterial?
+  # optional(3, :message_signature, type: :message)
+  def message_signature: () -> Sigstore::Common::V1::MessageSignature
+  def has_message_signature?: () -> bool
+  @message_signature: Sigstore::Common::V1::MessageSignature?
+  # optional(4, :dsse_envelope, type: :message)
+  def dsse_envelope: () -> Sigstore::DSSE::Envelope
+  def has_dsse_envelope?: () -> bool
+  @dsse_envelope: Sigstore::DSSE::Envelope?
+end

@@ -1,0 +1,19 @@
+class InTotoAttestation::V1::Statement # /lib/in_toto_attestation/v1/statement_pb.rb:23
+  def self.decode: (String string) -> InTotoAttestation::V1::Statement
+  # optional(1, :type, type: :string)
+  def type: () -> String
+  def has_type?: () -> bool
+  @type: String?
+  # repeated(2, :subject, type: :message)
+  def subject: () -> InTotoAttestation::V1::ResourceDescriptor
+  def has_subject?: () -> bool
+  @subject: InTotoAttestation::V1::ResourceDescriptor?
+  # optional(3, :predicate_type, type: :string)
+  def predicate_type: () -> String
+  def has_predicate_type?: () -> bool
+  @predicate_type: String?
+  # optional(4, :predicate, type: :message)
+  def predicate: () -> Google::Protobuf::Struct
+  def has_predicate?: () -> bool
+  @predicate: Google::Protobuf::Struct?
+end

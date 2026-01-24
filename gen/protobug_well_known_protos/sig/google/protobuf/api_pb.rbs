@@ -1,0 +1,73 @@
+class Google::Protobuf::Api # /lib/google/protobuf/api_pb.rb:62
+  def self.decode: (String string) -> Google::Protobuf::Api
+  # optional(1, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # repeated(2, :methods, type: :message)
+  def methods: () -> Google::Protobuf::Method
+  def has_methods?: () -> bool
+  @methods: Google::Protobuf::Method?
+  # repeated(3, :options, type: :message)
+  def options: () -> Google::Protobuf::Option
+  def has_options?: () -> bool
+  @options: Google::Protobuf::Option?
+  # optional(4, :version, type: :string)
+  def version: () -> String
+  def has_version?: () -> bool
+  @version: String?
+  # optional(5, :source_context, type: :message)
+  def source_context: () -> Google::Protobuf::SourceContext
+  def has_source_context?: () -> bool
+  @source_context: Google::Protobuf::SourceContext?
+  # repeated(6, :mixins, type: :message)
+  def mixins: () -> Google::Protobuf::Mixin
+  def has_mixins?: () -> bool
+  @mixins: Google::Protobuf::Mixin?
+  # optional(7, :syntax, type: :enum)
+  def syntax: () -> Integer
+  def has_syntax?: () -> bool
+  @syntax: Integer?
+end
+class Google::Protobuf::Method # /lib/google/protobuf/api_pb.rb:132
+  def self.decode: (String string) -> Google::Protobuf::Method
+  # optional(1, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # optional(2, :request_type_url, type: :string)
+  def request_type_url: () -> String
+  def has_request_type_url?: () -> bool
+  @request_type_url: String?
+  # optional(3, :request_streaming, type: :bool)
+  def request_streaming: () -> Integer
+  def has_request_streaming?: () -> bool
+  @request_streaming: Integer?
+  # optional(4, :response_type_url, type: :string)
+  def response_type_url: () -> String
+  def has_response_type_url?: () -> bool
+  @response_type_url: String?
+  # optional(5, :response_streaming, type: :bool)
+  def response_streaming: () -> Integer
+  def has_response_streaming?: () -> bool
+  @response_streaming: Integer?
+  # repeated(6, :options, type: :message)
+  def options: () -> Google::Protobuf::Option
+  def has_options?: () -> bool
+  @options: Google::Protobuf::Option?
+  # optional(7, :syntax, type: :enum)
+  def syntax: () -> Integer
+  def has_syntax?: () -> bool
+  @syntax: Integer?
+end
+class Google::Protobuf::Mixin # /lib/google/protobuf/api_pb.rb:266
+  def self.decode: (String string) -> Google::Protobuf::Mixin
+  # optional(1, :name, type: :string)
+  def name: () -> String
+  def has_name?: () -> bool
+  @name: String?
+  # optional(2, :root, type: :string)
+  def root: () -> String
+  def has_root?: () -> bool
+  @root: String?
+end

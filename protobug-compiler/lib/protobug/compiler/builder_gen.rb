@@ -12,40 +12,41 @@ module Protobug
           append Token.new(type: :keyword, content: "def")
         end
 
+        def _do
+          append Token.new(type: :keyword, content: "do")
+        end
+
         def _module
           append Token.new(type: :keyword, content: "module")
         end
 
-        def parens(item, &blk)
+        def parens(item, &)
           append Group.new(
             name: :parens,
             items: [item],
             open: "(",
             close: ")",
             indent: 2
-          ).tap(&blk)
+          ).tap(&)
         end
 
-        def list(*items, &blk)
-          append Group.new(
-            name: :list,
-            items: items,
-            separator: ",",
-            indent: 2
-          ).tap(&blk)
+        def list(*items, &)
+          append Group.new(name: :list, items:, separator: ",", indent: 2).tap(
+            &
+          )
         end
 
-        def index(*items, &blk)
+        def index(*items, &)
           append Group.new(
             name: :index,
-            items: items,
+            items:,
             open: "[",
             close: "]",
             separator: ","
-          ).tap(&blk)
+          ).tap(&)
         end
 
-        def call(*args, &blk)
+        def call(*args, &)
           append Group.new(
             name: :call,
             items: args,
@@ -53,7 +54,7 @@ module Protobug
             close: ")",
             separator: ", ",
             indent: 2
-          ).tap(&blk)
+          ).tap(&)
         end
       end
 
@@ -64,6 +65,10 @@ module Protobug
 
         def _def
           append Statement.new._def
+        end
+
+        def _do
+          append Statement.new._do
         end
 
         def _module

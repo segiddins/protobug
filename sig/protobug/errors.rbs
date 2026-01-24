@@ -1,0 +1,30 @@
+module Protobug
+  class Error < StandardError
+  end
+
+  class UnsupportedFeatureError < Error
+    @feature: untyped
+
+    def initialize: (untyped feature, untyped msg) -> void
+  end
+
+  class GroupsUnsupportedError < UnsupportedFeatureError
+    def initialize: (untyped msg) -> void
+  end
+
+  class EncodeError < Error
+  end
+
+  class DecodeError < Error
+  end
+
+  class UnknownFieldError < DecodeError
+  end
+
+  class DefinitionError < Error
+  end
+
+  class InvalidValueError < Error
+    def initialize: (untyped msg, untyped field_name, untyped value, ?::String message) -> void
+  end
+end

@@ -1,0 +1,129 @@
+class Dev::Sigstore::Fulcio::V2::CreateSigningCertificateRequest # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:65
+  def self.decode: (String string) -> Dev::Sigstore::Fulcio::V2::CreateSigningCertificateRequest
+  # optional(1, :credentials, type: :message)
+  def credentials: () -> Dev::Sigstore::Fulcio::V2::Credentials
+  def has_credentials?: () -> bool
+  @credentials: Dev::Sigstore::Fulcio::V2::Credentials?
+  # optional(2, :public_key_request, type: :message)
+  def public_key_request: () -> Dev::Sigstore::Fulcio::V2::PublicKeyRequest
+  def has_public_key_request?: () -> bool
+  @public_key_request: Dev::Sigstore::Fulcio::V2::PublicKeyRequest?
+  # optional(3, :certificate_signing_request, type: :bytes)
+  def certificate_signing_request: () -> String
+  def has_certificate_signing_request?: () -> bool
+  @certificate_signing_request: String?
+end
+class Dev::Sigstore::Fulcio::V2::Credentials # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:113
+  def self.decode: (String string) -> Dev::Sigstore::Fulcio::V2::Credentials
+  # optional(1, :oidc_identity_token, type: :string)
+  def oidc_identity_token: () -> String
+  def has_oidc_identity_token?: () -> bool
+  @oidc_identity_token: String?
+end
+class Dev::Sigstore::Fulcio::V2::PublicKeyRequest # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:130
+  def self.decode: (String string) -> Dev::Sigstore::Fulcio::V2::PublicKeyRequest
+  # optional(1, :public_key, type: :message)
+  def public_key: () -> Dev::Sigstore::Fulcio::V2::PublicKey
+  def has_public_key?: () -> bool
+  @public_key: Dev::Sigstore::Fulcio::V2::PublicKey?
+  # optional(2, :proof_of_possession, type: :bytes)
+  def proof_of_possession: () -> String
+  def has_proof_of_possession?: () -> bool
+  @proof_of_possession: String?
+end
+class Dev::Sigstore::Fulcio::V2::PublicKey # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:160
+  def self.decode: (String string) -> Dev::Sigstore::Fulcio::V2::PublicKey
+  # optional(1, :algorithm, type: :enum)
+  def algorithm: () -> Integer
+  def has_algorithm?: () -> bool
+  @algorithm: Integer?
+  # optional(2, :content, type: :string)
+  def content: () -> String
+  def has_content?: () -> bool
+  @content: String?
+end
+class Dev::Sigstore::Fulcio::V2::SigningCertificate # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:186
+  def self.decode: (String string) -> Dev::Sigstore::Fulcio::V2::SigningCertificate
+  # optional(1, :signed_certificate_detached_sct, type: :message)
+  def signed_certificate_detached_sct: () -> Dev::Sigstore::Fulcio::V2::SigningCertificateDetachedSCT
+  def has_signed_certificate_detached_sct?: () -> bool
+  @signed_certificate_detached_sct: Dev::Sigstore::Fulcio::V2::SigningCertificateDetachedSCT?
+  # optional(2, :signed_certificate_embedded_sct, type: :message)
+  def signed_certificate_embedded_sct: () -> Dev::Sigstore::Fulcio::V2::SigningCertificateEmbeddedSCT
+  def has_signed_certificate_embedded_sct?: () -> bool
+  @signed_certificate_embedded_sct: Dev::Sigstore::Fulcio::V2::SigningCertificateEmbeddedSCT?
+end
+class Dev::Sigstore::Fulcio::V2::SigningCertificateDetachedSCT # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:215
+  def self.decode: (String string) -> Dev::Sigstore::Fulcio::V2::SigningCertificateDetachedSCT
+  # optional(1, :chain, type: :message)
+  def chain: () -> Dev::Sigstore::Fulcio::V2::CertificateChain
+  def has_chain?: () -> bool
+  @chain: Dev::Sigstore::Fulcio::V2::CertificateChain?
+  # optional(2, :signed_certificate_timestamp, type: :bytes)
+  def signed_certificate_timestamp: () -> String
+  def has_signed_certificate_timestamp?: () -> bool
+  @signed_certificate_timestamp: String?
+end
+class Dev::Sigstore::Fulcio::V2::SigningCertificateEmbeddedSCT # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:248
+  def self.decode: (String string) -> Dev::Sigstore::Fulcio::V2::SigningCertificateEmbeddedSCT
+  # optional(1, :chain, type: :message)
+  def chain: () -> Dev::Sigstore::Fulcio::V2::CertificateChain
+  def has_chain?: () -> bool
+  @chain: Dev::Sigstore::Fulcio::V2::CertificateChain?
+end
+class Dev::Sigstore::Fulcio::V2::GetTrustBundleRequest # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:272
+  def self.decode: (String string) -> Dev::Sigstore::Fulcio::V2::GetTrustBundleRequest
+end
+class Dev::Sigstore::Fulcio::V2::TrustBundle # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:278
+  def self.decode: (String string) -> Dev::Sigstore::Fulcio::V2::TrustBundle
+  # repeated(1, :chains, type: :message)
+  def chains: () -> Dev::Sigstore::Fulcio::V2::CertificateChain
+  def has_chains?: () -> bool
+  @chains: Dev::Sigstore::Fulcio::V2::CertificateChain?
+end
+class Dev::Sigstore::Fulcio::V2::CertificateChain # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:294
+  def self.decode: (String string) -> Dev::Sigstore::Fulcio::V2::CertificateChain
+  # repeated(1, :certificates, type: :string)
+  def certificates: () -> String
+  def has_certificates?: () -> bool
+  @certificates: String?
+end
+module Dev::Sigstore::Fulcio::V2::PublicKeyAlgorithm # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:304
+  PUBLIC_KEY_ALGORITHM_UNSPECIFIED: Integer
+  RSA_PSS: Integer
+  ECDSA: Integer
+  ED25519: Integer
+end
+class Dev::Sigstore::Fulcio::V2::GetConfigurationRequest # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:316
+  def self.decode: (String string) -> Dev::Sigstore::Fulcio::V2::GetConfigurationRequest
+end
+class Dev::Sigstore::Fulcio::V2::Configuration # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:323
+  def self.decode: (String string) -> Dev::Sigstore::Fulcio::V2::Configuration
+  # repeated(1, :issuers, type: :message)
+  def issuers: () -> Dev::Sigstore::Fulcio::V2::OIDCIssuer
+  def has_issuers?: () -> bool
+  @issuers: Dev::Sigstore::Fulcio::V2::OIDCIssuer?
+end
+class Dev::Sigstore::Fulcio::V2::OIDCIssuer # /lib/dev/sigstore/fulcio/v2/fulcio_pb.rb:338
+  def self.decode: (String string) -> Dev::Sigstore::Fulcio::V2::OIDCIssuer
+  # optional(1, :issuer_url, type: :string)
+  def issuer_url: () -> String
+  def has_issuer_url?: () -> bool
+  @issuer_url: String?
+  # optional(2, :wildcard_issuer_url, type: :string)
+  def wildcard_issuer_url: () -> String
+  def has_wildcard_issuer_url?: () -> bool
+  @wildcard_issuer_url: String?
+  # optional(3, :audience, type: :string)
+  def audience: () -> String
+  def has_audience?: () -> bool
+  @audience: String?
+  # optional(4, :challenge_claim, type: :string)
+  def challenge_claim: () -> String
+  def has_challenge_claim?: () -> bool
+  @challenge_claim: String?
+  # optional(5, :spiffe_trust_domain, type: :string)
+  def spiffe_trust_domain: () -> String
+  def has_spiffe_trust_domain?: () -> bool
+  @spiffe_trust_domain: String?
+end

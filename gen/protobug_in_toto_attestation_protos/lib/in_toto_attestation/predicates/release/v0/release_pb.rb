@@ -23,10 +23,6 @@ module InTotoAttestation
           optional(1, "purl", type: :string, proto3_optional: false)
           optional(2, "release_id", type: :string, json_name: "releaseId")
         end
-
-        def self.register_release_protos(registry)
-          registry.register(InTotoAttestation::Predicates::Release::V0::Release)
-        end
       end
     end
   end

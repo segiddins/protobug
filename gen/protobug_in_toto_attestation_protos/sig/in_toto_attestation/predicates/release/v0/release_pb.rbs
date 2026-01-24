@@ -1,0 +1,11 @@
+class InTotoAttestation::Predicates::Release::V0::Release # /lib/in_toto_attestation/predicates/release/v0/release_pb.rb:18
+  def self.decode: (String string) -> InTotoAttestation::Predicates::Release::V0::Release
+  # optional(1, :purl, type: :string)
+  def purl: () -> String
+  def has_purl?: () -> bool
+  @purl: String?
+  # optional(2, :release_id, type: :string)
+  def release_id: () -> String
+  def has_release_id?: () -> bool
+  @release_id: String?
+end

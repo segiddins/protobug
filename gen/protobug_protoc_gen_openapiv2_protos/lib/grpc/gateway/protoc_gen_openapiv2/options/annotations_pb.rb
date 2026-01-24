@@ -18,56 +18,92 @@ module Grpc
   module Gateway
     module ProtocGenOpenapiv2
       module Options
-        # ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
-        #
-        # All IDs are the same, as assigned. It is okay that they are the same, as they extend
-        # different descriptor messages.
-        # extension: google.protobuf.FileOptions
-        #   openapiv2_swagger 1042
-
-        # ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
-        #
-        # All IDs are the same, as assigned. It is okay that they are the same, as they extend
-        # different descriptor messages.
-        # extension: google.protobuf.MethodOptions
-        #   openapiv2_operation 1042
-
-        # ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
-        #
-        # All IDs are the same, as assigned. It is okay that they are the same, as they extend
-        # different descriptor messages.
-        # extension: google.protobuf.MessageOptions
-        #   openapiv2_schema 1042
-
-        # ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
-        #
-        # All IDs are the same, as assigned. It is okay that they are the same, as they extend
-        # different descriptor messages.
-        # extension: google.protobuf.ServiceOptions
-        #   openapiv2_tag 1042
-
-        # ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
-        #
-        # All IDs are the same, as assigned. It is okay that they are the same, as they extend
-        # different descriptor messages.
-        # extension: google.protobuf.FieldOptions
-        #   openapiv2_field 1042
-
-        def self.register_annotations_protos(registry)
-          Google::Protobuf.register_descriptor_protos(registry)
-          Grpc::Gateway::ProtocGenOpenapiv2::Options.register_openapiv2_protos(
-            registry
+        OPENAPIV2_SWAGGER = Protobug::Extension(
+          ::Google::Protobuf::FileOptions
+        ) do
+          # ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
+          #
+          # All IDs are the same, as assigned. It is okay that they are the same, as they extend
+          # different descriptor messages.
+          optional(
+            1_042,
+            "openapiv2_swagger",
+            type: :message,
+            message_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::Swagger",
+            json_name: "openapiv2Swagger",
+            proto3_optional: false
           )
-          # extension: google.protobuf.FileOptions
-          #   TYPE_MESSAGE 1042
-          # extension: google.protobuf.MethodOptions
-          #   TYPE_MESSAGE 1042
-          # extension: google.protobuf.MessageOptions
-          #   TYPE_MESSAGE 1042
-          # extension: google.protobuf.ServiceOptions
-          #   TYPE_MESSAGE 1042
-          # extension: google.protobuf.FieldOptions
-          #   TYPE_MESSAGE 1042
+        end
+
+        OPENAPIV2_OPERATION = Protobug::Extension(
+          ::Google::Protobuf::MethodOptions
+        ) do
+          # ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
+          #
+          # All IDs are the same, as assigned. It is okay that they are the same, as they extend
+          # different descriptor messages.
+          optional(
+            1_042,
+            "openapiv2_operation",
+            type: :message,
+            message_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::Operation",
+            json_name: "openapiv2Operation",
+            proto3_optional: false
+          )
+        end
+
+        OPENAPIV2_SCHEMA = Protobug::Extension(
+          ::Google::Protobuf::MessageOptions
+        ) do
+          # ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
+          #
+          # All IDs are the same, as assigned. It is okay that they are the same, as they extend
+          # different descriptor messages.
+          optional(
+            1_042,
+            "openapiv2_schema",
+            type: :message,
+            message_class: "Grpc::Gateway::ProtocGenOpenapiv2::Options::Schema",
+            json_name: "openapiv2Schema",
+            proto3_optional: false
+          )
+        end
+
+        OPENAPIV2_TAG = Protobug::Extension(
+          ::Google::Protobuf::ServiceOptions
+        ) do
+          # ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
+          #
+          # All IDs are the same, as assigned. It is okay that they are the same, as they extend
+          # different descriptor messages.
+          optional(
+            1_042,
+            "openapiv2_tag",
+            type: :message,
+            message_class: "Grpc::Gateway::ProtocGenOpenapiv2::Options::Tag",
+            json_name: "openapiv2Tag",
+            proto3_optional: false
+          )
+        end
+
+        OPENAPIV2_FIELD = Protobug::Extension(
+          ::Google::Protobuf::FieldOptions
+        ) do
+          # ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
+          #
+          # All IDs are the same, as assigned. It is okay that they are the same, as they extend
+          # different descriptor messages.
+          optional(
+            1_042,
+            "openapiv2_field",
+            type: :message,
+            message_class:
+            "Grpc::Gateway::ProtocGenOpenapiv2::Options::JSONSchema",
+            json_name: "openapiv2Field",
+            proto3_optional: false
+          )
         end
       end
     end

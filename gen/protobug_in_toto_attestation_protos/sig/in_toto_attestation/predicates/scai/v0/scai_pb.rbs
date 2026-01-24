@@ -1,0 +1,30 @@
+class InTotoAttestation::Predicates::Scai::V0::AttributeAssertion # /lib/in_toto_attestation/predicates/scai/v0/scai_pb.rb:27
+  def self.decode: (String string) -> InTotoAttestation::Predicates::Scai::V0::AttributeAssertion
+  # optional(1, :attribute, type: :string)
+  def attribute: () -> String
+  def has_attribute?: () -> bool
+  @attribute: String?
+  # optional(2, :target, type: :message)
+  def target: () -> InTotoAttestation::V1::ResourceDescriptor
+  def has_target?: () -> bool
+  @target: InTotoAttestation::V1::ResourceDescriptor?
+  # optional(3, :conditions, type: :message)
+  def conditions: () -> Google::Protobuf::Struct
+  def has_conditions?: () -> bool
+  @conditions: Google::Protobuf::Struct?
+  # optional(4, :evidence, type: :message)
+  def evidence: () -> InTotoAttestation::V1::ResourceDescriptor
+  def has_evidence?: () -> bool
+  @evidence: InTotoAttestation::V1::ResourceDescriptor?
+end
+class InTotoAttestation::Predicates::Scai::V0::AttributeReport # /lib/in_toto_attestation/predicates/scai/v0/scai_pb.rb:61
+  def self.decode: (String string) -> InTotoAttestation::Predicates::Scai::V0::AttributeReport
+  # repeated(1, :attributes, type: :message)
+  def attributes: () -> InTotoAttestation::Predicates::Scai::V0::AttributeAssertion
+  def has_attributes?: () -> bool
+  @attributes: InTotoAttestation::Predicates::Scai::V0::AttributeAssertion?
+  # optional(2, :producer, type: :message)
+  def producer: () -> InTotoAttestation::V1::ResourceDescriptor
+  def has_producer?: () -> bool
+  @producer: InTotoAttestation::V1::ResourceDescriptor?
+end
