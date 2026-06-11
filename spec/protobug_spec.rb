@@ -225,4 +225,47 @@ RSpec.describe Protobug do
       expect(roundtrip.d).to eq(150)
     end
   end
+
+  it "round-trips scalars through JSON" do
+    c = Class.new do
+      extend Protobug::Message
+      self.full_name = "test.JsonScalars"
+      optional 1, :s, type: :string
+      optional 2, :bytes, type: :bytes
+      optional 3, :big, type: :int64
+      optional 4, :d, type: :double
+      repeated 5, :nums, type: :int32
+    end
+
+    msg = c.new
+    msg.s = "héllo"
+    msg.bytes = "\x00\x01\x02\xff".b
+    msg.big = 9_223_372_036_854_775_807
+    msg.d = Float::INFINITY
+    msg.add_nums(1)
+    msg.add_nums(2)
+    msg.add_nums(3)
+
+    json = msg.to_json
+    parsed = JSON.parse(json)
+    aggregate_failures do
+      expect(parsed["s"]).to eq("héllo")
+      expect(parsed["bytes"]).to eq(["\x00\x01\x02\xff".b].pack("m0"))
+      expect(parsed["big"]).to eq("9223372036854775807") # int64 encodes as decimal string
+      expect(parsed["d"]).to eq("Infinity")
+      expect(parsed["nums"]).to eq([1, 2, 3])
+    end
+
+    decoded = c.decode_json(json, registry: nil)
+    aggregate_failures do
+      expect(decoded.s).to eq("héllo")
+      expect(decoded.bytes).to eq("\x00\x01\x02\xff".b)
+      expect(decoded.bytes.encoding).to eq(Encoding::BINARY)
+      expect(decoded.big).to eq(9_223_372_036_854_775_807)
+      expect(decoded.big).to be_a(Integer)
+      expect(decoded.d).to eq(Float::INFINITY)
+      expect(decoded.d).to be_a(Float)
+      expect(decoded.nums).to eq([1, 2, 3])
+    end
+  end
 end
