@@ -126,7 +126,7 @@ module Protobug
       binary.binmode
       while (header = BinaryEncoding.decode_varint(binary))
         wire_type = header & 0b111
-        number = (header ^ wire_type) >> 3
+        number = header >> 3
 
         unless number > 0
           raise DecodeError,
