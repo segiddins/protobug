@@ -766,7 +766,7 @@ module Protobug
       end
 
       def validate!(value, message)
-        raise "expected boolean, got #{value.inspect}" unless [true, false].include?(value)
+        raise InvalidValueError.new(message, self, value, "expected boolean") unless [true, false].include?(value)
 
         super(value ? 1 : 0, message)
       end
