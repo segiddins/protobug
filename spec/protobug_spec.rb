@@ -268,4 +268,69 @@ RSpec.describe Protobug do
       expect(decoded.nums).to eq([1, 2, 3])
     end
   end
+
+  it "round-trips maps and enums through binary and JSON" do
+    enum = Class.new do
+      extend Protobug::Enum
+      self.full_name = "test.Color"
+      const_set(:RED, new("RED", 0).freeze)
+      const_set(:GREEN, new("GREEN", 1).freeze)
+      const_set(:BLUE, new("BLUE", 2).freeze)
+    end
+    msg_class = Class.new do
+      extend Protobug::Message
+      self.full_name = "test.MapEnum"
+      map 1, :counts, key_type: :string, value_type: :int32
+      optional 2, :color, type: :enum, enum_type: "test.Color", proto3_optional: false
+    end
+    registry = Protobug::Registry.new do |r|
+      r.register(enum)
+      r.register(msg_class)
+    end
+
+    msg = msg_class.new
+    msg.add_counts(msg_class.fields_by_name.fetch("counts").type_lookup(registry).new.tap do |e|
+      e.key = "a"
+      e.value = 5
+    end)
+    msg.color = enum::GREEN
+
+    # binary round-trip
+    encoded = msg_class.encode(msg)
+    decoded = msg_class.decode(StringIO.new(encoded), registry: registry)
+    aggregate_failures do
+      expect(decoded.counts).to eq({ "a" => 5 })
+      expect(decoded.color).to eq(enum::GREEN)
+      expect(decoded.color.to_s).to eq("GREEN")
+    end
+
+    # JSON round-trip: known enum serializes as its name
+    json = msg.to_json
+    parsed = JSON.parse(json)
+    aggregate_failures do
+      expect(parsed["counts"]).to eq({ "a" => 5 })
+      expect(parsed["color"]).to eq("GREEN")
+    end
+    from_json = msg_class.decode_json(json, registry: registry)
+    aggregate_failures do
+      expect(from_json.counts).to eq({ "a" => 5 })
+      expect(from_json.color).to eq(enum::GREEN)
+    end
+
+    # unknown enum wire number is retained and re-emitted as its integer
+    unknown_color_class = Class.new do
+      extend Protobug::Message
+      self.full_name = "test.UnknownColor"
+      optional 2, :color, type: :enum, enum_type: "test.Color", proto3_optional: false
+    end
+    # field 2 (enum, wire 0) carrying value 7, which is not a known Color
+    wire = [(2 << 3) | 0, 7].pack("C*")
+    decoded_unknown = unknown_color_class.decode(StringIO.new(wire), registry: registry)
+    aggregate_failures do
+      expect(decoded_unknown.color).to eq(7)
+      expect(decoded_unknown.to_json).to eq(%({"color":7}))
+      reencoded = unknown_color_class.encode(decoded_unknown)
+      expect(reencoded).to eq(wire)
+    end
+  end
 end
