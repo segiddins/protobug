@@ -333,4 +333,33 @@ RSpec.describe Protobug do
       expect(reencoded).to eq(wire)
     end
   end
+
+  it "compares messages by structural equality" do
+    c = Class.new do
+      extend Protobug::Message
+      self.full_name = "test.Equality"
+      optional 1, :a, type: :string
+      optional 2, :b, type: :int32
+    end
+
+    a = c.new
+    a.a = "x"
+    a.b = 5
+
+    b = c.new
+    b.a = "x"
+    b.b = 5
+
+    aggregate_failures do
+      expect(a).to eq(b)
+      expect(a).to eql(b)
+      expect(a.hash).to eq(b.hash)
+    end
+
+    b.b = 6
+    aggregate_failures do
+      expect(a).not_to eq(b)
+      expect(a).not_to eql(b)
+    end
+  end
 end

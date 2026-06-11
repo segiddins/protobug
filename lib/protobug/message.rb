@@ -251,7 +251,7 @@ module Protobug
 
     module InstanceMethods
       def ==(other)
-        return false unless other.is_a? Protobug::Message
+        return false unless other.is_a? Protobug::Message::InstanceMethods
 
         self.class.full_name == other.class.full_name &&
           self.class.fields_by_name.all? do |name, _|
