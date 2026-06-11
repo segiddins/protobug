@@ -4,6 +4,8 @@ require_relative "binary_encoding"
 
 module Protobug
   class Field
+    PACKABLE_WIRE_TYPES = [0, 1, 5].freeze
+
     attr_accessor :number, :name, :json_name, :cardinality, :oneof, :ivar, :setter,
                   :adder, :haser, :clearer
 
@@ -144,12 +146,13 @@ module Protobug
     end
 
     def binary_decode(binary, message, registry, wire_type)
-      if repeated? && wire_type == 2 && [0, 1, 5].include?(self.wire_type)
+      own_wire_type = self.wire_type
+      if repeated? && wire_type == 2 && PACKABLE_WIRE_TYPES.include?(own_wire_type)
         len = StringIO.new(BinaryEncoding.decode_length(binary))
         len.binmode
 
-        message.send(adder, binary_decode_one(len, message, registry, self.wire_type)) until len.eof?
-      elsif wire_type != self.wire_type
+        message.send(adder, binary_decode_one(len, message, registry, own_wire_type)) until len.eof?
+      elsif wire_type != own_wire_type
         raise DecodeError, "wrong wire type for #{self}: #{wire_type.inspect}"
       else
         message.send(adder || setter, binary_decode_one(binary, message, registry, wire_type))
