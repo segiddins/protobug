@@ -157,8 +157,10 @@ module Protobug
       message.unknown_fields.each_with_object(buf) do |(number, wire_type, value), outbuf|
         BinaryEncoding.encode_varint((number << 3) | wire_type, outbuf)
         case wire_type
-        when 0, 5
+        when 0
           BinaryEncoding.encode_varint(value, outbuf)
+        when 1, 5
+          outbuf << value
         when 2
           BinaryEncoding.encode_length(value, outbuf)
         else

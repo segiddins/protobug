@@ -188,4 +188,41 @@ RSpec.describe Protobug do
       expect(decoded.f32).to eq(72)
     end
   end
+
+  it "preserves unknown fields across binary decode/re-encode" do
+    full = Class.new do
+      extend Protobug::Message
+      optional 1, :a, type: :string
+      optional 2, :b, type: :fixed32
+      optional 3, :c, type: :fixed64
+      optional 4, :d, type: :int32
+    end
+    partial = Class.new do
+      extend Protobug::Message
+      optional 1, :a, type: :string
+    end
+
+    msg = full.new
+    msg.a = "hello"
+    msg.b = 0x01020304
+    msg.c = 0x0102030405060708
+    msg.d = 150
+    encoded = full.encode(msg)
+
+    decoded = partial.decode(StringIO.new(encoded), registry: nil)
+    aggregate_failures do
+      expect(decoded.a).to eq("hello")
+      # fixed32 (wire 5), fixed64 (wire 1), varint (wire 0) all retained as unknown
+      expect(decoded.unknown_fields.map { |n, w, _| [n, w] }).to eq([[2, 5], [3, 1], [4, 0]])
+    end
+
+    reencoded = partial.encode(decoded)
+    roundtrip = full.decode(StringIO.new(reencoded), registry: nil)
+    aggregate_failures do
+      expect(roundtrip.a).to eq("hello")
+      expect(roundtrip.b).to eq(0x01020304)
+      expect(roundtrip.c).to eq(0x0102030405060708)
+      expect(roundtrip.d).to eq(150)
+    end
+  end
 end
