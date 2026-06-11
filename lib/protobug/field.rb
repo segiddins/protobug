@@ -466,15 +466,12 @@ module Protobug
         when :varint
           length_mask = (2**bit_length) - 1
           negative = signed && value & (2**bit_length.pred) != 0
-          # warn negative
-          length_mask >> 1 if signed
           if negative
             value &= length_mask # remove sign bit
 
             # 2's complement
             value ^= length_mask
             value += 1
-            # value &= length_mask
             -value
           else
             value & length_mask
