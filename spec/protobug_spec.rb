@@ -563,6 +563,25 @@ RSpec.describe Protobug do
     end
   end
 
+  it "rejects field number 0 and group wire types when binary decoding" do
+    c = Class.new do
+      extend Protobug::Message
+      self.full_name = "test.WireGuards"
+      optional 1, :a, type: :string
+    end
+
+    aggregate_failures do
+      # a leading 0x00 byte decodes as field number 0, wire type 0
+      expect { c.decode(StringIO.new("\x00".b), registry: nil) }
+        .to raise_error(Protobug::DecodeError, /unexpected field number 0/)
+
+      # field 5 (unknown), wire type 3 (group start) is an unsupported feature
+      group_start = [(5 << 3) | 3].pack("C*")
+      expect { c.decode(StringIO.new(group_start), registry: nil) }
+        .to raise_error(Protobug::UnsupportedFeatureError, /group/)
+    end
+  end
+
   it "JSON-decodes URL-safe base64 bytes back to the raw binary value" do
     c = Class.new do
       extend Protobug::Message
