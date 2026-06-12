@@ -739,7 +739,7 @@ module Protobug
       end
 
       def binary_pack
-        "l"
+        "l<"
       end
     end
 

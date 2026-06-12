@@ -216,7 +216,8 @@ RSpec.describe Protobug do
     msg.f = 0x0102030405060708
     msg.f32 = 72
     msg.sf64 = 0x1122334455667788
-    msg.sf32 = 76
+    # asymmetric negative value distinguishes little-endian "l<" from native-endian "l"
+    msg.sf32 = -0x66554434
     aggregate_failures do
       encoded = c.encode(msg)
       # fixed64 (field 1, wire 1) must be little-endian on the wire regardless of host byte order
@@ -224,12 +225,15 @@ RSpec.describe Protobug do
       # sfixed64 (field 3, wire 1) must also be little-endian; an asymmetric value distinguishes byte order
       sf64_idx = encoded.index("\x19".b)
       expect(encoded[sf64_idx, 9]).to eq("\x19\x88\x77\x66\x55\x44\x33\x22\x11".b)
+      # sfixed32 (field 4, wire 5) must also be little-endian; -0x66554434 is 0x99AABBCC two's complement
+      sf32_idx = encoded.index("\x25".b)
+      expect(encoded[sf32_idx, 5]).to eq("\x25\xCC\xBB\xAA\x99".b)
 
       decoded = c.decode(StringIO.new(encoded), registry: nil)
       expect(decoded.f).to eq(0x0102030405060708)
       expect(decoded.f32).to eq(72)
       expect(decoded.sf64).to eq(0x1122334455667788)
-      expect(decoded.sf32).to eq(76)
+      expect(decoded.sf32).to eq(-0x66554434)
     end
   end
 
