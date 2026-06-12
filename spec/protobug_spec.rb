@@ -168,6 +168,22 @@ RSpec.describe Protobug do
     expect(io).to be_eof
   end
 
+  it "encodes packed field" do
+    c = Class.new do
+      extend Protobug::Message
+      repeated 6, :f, type: :int32, packed: true
+    end
+
+    msg = c.new
+    [3, 270, 86_942].each { |n| msg.add_f(n) }
+
+    encoded = c.encode(msg)
+    expect(encoded.unpack1("H*")).to eq("3206038e029ea705")
+
+    decoded = c.decode(StringIO.new(encoded), registry: nil)
+    expect(decoded.f).to eq([3, 270, 86_942])
+  end
+
   it "parses sint32 and sint64" do
     msg = test_sint.new
     msg.n32 = 4
