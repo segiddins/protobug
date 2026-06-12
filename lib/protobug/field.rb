@@ -619,7 +619,7 @@ module Protobug
       end
 
       def binary_pack
-        "Q"
+        "Q<"
       end
     end
 

@@ -213,16 +213,20 @@ RSpec.describe Protobug do
       optional 4, :sf32, type: :sfixed32
     end
     msg = c.new
-    msg.f = 3
+    msg.f = 0x0102030405060708
     msg.f32 = 72
     msg.sf64 = -1
     msg.sf32 = 76
     aggregate_failures do
       encoded = c.encode(msg)
-      decoded = c.decode(StringIO.new(encoded), registry: nil)
+      # fixed64 (field 1, wire 1) must be little-endian on the wire regardless of host byte order
+      expect(encoded[0, 9]).to eq("\x09\x08\x07\x06\x05\x04\x03\x02\x01".b)
 
-      expect(decoded.f).to eq(3)
+      decoded = c.decode(StringIO.new(encoded), registry: nil)
+      expect(decoded.f).to eq(0x0102030405060708)
       expect(decoded.f32).to eq(72)
+      expect(decoded.sf64).to eq(-1)
+      expect(decoded.sf32).to eq(76)
     end
   end
 
