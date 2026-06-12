@@ -451,4 +451,41 @@ RSpec.describe Protobug do
       end.to raise_error(ArgumentError, /Unknown field type/)
     end
   end
+
+  it "validates integer range/type and boolean type on assignment" do
+    msg_class = Class.new do
+      extend Protobug::Message
+      self.full_name = "test.Validation"
+      optional 1, :i32, type: :int32
+      optional 2, :u32, type: :uint32
+      optional 3, :flag, type: :bool
+    end
+    msg = msg_class.new
+
+    aggregate_failures do
+      # int32 boundaries are accepted
+      expect { msg.i32 = (2**31) - 1 }.not_to raise_error
+      expect(msg.i32).to eq((2**31) - 1)
+      expect { msg.i32 = -2**31 }.not_to raise_error
+      expect(msg.i32).to eq(-2**31)
+
+      # one past either boundary is rejected
+      expect { msg.i32 = 2**31 }
+        .to raise_error(Protobug::InvalidValueError, /does not fit/)
+      expect { msg.i32 = (-2**31) - 1 }
+        .to raise_error(Protobug::InvalidValueError, /does not fit/)
+
+      # non-integer is rejected
+      expect { msg.i32 = "5" }
+        .to raise_error(Protobug::InvalidValueError, /expected integer/)
+
+      # uint32 rejects negative values
+      expect { msg.u32 = -1 }
+        .to raise_error(Protobug::InvalidValueError, /does not fit/)
+
+      # bool rejects non-boolean
+      expect { msg.flag = "true" }
+        .to raise_error(Protobug::InvalidValueError, /expected boolean/)
+    end
+  end
 end
