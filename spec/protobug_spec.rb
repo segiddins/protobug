@@ -293,6 +293,39 @@ RSpec.describe Protobug do
     end
   end
 
+  it "round-trips double NaN and float -Infinity through JSON and coerces integers to Float" do
+    c = Class.new do
+      extend Protobug::Message
+      self.full_name = "test.JsonFloatSpecials"
+      optional 1, :d, type: :double
+      optional 2, :f, type: :float
+    end
+
+    msg = c.new
+    msg.d = Float::NAN
+    msg.f = -Float::INFINITY
+
+    parsed = JSON.parse(msg.to_json)
+    aggregate_failures do
+      expect(parsed["d"]).to eq("NaN")
+      expect(parsed["f"]).to eq("-Infinity")
+    end
+
+    decoded = c.decode_json(msg.to_json, registry: nil)
+    aggregate_failures do
+      expect(decoded.d).to be_nan
+      expect(decoded.f).to eq(-Float::INFINITY)
+    end
+
+    coerced = c.decode_json(%({"d":7,"f":-3}), registry: nil)
+    aggregate_failures do
+      expect(coerced.d).to eq(7.0)
+      expect(coerced.d).to be_a(Float)
+      expect(coerced.f).to eq(-3.0)
+      expect(coerced.f).to be_a(Float)
+    end
+  end
+
   it "round-trips maps and enums through binary and JSON" do
     enum = Class.new do
       extend Protobug::Enum
