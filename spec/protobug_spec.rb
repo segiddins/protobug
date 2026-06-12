@@ -419,6 +419,42 @@ RSpec.describe Protobug do
     end
   end
 
+  it "compares enum values across representations and serializes known and unknown numbers" do
+    enum = Class.new do
+      extend Protobug::Enum
+      self.full_name = "test.EnumRepr"
+      const_set(:RED, new("RED", 0).freeze)
+      const_set(:GREEN, new("GREEN", 1).freeze)
+    end
+    # Freeze registers the members in @values on Ruby < 3.2 (where the const_added
+    # hook is unavailable), matching how generated enums are finalized.
+    enum.freeze
+
+    green = enum::GREEN
+
+    aggregate_failures do
+      # == across Integer, String, and Symbol forms
+      expect(green).to eq(1)
+      expect(green).to eq("GREEN")
+      expect(green).to eq(:GREEN)
+
+      # == against an arbitrary object raises
+      expect { green == Object.new }.to raise_error(/expected #{enum}/)
+
+      # decode_json_hash of an unknown name raises DecodeError
+      expect { enum.decode_json_hash("MAUVE") }
+        .to raise_error(Protobug::DecodeError, /unknown value/)
+
+      # a known value's as_json returns its name
+      expect(green.as_json).to eq("GREEN")
+
+      # an unknown number round-trips as the integer and renders its placeholder name
+      unknown = enum.decode(99)
+      expect(unknown.as_json).to eq(99)
+      expect(unknown.to_s).to eq("<unknown:99>")
+    end
+  end
+
   it "merges repeated occurrences of an embedded message field into one submessage" do
     inner_class = Class.new do
       extend Protobug::Message
