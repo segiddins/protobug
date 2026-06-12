@@ -168,6 +168,15 @@ RSpec.describe Protobug do
     expect(io).to be_eof
   end
 
+  it "raises EncodeError when encoding the wrong type" do
+    c = Class.new do
+      extend Protobug::Message
+      repeated 6, :f, type: :int32, packed: true
+    end
+
+    expect { c.encode(Object.new) }.to raise_error(Protobug::EncodeError, /expected/)
+  end
+
   it "encodes packed field" do
     c = Class.new do
       extend Protobug::Message
