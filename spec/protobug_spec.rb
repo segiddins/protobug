@@ -530,6 +530,21 @@ RSpec.describe Protobug do
     end
   end
 
+  it "JSON-decodes URL-safe base64 bytes back to the raw binary value" do
+    c = Class.new do
+      extend Protobug::Message
+      self.full_name = "test.JsonBytes"
+      optional 1, :bytes, type: :bytes
+    end
+
+    # 0xfb,0xef,0xff -> standard base64 "++//" -> URL-safe alphabet "--__"
+    decoded = c.decode_json(%({"bytes":"--__"}), registry: nil)
+    aggregate_failures do
+      expect(decoded.bytes).to eq("\xfb\xef\xff".b)
+      expect(decoded.bytes.encoding).to eq(Encoding::BINARY)
+    end
+  end
+
   it "reports the input float when JSON-decoding a non-integral number into an integer field" do
     c = Class.new do
       extend Protobug::Message
