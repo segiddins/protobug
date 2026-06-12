@@ -155,6 +155,18 @@ RSpec.describe Protobug do
     expect(msg.x).to eq(:b)
   end
 
+  it "rejects JSON setting two members of the same oneof" do
+    c = Class.new do
+      extend Protobug::Message
+      self.full_name = "test.OneofConflict"
+      optional 1, :a, type: :string, oneof: :x
+      optional 2, :b, type: :int32, oneof: :x
+    end
+
+    expect { c.decode_json(%({"a":"hi","b":3}), registry: nil) }
+      .to raise_error(Protobug::DecodeError, /multiple oneof fields set/)
+  end
+
   it "parses packed field" do
     c = Class.new do
       extend Protobug::Message
