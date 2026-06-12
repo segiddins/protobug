@@ -391,6 +391,38 @@ RSpec.describe Protobug do
     end
   end
 
+  it "merges repeated occurrences of an embedded message field into one submessage" do
+    inner_class = Class.new do
+      extend Protobug::Message
+      self.full_name = "test.MergeInner"
+      optional 1, :a, type: :string
+      optional 2, :b, type: :string
+    end
+    outer_class = Class.new do
+      extend Protobug::Message
+      self.full_name = "test.MergeOuter"
+      optional 1, :inner, type: :message, message_type: "test.MergeInner"
+    end
+    registry = Protobug::Registry.new do |r|
+      r.register(inner_class)
+      r.register(outer_class)
+    end
+
+    first = outer_class.new
+    first.inner = inner_class.new.tap { |i| i.a = "alpha" }
+    second = outer_class.new
+    second.inner = inner_class.new.tap { |i| i.b = "beta" }
+
+    # concatenated wire bytes: two outer messages each carrying the inner field
+    concatenated = outer_class.encode(first) + outer_class.encode(second)
+    decoded = outer_class.decode(StringIO.new(concatenated), registry: registry)
+
+    aggregate_failures do
+      expect(decoded.inner.a).to eq("alpha")
+      expect(decoded.inner.b).to eq("beta")
+    end
+  end
+
   it "handles decode_json parse-failure, non-hash, and unknown-field paths" do
     c = Class.new do
       extend Protobug::Message
