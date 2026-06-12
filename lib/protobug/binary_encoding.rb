@@ -51,7 +51,7 @@ module Protobug
       outbuf << contents
     end
 
-    def eof!
+    def varint_eof!
       raise EOFError, "unexpected EOF in the middle of a varint"
     end
 
@@ -61,31 +61,31 @@ module Protobug
       # byte is a truncated varint and must be rejected.
       if (byte0 = binary.getbyte || return) < 0x80
         byte0
-      elsif (byte1 = binary.getbyte || eof!) < 0x80
+      elsif (byte1 = binary.getbyte || varint_eof!) < 0x80
         (byte1 << 7) | (byte0 & 0x7F)
-      elsif (byte2 = binary.getbyte || eof!) < 0x80
+      elsif (byte2 = binary.getbyte || varint_eof!) < 0x80
         (byte2 << 14) |
           ((byte1 & 0x7F) << 7) |
           (byte0 & 0x7F)
-      elsif (byte3 = binary.getbyte || eof!) < 0x80
+      elsif (byte3 = binary.getbyte || varint_eof!) < 0x80
         (byte3 << 21) |
           ((byte2 & 0x7F) << 14) |
           ((byte1 & 0x7F) << 7) |
           (byte0 & 0x7F)
-      elsif (byte4 = binary.getbyte || eof!) < 0x80
+      elsif (byte4 = binary.getbyte || varint_eof!) < 0x80
         (byte4 << 28) |
           ((byte3 & 0x7F) << 21) |
           ((byte2 & 0x7F) << 14) |
           ((byte1 & 0x7F) << 7) |
           (byte0 & 0x7F)
-      elsif (byte5 = binary.getbyte || eof!) < 0x80
+      elsif (byte5 = binary.getbyte || varint_eof!) < 0x80
         (byte5 << 35) |
           ((byte4 & 0x7F) << 28) |
           ((byte3 & 0x7F) << 21) |
           ((byte2 & 0x7F) << 14) |
           ((byte1 & 0x7F) << 7) |
           (byte0 & 0x7F)
-      elsif (byte6 = binary.getbyte || eof!) < 0x80
+      elsif (byte6 = binary.getbyte || varint_eof!) < 0x80
         (byte6 << 42) |
           ((byte5 & 0x7F) << 35) |
           ((byte4 & 0x7F) << 28) |
@@ -93,7 +93,7 @@ module Protobug
           ((byte2 & 0x7F) << 14) |
           ((byte1 & 0x7F) << 7) |
           (byte0 & 0x7F)
-      elsif (byte7 = binary.getbyte || eof!) < 0x80
+      elsif (byte7 = binary.getbyte || varint_eof!) < 0x80
         (byte7 << 49) |
           ((byte6 & 0x7F) << 42) |
           ((byte5 & 0x7F) << 35) |
@@ -102,7 +102,7 @@ module Protobug
           ((byte2 & 0x7F) << 14) |
           ((byte1 & 0x7F) << 7) |
           (byte0 & 0x7F)
-      elsif (byte8 = binary.getbyte || eof!) < 0x80
+      elsif (byte8 = binary.getbyte || varint_eof!) < 0x80
         (byte8 << 56) |
           ((byte7 & 0x7F) << 49) |
           ((byte6 & 0x7F) << 42) |
@@ -112,7 +112,7 @@ module Protobug
           ((byte2 & 0x7F) << 14) |
           ((byte1 & 0x7F) << 7) |
           (byte0 & 0x7F)
-      elsif (byte9 = binary.getbyte || eof!) < 0x80
+      elsif (byte9 = binary.getbyte || varint_eof!) < 0x80
         raise DecodeError, "varint overflow: 10th byte #{byte9} exceeds 64 bits" if byte9 > 1
 
         (byte9 << 63) |
