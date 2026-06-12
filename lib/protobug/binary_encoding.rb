@@ -108,6 +108,8 @@ module Protobug
           ((byte1 & 0x7F) << 7) |
           (byte0 & 0x7F)
       elsif (byte9 = binary.getbyte || return) < 0x80
+        raise DecodeError, "varint overflow: 10th byte #{byte9} exceeds 64 bits" if byte9 > 1
+
         (byte9 << 63) |
           ((byte8 & 0x7F) << 56) |
           ((byte7 & 0x7F) << 49) |

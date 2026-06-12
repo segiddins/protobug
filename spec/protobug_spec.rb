@@ -76,6 +76,15 @@ RSpec.describe Protobug do
     end
   end
 
+  it "rejects overlong varints whose 10th byte exceeds 64 bits" do
+    # field 1, varint wire type, then 9 continuation bytes plus a 10th byte
+    # that sets bits above bit 63, which cannot fit in a 64-bit integer.
+    encoded = ("\x08".b + ("\xFF".b * 9) + "\x7F".b)
+    expect do
+      test3.decode(StringIO.new(encoded), registry: nil)
+    end.to raise_error(Protobug::DecodeError)
+  end
+
   it "allows oneofs" do
     c = Class.new do
       extend Protobug::Message
