@@ -488,4 +488,15 @@ RSpec.describe Protobug do
         .to raise_error(Protobug::InvalidValueError, /expected boolean/)
     end
   end
+
+  it "reports the input float when JSON-decoding a non-integral number into an integer field" do
+    c = Class.new do
+      extend Protobug::Message
+      self.full_name = "test.JsonIntFloat"
+      optional 1, :n, type: :int32
+    end
+
+    expect { c.decode_json(%({"n":1.5}), registry: nil) }
+      .to raise_error(Protobug::DecodeError, /got 1\.5/)
+  end
 end

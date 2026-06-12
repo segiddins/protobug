@@ -504,8 +504,10 @@ module Protobug
         when /\A-?\d+\z/
           value = Integer(value)
         when Float
-          value, remainder = value.divmod(1)
+          int, remainder = value.divmod(1)
           raise DecodeError, "expected integer for #{inspect}, got #{value.inspect}" unless remainder == 0
+
+          value = int
         else
           raise DecodeError, "expected integer for #{inspect}, got #{value.inspect}"
         end
