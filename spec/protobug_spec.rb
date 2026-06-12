@@ -516,6 +516,42 @@ RSpec.describe Protobug do
     end
   end
 
+  it "stringifies non-string scalar map keys in JSON per proto3" do
+    msg_class = Class.new do
+      extend Protobug::Message
+      self.full_name = "test.ScalarKeyMaps"
+      map 1, :by_int, key_type: :int32, value_type: :string
+      map 2, :by_bool, key_type: :bool, value_type: :string
+    end
+    registry = Protobug::Registry.new do |r|
+      r.register(msg_class)
+    end
+
+    msg = msg_class.new
+    msg.add_by_int(msg_class.fields_by_name.fetch("by_int").type_lookup(registry).new.tap do |e|
+      e.key = 5
+      e.value = "five"
+    end)
+    msg.add_by_bool(msg_class.fields_by_name.fetch("by_bool").type_lookup(registry).new.tap do |e|
+      e.key = true
+      e.value = "yes"
+    end)
+
+    parsed = JSON.parse(msg.to_json)
+    aggregate_failures do
+      # proto3 JSON requires map keys to be strings; the int and bool keys
+      # must stringify to "5" and "true" respectively
+      expect(parsed["by_int"]).to eq({ "5" => "five" })
+      expect(parsed["by_bool"]).to eq({ "true" => "yes" })
+    end
+
+    from_json = msg_class.decode_json(msg.to_json, registry: registry)
+    aggregate_failures do
+      expect(from_json.by_int).to eq({ 5 => "five" })
+      expect(from_json.by_bool).to eq({ true => "yes" })
+    end
+  end
+
   it "compares enum values across representations and serializes known and unknown numbers" do
     enum = Class.new do
       extend Protobug::Enum
