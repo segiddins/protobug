@@ -372,6 +372,37 @@ RSpec.describe Protobug do
     end
   end
 
+  it "enforces registry register/fetch invariants" do
+    msg_class = Class.new do
+      extend Protobug::Message
+      self.full_name = "test.RegistryItem"
+      optional 1, :a, type: :string
+    end
+    other_class = Class.new do
+      extend Protobug::Message
+      self.full_name = "test.RegistryItem"
+      optional 1, :a, type: :string
+    end
+
+    registry = Protobug::Registry.new
+
+    aggregate_failures do
+      expect { registry.register("not a descriptor") }
+        .to raise_error(ArgumentError, /expected Protobug::BaseDescriptor/)
+
+      registry.register(msg_class)
+      # idempotent re-registration of the same class does not raise
+      expect { registry.register(msg_class) }.not_to raise_error
+      expect(registry.fetch("test.RegistryItem")).to eq(msg_class)
+
+      # two distinct classes under one full_name conflict
+      expect { registry.register(other_class) }
+        .to raise_error(ArgumentError, /duplicate class/)
+
+      expect { registry.fetch("test.Missing") }.to raise_error(KeyError)
+    end
+  end
+
   it "rejects invalid field definitions" do
     aggregate_failures do
       expect do
