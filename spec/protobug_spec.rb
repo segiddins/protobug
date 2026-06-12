@@ -85,6 +85,34 @@ RSpec.describe Protobug do
     end.to raise_error(Protobug::DecodeError)
   end
 
+  it "guards encode_varint bounds and surfaces EOF on truncated decodes" do
+    fixed = Class.new do
+      extend Protobug::Message
+      self.full_name = "test.Fixed64Eof"
+      optional 1, :f, type: :fixed64
+    end
+
+    aggregate_failures do
+      # encode_varint range guards: one past the unsigned and signed bounds
+      expect { Protobug::BinaryEncoding.encode_varint(2**64, "".b) }
+        .to raise_error(RangeError, /64-bit integer/)
+      expect { Protobug::BinaryEncoding.encode_varint((-2**63) - 1, "".b) }
+        .to raise_error(RangeError, /64-bit integer/)
+
+      # encode_varint type guard
+      expect { Protobug::BinaryEncoding.encode_varint("5", "".b) }
+        .to raise_error(Protobug::EncodeError, /expected integer/)
+
+      # a varint header (field 1, wire 0) with no value byte hits EOF
+      expect { test3.decode(StringIO.new("\x08".b), registry: nil) }
+        .to raise_error(EOFError)
+
+      # a fixed64 header (field 1, wire 1) with fewer than 8 value bytes hits EOF
+      expect { fixed.decode(StringIO.new("\x09\x01\x02\x03".b), registry: nil) }
+        .to raise_error(EOFError)
+    end
+  end
+
   it "allows oneofs" do
     c = Class.new do
       extend Protobug::Message
