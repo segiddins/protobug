@@ -371,4 +371,31 @@ RSpec.describe Protobug do
       expect(a).not_to eql(b)
     end
   end
+
+  it "rejects invalid field definitions" do
+    aggregate_failures do
+      expect do
+        Class.new do
+          extend Protobug::Message
+          optional 1, :a, type: :string
+          optional 1, :b, type: :string
+        end
+      end.to raise_error(Protobug::DefinitionError, /duplicate field number/)
+
+      expect do
+        Class.new do
+          extend Protobug::Message
+          optional 1, :a, type: :string
+          optional 2, :a, type: :string
+        end
+      end.to raise_error(Protobug::DefinitionError, /duplicate field name/)
+
+      expect do
+        Class.new do
+          extend Protobug::Message
+          optional 1, :a, type: :bogus
+        end
+      end.to raise_error(ArgumentError, /Unknown field type/)
+    end
+  end
 end
