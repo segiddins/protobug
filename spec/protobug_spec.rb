@@ -409,6 +409,32 @@ RSpec.describe Protobug do
     end
   end
 
+  it "treats distinct message classes with identical fields as unequal" do
+    klass = lambda do
+      Class.new do
+        extend Protobug::Message
+        optional 1, :a, type: :string
+      end
+    end
+
+    c1 = klass.call
+    c2 = klass.call
+
+    m1 = c1.new
+    m1.a = "x"
+    m2 = c2.new
+    m2.a = "x"
+
+    aggregate_failures do
+      expect(c1.full_name).to be_nil
+      expect(c2.full_name).to be_nil
+      expect(m1).not_to eq(m2)
+      expect(m1).not_to eql(m2)
+      expect(m1.hash).not_to eq(m2.hash)
+      expect({ m1 => 1 }[m2]).to be_nil
+    end
+  end
+
   it "enforces registry register/fetch invariants" do
     msg_class = Class.new do
       extend Protobug::Message

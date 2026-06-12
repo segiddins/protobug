@@ -251,12 +251,11 @@ module Protobug
 
     module InstanceMethods
       def ==(other)
-        return false unless other.is_a? Protobug::Message::InstanceMethods
+        return false unless other.instance_of?(self.class)
 
-        self.class.full_name == other.class.full_name &&
-          self.class.fields_by_name.all? do |name, _|
-            send(name) == other.send(name)
-          end
+        self.class.fields_by_name.all? do |name, _|
+          send(name) == other.send(name)
+        end
       end
       alias eql? ==
 
@@ -290,7 +289,7 @@ module Protobug
       end
 
       def hash
-        self.class.fields_by_name.map { |name, _| send(name) }.hash
+        [self.class, *self.class.fields_by_name.map { |name, _| send(name) }].hash
       end
 
       def to_text
