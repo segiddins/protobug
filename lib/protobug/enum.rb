@@ -126,7 +126,7 @@ module Protobug
         when String, Symbol
           name.to_s == other.to_s
         else
-          raise "expected #{self.class}, got #{other.inspect}"
+          false
         end
       end
 

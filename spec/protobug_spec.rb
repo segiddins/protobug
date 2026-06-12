@@ -571,8 +571,10 @@ RSpec.describe Protobug do
       expect(green).to eq("GREEN")
       expect(green).to eq(:GREEN)
 
-      # == against an arbitrary object raises
-      expect { green == Object.new }.to raise_error(/expected #{enum}/)
+      # == against an arbitrary object returns false rather than raising
+      expect(green == Object.new).to be(false)
+      expect(green).not_to eq(Object.new)
+      expect([green].include?(Object.new)).to be(false)
 
       # decode_json_hash of an unknown name raises DecodeError
       expect { enum.decode_json_hash("MAUVE") }
