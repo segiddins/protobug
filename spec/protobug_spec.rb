@@ -278,6 +278,21 @@ RSpec.describe Protobug do
     end
   end
 
+  it "JSON-decodes double values given as fractional and exponent strings" do
+    c = Class.new do
+      extend Protobug::Message
+      self.full_name = "test.JsonDoubleStrings"
+      optional 1, :d, type: :double
+    end
+
+    aggregate_failures do
+      expect(c.decode_json('{"d":"1.5"}', registry: nil).d).to eq(1.5)
+      expect(c.decode_json('{"d":"1e3"}', registry: nil).d).to eq(1000.0)
+      expect(c.decode_json('{"d":"-2.5e-1"}', registry: nil).d).to eq(-0.25)
+      expect(c.decode_json('{"d":"42"}', registry: nil).d).to eq(42.0)
+    end
+  end
+
   it "round-trips maps and enums through binary and JSON" do
     enum = Class.new do
       extend Protobug::Enum

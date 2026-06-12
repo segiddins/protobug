@@ -884,7 +884,7 @@ module Protobug
           -Float::INFINITY
         when "NaN"
           Float::NAN
-        when /\A-?\d+\z/
+        when /\A-?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?\z/
           Float(value)
         when NilClass
           UNSET
