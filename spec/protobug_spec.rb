@@ -269,6 +269,34 @@ RSpec.describe Protobug do
     end
   end
 
+  it "binary round-trips double and float fields little-endian" do
+    c = Class.new do
+      extend Protobug::Message
+      self.full_name = "test.DoubleFloat"
+      optional 1, :d, type: :double
+      optional 2, :f, type: :float
+    end
+
+    msg = c.new
+    msg.d = 1.5
+    msg.f = -2.25
+
+    encoded = c.encode(msg)
+    aggregate_failures do
+      # double (field 1, wire 1): tag 0x09 then little-endian IEEE-754 1.5
+      expect(encoded[0, 9]).to eq("\x09\x00\x00\x00\x00\x00\x00\xf8\x3f".b)
+      # float (field 2, wire 5): tag 0x15 then little-endian IEEE-754 -2.25
+      f_idx = encoded.index("\x15".b)
+      expect(encoded[f_idx, 5]).to eq("\x15\x00\x00\x10\xc0".b)
+
+      decoded = c.decode(StringIO.new(encoded), registry: nil)
+      expect(decoded.d).to eq(1.5)
+      expect(decoded.d).to be_a(Float)
+      expect(decoded.f).to eq(-2.25)
+      expect(decoded.f).to be_a(Float)
+    end
+  end
+
   it "preserves unknown fields across binary decode/re-encode" do
     full = Class.new do
       extend Protobug::Message
