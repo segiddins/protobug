@@ -113,6 +113,22 @@ RSpec.describe Protobug do
     end
   end
 
+  it "rejects a truncated tag varint and still terminates on a clean empty stream" do
+    aggregate_failures do
+      # a tag varint whose continuation bit is set but with no following byte is
+      # truncated mid-varint and must be rejected rather than read as clean EOF
+      expect { test3.decode(StringIO.new("\x80".b), registry: nil) }
+        .to raise_error(EOFError)
+
+      # a longer truncated tag varint is likewise rejected
+      expect { test3.decode(StringIO.new("\x80\x80".b), registry: nil) }
+        .to raise_error(EOFError)
+
+      # an empty stream is a legitimate clean EOF and decodes to an empty message
+      expect(test3.decode(StringIO.new("".b), registry: nil)).to eq(test3.new)
+    end
+  end
+
   it "allows oneofs" do
     c = Class.new do
       extend Protobug::Message
