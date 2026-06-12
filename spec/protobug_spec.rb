@@ -343,6 +343,28 @@ RSpec.describe Protobug do
     end
   end
 
+  it "handles decode_json parse-failure, non-hash, and unknown-field paths" do
+    c = Class.new do
+      extend Protobug::Message
+      self.full_name = "test.JsonErrors"
+      optional 1, :a, type: :string
+    end
+
+    aggregate_failures do
+      expect { c.decode_json("{not valid json", registry: nil) }
+        .to raise_error(Protobug::DecodeError, /JSON failed to parse/)
+
+      expect { c.decode_json("[1, 2, 3]", registry: nil) }
+        .to raise_error(Protobug::DecodeError, /expected hash/)
+
+      expect { c.decode_json(%({"a":"x","nope":1}), registry: nil) }
+        .to raise_error(Protobug::UnknownFieldError, /unknown field "nope"/)
+
+      decoded = c.decode_json(%({"a":"x","nope":1}), registry: nil, ignore_unknown_fields: true)
+      expect(decoded.a).to eq("x")
+    end
+  end
+
   it "compares messages by structural equality" do
     c = Class.new do
       extend Protobug::Message
