@@ -123,8 +123,13 @@ module Protobug
           value == other.value
         when Integer
           value == other
-        when String, Symbol
-          name.to_s == other.to_s
+        when String
+          # name is already a frozen String (see #initialize), so no allocation here.
+          name == other
+        when Symbol
+          # Symbol#name returns the frozen interned string, avoiding the allocation
+          # that Symbol#to_s would incur.
+          name == other.name
         else
           false
         end

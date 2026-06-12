@@ -289,7 +289,11 @@ module Protobug
       end
 
       def hash
-        [self.class, *self.class.fields_by_name.map { |name, _| send(name) }].hash
+        # Build a single array (map result is mutated in place via unshift) rather
+        # than allocating both the mapped array and a second spread literal.
+        values = self.class.fields_by_name.map { |name, _| send(name) }
+        values.unshift(self.class)
+        values.hash
       end
 
       def to_text
