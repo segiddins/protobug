@@ -614,6 +614,31 @@ RSpec.describe Protobug do
     end
   end
 
+  it "guards cardinality/type mismatches in the definition DSL" do
+    aggregate_failures do
+      expect do
+        Class.new do
+          extend Protobug::Message
+          optional 1, :a, type: :string, cardinality: :repeated
+        end
+      end.to raise_error(Protobug::DefinitionError, /expected cardinality: :optional, got :repeated/)
+
+      expect do
+        Class.new do
+          extend Protobug::Message
+          repeated 1, :a, type: :string, cardinality: :optional
+        end
+      end.to raise_error(Protobug::DefinitionError, /expected cardinality: :repeated, got :optional/)
+
+      expect do
+        Class.new do
+          extend Protobug::Message
+          map 1, :a, type: :wrong
+        end
+      end.to raise_error(Protobug::DefinitionError, /expected type: :map, got :wrong/)
+    end
+  end
+
   it "treats distinct message classes with identical fields as unequal" do
     klass = lambda do
       Class.new do
