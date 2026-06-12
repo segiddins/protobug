@@ -389,6 +389,11 @@ RSpec.describe Protobug do
       expect(c.decode_json('{"d":"1e3"}', registry: nil).d).to eq(1000.0)
       expect(c.decode_json('{"d":"-2.5e-1"}', registry: nil).d).to eq(-0.25)
       expect(c.decode_json('{"d":"42"}', registry: nil).d).to eq(42.0)
+
+      # a trailing dot with no fractional digits is malformed and must raise
+      # DecodeError rather than leaking ArgumentError from Float("1.")
+      expect { c.decode_json('{"d":"1."}', registry: nil) }
+        .to raise_error(Protobug::DecodeError, /expected float/)
     end
   end
 
