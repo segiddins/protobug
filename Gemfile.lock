@@ -59,7 +59,7 @@ GEM
     json (2.9.1)
     json (2.9.1-java)
     language_server-protocol (3.17.0.3)
-    minitest (5.26.0)
+    minitest (5.27.0)
     parallel (1.26.3)
     parser (3.3.7.0)
       ast (~> 2.4.1)
@@ -111,6 +111,7 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
+    tsort (0.2.0)
     unicode-display_width (2.6.0)
 
 PLATFORMS
@@ -143,6 +144,7 @@ DEPENDENCIES
   rubocop-rake (~> 0.6.0)
   rubocop-rspec (~> 3.4)
   simplecov (~> 0.22.0)
+  tsort
 
 BUNDLED WITH
-   2.5.18
+  4.0.14

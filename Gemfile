@@ -13,6 +13,10 @@ gemspec path: "gen/protobug_sigstore_protos"
 
 gem "rake", "~> 13.2"
 
+# tsort was a default gem through Ruby 4.0 but is no longer bundled on Ruby 4.1+;
+# the toolchain (bundler/rubocop) still requires it, so depend on it explicitly.
+gem "tsort"
+
 gem "minitest", "~> 5.26"
 gem "rspec", "~> 3.13"
 
