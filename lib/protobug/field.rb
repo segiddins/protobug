@@ -4,6 +4,8 @@ require_relative "binary_encoding"
 
 module Protobug
   class Field
+    PACKABLE_WIRE_TYPES = [0, 1, 5].freeze
+
     attr_accessor :number, :name, :json_name, :cardinality, :oneof, :ivar, :setter,
                   :adder, :haser, :clearer
 
@@ -144,12 +146,13 @@ module Protobug
     end
 
     def binary_decode(binary, message, registry, wire_type)
-      if repeated? && wire_type == 2 && [0, 1, 5].include?(self.wire_type)
+      own_wire_type = self.wire_type
+      if repeated? && wire_type == 2 && PACKABLE_WIRE_TYPES.include?(own_wire_type)
         len = StringIO.new(BinaryEncoding.decode_length(binary))
         len.binmode
 
-        message.send(adder, binary_decode_one(len, message, registry, self.wire_type)) until len.eof?
-      elsif wire_type != self.wire_type
+        message.send(adder, binary_decode_one(len, message, registry, own_wire_type)) until len.eof?
+      elsif wire_type != own_wire_type
         raise DecodeError, "wrong wire type for #{self}: #{wire_type.inspect}"
       else
         message.send(adder || setter, binary_decode_one(binary, message, registry, wire_type))
@@ -466,15 +469,12 @@ module Protobug
         when :varint
           length_mask = (2**bit_length) - 1
           negative = signed && value & (2**bit_length.pred) != 0
-          # warn negative
-          length_mask >> 1 if signed
           if negative
             value &= length_mask # remove sign bit
 
             # 2's complement
             value ^= length_mask
             value += 1
-            # value &= length_mask
             -value
           else
             value & length_mask
@@ -504,8 +504,10 @@ module Protobug
         when /\A-?\d+\z/
           value = Integer(value)
         when Float
-          value, remainder = value.divmod(1)
+          int, remainder = value.divmod(1)
           raise DecodeError, "expected integer for #{inspect}, got #{value.inspect}" unless remainder == 0
+
+          value = int
         else
           raise DecodeError, "expected integer for #{inspect}, got #{value.inspect}"
         end
@@ -617,7 +619,7 @@ module Protobug
       end
 
       def binary_pack
-        "Q"
+        "Q<"
       end
     end
 
@@ -639,7 +641,7 @@ module Protobug
       end
 
       def binary_pack
-        "q"
+        "q<"
       end
     end
 
@@ -737,7 +739,7 @@ module Protobug
       end
 
       def binary_pack
-        "l"
+        "l<"
       end
     end
 
@@ -766,7 +768,7 @@ module Protobug
       end
 
       def validate!(value, message)
-        raise "expected boolean, got #{value.inspect}" unless [true, false].include?(value)
+        raise InvalidValueError.new(message, self, value, "expected boolean") unless [true, false].include?(value)
 
         super(value ? 1 : 0, message)
       end
@@ -882,7 +884,7 @@ module Protobug
           -Float::INFINITY
         when "NaN"
           Float::NAN
-        when /\A-?\d+\z/
+        when /\A-?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][-+]?\d+)?\z/
           Float(value)
         when NilClass
           UNSET
