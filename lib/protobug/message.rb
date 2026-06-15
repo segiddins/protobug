@@ -126,7 +126,7 @@ module Protobug
       binary.binmode
       while (header = BinaryEncoding.decode_varint(binary))
         wire_type = header & 0b111
-        number = (header ^ wire_type) >> 3
+        number = header >> 3
 
         unless number > 0
           raise DecodeError,
@@ -157,8 +157,10 @@ module Protobug
       message.unknown_fields.each_with_object(buf) do |(number, wire_type, value), outbuf|
         BinaryEncoding.encode_varint((number << 3) | wire_type, outbuf)
         case wire_type
-        when 0, 5
+        when 0
           BinaryEncoding.encode_varint(value, outbuf)
+        when 1, 5
+          outbuf << value
         when 2
           BinaryEncoding.encode_length(value, outbuf)
         else
@@ -249,12 +251,11 @@ module Protobug
 
     module InstanceMethods
       def ==(other)
-        return false unless other.is_a? Protobug::Message
+        return false unless other.instance_of?(self.class)
 
-        self.class.full_name == other.class.full_name &&
-          self.class.fields_by_name.all? do |name, _|
-            send(name) == other.send(name)
-          end
+        self.class.fields_by_name.all? do |name, _|
+          send(name) == other.send(name)
+        end
       end
       alias eql? ==
 
@@ -288,7 +289,11 @@ module Protobug
       end
 
       def hash
-        self.class.fields_by_name.map { |name, _| send(name) }.hash
+        # Build a single array (map result is mutated in place via unshift) rather
+        # than allocating both the mapped array and a second spread literal.
+        values = self.class.fields_by_name.map { |name, _| send(name) }
+        values.unshift(self.class)
+        values.hash
       end
 
       def to_text
