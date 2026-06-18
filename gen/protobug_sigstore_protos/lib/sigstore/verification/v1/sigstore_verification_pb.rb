@@ -281,7 +281,10 @@ module Sigstore
           oneof: :data,
           proto3_optional: false
         )
-        # Digest of the artifact
+        # Digest of the artifact. SHOULD NOT be used when verifying an
+        # in-toto attestation as the subject digest cannot be
+        # reconstructed. This option will not work with Ed25519
+        # signatures, use Ed25519Ph or another algorithm instead.
         optional(
           3,
           "artifact_digest",

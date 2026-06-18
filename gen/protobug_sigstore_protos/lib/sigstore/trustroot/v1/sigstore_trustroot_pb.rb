@@ -47,6 +47,8 @@ module Sigstore
         self.full_name = "dev.sigstore.trustroot.v1.TransparencyLogInstance"
 
         # The base URL at which can be used to URLs for the client.
+        # SHOULD match the origin on the log checkpoint:
+        # https://github.com/C2SP/C2SP/blob/main/tlog-checkpoint.md#note-text.
         optional(
           1,
           "base_url",
@@ -73,11 +75,19 @@ module Sigstore
           json_name: "publicKey",
           proto3_optional: false
         )
-        # The unique identifier for this transparency log.
+        # The identifier for this transparency log.
         # Represented as the SHA-256 hash of the log's public key,
         # calculated over the DER encoding of the key represented as
         # SubjectPublicKeyInfo.
         # See https://www.rfc-editor.org/rfc/rfc6962#section-3.2
+        # For Rekor v2 instances, log_id and checkpoint_key_id will be set
+        # to the same value.
+        # It is recommended to use checkpoint_key_id instead, since log_id is not
+        # guaranteed to be unique across multiple deployments. Clients
+        # must use the key name and key ID, as defined by the signed-note spec
+        # linked below, from a checkpoint to determine the correct
+        # TransparencyLogInstance to verify a proof.
+        # log_id will eventually be deprecated in favor of checkpoint_id.
         optional(
           4,
           "log_id",
@@ -86,21 +96,30 @@ module Sigstore
           json_name: "logId",
           proto3_optional: false
         )
-        # The checkpoint key identifier for the log used in a checkpoint.
-        # Optional, not provided for logs that do not generate checkpoints.
-        # For logs that do generate checkpoints, if not set, assume
-        # log_id equals checkpoint_key_id.
-        # Follows the specification described here
-        # for ECDSA and Ed25519 signatures:
+        # The unique identifier for the log, used in the checkpoint.
+        # Only supported for TrustedRoot media types matching or greater than
+        # application/vnd.dev.sigstore.trustedroot.v0.2+json
+        # Its calculation is described in
         # https://github.com/C2SP/C2SP/blob/main/signed-note.md#signatures
-        # For RSA signatures, the key ID will match the ECDSA format, the
-        # hashed DER-encoded SPKI public key. Publicly witnessed logs MUST NOT
-        # use RSA-signed checkpoints, since witnesses do not support
-        # RSA signatures.
+        # SHOULD be set for all logs. When not set, clients MUST use log_id.
+        #
+        # For Ed25519 signatures, the key ID is computed per the C2SP spec:
+        # key ID = SHA-256(key name || 0x0A || 0x01 || 32-byte Ed25519 public key)[:4]
+        # For ECDSA signatures, the key ID is computed per the C2SP spec:
+        # key ID = SHA-256(PKIX ASN.1 DER-encoded public key, in SubjectPublicKeyInfo format)[:4]
+        # For RSA signatures, the signature type will be 0xff with an appended identifier for the format,
+        # "PKIX-RSA-PKCS#1v1.5":
+        # key ID = SHA-256(key name || 0x0A || 0xff || PKIX-RSA-PKCS#1v1.5 || PKIX ASN.1 DER-encoded public key)[:4]
+        #
         # This is provided for convenience. Clients can also calculate the
         # checkpoint key ID given the log's public key.
-        # SHOULD be set for logs generating Ed25519 signatures.
         # SHOULD be 4 bytes long, as a truncated hash.
+        #
+        # To find a matching TransparencyLogInstance in the TrustedRoot,
+        # clients will parse the checkpoint, and for each signature line,
+        # use the key name (i.e. log origin, base_url from TrustedRoot)
+        # and checkpoint key ID (i.e. checkpoint_key_id from TrustedRoot)
+        # which can then be compared against the TrustedRoot log instances.
         optional(
           5,
           "checkpoint_key_id",
@@ -109,6 +128,15 @@ module Sigstore
           json_name: "checkpointKeyId",
           proto3_optional: false
         )
+        # The name of the operator of this log deployment. Operator MUST be
+        # formatted as a scheme-less URI, e.g. sigstore.dev
+        # Only supported for TrustedRoot media types matching or greater than
+        # application/vnd.dev.sigstore.trustedroot.v0.2+json
+        # This MUST be used when there are multiple transparency log instances
+        # to determine if log proof verification meets a specified threshold,
+        # e.g. two proofs from log deployments operated by the same operator
+        # should count as only one valid proof.
+        optional(6, "operator", type: :string, proto3_optional: false)
       end
 
       # CertificateAuthority enlists the information required to identify which
@@ -160,6 +188,14 @@ module Sigstore
           json_name: "validFor",
           proto3_optional: false
         )
+        # The name of the operator of this certificate or timestamp authority.
+        # Operator MUST be formatted as a scheme-less URI, e.g. sigstore.dev
+        # This MUST be used when there are multiple timestamp authorities to
+        # determine if the signed timestamp verification meets a specified
+        # threshold, e.g. two signed timestamps from timestamp authorities
+        # operated by the same operator should count as only one valid
+        # timestamp.
+        optional(5, "operator", type: :string, proto3_optional: false)
       end
 
       # TrustedRoot describes the client's complete set of trusted entities.
@@ -178,13 +214,10 @@ module Sigstore
       # previously used instance -- otherwise signatures made in the past cannot
       # be verified.
       #
-      # All the listed instances SHOULD be sorted by the 'valid_for' in ascending
-      # order, that is, the oldest instance first. Only the last instance is
-      # allowed to have their 'end' timestamp unset. All previous instances MUST
-      # have a closed interval of validity. The last instance MAY have a closed
-      # interval. Clients MUST accept instances that overlaps in time, if not
-      # clients may experience problems during rotations of verification
-      # materials.
+      # All the listed instances SHOULD be sorted by the 'valid_for.start'
+      # in ascending order, that is, the oldest instance first. Clients
+      # MUST accept instances that overlaps in time, if not clients may
+      # experience problems during rotations of verification materials.
       #
       # To be able to manage planned rotations of either transparency logs or
       # certificate authorities, clienst MUST accept lists of instances where
@@ -197,10 +230,12 @@ module Sigstore
 
         self.full_name = "dev.sigstore.trustroot.v1.TrustedRoot"
 
-        # MUST be application/vnd.dev.sigstore.trustedroot.v0.1+json
+        # MUST be application/vnd.dev.sigstore.trustedroot.v0.2+json
         # when encoded as JSON.
-        # Clients MUST be able to process and parse content with the media
-        # type defined in the old format:
+        # Clients MAY choose to also support
+        # application/vnd.dev.sigstore.trustedroot.v0.1+json
+        # Clients MAY process and parse content with the media type defined
+        # in the old format:
         # application/vnd.dev.sigstore.trustedroot+json;version=0.1
         optional(
           1,
@@ -256,7 +291,9 @@ module Sigstore
 
         self.full_name = "dev.sigstore.trustroot.v1.SigningConfig"
 
-        # MUST be application/vnd.dev.sigstore.signingconfig.v0.1+json
+        # MUST be application/vnd.dev.sigstore.signingconfig.v0.2+json
+        # Clients MAY choose to also support
+        # application/vnd.dev.sigstore.signingconfig.v0.1+json
         optional(
           5,
           "media_type",
@@ -264,44 +301,211 @@ module Sigstore
           json_name: "mediaType",
           proto3_optional: false
         )
-        # A URL to a Fulcio-compatible CA, capable of receiving
+        # URLs to Fulcio-compatible CAs, capable of receiving
         # Certificate Signing Requests (CSRs) and responding with
         # issued certificates.
         #
-        # This URL **MUST** be the "base" URL for the CA, which clients
+        # These URLs MUST be the "base" URL for the CAs, which clients
         # should construct an appropriate CSR endpoint on top of.
-        # For example, if `ca_url` is `https://example.com/ca`, then
-        # the client **MAY** construct the CSR endpoint as
+        # For example, if a CA URL is `https://example.com/ca`, then
+        # the client MAY construct the CSR endpoint as
         # `https://example.com/ca/api/v2/signingCert`.
-        optional(
-          1,
-          "ca_url",
-          type: :string,
-          json_name: "caUrl",
-          proto3_optional: false
-        )
-        # A URL to an OpenID Connect identity provider.
         #
-        # This URL **MUST** be the "base" URL for the OIDC IdP, which clients
+        # Clients MUST select only one Service with the highest API version
+        # that the client is compatible with, that is within its
+        # validity period, and has the newest validity start date.
+        # Client SHOULD select the first Service that meets this requirement.
+        # All listed Services SHOULD be sorted by the `valid_for` window in
+        # descending order, with the newest instance first.
+        repeated(
+          6,
+          "ca_urls",
+          type: :message,
+          message_type: "dev.sigstore.trustroot.v1.Service",
+          json_name: "caUrls"
+        )
+        # URLs to OpenID Connect identity providers.
+        #
+        # These URLs MUST be the "base" URLs for the OIDC IdPs, which clients
         # should perform well-known OpenID Connect discovery against.
+        #
+        # Clients MUST select only one Service with the highest API version
+        # that the client is compatible with, that is within its
+        # validity period, and has the newest validity start date.
+        # Client SHOULD select the first Service that meets this requirement.
+        # All listed Services SHOULD be sorted by the `valid_for` window in
+        # descending order, with the newest instance first.
+        repeated(
+          7,
+          "oidc_urls",
+          type: :message,
+          message_type: "dev.sigstore.trustroot.v1.Service",
+          json_name: "oidcUrls"
+        )
+        # URLs to Rekor transparency logs.
+        #
+        # These URL MUST be the "base" URLs for the transparency logs,
+        # which clients should construct appropriate API endpoints on top of.
+        #
+        # Clients MUST group Services by `operator` and select at most one
+        # Service from each operator. Clients MUST select Services with the
+        # highest API version that the client is compatible with, that are
+        # within its validity period, and have the newest validity start dates.
+        # All listed Services SHOULD be sorted by the `valid_for` window in
+        # descending order, with the newest instance first.
+        #
+        # Clients MUST select Services based on the selector value of
+        # `rekor_tlog_config`.
+        repeated(
+          8,
+          "rekor_tlog_urls",
+          type: :message,
+          message_type: "dev.sigstore.trustroot.v1.Service",
+          json_name: "rekorTlogUrls"
+        )
+        # Specifies how a client should select the set of Rekor transparency
+        # logs to write to.
         optional(
-          2,
-          "oidc_url",
-          type: :string,
-          json_name: "oidcUrl",
+          9,
+          "rekor_tlog_config",
+          type: :message,
+          message_type: "dev.sigstore.trustroot.v1.ServiceConfiguration",
+          json_name: "rekorTlogConfig",
           proto3_optional: false
         )
-        # One or more URLs to Rekor-compatible transparency log.
+        # URLs to RFC 3161 Time Stamping Authorities (TSA).
         #
-        # Each URL **MUST** be the "base" URL for the transparency log,
-        # which clients should construct appropriate API endpoints on top of.
-        repeated(3, "tlog_urls", type: :string, json_name: "tlogUrls")
-        # One ore more URLs to RFC 3161 Time Stamping Authority (TSA).
-        #
-        # Each URL **MUST** be the **full** URL for the TSA, meaning that it
+        # These URLs MUST be the *full* URL for the TSA, meaning that it
         # should be suitable for submitting Time Stamp Requests (TSRs) to
         # via HTTP, per RFC 3161.
-        repeated(4, "tsa_urls", type: :string, json_name: "tsaUrls")
+        #
+        # Clients MUST group Services by `operator` and select at most one
+        # Service from each operator. Clients MUST select Services with the
+        # highest API version that the client is compatible with, that are
+        # within its validity period, and have the newest validity start dates.
+        # All listed Services SHOULD be sorted by the `valid_for` window in
+        # descending order, with the newest instance first.
+        #
+        # Clients MUST select Services based on the selector value of
+        # `tsa_config`.
+        repeated(
+          10,
+          "tsa_urls",
+          type: :message,
+          message_type: "dev.sigstore.trustroot.v1.Service",
+          json_name: "tsaUrls"
+        )
+        # Specifies how a client should select the set of TSAs to request
+        # signed timestamps from.
+        optional(
+          11,
+          "tsa_config",
+          type: :message,
+          message_type: "dev.sigstore.trustroot.v1.ServiceConfiguration",
+          json_name: "tsaConfig",
+          proto3_optional: false
+        )
+
+        # Reserved tags for previously defined service URL fields
+        reserved_range(1...5)
+      end
+
+      # Service represents an instance of a service that is a part of Sigstore infrastructure.
+      # When selecting one or multiple services from a list of services, clients MUST:
+      # * Use the API version hint to determine the service with the highest API version
+      #   that the client is compatible with.
+      # * Only select services within the specified validity period and that have the
+      #   newest validity start date.
+      # When selecting multiple services, clients MUST:
+      # * Use the ServiceConfiguration to determine how many services MUST be selected.
+      #   Clients MUST return an error if there are not enough services that meet the
+      #   selection criteria.
+      # * Group services by `operator` and select at most one service from an operator.
+      #   During verification, clients MUST treat valid verification metadata from the
+      #   operator as valid only once towards a threshold.
+      # * Select services from only the highest supported API version.
+      class Service
+        extend Protobug::Message
+
+        self.full_name = "dev.sigstore.trustroot.v1.Service"
+
+        # URL of the service. MUST include scheme and authority. MAY include path.
+        optional(1, "url", type: :string, proto3_optional: false)
+        # Specifies the major API version. A value of 0 represents a service that
+        # has not yet been released.
+        optional(
+          2,
+          "major_api_version",
+          type: :uint32,
+          json_name: "majorApiVersion",
+          proto3_optional: false
+        )
+        # Validity period of a service. A service that has only a start date
+        # SHOULD be considered the most recent instance of that service, but
+        # the client MUST NOT assume there is only one valid instance.
+        # The TimeRange MUST be considered valid *inclusive* of the
+        # endpoints.
+        optional(
+          3,
+          "valid_for",
+          type: :message,
+          message_type: "dev.sigstore.common.v1.TimeRange",
+          json_name: "validFor",
+          proto3_optional: false
+        )
+        # Specifies the name of the service operator. When selecting multiple
+        # services, clients MUST use the operator to select services from
+        # distinct operators. Operator MUST be formatted as a scheme-less
+        # URI, e.g. sigstore.dev
+        optional(4, "operator", type: :string, proto3_optional: false)
+      end
+
+      # ServiceSelector specifies how a client SHOULD select a set of
+      # Services to connect to. A client SHOULD throw an error if
+      # the value is SERVICE_SELECTOR_UNDEFINED.
+      class ServiceSelector
+        extend Protobug::Enum
+
+        self.full_name = "dev.sigstore.trustroot.v1.ServiceSelector"
+
+        SERVICE_SELECTOR_UNDEFINED = new("SERVICE_SELECTOR_UNDEFINED", 0).freeze
+        # Clients SHOULD select all Services based on supported API version
+        # and validity window.
+        ALL = new("ALL", 1).freeze
+        # Clients SHOULD select one Service based on supported API version
+        # and validity window. It is up to the client implementation to
+        # decide how to select the Service, e.g. random or round-robin.
+        ANY = new("ANY", 2).freeze
+        # Clients SHOULD select a specific number of Services based on
+        # supported API version and validity window, using the provided
+        # `count`. It is up to the client implementation to decide how to
+        # select the Service, e.g. random or round-robin.
+        EXACT = new("EXACT", 3).freeze
+      end
+
+      # ServiceConfiguration specifies how a client should select a set of
+      # Services to connect to, along with a count when a specific number
+      # of Services is requested.
+      class ServiceConfiguration
+        extend Protobug::Message
+
+        self.full_name = "dev.sigstore.trustroot.v1.ServiceConfiguration"
+
+        # How a client should select a set of Services to connect to.
+        # Clients SHOULD NOT select services from multiple API versions.
+        optional(
+          1,
+          "selector",
+          type: :enum,
+          enum_type: "dev.sigstore.trustroot.v1.ServiceSelector",
+          proto3_optional: false
+        )
+        # count specifies the number of Services the client should use.
+        # Only used when selector is set to EXACT, and count MUST be greater
+        # than 0. count MUST be less than or equal to the number of Services.
+        # Clients MUST return an error is there are not enough services
+        # that meet selection criteria.
+        optional(2, "count", type: :uint32, proto3_optional: false)
       end
 
       # ClientTrustConfig describes the complete state needed by a client
@@ -347,6 +551,9 @@ module Sigstore
         registry.register(Sigstore::TrustRoot::V1::CertificateAuthority)
         registry.register(Sigstore::TrustRoot::V1::TrustedRoot)
         registry.register(Sigstore::TrustRoot::V1::SigningConfig)
+        registry.register(Sigstore::TrustRoot::V1::Service)
+        registry.register(Sigstore::TrustRoot::V1::ServiceSelector)
+        registry.register(Sigstore::TrustRoot::V1::ServiceConfiguration)
         registry.register(Sigstore::TrustRoot::V1::ClientTrustConfig)
       end
     end

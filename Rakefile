@@ -217,7 +217,7 @@ end
 git_repo :googleapis, "tmp/googleapis", "https://github.com/googleapis/googleapis",
          commit: "1e6517ef4f949191c9e471857cf5811c8abcab84"
 git_repo :sigstore, "tmp/sigstore", "https://github.com/sigstore/protobuf-specs",
-         commit: "59d84bd5e11aa12d1f7f96edaffd25d2386da34c"
+         commit: "v0.5.1"
 git_repo :"sigstore-conformance", "tmp/sigstore-conformance", "https://github.com/sigstore/sigstore-conformance",
          commit: "v0.0.11"
 git_repo :fulcio, "tmp/fulcio", "https://github.com/sigstore/fulcio",
