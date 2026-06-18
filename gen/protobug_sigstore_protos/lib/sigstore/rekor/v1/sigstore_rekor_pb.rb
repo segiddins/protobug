@@ -181,6 +181,8 @@ module Sigstore
           proto3_optional: false
         )
         # The UNIX timestamp from the log when the entry was persisted.
+        # The integration time MUST NOT be trusted if inclusion_promise
+        # is omitted.
         optional(
           4,
           "integrated_time",

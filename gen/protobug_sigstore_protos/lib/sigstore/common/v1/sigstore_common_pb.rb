@@ -53,7 +53,9 @@ module Sigstore
         SHA2_256 = new("SHA2_256", 1).freeze
         SHA2_384 = new("SHA2_384", 2).freeze
         SHA2_512 = new("SHA2_512", 3).freeze
+        # Used for LMS
         SHA3_256 = new("SHA3_256", 4).freeze
+        # Used for LMS
         SHA3_384 = new("SHA3_384", 5).freeze
       end
 
@@ -67,7 +69,8 @@ module Sigstore
       # opinionated options instead of allowing every possible permutation.
       #
       # Any changes to this enum MUST be reflected in the algorithm registry.
-      # See: docs/algorithm-registry.md
+      #
+      # See: <https://github.com/sigstore/architecture-docs/blob/main/algorithm-registry.md>
       #
       # To avoid the possibility of contradicting formats such as PKCS1 with
       # ED25519 the valid permutations are listed as a linear set instead of a
@@ -121,11 +124,14 @@ module Sigstore
         # Ed 25519
         PKIX_ED25519 = new("PKIX_ED25519", 7).freeze # See RFC8032
         PKIX_ED25519_PH = new("PKIX_ED25519_PH", 8).freeze
+        # These algorithms are deprecated and should not be used, but they
+        # were/are being used by most Sigstore clients implementations.
+        PKIX_ECDSA_P384_SHA_256 = new("PKIX_ECDSA_P384_SHA_256", 19).freeze
+        PKIX_ECDSA_P521_SHA_256 = new("PKIX_ECDSA_P521_SHA_256", 20).freeze
         # LMS and LM-OTS
         #
-        # These keys and signatures may be used by private Sigstore
-        # deployments, but are not currently supported by the public
-        # good instance.
+        # These algorithms are deprecated and should not be used.
+        # There are no plans to support SLH-DSA at this time.
         #
         # USER WARNING: LMS and LM-OTS are both stateful signature schemes.
         # Using them correctly requires discretion and careful consideration
@@ -136,8 +142,26 @@ module Sigstore
         # schemes.
         LMS_SHA256 = new("LMS_SHA256", 14).freeze
         LMOTS_SHA256 = new("LMOTS_SHA256", 15).freeze
+        # ML-DSA
+        #
+        # These ML_DSA_44, ML_DSA_65 and ML-DSA_87 algorithms are the pure variants
+        # that take data to sign rather than the prehash variants (HashML-DSA), which
+        # take digests. While considered quantum-resistant, their usage
+        # involves tradeoffs in that signatures and keys are much larger, and
+        # this makes deployments more costly.
+        #
+        # USER WARNING: ML_DSA_44, ML_DSA_65 and ML_DSA_87 are experimental algorithms.
+        # In the future they MAY be used by private Sigstore deployments, but
+        # they are not yet fully functional. This warning will be removed when
+        # these algorithms are widely supported by Sigstore clients and servers,
+        # but care should still be taken for production environments.
+        #
+        # See NIST FIPS 204, RFC 9881 for algorithm identifiers
+        ML_DSA_44 = new("ML_DSA_44", 23).freeze
+        ML_DSA_65 = new("ML_DSA_65", 21).freeze
+        ML_DSA_87 = new("ML_DSA_87", 22).freeze
 
-        reserved_range(19..49)
+        reserved_range(24..49)
       end
 
       # HashOutput captures a digest of a 'message' (generic octet sequence)
