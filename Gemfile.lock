@@ -1,52 +1,52 @@
 PATH
   remote: .
   specs:
-    protobug (0.1.1)
+    protobug (0.2.0)
 
 PATH
   remote: gen/protobug_compiler_protos
   specs:
-    protobug_compiler_protos (0.1.1)
-      protobug (= 0.1.1)
-      protobug_well_known_protos (= 0.1.1)
+    protobug_compiler_protos (0.2.0)
+      protobug (= 0.2.0)
+      protobug_well_known_protos (= 0.2.0)
 
 PATH
   remote: gen/protobug_conformance_protos
   specs:
-    protobug_conformance_protos (0.1.1)
-      protobug (= 0.1.1)
-      protobug_well_known_protos (= 0.1.1)
+    protobug_conformance_protos (0.2.0)
+      protobug (= 0.2.0)
+      protobug_well_known_protos (= 0.2.0)
 
 PATH
   remote: gen/protobug_googleapis_field_behavior_protos
   specs:
-    protobug_googleapis_field_behavior_protos (0.1.1)
-      protobug (= 0.1.1)
-      protobug_well_known_protos (= 0.1.1)
+    protobug_googleapis_field_behavior_protos (0.2.0)
+      protobug (= 0.2.0)
+      protobug_well_known_protos (= 0.2.0)
 
 PATH
   remote: gen/protobug_sigstore_protos
   specs:
-    protobug_sigstore_protos (0.1.1)
-      protobug (= 0.1.1)
-      protobug_googleapis_field_behavior_protos (= 0.1.1)
-      protobug_well_known_protos (= 0.1.1)
+    protobug_sigstore_protos (0.2.0)
+      protobug (= 0.2.0)
+      protobug_googleapis_field_behavior_protos (= 0.2.0)
+      protobug_well_known_protos (= 0.2.0)
 
 PATH
   remote: gen/protobug_well_known_protos
   specs:
-    protobug_well_known_protos (0.1.1)
-      protobug (= 0.1.1)
+    protobug_well_known_protos (0.2.0)
+      protobug (= 0.2.0)
 
 PATH
   remote: protobug-compiler
   specs:
-    protobug-compiler (0.1.1)
+    protobug-compiler (0.2.0)
       delegate
       forwardable
       prettier_print (~> 1.2, >= 1.2.1)
-      protobug (= 0.1.1)
-      protobug_compiler_protos (= 0.1.1)
+      protobug (= 0.2.0)
+      protobug_compiler_protos (= 0.2.0)
 
 GEM
   remote: https://rubygems.org/
