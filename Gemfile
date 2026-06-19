@@ -8,8 +8,12 @@ gemspec path: "protobug-compiler"
 gemspec path: "gen/protobug_compiler_protos"
 gemspec path: "gen/protobug_conformance_protos"
 gemspec path: "gen/protobug_googleapis_field_behavior_protos"
+gemspec path: "gen/protobug_googleapis_annotations_protos"
 gemspec path: "gen/protobug_well_known_protos"
 gemspec path: "gen/protobug_sigstore_protos"
+gemspec path: "gen/protobug_protoc_gen_openapiv2_protos"
+gemspec path: "gen/protobug_fulcio_protos"
+gemspec path: "gen/protobug_in_toto_attestation_protos"
 
 gem "rake", "~> 13.2"
 

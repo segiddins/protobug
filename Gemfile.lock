@@ -18,10 +18,42 @@ PATH
       protobug_well_known_protos (= 0.2.0)
 
 PATH
+  remote: gen/protobug_fulcio_protos
+  specs:
+    protobug_fulcio_protos (0.2.0)
+      protobug (= 0.2.0)
+      protobug_googleapis_annotations_protos (= 0.2.0)
+      protobug_googleapis_field_behavior_protos (= 0.2.0)
+      protobug_protoc_gen_openapiv2_protos (= 0.2.0)
+      protobug_well_known_protos (= 0.2.0)
+
+PATH
+  remote: gen/protobug_googleapis_annotations_protos
+  specs:
+    protobug_googleapis_annotations_protos (0.2.0)
+      protobug (= 0.2.0)
+      protobug_well_known_protos (= 0.2.0)
+
+PATH
   remote: gen/protobug_googleapis_field_behavior_protos
   specs:
     protobug_googleapis_field_behavior_protos (0.2.0)
       protobug (= 0.2.0)
+      protobug_well_known_protos (= 0.2.0)
+
+PATH
+  remote: gen/protobug_in_toto_attestation_protos
+  specs:
+    protobug_in_toto_attestation_protos (0.2.0)
+      protobug (= 0.2.0)
+      protobug_well_known_protos (= 0.2.0)
+
+PATH
+  remote: gen/protobug_protoc_gen_openapiv2_protos
+  specs:
+    protobug_protoc_gen_openapiv2_protos (0.2.0)
+      protobug (= 0.2.0)
+      protobug_googleapis_field_behavior_protos (= 0.2.0)
       protobug_well_known_protos (= 0.2.0)
 
 PATH
@@ -134,7 +166,11 @@ DEPENDENCIES
   protobug-compiler!
   protobug_compiler_protos!
   protobug_conformance_protos!
+  protobug_fulcio_protos!
+  protobug_googleapis_annotations_protos!
   protobug_googleapis_field_behavior_protos!
+  protobug_in_toto_attestation_protos!
+  protobug_protoc_gen_openapiv2_protos!
   protobug_sigstore_protos!
   protobug_well_known_protos!
   rake (~> 13.2)
