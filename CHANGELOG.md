@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+### Fixed
+
+- Stop passing options that json 3.0 removed (`allow_blank`, `create_additions`,
+  `allow_infinity`) to `JSON.parse` and `JSON.generate`. Under json 3 those calls
+  raised `ArgumentError` and broke `#decode_json` and `#to_json` entirely. The dropped
+  options were all json 2 defaults, so behavior on json 2 is unchanged.
+
 ## [0.2.0] - 2026-06-18
 
 ### Added

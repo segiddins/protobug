@@ -272,7 +272,7 @@ module Protobug
 
     class MapField < MessageField
       SUPER_INITIALIZE = instance_method(:initialize).super_method
-      def initialize(number, name, key_type:, value_type:, json_name: name, oneof: nil, # rubocop:disable Lint/MissingSuper,
+      def initialize(number, name, key_type:, value_type:, json_name: name, oneof: nil, # rubocop:disable Lint/MissingSuper
                      enum_type: nil, message_type: nil)
         SUPER_INITIALIZE.bind_call(
           self, number, name,

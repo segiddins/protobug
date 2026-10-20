@@ -89,7 +89,7 @@ module Protobug
     def decode_json(json, registry:, ignore_unknown_fields: false)
       require "json"
       hash = begin
-        JSON.parse(json, allow_blank: false, create_additions: false, allow_nan: false, allow_infinity: false)
+        JSON.parse(json)
       rescue JSON::ParserError => e
         raise DecodeError, "JSON failed to parse: #{e.message}"
       end
@@ -325,7 +325,7 @@ module Protobug
 
       def to_json(print_unknown_fields: false)
         require "json"
-        JSON.generate(as_json(print_unknown_fields: print_unknown_fields), allow_infinity: true)
+        JSON.generate(as_json(print_unknown_fields: print_unknown_fields))
       rescue JSON::GeneratorError => e
         raise EncodeError, "failed to generate JSON: #{e}"
       end

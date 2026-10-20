@@ -43,3 +43,24 @@ RSpec/ExampleLength:
 
 Style/NumericPredicate:
   EnforcedStyle: comparison
+
+# Deferred from the rubocop 1.64 to 1.92 jump for the json 3 lock update;
+# enable and fix these separately.
+Gemspec/AddRuntimeDependency:
+  Enabled: false
+Naming/PredicateMethod:
+  Enabled: false
+Layout/EmptyLinesAfterModuleInclusion:
+  Enabled: false
+Layout/MultilineMethodCallIndentation:
+  Enabled: false
+Style/BitwisePredicate:
+  Enabled: false
+Style/CollectionQuerying:
+  Enabled: false
+Style/FileNull:
+  Enabled: false
+Style/OneClassPerFile:
+  Enabled: false
+Style/RedundantBegin:
+  Enabled: false

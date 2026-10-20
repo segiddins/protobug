@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Google::Protobuf::Value.class_eval do
-  class self::UnexpectedStructType < Protobug::InvalidValueError # rubocop:disable Lint/ConstantDefinitionInBlock,Style/ClassAndModuleChildren
+  class self::UnexpectedStructType < Protobug::InvalidValueError # rubocop:disable Lint/ConstantDefinitionInBlock
   end
 
   def to_ruby(recursive: false)
